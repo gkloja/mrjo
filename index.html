@@ -672,7 +672,57 @@
         height: 3px;
         background: linear-gradient(90deg, var(--primary), var(--accent));
     }
-    
+    /* Animações para a seção de download */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilo para os botões de download */
+.download-btn {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Progresso de download (opcional) */
+.download-progress {
+    width: 100%;
+    height: 5px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.download-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #3DDC84, #34A853);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Badge para novas versões */
+.new-version-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff4757;
+    color: white;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+}
     .card-header {
         margin-bottom: 25px;
         display: flex;
@@ -1282,6 +1332,33 @@
         
     </div>
 </header>
+<!-- Adicione esta seção após o header -->
+<!-- Mantenha a seção de download que você já tem, apenas atualize o conteúdo dinâmico -->
+<section id="download" class="content-section" style="display: none;">
+    <div class="content-card">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="fas fa-download"></i>
+            </div>
+            <div>
+                <h2 class="card-title">Baixar App</h2>
+                <div class="card-subtitle">Versão nativa para Android</div>
+            </div>
+        </div>
+        
+        <div style="padding: 30px;">
+            <div id="downloadContent">
+                <!-- Conteúdo será carregado aqui -->
+                <div style="text-align: center; padding: 30px;">
+                    <div class="spinner" style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); 
+                         border-top-color: var(--primary); border-radius: 50%; margin: 0 auto 15px; 
+                         animation: spin 1s linear infinite;"></div>
+                    <p style="color: var(--text-secondary);">Carregando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
     <!-- Navegação -->
     <nav class="navy-nav">
         <div class="nav-menu">
@@ -1305,6 +1382,11 @@
                     <i class="fas fa-book-open"></i> Protocolos
                 </a>
             </div>
+            <div class="nav-item">
+    <a href="#download" class="nav-link" onclick="showSection('download'); return false;">
+        <i class="fas fa-download"></i> Baixar App
+    </a>
+</div>
         </div>
     </nav>
     
@@ -2472,6 +2554,692 @@ indicativosUnidade: [
 
 // Variável global para controlar modais
 let activeModal = null;
+
+// Adicione estas funções ao seu JavaScript existente
+
+// Verifica se está rodando no app nativo (WebView)
+// JavaScript principal - versão simplificada sem service worker
+
+// 1. Função para verificar se está no app nativo (WebView)
+function isRunningInApp() {
+    const userAgent = navigator.userAgent.toLowerCase();
+    
+    // Padrões comuns de WebView
+    if (/marujo.*digital.*app/i.test(userAgent)) {
+        return true; // Seu app personalizado
+    }
+    
+    if (/wv/.test(userAgent) || /webview/.test(userAgent)) {
+        return true; // Android WebView
+    }
+    
+    // Verifica se é standalone (PWA instalado)
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        return true;
+    }
+    
+    return false;
+}
+
+// 2. Função para detectar dispositivo
+function detectDevice() {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    
+    if (/android/i.test(userAgent)) {
+        return 'android';
+    }
+    
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        return 'ios';
+    }
+    
+    return 'desktop';
+}
+
+// 3. Função principal para mostrar conteúdo de download
+function showDownloadContent() {
+    const isInApp = isRunningInApp();
+    const device = detectDevice();
+    const downloadContent = document.getElementById('downloadContent');
+    
+    if (!downloadContent) return;
+    
+    // Se estiver no app nativo, mostrar mensagem
+    if (isInApp) {
+        downloadContent.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <div style="width: 80px; height: 80px; background: rgba(0, 102, 204, 0.2); 
+                     border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+                     margin: 0 auto 20px;">
+                    <i class="fas fa-check-circle" style="font-size: 2.5rem; color: var(--primary);"></i>
+                </div>
+                <h3 style="color: white; margin-bottom: 15px;">Você já está no app!</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 25px;">
+                    Aproveite a versão nativa do Marujo Digital.
+                </p>
+                <button onclick="showSection('bandeiras')" style="
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    padding: 12px 30px;
+                    border-radius: 25px;
+                    font-weight: 600;
+                    cursor: pointer;
+                ">
+                    <i class="fas fa-flag"></i> Explorar Conteúdo
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    // Conteúdo baseado no dispositivo
+    if (device === 'android') {
+        // Android - Mostrar download do APK
+        downloadContent.innerHTML = `
+            <div style="text-align: center;">
+                <div style="background: linear-gradient(135deg, #3DDC84, #34A853); 
+                     width: 100px; height: 100px; border-radius: 20px; 
+                     display: flex; align-items: center; justify-content: center; 
+                     margin: 0 auto 25px; box-shadow: 0 10px 25px rgba(61, 220, 132, 0.3);">
+                    <i class="fab fa-android" style="font-size: 3.5rem; color: white;"></i>
+                </div>
+                
+                <h3 style="color: white; margin-bottom: 10px; font-size: 1.5rem;">
+                    App para Android
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: 25px;">
+                    Instale a versão nativa do Marujo Digital
+                </p>
+                
+                <!-- Botão de Download APK DIRETO -->
+                <a href="https://marujodigital.onrender.com/marujodigitalandroid.apk" 
+                   download="MarujoDigital.apk"
+                   style="display: inline-block; text-decoration: none;">
+                    <button style="
+                        background: linear-gradient(135deg, #3DDC84, #34A853);
+                        color: white;
+                        border: none;
+                        padding: 18px 40px;
+                        border-radius: 15px;
+                        font-size: 1.2rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        margin: 0 auto 25px;
+                        box-shadow: 0 5px 20px rgba(61, 220, 132, 0.3);
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.transform='translateY(-5px)'; 
+                                  this.style.boxShadow='0 10px 30px rgba(61, 220, 132, 0.4)';"
+                       onmouseout="this.style.transform='translateY(0)'; 
+                                  this.style.boxShadow='0 5px 20px rgba(61, 220, 132, 0.3)';">
+                        <i class="fas fa-download" style="font-size: 1.5rem;"></i>
+                        Baixar APK (Android)
+                    </button>
+                </a>
+                
+                <!-- Instruções de instalação -->
+                <div style="background: rgba(61, 220, 132, 0.1); padding: 20px; 
+                     border-radius: 10px; text-align: left; margin-top: 20px; 
+                     border-left: 4px solid #3DDC84;">
+                    <h4 style="color: white; margin-bottom: 15px;">
+                        <i class="fas fa-info-circle"></i> Como instalar:
+                    </h4>
+                    <ol style="color: var(--text-secondary); padding-left: 20px; margin: 0;">
+                        <li>Toque em "Baixar APK" acima</li>
+                        <li>Permita "Fontes desconhecidas" se solicitado</li>
+                        <li>Abra o arquivo baixado</li>
+                        <li>Toque em "Instalar"</li>
+                        <li>Pronto! Execute o app</li>
+                    </ol>
+                </div>
+            </div>
+        `;
+    }
+    else if (device === 'ios') {
+        // iOS - Não tem APK, então mostra alternativa
+        downloadContent.innerHTML = `
+            <div style="text-align: center;">
+                <div style="background: linear-gradient(135deg, #000000, #1D1D1F); 
+                     width: 100px; height: 100px; border-radius: 20px; 
+                     display: flex; align-items: center; justify-content: center; 
+                     margin: 0 auto 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+                    <i class="fab fa-apple" style="font-size: 3.5rem; color: white;"></i>
+                </div>
+                
+                <h3 style="color: white; margin-bottom: 10px; font-size: 1.5rem;">
+                    Para iPhone/iPad
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: 25px;">
+                    Use a versão web otimizada para iOS
+                </p>
+                
+                <div style="background: rgba(255,255,255,0.05); padding: 25px; 
+                     border-radius: 15px; text-align: left;">
+                    <h4 style="color: white; margin-bottom: 15px;">
+                        <i class="fas fa-star"></i> Recomendação:
+                    </h4>
+                    <p style="color: var(--text-secondary);">
+                        Adicione este site à sua tela inicial para acesso rápido como um app:
+                    </p>
+                    <ul style="color: var(--text-secondary); padding-left: 20px; margin-bottom: 20px;">
+                        <li>Abra no Safari</li>
+                        <li>Toque no ícone de compartilhar</li>
+                        <li>Selecione "Adicionar à Tela de Início"</li>
+                    </ul>
+                </div>
+            </div>
+        `;
+    }
+    else {
+        // Desktop
+        downloadContent.innerHTML = `
+            <div style="text-align: center;">
+                <h3 style="color: white; margin-bottom: 15px; font-size: 1.5rem;">
+                    Acesse pelo Celular
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: 25px;">
+                    Para melhor experiência, use no seu smartphone
+                </p>
+                
+                <!-- Link para Android -->
+                <div style="background: rgba(61, 220, 132, 0.1); padding: 20px; 
+                     border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="color: white; margin-bottom: 10px; display: flex; 
+                        align-items: center; gap: 10px; justify-content: center;">
+                        <i class="fab fa-android"></i> Android
+                    </h4>
+                    <a href="https://marujodigital.onrender.com/marujodigitalandroid.apk" 
+                       download="MarujoDigital.apk"
+                       style="color: #3DDC84; text-decoration: none; font-weight: 600;">
+                        <i class="fas fa-download"></i> Baixar APK
+                    </a>
+                </div>
+                
+                <!-- Link para iOS -->
+                <div style="background: rgba(255,255,255,0.05); padding: 20px; 
+                     border-radius: 10px;">
+                    <h4 style="color: white; margin-bottom: 10px; display: flex; 
+                        align-items: center; gap: 10px; justify-content: center;">
+                        <i class="fab fa-apple"></i> iPhone/iPad
+                    </h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                        Use a versão web no Safari
+                    </p>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// 4. Inicialização - Esconde o menu se estiver no app
+document.addEventListener('DOMContentLoaded', function() {
+    // Esconde o item "Baixar App" se já estiver no app
+    if (isRunningInApp()) {
+        const downloadMenu = document.querySelector('a[href="#download"]');
+        if (downloadMenu) {
+            downloadMenu.parentElement.style.display = 'none';
+        }
+    }
+    
+    // Se a URL tiver #download, carrega o conteúdo
+    if (window.location.hash === '#download') {
+        setTimeout(showDownloadContent, 300);
+    }
+});
+
+// 5. Atualize a função showSection para incluir download
+// Procure por "function showSection(sectionId, event)" e adicione:
+case 'download':
+    setTimeout(showDownloadContent, 100);
+    break;
+
+// Detecta o tipo de dispositivo
+function detectDevice() {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    
+    // Android
+    if (/android/i.test(userAgent)) {
+        return 'android';
+    }
+    
+    // iOS
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        return 'ios';
+    }
+    
+    // Desktop ou outro
+    return 'desktop';
+}
+
+// Mostra o conteúdo apropriado para download
+function showDownloadContent() {
+    const device = detectDevice();
+    const isInApp = isRunningInApp();
+    const downloadContent = document.getElementById('downloadContent');
+    
+    if (!downloadContent) return;
+    
+    // Se estiver no app nativo, não mostrar seção de download
+    if (isInApp) {
+        downloadContent.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <div style="
+                    width: 80px;
+                    height: 80px;
+                    background: rgba(0, 102, 204, 0.2);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 20px;
+                ">
+                    <i class="fas fa-check-circle" style="font-size: 2.5rem; color: var(--primary);"></i>
+                </div>
+                <h3 style="color: white; margin-bottom: 15px;">Você já está no app!</h3>
+                <p style="color: var(--text-secondary);">
+                    Aproveite todas as funcionalidades do Marujo Digital em sua versão nativa.
+                </p>
+                <button onclick="showSection('bandeiras')" style="
+                    margin-top: 20px;
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    padding: 12px 30px;
+                    border-radius: 25px;
+                    font-weight: 600;
+                    cursor: pointer;
+                ">
+                    <i class="fas fa-flag"></i> Ver Bandeiras
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    // Conteúdo para Android (APK)
+    if (device === 'android') {
+        downloadContent.innerHTML = `
+            <div style="text-align: center;">
+                <div style="
+                    background: linear-gradient(135deg, #3DDC84, #34A853);
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 25px;
+                    box-shadow: 0 10px 25px rgba(61, 220, 132, 0.3);
+                ">
+                    <i class="fab fa-android" style="font-size: 3.5rem; color: white;"></i>
+                </div>
+                
+                <h3 style="color: white; margin-bottom: 10px; font-size: 1.5rem;">
+                    Baixar para Android
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: 30px;">
+                    Instale o app nativo do Marujo Digital no seu dispositivo Android
+                </p>
+                
+                <!-- Botão de Download APK -->
+                <a href="https://marujodigital.onrender.com/marujodigitalandroid.apk" 
+                   download="MarujoDigital.apk"
+                   class="download-apk-btn"
+                   style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 15px;
+                        background: linear-gradient(135deg, #3DDC84, #34A853);
+                        color: white;
+                        text-decoration: none;
+                        padding: 20px 40px;
+                        border-radius: 15px;
+                        font-size: 1.2rem;
+                        font-weight: 600;
+                        margin-bottom: 20px;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 5px 20px rgba(61, 220, 132, 0.3);
+                        border: 2px solid rgba(255,255,255,0.2);
+                   "
+                   onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(61, 220, 132, 0.4)';"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(61, 220, 132, 0.3)';">
+                    <i class="fas fa-download" style="font-size: 1.5rem;"></i>
+                    Baixar APK (${getAppSize()})
+                </a>
+                
+                <!-- Instruções para Android -->
+                <div style="
+                    background: rgba(61, 220, 132, 0.1);
+                    border-left: 4px solid #3DDC84;
+                    padding: 20px;
+                    border-radius: 10px;
+                    text-align: left;
+                    margin-top: 30px;
+                ">
+                    <h4 style="color: white; margin-bottom: 15px;">
+                        <i class="fas fa-info-circle"></i> Instruções de Instalação:
+                    </h4>
+                    <ol style="color: var(--text-secondary); padding-left: 20px; margin-bottom: 0;">
+                        <li>Clique em "Baixar APK" acima</li>
+                        <li>Permita instalação de fontes desconhecidas quando solicitado</li>
+                        <li>Localize o arquivo na pasta "Downloads"</li>
+                        <li>Toque no arquivo para instalar</li>
+                        <li>Execute o app após a instalação</li>
+                    </ol>
+                </div>
+                
+                <!-- Segurança -->
+                <div style="margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
+                    <i class="fas fa-shield-alt"></i> App verificado e seguro
+                </div>
+            </div>
+        `;
+    }
+    // Conteúdo para iOS
+    else if (device === 'ios') {
+        downloadContent.innerHTML = `
+            <div style="text-align: center;">
+                <div style="
+                    background: linear-gradient(135deg, #000000, #1D1D1F);
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 25px;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+                ">
+                    <i class="fab fa-apple" style="font-size: 3.5rem; color: white;"></i>
+                </div>
+                
+                <h3 style="color: white; margin-bottom: 10px; font-size: 1.5rem;">
+                    Para dispositivos iOS
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: 30px;">
+                    Infelizmente, o app para iOS ainda não está disponível na App Store.
+                </p>
+                
+                <div style="
+                    background: rgba(255,255,255,0.05);
+                    padding: 25px;
+                    border-radius: 15px;
+                    text-align: left;
+                ">
+                    <h4 style="color: white; margin-bottom: 15px;">
+                        <i class="fas fa-mobile-alt"></i> Alternativas para iOS:
+                    </h4>
+                    <ul style="color: var(--text-secondary); padding-left: 20px; margin-bottom: 20px;">
+                        <li><strong>Adicione à Tela de Início:</strong> Use esta versão web como app</li>
+                        <li><strong>Notificações:</strong> Ative as notificações do navegador</li>
+                        <li><strong>Offline:</strong> Funciona parcialmente offline</li>
+                    </ul>
+                    
+                    <!-- Botão para adicionar à tela inicial -->
+                    <button onclick="showAddToHomeScreenInstructions()" style="
+                        width: 100%;
+                        background: var(--primary);
+                        color: white;
+                        border: none;
+                        padding: 15px;
+                        border-radius: 10px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        margin-top: 10px;
+                    ">
+                        <i class="fas fa-plus-square"></i> Adicionar à Tela de Início
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+    // Conteúdo para Desktop/Outros
+    else {
+        downloadContent.innerHTML = `
+            <div style="text-align: center;">
+                <div style="
+                    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 25px;
+                ">
+                    <i class="fas fa-desktop" style="font-size: 3.5rem; color: white;"></i>
+                </div>
+                
+                <h3 style="color: white; margin-bottom: 10px; font-size: 1.5rem;">
+                    Use no Navegador
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: 30px;">
+                    A versão web é otimizada para desktop e inclui todas as funcionalidades.
+                </p>
+                
+                <!-- Botão para Android -->
+                <div style="
+                    background: rgba(61, 220, 132, 0.1);
+                    padding: 20px;
+                    border-radius: 10px;
+                    margin-bottom: 20px;
+                    text-align: left;
+                ">
+                    <h4 style="color: white; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fab fa-android"></i> Tem um dispositivo Android?
+                    </h4>
+                    <a href="https://marujodigital.onrender.com/marujodigitalandroid.apk" 
+                       download="MarujoDigital.apk"
+                       style="
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 10px;
+                            background: #3DDC84;
+                            color: white;
+                            text-decoration: none;
+                            padding: 12px 25px;
+                            border-radius: 8px;
+                            font-weight: 600;
+                       ">
+                        <i class="fas fa-download"></i> Baixar APK para Android
+                    </a>
+                </div>
+                
+                <!-- QR Code para mobile -->
+                <div style="
+                    background: rgba(255,255,255,0.05);
+                    padding: 25px;
+                    border-radius: 15px;
+                    margin-top: 20px;
+                ">
+                    <h4 style="color: white; margin-bottom: 15px;">
+                        <i class="fas fa-qrcode"></i> Acesse pelo celular:
+                    </h4>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                        Escaneie este QR Code com seu celular:
+                    </p>
+                    <div style="
+                        background: white;
+                        padding: 20px;
+                        border-radius: 10px;
+                        display: inline-block;
+                        margin-bottom: 15px;
+                    ">
+                        <div style="
+                            width: 150px;
+                            height: 150px;
+                            background: 
+                                conic-gradient(from 0deg, 
+                                    #0066cc 0% 25%, 
+                                    #ffcc00 25% 50%,
+                                    #0066cc 50% 75%,
+                                    #ffcc00 75% 100%);
+                            border-radius: 10px;
+                            position: relative;
+                        ">
+                            <div style="
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                background: white;
+                                width: 30px;
+                                height: 30px;
+                                border-radius: 5px;
+                            "></div>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                        marujodigital.onrender.com
+                    </p>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Adicionar evento de clique para o botão APK
+    const apkBtn = document.querySelector('.download-apk-btn');
+    if (apkBtn) {
+        apkBtn.addEventListener('click', function(e) {
+            // Rastrear download (opcional)
+            console.log('Download do APK iniciado');
+            
+            // Mostrar mensagem de confirmação
+            setTimeout(() => {
+                showNotification('Download iniciado! Verifique sua pasta de downloads.');
+            }, 500);
+        });
+    }
+}
+
+// Função para simular o tamanho do app (você pode ajustar)
+function getAppSize() {
+    // Simula tamanho do APK - você pode ajustar conforme o tamanho real
+    return '~15 MB';
+}
+
+// Instruções para adicionar à tela inicial (iOS/Android PWA)
+function showAddToHomeScreenInstructions() {
+    const device = detectDevice();
+    let instructions = '';
+    
+    if (device === 'ios') {
+        instructions = `
+            <h4 style="color: white; margin-bottom: 15px;">
+                <i class="fab fa-apple"></i> Como adicionar no iPhone/iPad:
+            </h4>
+            <ol style="color: var(--text-secondary); padding-left: 20px;">
+                <li>Abra o site no Safari</li>
+                <li>Toque no botão de compartilhar (quadrado com seta para cima)</li>
+                <li>Role para baixo e toque em "Adicionar à Tela de Início"</li>
+                <li>Toque em "Adicionar" no canto superior direito</li>
+                <li>Pronto! O ícone aparecerá na sua tela inicial</li>
+            </ol>
+        `;
+    } else {
+        instructions = `
+            <h4 style="color: white; margin-bottom: 15px;">
+                <i class="fab fa-android"></i> Como adicionar no Android:
+            </h4>
+            <ol style="color: var(--text-secondary); padding-left: 20px;">
+                <li>Abra o site no Chrome</li>
+                <li>Toque nos três pontos no canto superior direito</li>
+                <li>Selecione "Adicionar à tela inicial"</li>
+                <li>Toque em "Adicionar"</li>
+                <li>O ícone será adicionado à sua tela inicial</li>
+            </ol>
+        `;
+    }
+    
+    // Substituir o conteúdo
+    document.getElementById('downloadContent').innerHTML = `
+        <div style="text-align: left;">
+            <button onclick="showDownloadContent()" style="
+                background: none;
+                border: none;
+                color: var(--text-secondary);
+                cursor: pointer;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            ">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+            
+            <div style="
+                background: rgba(0, 102, 204, 0.1);
+                border-left: 4px solid var(--primary);
+                padding: 25px;
+                border-radius: 10px;
+                margin-top: 20px;
+            ">
+                ${instructions}
+            </div>
+            
+            <div style="margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                <h5 style="color: white; margin-bottom: 10px;">
+                    <i class="fas fa-star"></i> Vantagens:
+                </h5>
+                <ul style="color: var(--text-secondary); padding-left: 20px;">
+                    <li>Acesso rápido como um app nativo</li>
+                    <li>Funciona parcialmente offline</li>
+                    <li>Notificações push (se habilitadas)</li>
+                    <li>Não ocupa muito espaço</li>
+                </ul>
+            </div>
+        </div>
+    `;
+}
+
+// Atualize a função showSection para incluir o download
+// Adicione ao switch case existente:
+function showSection(sectionId, event) {
+    // ... código existente ...
+    
+    switch(sectionId) {
+        case 'bandeiras':
+            loadAllFlags();
+            break;
+        case 'insignias':
+            loadSubstitutasSection();
+            break;
+        case 'sinais':
+            loadSignals();
+            break;
+        case 'cerimonial':
+            loadCeremonial();
+            break;
+        case 'protocolos':
+            loadProtocols();
+            break;
+        case 'download':
+            // Mostra conteúdo baseado no dispositivo
+            setTimeout(showDownloadContent, 100);
+            break;
+    }
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    // Verificar se deve mostrar o link de download no menu
+    if (isRunningInApp()) {
+        // Esconde o item do menu se estiver no app
+        const downloadMenuItem = document.querySelector('a[href="#download"]');
+        if (downloadMenuItem) {
+            downloadMenuItem.parentElement.style.display = 'none';
+        }
+    }
+    
+    // Se a seção de download estiver ativa por padrão
+    const hash = window.location.hash;
+    if (hash === '#download') {
+        setTimeout(showDownloadContent, 300);
+    }
+});
 
 // Funções principais
 function showSection(sectionId, event) {
