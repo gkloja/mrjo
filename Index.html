@@ -1,0 +1,3481 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Marujo Digital - Cerimonial da Marinha</title>
+    <meta name="description" content="Marujo Digital é um guia completo sobre Cerimonial da Marinha do Brasil, bandeiras, sinais navais, protocolos, insígnias e normas oficiais. Conteúdo educativo e organizado.">
+
+<meta name="keywords" content="Cerimonial da Marinha, Marinha do Brasil, Bandeiras Navais, Sinais Navais, Protocolo Naval, Insígnias da Marinha, Marujo Digital">
+
+<meta name="author" content="Cabral">
+
+<meta name="robots" content="index, follow">
+    
+    <meta property="og:title" content="Marujo Digital - Cerimonial da Marinha">
+<meta property="og:description" content="Guia completo do Cerimonial da Marinha do Brasil. Bandeiras, sinais, protocolos e insígnias.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:image" content="imagens/logo.png">
+<meta property="og:url" content="https://marujodigital.onrender.com/">
+    
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
+    });
+  });
+</script>
+    
+    <style>
+    :root {
+        --primary: #0066cc; /* Azul Marinho */
+        --primary-dark: #004d99;
+        --accent: #ffcc00; /* Dourado Naval */
+        --bg-dark: #0a1929;
+        --bg-darker: #051223;
+        --text-primary: #ffffff;
+        --text-secondary: #a8c7fa;
+        --text-muted: #7a9ccc;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg-darker);
+        color: var(--text-primary);
+        width: 100vw;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+        background-image: 
+            radial-gradient(circle at 20% 30%, rgba(0, 102, 204, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(255, 204, 0, 0.05) 0%, transparent 50%);
+    }
+    
+ /* Logo Circular Aprimorada */
+.logo-container-enhanced {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo-title {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+/* Logo Principal - CÍRCULO COM ZOOM */
+.logo-circle {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 
+        0 0 0 4px rgba(255, 255, 255, 0.1),
+        0 10px 30px rgba(0, 51, 153, 0.5),
+        inset 0 0 30px rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--accent);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    z-index: 10;
+}
+
+.logo-circle::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, 
+        rgba(255, 204, 0, 0.15) 0%, 
+        transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+.logo-circle::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: conic-gradient(
+        from 0deg,
+        transparent,
+        var(--accent),
+        transparent,
+        var(--primary),
+        transparent,
+        var(--accent),
+        transparent
+    );
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.8;
+    animation: rotateBorder 4s linear infinite;
+}
+
+.logo-image-container {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    box-shadow: 
+        inset 0 3px 10px rgba(0, 0, 0, 0.2),
+        0 5px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* Efeito de zoom na imagem */
+.logo-image-zoomed {
+    width: 130%; /* ZOOM AQUI - aumentei para 130% */
+    height: 130%; /* ZOOM AQUI - aumentei para 130% */
+    object-fit: contain; /* Mantém proporção */
+    object-position: center;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+    transition: all 0.5s ease;
+    transform-origin: center;
+}
+
+/* Elementos decorativos circulares */
+.circle-decoration {
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255, 204, 0, 0.4);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.circle-decoration:nth-child(1) {
+    animation: rotate 25s linear infinite reverse;
+}
+
+.circle-decoration:nth-child(2) {
+    width: 120px;
+    height: 120px;
+    border: 1px dotted rgba(0, 102, 204, 0.3);
+    animation: rotate 30s linear infinite;
+}
+
+/* Estrelas rotativas */
+.floating-star {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    z-index: 3;
+    opacity: 0.9;
+}
+
+/* Posicionamento das estrelas em um círculo */
+.floating-star:nth-child(1) { 
+    top: 15px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    animation: floatStar 5s ease-in-out infinite; 
+}
+.floating-star:nth-child(2) { 
+    top: 50%; 
+    right: 15px; 
+    transform: translateY(-50%); 
+    animation: floatStar 5s ease-in-out infinite 0.5s; 
+}
+.floating-star:nth-child(3) { 
+    bottom: 15px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    animation: floatStar 5s ease-in-out infinite 1s; 
+}
+.floating-star:nth-child(4) { 
+    top: 50%; 
+    left: 15px; 
+    transform: translateY(-50%); 
+    animation: floatStar 5s ease-in-out infinite 1.5s; 
+}
+
+/* Botão Flutuante - VERSÃO MENOR DA LOGO */
+.floating-logo-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+        0 5px 20px rgba(0, 51, 153, 0.5),
+        0 0 0 3px rgba(255, 204, 0, 0.3);
+    border: 2px solid var(--accent);
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    animation: floatBtn 3s ease-in-out infinite;
+}
+
+.floating-logo-btn::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 30%, 
+        rgba(255, 204, 0, 0.2) 0%, 
+        transparent 70%);
+    border-radius: 50%;
+}
+
+.floating-logo-btn:hover {
+    transform: scale(1.15);
+    box-shadow: 
+        0 8px 30px rgba(0, 51, 153, 0.7),
+        0 0 0 4px rgba(255, 204, 0, 0.5);
+    animation-play-state: paused;
+}
+
+.floating-logo-btn:active {
+    transform: scale(0.95);
+}
+
+.floating-btn-image {
+    width: 55px;
+    height: 55px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.floating-btn-image img {
+    width: 140%; /* MAIS ZOOM no botão flutuante */
+    height: 140%; /* MAIS ZOOM no botão flutuante */
+    object-fit: contain;
+    object-position: center;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Texto da Logo (mantém melhorias anteriores) */
+.logo-text {
+    margin-left: 20px;
+}
+
+.logo-text h1 {
+    font-size: 2.3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff 0%, #e6f2ff 25%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 15px rgba(0, 51, 153, 0.3);
+    letter-spacing: 1.2px;
+    margin-bottom: 8px;
+    position: relative;
+    display: inline-block;
+}
+
+.logo-text h1::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        var(--accent) 20%, 
+        var(--primary) 50%, 
+        var(--accent) 80%, 
+        transparent);
+    border-radius: 2px;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    position: relative;
+    padding-left: 15px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.subtitle::before {
+    content: '⚓';
+    position: absolute;
+    left: -5px;
+    color: var(--accent);
+    font-size: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Animações */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes rotateBorder {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes floatStar {
+    0%, 100% { 
+        transform: translateX(-50%) scale(1); 
+        opacity: 0.9; 
+    }
+    50% { 
+        transform: translateX(-50%) scale(1.2); 
+        opacity: 1; 
+    }
+}
+
+@keyframes floatBtn {
+    0%, 100% { 
+        transform: translateY(0px); 
+    }
+    50% { 
+        transform: translateY(-10px); 
+    }
+}
+
+/* Efeitos hover na logo principal */
+.logo-circle:hover {
+    transform: scale(1.08);
+    box-shadow: 
+        0 0 0 6px rgba(255, 255, 255, 0.15),
+        0 15px 40px rgba(0, 51, 153, 0.7),
+        inset 0 0 40px rgba(255, 255, 255, 0.15);
+}
+
+.logo-circle:hover .logo-image-container {
+    transform: scale(1.05);
+    box-shadow: 
+        inset 0 3px 15px rgba(0, 0, 0, 0.25),
+        0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.logo-circle:hover .logo-image-zoomed {
+    transform: scale(1.1); /* Mais zoom no hover */
+    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.5)) brightness(1.1);
+}
+
+.logo-circle:hover::after {
+    opacity: 1;
+    animation-duration: 2s;
+}
+
+.logo-circle:hover .floating-star {
+    animation-duration: 3s;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .logo-circle {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .logo-image-container {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .logo-image-zoomed {
+        width: 140%; /* Mais zoom em mobile */
+        height: 140%;
+    }
+    
+    .floating-logo-btn {
+        width: 60px;
+        height: 60px;
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .floating-btn-image {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .floating-btn-image img {
+        width: 150%; /* Ainda mais zoom no mobile */
+        height: 150%;
+    }
+    
+    .circle-decoration,
+    .circle-decoration:nth-child(2) {
+        display: none; /* Esconde em mobile para melhor performance */
+    }
+    
+    .logo-text h1 {
+        font-size: 1.9rem;
+    }
+    
+    .subtitle {
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+    }
+}
+
+/* Tooltip para o botão flutuante */
+.floating-logo-btn::after {
+    content: 'Voltar ao Topo';
+    position: absolute;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1001;
+}
+
+.floating-logo-btn:hover::after {
+    opacity: 1;
+}
+
+/* Header adicional improvements */
+.navy-header {
+    background: linear-gradient(135deg, var(--bg-darker) 0%, #001a33 100%);
+    padding: 20px;
+    border-bottom: 3px solid var(--accent);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+}
+
+.navy-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background-image: 
+        linear-gradient(90deg, transparent 50%, rgba(255, 204, 0, 0.05) 100%),
+        radial-gradient(ellipse at 30% 20%, rgba(0, 102, 204, 0.2) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 80%, rgba(255, 204, 0, 0.1) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.navy-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        var(--accent) 15%, 
+        var(--primary) 50%, 
+        var(--accent) 85%, 
+        transparent);
+    opacity: 0.8;
+}
+
+/* Nav buttons melhoria */
+.navy-btn.primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border: 2px solid var(--accent);
+    box-shadow: 0 4px 15px rgba(0, 102, 204, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.navy-btn.primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.navy-btn.primary:hover::before {
+    left: 100%;
+}
+
+.navy-btn.primary:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 102, 204, 0.6);
+}
+    
+    .nav-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .navy-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .navy-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .navy-btn.primary {
+        background: var(--primary);
+        border-color: var(--primary);
+    }
+    
+    .navy-btn.primary:hover {
+        background: var(--primary-dark);
+    }
+    
+    /* Menu de Navegação */
+    .navy-nav {
+        background: rgba(5, 18, 35, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    .nav-menu {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        gap: 1px;
+        padding: 0;
+    }
+    
+    .nav-item {
+        flex: 1;
+        text-align: center;
+    }
+    
+    .nav-link {
+        display: block;
+        padding: 15px 20px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+        border-bottom: 3px solid transparent;
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .nav-link:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        border-bottom-color: var(--accent);
+    }
+    
+    .nav-link.active {
+        color: white;
+        background: rgba(0, 102, 204, 0.2);
+        border-bottom-color: var(--primary);
+    }
+    
+    /* Conteúdo Principal */
+    .main-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px 20px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    /* Cards de Conteúdo */
+    .content-card {
+        background: linear-gradient(145deg, rgba(10, 25, 41, 0.9), rgba(5, 18, 35, 0.9));
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 
+            0 10px 30px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .content-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .card-header {
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .card-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    .card-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: white;
+        flex: 1;
+    }
+    
+    .card-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        margin-top: 5px;
+    }
+    
+    /* Grade de Bandeiras */
+    .flags-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 25px;
+        margin-top: 20px;
+    }
+    
+    .flag-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+    }
+    
+    .flag-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 102, 204, 0.2);
+        border-color: rgba(0, 102, 204, 0.3);
+    }
+    
+    .flag-preview {
+        height: 180px;
+        background: linear-gradient(135deg, #1a237e, #0d47a1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+    /* Adicione ao CSS existente */
+.flag-preview.barroso {
+    background: linear-gradient(135deg, #8b0000, #b22222);
+}
+
+.flag-preview.barroso::before {
+    background-image: 
+        linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.15) 50%, transparent 55%),
+        linear-gradient(135deg, transparent 45%, rgba(255,255,255,0.15) 50%, transparent 55%);
+    background-size: 15px 15px;
+}
+    
+    .flag-preview.national {
+        background: linear-gradient(135deg, #009c3b, #ffdf00, #002776);
+    }
+    .flag-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.flag-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.flag-card:hover .flag-image {
+    transform: scale(1.1);
+}
+
+    
+    .flag-preview.cruzeiro {
+        background: #1a237e;
+    }
+    
+    .flag-preview.insignia {
+        background: linear-gradient(135deg, #0d47a1, #1565c0);
+    }
+    
+    .flag-preview::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.1) 50%, transparent 55%),
+            linear-gradient(135deg, transparent 45%, rgba(255,255,255,0.1) 50%, transparent 55%);
+        background-size: 20px 20px;
+    }
+    
+    .flag-pattern {
+        width: 80%;
+        height: 60%;
+        position: relative;
+    }
+    
+    .flag-content {
+        padding: 20px;
+    }
+    
+    .flag-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 10px;
+    }
+    
+    .flag-description {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+    
+    .flag-specs {
+        display: flex;
+        gap: 15px;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+    }
+    
+    .flag-spec {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    /* Seção de Informações */
+    .info-section {
+        margin: 40px 0;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    
+    .info-item {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        padding: 20px;
+        border-left: 4px solid var(--primary);
+    }
+    
+    .info-label {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+    }
+    
+    .info-value {
+        font-size: 1.2rem;
+        color: white;
+        font-weight: 500;
+    }
+    
+    /* Tabelas de Dados */
+    .navy-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .navy-table th {
+        background: rgba(0, 102, 204, 0.3);
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .navy-table td {
+        padding: 15px;
+        color: var(--text-secondary);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .navy-table tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .navy-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    /* Modal de Detalhes */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .modal-overlay.active {
+        display: flex;
+        opacity: 1;
+        animation: fadeIn 0.3s;
+    }
+    
+    .modal-content {
+        background: linear-gradient(145deg, var(--bg-dark), var(--bg-darker));
+        border-radius: 20px;
+        padding: 30px;
+        max-width: 800px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+    
+    .modal-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(90deg);
+    }
+    
+    /* Footer */
+    .navy-footer {
+        background: rgba(5, 18, 35, 0.95);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 40px 20px;
+        margin-top: 60px;
+    }
+    
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+    }
+    
+    .footer-section h3 {
+        color: white;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--primary);
+    }
+    
+    .footer-links {
+        list-style: none;
+    }
+    
+    .footer-links li {
+        margin-bottom: 10px;
+    }
+    
+    .footer-links a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .footer-links a:hover {
+        color: white;
+        transform: translateX(5px);
+    }
+    
+    .footer-info {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    
+    .copyright {
+        text-align: center;
+        padding-top: 30px;
+        margin-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+    
+    /* Animações */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+        from { 
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .logo-container {
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .nav-menu {
+            flex-direction: column;
+        }
+        
+        .flags-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+        
+        .navy-btn {
+            padding: 8px 15px;
+            font-size: 0.8rem;
+        }
+        
+        .content-card {
+            padding: 20px;
+        }
+        
+        .card-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+    }
+    
+    /* Scrollbar Personalizada */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(var(--primary), var(--primary-dark));
+        border-radius: 5px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(var(--primary-dark), var(--primary));
+    }
+    
+    /* Efeitos Especiais */
+    .anchor-decoration {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        background: rgba(0, 102, 204, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        z-index: 100;
+        animation: float 3s ease-in-out infinite;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .anchor-decoration:hover {
+        background: rgba(0, 102, 204, 0.5);
+        transform: scale(1.1);
+        animation: none;
+    }
+    
+    .watermark {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        color: rgba(255, 255, 255, 0.1);
+        font-size: 0.8rem;
+        z-index: 1;
+        pointer-events: none;
+    }
+    
+    /* Novos Estilos para Sinais e Insígnias */
+    .signal-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-left: 4px solid var(--accent);
+    }
+    
+    .signal-code {
+        display: inline-block;
+        background: rgba(0, 102, 204, 0.3);
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-family: monospace;
+        margin-right: 10px;
+        font-weight: bold;
+    }
+    
+    .protocol-item {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .protocol-title {
+        color: var(--accent);
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    /* Filtros */
+    .filter-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--text-secondary);
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+    }
+    
+    .filter-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+    
+    .filter-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    
+    /* Timeline do Cerimonial */
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 15px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--primary);
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 25px;
+    }
+    
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -25px;
+        top: 5px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--accent);
+    }
+    
+    .timeline-time {
+        color: var(--accent);
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    </style>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<!-- Botão Flutuante com sua Logo -->
+<div class="floating-logo-btn" onclick="scrollToTop()">
+    <div class="floating-btn-image">
+        <img src="imagens/logo.png" alt="Voltar ao topo">
+    </div>
+</div>
+    <!-- Watermark -->
+    <div class="watermark">Marinha do Brasil • Cerimonial Naval</div>
+    
+    <!-- Header -->
+<!-- Header Aprimorado -->
+<!-- Header Aprimorado -->
+<header class="navy-header">
+    <div class="logo-container-enhanced">
+        <div class="logo-title">
+            <!-- Logo Circular -->
+            <div class="logo-circle">
+                <!-- Círculos decorativos -->
+                <div class="circle-decoration"></div>
+                <div class="circle-decoration"></div>
+                
+                <!-- Estrelas flutuantes -->
+                <div class="floating-star"></div>
+                <div class="floating-star"></div>
+                <div class="floating-star"></div>
+                <div class="floating-star"></div>
+                
+                <!-- Container da imagem com ZOOM -->
+                <div class="logo-image-container">
+                    <img src="imagens/logo.png" alt="Marujo Digital" class="logo-image-zoomed">
+                </div>
+            </div>
+            
+            <!-- Texto -->
+            <div class="logo-text">
+                <h1>Marujo Digital</h1>
+                <div class="subtitle">Cerimonial da Marinha</div>
+            </div>
+        </div>
+        
+    </div>
+</header>
+    <!-- Navegação -->
+    <nav class="navy-nav">
+        <div class="nav-menu">
+            <div class="nav-item">
+                <a href="#bandeiras" class="nav-link active" onclick="showSection('bandeiras')">
+                    <i class="fas fa-flag"></i> Bandeiras
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#insignias" class="nav-link" onclick="showSection('insignias')">
+                    <i class="fas fa-chess-queen"></i> Insígnias
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#sinais" class="nav-link" onclick="showSection('sinais')">
+                    <i class="fas fa-signal"></i> Sinais
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#protocolos" class="nav-link" onclick="showSection('protocolos')">
+                    <i class="fas fa-book-open"></i> Protocolos
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Conteúdo Principal -->
+    <main class="main-content" id="mainContent">
+        
+        <!-- Seção Bandeiras (Ativa por padrão) -->
+        <section id="bandeiras" class="content-section active">
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                </div>
+                
+                
+                <!-- Filtros para tipos de bandeiras -->
+                <div class="filter-container">
+                    <button class="filter-btn active" onclick="filterFlags('all')">Todas</button>
+                    <button class="filter-btn" onclick="filterFlags('distintivos')">Distintivos</button>
+                    <button class="filter-btn" onclick="filterFlags('insignias')">Insígnias</button>
+                    <button class="filter-btn" onclick="filterFlags('sinais')">Sinais</button>
+                </div>
+                
+                <div class="flags-grid" id="flagsGrid">
+                    <!-- Bandeiras serão carregadas via JavaScript -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Outras seções (inicialmente ocultas) -->
+        <section id="insignias" class="content-section" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-chess-queen"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Bandeiras-Insígnias</h2>
+                        <div class="card-subtitle">Autoridades e Comandos</div>
+                    </div>
+                </div>
+                <div id="insigniasContent">
+                    <!-- Conteúdo carregado dinamicamente -->
+                </div>
+            </div>
+        </section>
+        
+        <section id="sinais" class="content-section" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-signal"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Códigos de Sinais</h2>
+                        <div class="card-subtitle">CIS e ATP</div>
+                    </div>
+                </div>
+                <div id="signalsContent">
+                    <!-- Conteúdo carregado dinamicamente -->
+                </div>
+            </div>
+        </section>
+        
+        <section id="cerimonial" class="content-section" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-hat-cowboy"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Cerimonial à Bandeira</h2>
+                        <div class="card-subtitle">Procedimentos e Honras</div>
+                    </div>
+                </div>
+                <div id="ceremonialContent">
+                    <!-- Conteúdo carregado dinamicamente -->
+                </div>
+            </div>
+        </section>
+        
+        <section id="protocolos" class="content-section" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Protocolos e Honras</h2>
+                        <div class="card-subtitle">Normas de Cortesia e Respeito</div>
+                    </div>
+                </div>
+                <div id="protocolsContent">
+                    <!-- Conteúdo carregado dinamicamente -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Informações Gerais do PDF -->
+        <div class="content-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div>
+                    <h2 class="card-title">Cerimonial da Marinha</h2>
+                    <div class="card-subtitle">EMN-006 • 2ª Revisão • Aprovado em 25/10/2022</div>
+                </div>
+            </div>
+          
+            
+            <!-- Tabela de Salvas -->
+            <div class="info-section">
+                <h3 class="section-title">Salvas de Honra</h3>
+                
+                <table class="navy-table">
+                    <thead>
+                        <tr>
+                            <th>Autoridade</th>
+                            <th>Tiros</th>
+                            <th>Observação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salvasTable">
+                        <!-- Preenchido por JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Datas Festivas -->
+            <div class="info-section">
+                <h3 class="section-title">Datas Festivas</h3>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Grande Gala</div>
+                        <div class="info-value">2 Dias</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            7/Set - Independência<br>15/Nov - República
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Pequena Gala</div>
+                        <div class="info-value">8 Dias</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            Tiradentes, Trabalho, Marinheiro, etc.
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Data Magna</div>
+                        <div class="info-value">11 de Junho</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            Batalha Naval de Riachuelo
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <!-- Procedimentos Importantes -->
+            <div class="info-section">
+                <h3 class="section-title">Procedimentos Importantes</h3>
+                
+                <div class="protocol-item">
+                    <div class="protocol-title">Hasteamento/Arriamento</div>
+                    <div style="color: var(--text-secondary);">
+                        <strong>Hasteamento:</strong> 8h com cerimonial específico<br>
+                        <strong>Arriamento:</strong> Pôr do sol (com cerimonial) ou antes do expediente (sem cerimonial)
+                    </div>
+                </div>
+                
+                <div class="protocol-item">
+                    <div class="protocol-title">Bandeira a Meia Adriça</div>
+                    <div style="color: var(--text-secondary);">
+                        Usada em dias de luto, funeral e 2 de novembro (Finados)<br>
+                        Içada completamente e depois baixada à metade do mastro
+                    </div>
+                </div>
+                
+                <div class="protocol-item">
+                    <div class="protocol-title">Dia da Bandeira (19/11)</div>
+                    <div style="color: var(--text-secondary);">
+                        Cerimonial especial às 12h com cremação de bandeiras<br>
+                        Salva de 21 tiros e execução do Hino à Bandeira
+                    </div>
+                </div>
+            </div>
+            
+                        <div class="info-section">
+                <h3 class="section-title">Capítulos da Apostila</h3>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Capítulo 1</div>
+                        <div class="info-value">Bandeira Nacional</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            História, elementos e procedimentos
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Capítulo 2</div>
+                        <div class="info-value">Bandeiras-Insígnias</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            Distintivos e regras de uso
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Capítulo 3</div>
+                        <div class="info-value">Cerimonial à Bandeira</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            Procedimentos e regras gerais
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Capítulo 4</div>
+                        <div class="info-value">Cerimonial Naval</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            Normas de cortesia e respeito
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Capítulo 5</div>
+                        <div class="info-value">Códigos de Sinais</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            CIS e Código Tático Naval
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="navy-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Marujo Digital</h3>
+                <div class="footer-info">
+                    Plataforma informativa sobre o Cerimonial da Marinha do Brasil.
+                    Baseado na publicação EMN-006 (2ª Revisão - 2022).
+                    <br><br>
+                    <strong>Finalidade:</strong> Didática<br>
+                    <strong>Classificação:</strong> Ostensivo<br>
+                    <strong>Comandante:</strong> CF Rogério Alves Ribeiro
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Recursos</h3>
+                <ul class="footer-links">
+                    <li><a href="#" onclick="showSection('bandeiras')"><i class="fas fa-flag"></i> Bandeiras</a></li>
+                    <li><a href="#" onclick="showSection('insignias')"><i class="fas fa-chess-queen"></i> Insígnias</a></li>
+                    <li><a href="#" onclick="showSection('sinais')"><i class="fas fa-signal"></i> Códigos de Sinais</a></li>
+                    <li><a href="#" onclick="showSection('cerimonial')"><i class="fas fa-hat-cowboy"></i> Procedimentos</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Referências</h3>
+                <div class="footer-info" style="font-size: 0.8rem;">
+                    <p><i class="fas fa-book"></i> Decreto nº 6.806/2009</p>
+                    <p><i class="fas fa-book"></i> Lei nº 5.700/1971</p>
+                    <p><i class="fas fa-book"></i> Lei nº 8.421/1992</p>
+                    <p><i class="fas fa-book"></i> EMA-411 (Manual)</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            &copy; 2024 Marujo Digital • Desenvolvido para fins educacionais • Marinha do Brasil • EMN-006
+        </div>
+    </footer>
+    
+    <!-- Modal de Detalhes -->
+    <div class="modal-overlay" id="flagModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-flag"></i>
+                </div>
+                <div>
+                    <h2 class="card-title" id="modalTitle">Bandeira Nacional</h2>
+                    <div class="card-subtitle" id="modalSubtitle">Detalhes Técnicos</div>
+                </div>
+            </div>
+            
+            <div id="modalContent">
+                <!-- Conteúdo será preenchido por JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    
+    <script> 
+    
+ 
+    
+    // Dados completos baseados no PDF EMN-006
+const cerimonialData = {
+    // Dados da Bandeira Nacional
+    bandeiraNacional: {
+        id: 'national',
+        title: "Bandeira Nacional",
+        subtitle: "Símbolo Máximo da Pátria",
+        type: "nacional",
+        description: `
+            <p>Instituída pelo <strong>Decreto nº 4 de 19 de novembro de 1889</strong>, quatro dias após a Proclamação da República.</p>
+            
+            <div class="info-grid" style="margin: 20px 0;">
+                <div class="info-item">
+                    <div class="info-label">Criadores</div>
+                    <div class="info-value">Teixeira Mendes, Décio Vilares</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Proporção</div>
+                    <div class="info-value">20:14 (Módulo)</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Estrelas</div>
+                    <div class="info-value">27 (Estados + DF)</div>
+                </div>
+            </div>
+            
+            <h3 style="color: white; margin: 20px 0 10px 0;">Significados das Cores:</h3>
+            <ul style="color: var(--text-secondary); padding-left: 20px;">
+                <li><strong style="color: #009c3b">Verde:</strong> Pujança das matas brasileiras</li>
+                <li><strong style="color: #ffdf00">Amarelo:</strong> Riquezas minerais do solo</li>
+                <li><strong style="color: #002776">Azul:</strong> O céu do Brasil</li>
+                <li><strong style="color: #ffffff">Branco:</strong> A paz</li>
+                <li><strong>Estrelas:</strong> Estados da Federação + Distrito Federal</li>
+                <li><strong>"Ordem e Progresso":</strong> Influência positivista de Auguste Comte</li>
+            </ul>
+            
+            <h3 style="color: white; margin: 20px 0 10px 0;">Dimensões Oficiais (Lei 5.700/71):</h3>
+            <table class="navy-table">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Largura</th>
+                        <th>Altura</th>
+                        <th>Uso Principal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Tipo 3</td><td>194 cm</td><td>135 cm</td><td>Repartições públicas</td></tr>
+                    <tr><td>Tipo 4</td><td>256 cm</td><td>180 cm</td><td>Quartéis e escolas</td></tr>
+                    <tr><td>Tipo 5</td><td>320 cm</td><td>255 cm</td><td>Cerimônias oficiais</td></tr>
+                    <tr><td>Tipo 6</td><td>384 cm</td><td>270 cm</td><td>Grandes eventos</td></tr>
+                    <tr><td>Tipo 7</td><td>448 cm</td><td>315 cm</td><td>Uso especial</td></tr>
+                </tbody>
+            </table>
+            
+            <h3 style="color: white; margin: 20px 0 10px 0;">Constelações Representadas:</h3>
+            <p style="color: var(--text-secondary);">
+                As estrelas correspondem ao aspecto do céu do Rio de Janeiro às 8h30 de 15/11/1889:<br>
+                - Cruzeiro do Sul<br>
+                - Escorpião<br>
+                - Triângulo Austral<br>
+                - Oitante<br>
+                - Virgem<br>
+                - Hidra<br>
+                - Cão Maior<br>
+                - Cão Menor<br>
+                - Carina<br>
+                - entre outras
+            </p>
+        `,
+        imagePath: "imagens/sinais/7.png"
+    },
+    
+    // Bandeiras Distintivas
+    bandeirasDistintivas: [
+        {
+            id: 'cruzeiro',
+            title: "Bandeira do Cruzeiro",
+            subtitle: "Bandeira Distintiva",
+            type: "distintivo",
+            description: `
+                <p><strong>Cor:</strong> Azul-marinho<br>
+                <strong>Formato:</strong> Retangular<br>
+                <strong>Medida:</strong> Metade do número de panos da Bandeira Nacional</p>
+                
+                <p>Dividida em quatro quadriláteros iguais por uma série de 21 estrelas brancas:<br>
+                - 13 estrelas no sentido do comprimento<br>
+                - 9 estrelas no sentido da largura<br>
+                - Uma estrela posicionada no centro</p>
+                
+                <p><strong>Uso:</strong> Hasteada e arriada diariamente no "pau do jeque", simultaneamente com a 
+                Bandeira Nacional, em todos os navios incorporados à MB, quando estiverem no dique, fundeados, 
+                amarrados ou atracados.</p>
+                
+                <div class="info-grid" style="margin: 20px 0;">
+                    <div class="info-item">
+                        <div class="info-label">Estrelas</div>
+                        <div class="info-value">21</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Cor Base</div>
+                        <div class="info-value">Azul-marinho</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Uso Diário</div>
+                        <div class="info-value">Simultâneo Bandeira Nacional</div>
+                    </div>
+                </div>
+            `,
+            imagePath: "imagens/sinais/19.png"
+        }
+        // ... (mantenha os outros objetos de dados existentes)
+    ],
+    
+    // Bandeiras-Insígnias (exemplos)
+            bandeirasInsignias: [
+                  {
+        id: 'pavilhao-patrono',
+        title: "Pavilhão do Patrono da Marinha",
+        subtitle: "Patrono da Marinha",
+        type: "insignia",
+        description: `
+            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
+            
+            <p><strong>Símbolos:</strong><br>
+            - Quadrilátero superior esquerdo: brasão d'armas do Marquês de Tamandaré<br>
+            - Quadrilátero inferior esquerdo: cinco estrelas brancas dispostas como vértices de pentágono regular</p>
+            
+            <p><strong>Precedência:</strong> Única bandeira que pode permanecer içada junto com o Estandarte Presidencial.</p>
+            
+            <div class="info-grid" style="margin: 20px 0;">
+                <div class="info-item">
+                    <div class="info-label">Salva</div>
+                    <div class="info-value">19 tiros</div>
+                </div>
+            </div>
+        `,
+        imagePath: "imagens/sinais/30.png" // Imagem não especificada no PDF
+    },
+    {
+        id: 'estandarte-presidencial',
+        title: "Estandarte Presidencial",
+        subtitle: "Presidente da República",
+        type: "insignia",
+        description: `
+            <p><strong>Formato:</strong> Retangular<br>
+            <strong>Cor:</strong> Verde da Bandeira Nacional<br>
+            <strong>Símbolo:</strong> Armas Nacionais no centro</p>
+            
+            <p><strong>Precedência:</strong> Estando içado o Estandarte Presidencial, nenhuma bandeira 
+            representativa de qualquer outra autoridade pode permanecer içada, com exceção do pavilhão 
+            do Patrono da Marinha.</p>
+            
+            <p><strong>Salva:</strong> 21 tiros (máxima honra)</p>
+            
+            <div class="info-grid" style="margin: 20px 0;">
+                <div class="info-item">
+                    <div class="info-label">Salva</div>
+                    <div class="info-value">21 tiros</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Precedência</div>
+                    <div class="info-value">Máxima</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Exceção</div>
+                    <div class="info-value">Patrono Marinha</div>
+                </div>
+            </div>
+        `,
+        imagePath: "imagens/sinais/26.png"
+    },
+    {
+        id: 'pavilhao-comandante',
+        title: "Pavilhão do Comandante da Marinha",
+        subtitle: "Comandante da Marinha",
+        type: "insignia",
+        description: `
+            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro, porém farpado.</p>
+            
+            <p><strong>Símbolos:</strong><br>
+            - Quadrilátero superior esquerdo: escudo redondo do Cruzeiro do Sul<br>
+            - Quadrilátero inferior esquerdo: âncora singela branca</p>
+            
+            <p><strong>Uso:</strong> Quando o Comandante da Marinha estiver a bordo de OM da MB, seu pavilhão:<br>
+            1. Permanece hasteado, sendo somente substituído pelo Estandarte Presidencial<br>
+            2. Permanece içado no mastro do pátio do Comando da Marinha, do Distrito Naval ou do COMAP 
+            enquanto o Comandante estiver presente</p>
+            
+            <div class="info-grid" style="margin: 20px 0;">
+                <div class="info-item">
+                    <div class="info-label">Salva</div>
+                    <div class="info-value">19 tiros</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Substituição</div>
+                    <div class="info-value">Apenas por Estandarte Presidencial</div>
+                </div>
+            </div>
+        `,
+        imagePath: "imagens/sinais/31.png"
+    },
+    {
+        id: 'pavilhao-almirantado',
+        title: "Pavilhão do Almirantado",
+        subtitle: "Almirantado",
+        type: "insignia",
+        description: `
+            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
+            
+            <p><strong>Símbolos:</strong><br>
+            - Quadrilátero superior esquerdo: estrela das Armas Nacionais<br>
+            - Quadrilátero inferior esquerdo: duas âncoras cruzadas</p>
+            
+            <p><strong>Uso:</strong> Quando o Almirantado estiver a bordo de OM, seu pavilhão permanecerá hasteado 
+            simultaneamente com o pavilhão da autoridade presente de maior antiguidade da cadeia de comando.</p>
+        `,
+        imagePath: "imagens/sinais/32.png"
+    },
+    {
+        id: 'pavilhao-cema',
+        title: "Pavilhão do Chefe do Estado-Maior da Armada",
+        subtitle: "Chefe do Estado-Maior da Armada (CEMA)",
+        type: "insignia",
+        description: `
+            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
+            
+            <p><strong>Símbolo:</strong> Quadrilátero inferior esquerdo: duas âncoras cruzadas</p>
+            
+            <p><strong>Uso:</strong> Quando o CEMA estiver a bordo de OM que não lhe seja subordinada, seu pavilhão:<br>
+            1. Permanece içado simultaneamente com o pavilhão da autoridade presente de maior antiguidade na cadeia de comando<br>
+            2. Somente é substituído pelo pavilhão do Comandante da Marinha ou do Almirantado</p>
+        `,
+        imagePath: "imagens/sinais/33.png"
+    },
+    {
+        id: 'pavilhao-con',
+        title: "Pavilhão do Comandante de Operações Navais",
+        subtitle: "Comandante de Operações Navais (CON)",
+        type: "insignia",
+        description: `
+            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro, porém farpado.</p>
+            
+            <p><strong>Símbolo:</strong> Quadrilátero inferior esquerdo: uma âncora</p>
+        `,
+        imagePath: "imagens/sinais/34.png"
+    },
+    {
+        id: 'pavilhao-comandante-fn',
+        title: "Pavilhão do Comandante-Geral do Corpo de Fuzileiros Navais",
+        subtitle: "Comandante-Geral do Corpo de Fuzileiros Navais",
+        type: "insignia",
+        description: `
+            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro, porém farpado.</p>
+            
+            <p><strong>Símbolo:</strong> Quadrilátero inferior esquerdo: dois fuzis superpostos a uma âncora</p>
+        `,
+        imagePath: "imagens/sinais/35.png"
+    },
+    {
+        id: 'pavilhao-almirante',
+        title: "Pavilhão de Almirante",
+        subtitle: "Almirante",
+        type: "insignia",
+        description: `
+            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
+            
+            <p><strong>Símbolo:</strong> Quadrilátero superior esquerdo: cinco estrelas brancas dispostas como vértices de pentágono regular</p>
+            
+            <div class="info-grid" style="margin: 20px 0;">
+                <div class="info-item">
+                    <div class="info-label">Salva</div>
+                    <div class="info-value">19 tiros</div>
+                </div>
+            </div>
+        `,
+        imagePath: "imagens/sinais/36.png"
+    },
+    {
+        id: 'pavilhao-almirante-esquadra',
+        title: "Pavilhão de Almirante de Esquadra",
+        subtitle: "Almirante de Esquadra",
+        type: "insignia",
+        description: `
+            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
+            
+            <p><strong>Símbolo:</strong> Quadrilátero superior esquerdo: quatro estrelas brancas dispostas como vértices de losango retangular</p>
+            
+            <div class="info-grid" style="margin: 20px 0;">
+                <div class="info-item">
+                    <div class="info-label">Salva</div>
+                    <div class="info-value">17 tiros</div>
+                </div>
+            </div>
+        `,
+        imagePath: "imagens/sinais/37.png"
+    },
+    {
+        id: 'pavilhao-vice-almirante',
+        title: "Pavilhão de Vice-Almirante",
+        subtitle: "Vice-Almirante",
+        type: "insignia",
+        description: `
+            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
+            
+            <p><strong>Símbolo:</strong> Quadrilátero superior esquerdo: três estrelas brancas dispostas como pontas de triângulo equilátero</p>
+            
+            <div class="info-grid" style="margin: 20px 0;">
+                <div class="info-item">
+                    <div class="info-label">Salva</div>
+                    <div class="info-value">15 tiros</div>
+                </div>
+            </div>
+        `,
+        imagePath: "imagens/sinais/38.png"
+    },
+    {
+        id: 'pavilhao-contra-almirante',
+        title: "Pavilhão de Contra-Almirante",
+        subtitle: "Contra-Almirante",
+        type: "insignia",
+        description: `
+            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
+            
+            <p><strong>Símbolo:</strong> Duas estrelas brancas dispostas horizontal e simetricamente em relação ao centro do quadrilátero esquerdo</p>
+            
+            <div class="info-grid" style="margin: 20px 0;">
+                <div class="info-item">
+                    <div class="info-label">Salva</div>
+                    <div class="info-value">13 tiros</div>
+                </div>
+            </div>
+        `,
+        imagePath: "imagens/sinais/39.png"
+    },
+    {
+        id: 'pavilhao-comandante-chefe-esquadra',
+        title: "Pavilhão de Comandante em Chefe da Esquadra",
+        subtitle: "Comandante em Chefe da Esquadra",
+        type: "insignia",
+        description: `
+            <p><strong>Aspecto:</strong> Igual ao do pavilhão do posto do oficial que exerce essa função.</p>
+            
+            <p><strong>Símbolos adicionais:</strong><br>
+            - Quadrilátero inferior esquerdo: âncora singela<br>
+            - Quadrilátero inferior direito: estrela branca</p>
+        `,
+        imagePath: "imagens/sinais/40.png"
+    },
+    {
+        id: 'pavilhao-almirante-comandante-forca',
+        title: "Pavilhão de Almirante Comandante de Força",
+        subtitle: "Almirante Comandante de Força",
+        type: "insignia",
+        description: `
+            <p><strong>Aspecto:</strong> Igual ao do pavilhão do posto do oficial que exerce esse Comando.</p>
+            
+            <p><strong>Símbolo:</strong> Quadrilátero inferior esquerdo: âncora singela<br>
+            <strong>Observação:</strong> Substituída por dois fuzis cruzados superpostos a uma âncora quando o comando for de oficial fuzileiro naval.</p>
+        `,
+        imagePath: "imagens/sinais/41.png"
+    },
+    {
+        id: 'pavilhao-cmg-comandante-forca',
+        title: "Pavilhão de CMG Comandante de Força",
+        subtitle: "Capitão de Mar e Guerra (CMG) Comandante de Força",
+        type: "insignia",
+        description: `
+            <p><strong>Formato:</strong> Triangular<br>
+            <strong>Cor:</strong> Azul-marinho</p>
+            
+            <p><strong>Características:</strong> Dividido em dois quadriláteros e dois triângulos iguais por vinte e uma estrelas brancas dispostas em cruz.</p>
+            
+            <p><strong>Símbolo:</strong> Centro do quadrilátero inferior esquerdo: âncora singela<br>
+            <strong>Observação:</strong> Substituída por dois fuzis cruzados superpostos a uma âncora quando o comando for de oficial fuzileiro naval.</p>
+        `,
+        imagePath: "imagens/sinais/43.png"
+    },
+    {
+        id: 'pavilhao-cf-cc-comandante-forca',
+        title: "Pavilhão de CF ou CC Comandante de Força",
+        subtitle: "Capitão de Fragata (CF) ou Capitão de Corveta (CC) Comandante de Força",
+        type: "insignia",
+        description: `
+            <p><strong>Formato:</strong> Trapezoidal<br>
+            <strong>Características:</strong> Similar ao de CMG Comandante de Força, exceto pelo formato.</p>
+            
+            <p><strong>Uso:</strong> Mantido hasteado permanentemente no navio capitânia, salvo se a autoridade estiver em outro navio sob seu comando.</p>
+        `,
+        imagePath: "imagens/sinais/45.png"
+    },
+    {
+        id: 'pavilhao-comapem',
+        title: "Pavilhão de COMAPEM",
+        subtitle: "Comandante mais antigo presente embarcado",
+        type: "insignia",
+        description: `
+            <p><strong>Para Almirante:</strong> Aspecto igual ao do pavilhão do oficial, com inclusão de uma estrela branca no quadrilátero superior direito.</p>
+            
+            <p><strong>Para Oficial Superior:</strong> Similar ao pavilhão de CMG Comandante de Força, exceto por não possuir a âncora e por ter uma estrela branca ao meio do triângulo superior direito.</p>
+            
+            <p><strong>Regra:</strong> Quando forças ou navios estiverem próximos entre si, dentro do alcance visual de bandeiras, somente o navio onde se encontrar o oficial mais antigo hasteia o pavilhão do COMAPEM.</p>
+        `,
+        imagePath: "imagens/sinais/47.png"
+    },
+    {
+        id: 'pavilhao-capitao-portos',
+        title: "Pavilhão de Capitão dos Portos",
+        subtitle: "Capitão dos Portos",
+        type: "insignia",
+        description: `
+            <p><strong>Características:</strong> Similar ao pavilhão de CMG Comandante de Força, exceto por não possuir a âncora.</p>
+        `,
+        imagePath: "imagens/sinais/48.png"
+    },
+    {
+        id: 'bandeira-insignia-vice-presidente',
+        title: "Bandeira-insígnia de Vice-Presidente da República",
+        subtitle: "Vice-Presidente da República",
+        type: "insignia",
+        description: `
+            <p><strong>Formato:</strong> Retangular<br>
+            <strong>Cor:</strong> Amarela da Bandeira Nacional</p>
+            
+            <p><strong>Símbolos:</strong><br>
+            - 21 estrelas azuis dispostas como na Bandeira do Cruzeiro<br>
+            - Armas Nacionais ao meio do quadrilátero superior esquerdo</p>
+            
+            <div class="info-grid" style="margin: 20px 0;">
+                <div class="info-item">
+                    <div class="info-label">Salva</div>
+                    <div class="info-value">19 tiros</div>
+                </div>
+            </div>
+        `,
+        imagePath: "imagens/sinais/49.png"
+    },
+    {
+        id: 'bandeira-insignia-ministro',
+        title: "Bandeira-insígnia de Ministro de Estado",
+        subtitle: "Ministro de Estado",
+        type: "insignia",
+        description: `
+            <p><strong>Formato:</strong> Retangular, farpada<br>
+            <strong>Cor:</strong> Amarela da Bandeira Nacional</p>
+            
+            <p><strong>Símbolos:</strong><br>
+            - 21 estrelas azuis dispostas em cruz como na Bandeira do Cruzeiro (5 em cada ramo e uma ao centro)<br>
+            - Centro do quadrilátero superior esquerdo: estrela das Armas Nacionais</p>
+            
+            <p><strong>Uso:</strong> Quando o Ministro da Defesa estiver a bordo de OM da MB, a bandeira-insígnia permanece hasteada simultaneamente com o pavilhão da autoridade presente de maior antiguidade da cadeia de comando.</p>
+            
+            <div class="info-grid" style="margin: 20px 0;">
+                <div class="info-item">
+                    <div class="info-label">Salva</div>
+                    <div class="info-value">19 tiros</div>
+                </div>
+            </div>
+        `,
+        imagePath: "imagens/sinais/50.png"
+    },
+    {
+        id: 'bandeira-insignia-embaixador',
+        title: "Bandeira-Insígnia de Embaixador do Brasil",
+        subtitle: "Embaixador do Brasil",
+        type: "insignia",
+        description: `
+            <p><strong>Formato:</strong> Retangular<br>
+            <strong>Cor:</strong> Amarela da Bandeira Nacional<br>
+            <strong>Uso:</strong> No país em que é acreditado</p>
+            
+            <p><strong>Símbolo:</strong> Diagonais ocupadas por estrelas azuis, sendo uma ao centro e cinco igualmente espaçadas entre si, em cada quadrilátero</p>
+            
+            <div class="info-grid" style="margin: 20px 0;">
+                <div class="info-item">
+                    <div class="info-label">Salva</div>
+                    <div class="info-value">19 tiros</div>
+                </div>
+            </div>
+        `,
+        imagePath: "imagens/sinais/51.png"
+    },
+    {
+        id: 'bandeira-insignia-encarregado-negocios',
+        title: "Bandeira-Insígnia de Encarregado de Negócios do Brasil",
+        subtitle: "Encarregado de Negócios do Brasil",
+        type: "insignia",
+        description: `
+            <p><strong>Formato:</strong> Retangular<br>
+            <strong>Cor:</strong> Amarela da Bandeira Nacional<br>
+            <strong>Uso:</strong> No país em que é acreditado</p>
+            
+            <p><strong>Símbolo:</strong> Quatro estrelas azuis, cada uma distante do centro da bandeira em um quarto da sua largura, dispostas simetricamente segundo os eixos vertical e horizontal</p>
+            
+            <div class="info-grid" style="margin: 20px 0;">
+                <div class="info-item">
+                    <div class="info-label">Salva</div>
+                    <div class="info-value">13 tiros</div>
+                </div>
+            </div>
+        `,
+        imagePath: "imagens/sinais/52.png"
+    },
+    {
+        id: 'bandeira-insignia-consul-geral',
+        title: "Bandeira-Insígnia de Cônsul Geral do Brasil",
+        subtitle: "Cônsul Geral do Brasil",
+        type: "insignia",
+        description: `
+            <p><strong>Formato:</strong> Retangular<br>
+            <strong>Cor:</strong> Amarela da Bandeira Nacional<br>
+            <strong>Uso:</strong> Na jurisdição do respectivo distrito consular</p>
+            
+            <p><strong>Símbolo:</strong> Vertical que passa pelo centro da bandeira ocupada por três estrelas azuis, sendo uma no centro e as demais dispostas simetricamente a uma distância de um quarto da largura da bandeira</p>
+            
+            <div class="info-grid" style="margin: 20px 0;">
+                <div class="info-item">
+                    <div class="info-label">Salva</div>
+                    <div class="info-value">11 tiros</div>
+                </div>
+            </div>
+        `,
+        imagePath: "imagens/sinais/53.png"
+    },
+    {
+        id: 'flamula-comando',
+        title: "Flâmula de Comando",
+        subtitle: "Oficiais de Marinha no exercício do comando",
+        type: "insignia",
+        description: `
+            <p><strong>Formato:</strong> Triangular, alongada<br>
+            <strong>Cor:</strong> Azul-marinho</p>
+            
+            <p><strong>Características:</strong> Base coincide com a tralha; altura ocupada por vinte e uma estrelas brancas igualmente espaçadas entre si.</p>
+            
+            <p><strong>Observação:</strong> É a insígnia privativa dos oficiais de marinha quando no exercício do cargo de comando. É vedado seu uso em navio não incorporado à Armada.</p>
+        `,
+        imagePath: "imagens/sinais/54.png"
+    },
+    {
+        id: 'flamula-oficial-superior',
+        title: "Flâmula de Oficial Superior",
+        subtitle: "Oficial Superior",
+        type: "insignia",
+        description: `
+            <p><strong>Características:</strong> Similar à Flâmula de Comando, exceto por ser branca e ter uma única estrela azul ao meio da altura do triângulo.</p>
+            
+            <p><strong>Uso:</strong> É hasteada nas embarcações miúdas que conduzam oficial superior uniformizado, sendo arriada tão logo o oficial desembarque.</p>
+        `,
+        imagePath: "imagens/sinais/55.png"
+    }
+],
+        
+        // Sinais de Barroso
+        // No objeto cerimonialData, dentro de sinaisBarroso, adicione os caminhos das imagens:
+sinaisBarroso: [
+    {
+        id: 'barroso-1',
+        title: "Sinal de Barroso",
+        subtitle: '"O Brasil espera que cada um cumpra o seu dever"',
+        type: "sinal",
+        description: `
+            <p>Representado por <strong>três bandeiras retangulares içadas numa só adriça</strong>:</p>
+            
+            <div style="display: flex; align-items: center; gap: 20px; margin: 15px 0;">
+                <div style="width: 100px; height: 60px; display: flex; flex-direction: column;">
+                    <div style="flex: 1; background: #d32f2f;"></div>
+                    <div style="flex: 1; background: linear-gradient(90deg, #d32f2f 50%, white 50%);"></div>
+                    <div style="flex: 1; background: white; position: relative;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                        width: 60%; height: 60%; background: #002776;"></div>
+                    </div>
+                </div>
+                <div>
+                    <p style="margin: 0; color: var(--text-secondary);">
+                        <strong>De cima para baixo:</strong><br>
+                        1. Vermelha<br>
+                        2. Vermelha e branca (faixas verticais)<br>
+                        3. Branca com retângulo azul no centro
+                    </p>
+                </div>
+            </div>
+            
+            <p><strong>Histórico:</strong> Sinal histórico da Marinha do Brasil, usado como incentivo e 
+            lembrete do dever patriótico.</p>
+        `,
+        imagePath: "imagens/sinais/56.png" // NOVA IMAGEM ADICIONADA
+    },
+    {
+        id: 'barroso-2',
+        title: "Sinal de Barroso",
+        subtitle: '"Sustentar o fogo que a vitória é nossa"',
+        type: "sinal",
+        description: `
+            <p>Representado por <strong>duas bandeiras retangulares içadas numa só adriça</strong>:</p>
+            
+            <div style="display: flex; align-items: center; gap: 20px; margin: 15px 0;">
+                <div style="width: 100px; height: 60px; display: flex; flex-direction: column;">
+                    <div style="flex: 1; background: #d32f2f; position: relative;">
+                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: 
+                            linear-gradient(to right, white 50%, transparent 50%),
+                            linear-gradient(to bottom, white 50%, transparent 50%);
+                            background-size: 50% 50%;">
+                        </div>
+                    </div>
+                    <div style="flex: 1; background: 
+                        repeating-linear-gradient(90deg, 
+                            #d32f2f, #d32f2f 6.25%, 
+                            white 6.25%, white 12.5%
+                        );">
+                    </div>
+                </div>
+                <div>
+                    <p style="margin: 0; color: var(--text-secondary);">
+                        <strong>De cima para baixo:</strong><br>
+                        1. Vermelha com cruz branca dividindo em 4 retângulos<br>
+                        2. Vermelha e branca em 15 retângulos alternados
+                    </p>
+                </div>
+            </div>
+            
+            <p><strong>Histórico:</strong> Sinal de determinação e ânimo em combate, famoso por seu uso 
+            em momentos decisivos da história naval brasileira.</p>
+        `,
+        imagePath: "imagens/sinais/56.png" // NOVA IMAGEM ADICIONADA
+    }
+],
+    
+    // Dados de Salvas
+            salvas: [
+            { autoridade: "Presidente da República", tiros: 21, obs: "Máxima honra" },
+            { autoridade: "Vice-Presidente da República", tiros: 19, obs: "Vice-chefe de Estado" },
+            { autoridade: "Comandante da Marinha", tiros: 19, obs: "Patrono: Tamandaré" },
+            { autoridade: "Almirante", tiros: 19, obs: "Posto máximo" },
+            { autoridade: "Almirante-de-Esquadra", tiros: 17, obs: "Posto superior" },
+            { autoridade: "Vice-Almirante", tiros: 15, obs: "Posto intermediário" },
+            { autoridade: "Contra-Almirante", tiros: 13, obs: "Posto inicial" },
+            { autoridade: "Ministro de Estado", tiros: 19, obs: "Ministérios" },
+            { autoridade: "Governador", tiros: 19, obs: "Unidades da Federação" },
+            { autoridade: "Embaixador do Brasil", tiros: 19, obs: "Representação externa" },
+            { autoridade: "Cônsul Geral", tiros: 11, obs: "Representação consular" }
+        ],
+    
+    // Códigos de Sinais (exemplos) - ATUALIZADO
+    sinaisCIS: [
+        { codigo: "ALFA", significado: "Tenho mergulhador n'água; mantenha-se bem afastado e a baixa velocidade", tipo: "cis", categoria: "segurança", imagem: "imagens/sinais/64.png" },
+        { codigo: "BRAVO", significado: "Estou carregando ou descarregando ou transportando carga perigosa", tipo: "cis", categoria: "perigo", imagem: "imagens/sinais/65.png" },
+        { codigo: "CHARLIE", significado: "Afirmativo (em resposta a um sinal)", tipo: "cis", categoria: "comunicação", imagem: "imagens/sinais/66.png" },
+        { codigo: "DELTA", significado: "Mantenha-se afastado; estou manobrando com dificuldade", tipo: "cis", categoria: "manobra", imagem: "imagens/sinais/67.png" },
+        { codigo: "ECHO", significado: "Estou guinando para boreste", tipo: "cis", categoria: "manobra", imagem: "imagens/sinais/68.png" },
+        { codigo: "FOXTROT", significado: "Estou á matroca, comunique-se comigo", tipo: "cis", categoria: "comunicação", imagem: "imagens/sinais/69.png" },
+        { codigo: "GOLF", significado: "Solicito prático", tipo: "cis", categoria: "navegação", imagem: "imagens/sinais/70.png" },
+        { codigo: "HOTEL", significado: "Tenho prático a bordo", tipo: "cis", categoria: "navegação", imagem: "imagens/sinais/71.png" },
+        { codigo: "INDIA", significado: "Estou guinando para bombordo", tipo: "cis", categoria: "manobra", imagem: "imagens/sinais/72.png" },
+        { codigo: "JULIET", significado: "Mantenha-se bem afastado de mim. Tenho incêndio a bordo", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/73.png" },
+        { codigo: "KILO", significado: "Desejo comunicar-me com você", tipo: "cis", categoria: "comunicação", imagem: "imagens/sinais/74.png" },
+        { codigo: "LIMA", significado: "Pare imediatamente seu navio", tipo: "cis", categoria: "ordem", imagem: "imagens/sinais/75.png" },
+        { codigo: "MIKE", significado: "Meus movimentos não devem ser levados em consideração", tipo: "cis", categoria: "manobra", imagem: "imagens/sinais/76.png" },
+        { codigo: "NOVEMBER", significado: "Negativo, não, não concordo", tipo: "cis", categoria: "comunicação", imagem: "imagens/sinais/77.png" },
+        { codigo: "OSCAR", significado: "Homem ao mar", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/78.png" },
+        { codigo: "PAPA", significado: "Todas as pessoas devem regressar imediatamente", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/86.png" },
+        { codigo: "QUEBEC", significado: "Estado sanitário do meu navio é bom, solicito livre prática", tipo: "cis", categoria: "saúde", imagem: "imagens/sinais/79.png" },
+        { codigo: "ROMEO", significado: "Recibo (sem significado específico)", tipo: "cis", categoria: "comunicação", imagem: "imagens/sinais/80.png" },
+        { codigo: "SIERRA", significado: "Minhas máquinas estão dando atrás", tipo: "cis", categoria: "mecânica", imagem: "imagens/sinais/81.png" },
+        { codigo: "TANGO", significado: "Mantenha-se afastado; estou arrastando rede em paralelo", tipo: "cis", categoria: "pesca", imagem: "imagens/sinais/82.png" },
+        { codigo: "UNIFORM", significado: "Você se dirige para um perigo", tipo: "cis", categoria: "perigo", imagem: "imagens/sinais/83.png" },
+        { codigo: "VICTOR", significado: "Solicito auxílio", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/84.png" },
+        { codigo: "WHISKEY", significado: "Solicito assistência médica", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/85.png" },
+        { codigo: "XRAY", significado: "Suspenda a execução do que você está fazendo e observe meus sinais", tipo: "cis", categoria: "ordem", imagem: "imagens/sinais/88.png" },
+        { codigo: "YANKEE", significado: "Estou arrastando meu ferro", tipo: "cis", categoria: "ancoragem", imagem: "imagens/sinais/89.png" },
+        { codigo: "ZULU", significado: "Solicito rebocador", tipo: "cis", categoria: "navegação", imagem: "imagens/sinais/90.png" }
+    ],
+    
+    sinaisATP: [
+        { codigo: "ALFA (ATP)", significado: "Equipe de demolição submarina amigo mergulhado", tipo: "atp", categoria: "segurança", imagem: "imagens/sinais/64.png" },
+        { codigo: "BRAVO (ATP)", significado: "Exercício de tiro ou transferência de explosivos ou inflamáveis", tipo: "atp", categoria: "perigo", imagem: "imagens/sinais/65.png" },
+        { codigo: "CHARLIE (ATP)", significado: "Afirmativo (em resposta a um sinal)", tipo: "atp", categoria: "comunicação", imagem: "imagens/sinais/66.png" },
+        { codigo: "DELTA (ATP)", significado: "Estou operando com degaussing", tipo: "atp", categoria: "mecânica", imagem: "imagens/sinais/67.png" },
+        { codigo: "ECHO (ATP)", significado: "Estou guinando para boreste", tipo: "atp", categoria: "manobra", imagem: "imagens/sinais/68.png" },
+        { codigo: "FOXTROT (ATP)", significado: "Operações com aeronave de asa fixa", tipo: "atp", categoria: "aeronaves", imagem: "imagens/sinais/69.png" },
+        { codigo: "GOLF (ATP)", significado: "Este navio é o guia da formatura", tipo: "atp", categoria: "formação", imagem: "imagens/sinais/70.png" },
+        { codigo: "HOTEL (ATP)", significado: "Operações com helicópteros", tipo: "atp", categoria: "aeronaves", imagem: "imagens/sinais/71.png" },
+        { codigo: "INDIA (ATP)", significado: "Estou guinando para bombordo", tipo: "atp", categoria: "manobra", imagem: "imagens/sinais/72.png" },
+        { codigo: "JULIET (ATP)", significado: "Tenho mensagem para transmitir por semáforas", tipo: "atp", categoria: "comunicação", imagem: "imagens/sinais/73.png" },
+        { codigo: "KILO (ATP)", significado: "Homens trabalhando no mastro", tipo: "atp", categoria: "operações", imagem: "imagens/sinais/74.png" },
+        { codigo: "LIMA (ATP)", significado: "Não se aproxime dentro do número de jardas indicadas", tipo: "atp", categoria: "segurança", imagem: "imagens/sinais/75.png" },
+        { codigo: "MIKE (ATP)", significado: "Navio de registro médico", tipo: "atp", categoria: "saúde", imagem: "imagens/sinais/76.png" },
+        { codigo: "NOVEMBER (ATP)", significado: "Seus movimentos não estão sendo compreendidos", tipo: "atp", categoria: "comunicação", imagem: "imagens/sinais/77.png" },
+        { codigo: "OSCAR (ATP)", significado: "Homem ao mar", tipo: "atp", categoria: "emergencia", imagem: "imagens/sinais/78.png" },
+        { codigo: "PAPA (ATP)", significado: "Todo pessoal deve regressar imediatamente para bordo", tipo: "atp", categoria: "emergencia", imagem: "imagens/sinais/86.png" },
+        { codigo: "QUEBEC (ATP)", significado: "Chamada geral de embarcações", tipo: "atp", categoria: "operações", imagem: "imagens/sinais/79.png" },
+        { codigo: "ROMEO (ATP)", significado: "Transferência (aproximação/cabo)", tipo: "atp", categoria: "operações", imagem: "imagens/sinais/80.png" },
+        { codigo: "SIERRA (ATP)", significado: "Exercício de bandeiras", tipo: "atp", categoria: "exercicio", imagem: "imagens/sinais/81.png" },
+        { codigo: "TANGO (ATP)", significado: "Indicador de hora", tipo: "atp", categoria: "comunicação", imagem: "imagens/sinais/82.png" },
+        { codigo: "UNIFORM (ATP)", significado: "Manobra com o ferro (fundear, amarrar e suspender)", tipo: "atp", categoria: "manobra", imagem: "imagens/sinais/83.png" },
+        { codigo: "VICTOR (ATP)", significado: "Lançando ou recolhendo equipamento acústico rebocado", tipo: "atp", categoria: "operações", imagem: "imagens/sinais/84.png" },
+        { codigo: "WHISKEY (ATP)", significado: "Segue endereçados de informação", tipo: "atp", categoria: "comunicação", imagem: "imagens/sinais/85.png" },
+        { codigo: "XRAY (ATP)", significado: "Evolução ou exercício concluído", tipo: "atp", categoria: "exercicio", imagem: "imagens/sinais/88.png" },
+        { codigo: "YANKEE (ATP)", significado: "Sou o OCT (Operational Command Team)", tipo: "atp", categoria: "comando", imagem: "imagens/sinais/89.png" },
+        { codigo: "ZULU (ATP)", significado: "Reservado", tipo: "atp", categoria: "reservado", imagem: "imagens/sinais/90.png" }
+    ],
+    
+    // ADICIONE ISSO DENTRO DO OBJETO cerimonialData (após os galhardetes):
+
+// Cornetas Substitutas - com numeração de imagens seguindo a sequência
+cornetasSubstitutas: [
+    { 
+        codigo: "1ª SUBSTITUTA", 
+        significado: "A origem deste sinal é... (Ausência do Comandante de Força embarcado)",
+        tipo: "substituta", 
+        categoria: "ausencia",
+        imagem: "imagens/sinais/125.png",
+        posicao: "Adriça mais de fora a BE (bombordo)",
+        detalhes: "Indica ausência do Comandante de Força por período de até 72 horas"
+    },
+    { 
+        codigo: "2ª SUBSTITUTA", 
+        significado: "Para informação geral, nenhum endereçado específico (Ausência do Chefe de Estado-Maior)",
+        tipo: "substituta", 
+        categoria: "ausencia",
+        imagem: "imagens/sinais/126.png",
+        posicao: "Adriça de dentro a BB (boreste)",
+        detalhes: "Indica ausência do Chefe de Estado-Maior embarcado"
+    },
+    { 
+        codigo: "3ª SUBSTITUTA", 
+        significado: "Além de ser ação para alguns navios é para informação geral (Ausência do Comandante do navio)",
+        tipo: "substituta", 
+        categoria: "ausencia",
+        imagem: "imagens/sinais/127.png",
+        posicao: "Adriça mais de fora a BB (boreste)",
+        detalhes: "Após 72 horas de ausência, seu uso passa para o Imediato"
+    },
+    { 
+        codigo: "4ª SUBSTITUTA", 
+        significado: "Ausência de autoridade civil ou militar cujo pavilhão está içado",
+        tipo: "substituta", 
+        categoria: "ausencia",
+        imagem: "imagens/sinais/128.png",
+        posicao: "Adriça de dentro a BE (bombordo)",
+        detalhes: "Indica ausência da autoridade cuja bandeira-insígnia esteja içada"
+    }
+],
+
+// Sinais de Incêndio a Bordo (ATP) - com numeração sequencial
+sinaisIncendio: [
+    {
+        codigo: "BA 1 - Incêndio",
+        significado: "Tenho incêndio classe ALFA",
+        tipo: "atp",
+        categoria: "emergencia",
+        imagem: "imagens/sinais/129.png",
+        descricao: "Incêndio em materiais sólidos comuns (madeira, papel, tecido)",
+        procedimento: "Isolar área, usar extintores de água ou espuma"
+    },
+    {
+        codigo: "BA 2 - Incêndio",
+        significado: "Tenho incêndio classe BRAVO",
+        tipo: "atp",
+        categoria: "emergencia",
+        imagem: "imagens/sinais/122.png",
+        descricao: "Incêndio em líquidos inflamáveis (óleo, gasolina, tinta)",
+        procedimento: "Usar extintores de pó químico ou CO₂, não usar água"
+    },
+    {
+        codigo: "BA 3 - Incêndio",
+        significado: "Tenho incêndio classe CHARLIE",
+        tipo: "atp",
+        categoria: "emergencia",
+        imagem: "imagens/sinais/123.png",
+        descricao: "Incêndio em equipamentos elétricos energizados",
+        procedimento: "Desenergizar, usar extintores de CO₂ ou pó químico"
+    },
+    {
+        codigo: "BA 4 - Incêndio",
+        significado: "Tenho incêndio classe DELTA",
+        tipo: "atp",
+        categoria: "emergencia",
+        imagem: "imagens/sinais/124.png",
+        descricao: "Incêndio em metais combustíveis (magnésio, titânio)",
+        procedimento: "Usar extintores classe D específicos, isolar completamente"
+    }
+],
+
+// Indicativos de Unidade (ATP) - com numeração sequencial
+indicativosUnidade: [
+    {
+        codigo: "DIV",
+        significado: "Indicativo de divisão",
+        tipo: "atp",
+        categoria: "formação",
+        imagem: "imagens/sinais/125.png",
+        uso: "Identificação de divisões navais"
+    },
+    {
+        codigo: "FLOT",
+        significado: "Indicativo de flotilha",
+        tipo: "atp",
+        categoria: "formação",
+        imagem: "imagens/sinais/126.png",
+        uso: "Identificação de flotilhas"
+    },
+    {
+        codigo: "ESQUAD",
+        significado: "Indicativo de esquadra",
+        tipo: "atp",
+        categoria: "formação",
+        imagem: "imagens/sinais/127.png",
+        uso: "Identificação de esquadras"
+    },
+    {
+        codigo: "SUBDTV",
+        significado: "Indicativo de subdivisão",
+        tipo: "atp",
+        categoria: "formação",
+        imagem: "imagens/sinais/128.png",
+        uso: "Identificação de subdivisões"
+    }
+],
+    
+    numeraisATP: [
+    { codigo: "BA 1", significado: "Sinal numeral 1", tipo: "atp", categoria: "numeral", imagem: "imagens/sinais/91.png" },
+    { codigo: "BA 2", significado: "Sinal numeral 2", tipo: "atp", categoria: "numeral", imagem: "imagens/sinais/92.png" },
+    { codigo: "BA 3", significado: "Sinal numeral 3", tipo: "atp", categoria: "numeral", imagem: "imagens/sinais/93.png" },
+    { codigo: "BA 4", significado: "Sinal numeral 4", tipo: "atp", categoria: "numeral", imagem: "imagens/sinais/94.png" },
+    { codigo: "BA 5", significado: "Tenho avarias", tipo: "atp", categoria: "emergencia", imagem: "imagens/sinais/95.png" },
+    { codigo: "BA 6", significado: "Operações de reboque", tipo: "atp", categoria: "operações", imagem: "imagens/sinais/96.png" },
+    { codigo: "BA 7", significado: "Sinal numeral 7", tipo: "atp", categoria: "numeral", imagem: "imagens/sinais/97.png" },
+    { codigo: "BA 8", significado: "Governar afastando-se do navio", tipo: "atp", categoria: "manobra", imagem: "imagens/sinais/98.png" },
+    { codigo: "BA 9", significado: "Sinal numeral 9", tipo: "atp", categoria: "numeral", imagem: "imagens/sinais/99.png" },
+    { codigo: "BA 0", significado: "Serviço de guarda militar / Transporte de mala postal", tipo: "atp", categoria: "serviço", imagem: "imagens/sinais/100.png" }
+],
+    
+    galhardetes: [
+        { codigo: "NEGAT", significado: "Negativo, cessar, não fazer, exetuados", tipo: "galhardete", categoria: "comando", imagem: "imagens/sinais/109.png" },
+        { codigo: "INT", significado: "Interroga ou pergunta", tipo: "galhardete", categoria: "comunicação", imagem: "imagens/sinais/110.png" },
+        { codigo: "PREP", significado: "Preparação para manobra ou cerimonial", tipo: "galhardete", categoria: "operações", imagem: "imagens/sinais/111.png" },
+        { codigo: "BOMBORDO", significado: "Guinada para bombordo", tipo: "galhardete", categoria: "manobra", imagem: "imagens/sinais/105.png" },
+        { codigo: "RECON", significado: "Reconhecimento", tipo: "galhardete", categoria: "comunicação", imagem: "imagens/sinais/106.png" },
+        { codigo: "DESIG", significado: "Designação de texto em linguagem clara", tipo: "galhardete", categoria: "comunicação", imagem: "imagens/sinais/112.png" },
+        { codigo: "EMERG", significado: "Emergência - executar sinal imediatamente", tipo: "galhardete", categoria: "emergencia", imagem: "imagens/sinais/113.png" },
+        { codigo: "FORM", significado: "Solicita embarcação de lixo", tipo: "galhardete", categoria: "serviço", imagem: "imagens/sinais/114.png" },
+        { codigo: "VELOC", significado: "Indicação de velocidade ou partida", tipo: "galhardete", categoria: "manobra", imagem: "imagens/sinais/115.png" },
+        { codigo: "BORESTE", significado: "Guinada para boreste", tipo: "galhardete", categoria: "manobra", imagem: "imagens/sinais/116.png" }
+    ],
+    
+    // Procedimentos do Cerimonial
+            procedimentos: [
+            { hora: "7:55", acao: "Içado o galhardete 'Prep'", observacao: "Anúncio do sinal para a Bandeira" },
+            { hora: "7:58", acao: "Primeiro sinal de corneta", observacao: "Dispositivo formado na posição de descansar" },
+            { hora: "7:59", acao: "Segundo sinal de corneta", observacao: "Dispositivo em sentido, permissão para prosseguir" },
+            { hora: "8:00", acao: "Arriado galhardete 'Prep'", observacao: "Terceiro sinal, continência, início do hasteamento" },
+            { hora: "Durante", acao: "Execução do Hino Nacional", observacao: "Todos prestam continência individual" },
+            { hora: "Término", acao: "Continência desfeita", observacao: "Guardas armadas: 'ombro arma'" }
+        ]
+};
+
+// Variável global para controlar modais
+let activeModal = null;
+
+// Funções principais
+function showSection(sectionId, event) {
+    // Esconder todas as seções
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Atualizar navegação
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
+    
+    // Mostrar seção selecionada
+    document.getElementById(sectionId).style.display = 'block';
+    
+    // Carregar conteúdo específico
+    switch(sectionId) {
+        case 'bandeiras':
+            loadAllFlags();
+            break;
+        // Atualize o switch case:
+case 'insignias':
+    loadSubstitutasSection();  // Carrega as substitutas
+    break;
+        case 'sinais':
+            loadSignals();
+            break;
+        case 'cerimonial':
+            loadCeremonial();
+            break;
+        case 'protocolos':
+            loadProtocols();
+            break;
+    }
+}
+
+function loadAllFlags() {
+    const grid = document.getElementById('flagsGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    
+    // Adicionar bandeira nacional
+    const nacional = cerimonialData.bandeiraNacional;
+    grid.innerHTML += createFlagCard(nacional);
+    
+    // Adicionar bandeiras distintivas
+    cerimonialData.bandeirasDistintivas.forEach(flag => {
+        grid.innerHTML += createFlagCard(flag);
+    });
+    
+    // Adicionar bandeiras-insígnias
+    cerimonialData.bandeirasInsignias.forEach(flag => {
+        grid.innerHTML += createFlagCard(flag);
+    });
+    
+    // Adicionar sinais de Barroso
+    cerimonialData.sinaisBarroso.forEach(sinal => {
+        grid.innerHTML += createFlagCard(sinal);
+    });
+}
+
+function createFlagCard(flagData) {
+    let previewClass = 'flag-preview';
+    let imageElement = '';
+    
+    // Se tiver imagem, usar imagem. Se não, usar ícone padrão
+    if (flagData.imagePath) {
+        imageElement = `
+            <img src="${flagData.imagePath}" 
+                 alt="${flagData.title}" 
+                 style="width: 100%; height: 100%; object-fit: contain;"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 70%22><rect width=%22100%22 height=%2270%22 fill=%22%232d3748%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23ffffff%22>${flagData.title.substring(0,3)}</text></svg>'">
+        `;
+    } else {
+        imageElement = `
+            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-flag" style="font-size: 3rem; opacity: 0.5; color: ${getFlagColor(flagData.type)};"></i>
+            </div>
+        `;
+    }
+    
+    // Na função createFlagCard, adicione esta lógica antes do return:
+if (flagData.type === 'sinal') {
+    // Para sinais de Barroso, usar uma representação especial
+    if (flagData.id.includes('barroso')) {
+        imageElement = `
+            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 5px; padding: 10px;">
+                ${flagData.id.includes('barroso-1') ? `
+                    <div style="width: 80%; height: 25px; background: #d32f2f; border-radius: 3px;"></div>
+                    <div style="width: 80%; height: 25px; background: linear-gradient(90deg, #d32f2f 50%, white 50%); border-radius: 3px;"></div>
+                    <div style="width: 80%; height: 25px; background: white; border-radius: 3px; position: relative;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                        width: 50%; height: 70%; background: #002776; border-radius: 2px;"></div>
+                    </div>
+                ` : `
+                    <div style="width: 80%; height: 35px; background: #d32f2f; border-radius: 3px; position: relative;">
+                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: 
+                            linear-gradient(to right, white 50%, transparent 50%),
+                            linear-gradient(to bottom, white 50%, transparent 50%);
+                            background-size: 50% 50%; border-radius: 3px;">
+                        </div>
+                    </div>
+                    <div style="width: 80%; height: 35px; background: 
+                        repeating-linear-gradient(90deg, 
+                            #d32f2f, #d32f2f 6.25%, 
+                            white 6.25%, white 12.5%
+                        ); border-radius: 3px;">
+                    </div>
+                `}
+            </div>
+        `;
+    }
+}
+    
+    if (flagData.type === 'nacional') previewClass += ' national';
+    else if (flagData.type === 'distintivo') previewClass += ' cruzeiro';
+    else if (flagData.type === 'insignia') previewClass += ' insignia';
+    
+    return `
+        <div class="flag-card" onclick="showFlagDetail('${flagData.id}')">
+            <div class="${previewClass}">
+                <div class="flag-pattern">
+                    ${imageElement}
+                </div>
+            </div>
+            <div class="flag-content">
+                <h3 class="flag-name">${flagData.title}</h3>
+                <p class="flag-description">${flagData.subtitle}</p>
+                <div class="flag-specs">
+                    <div class="flag-spec">
+                        <i class="fas fa-tag"></i>
+                        <span>${flagData.type}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Função auxiliar para cor da bandeira
+function getFlagColor(type) {
+    const colors = {
+        'nacional': '#38a169',
+        'distintivo': '#4299e1',
+        'insignia': '#d69e2e',
+        'sinal': '#9f7aea'
+    };
+    return colors[type] || '#718096';
+}
+function filterFlags(type) {
+    const buttons = document.querySelectorAll('.filter-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
+    
+    const grid = document.getElementById('flagsGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    
+    if (type === 'all') {
+        loadAllFlags();
+        return;
+    }
+    
+    if (type === 'distintivos') {
+        cerimonialData.bandeirasDistintivas.forEach(flag => {
+            grid.innerHTML += createFlagCard(flag);
+        });
+    } else if (type === 'insignias') {
+        cerimonialData.bandeirasInsignias.forEach(flag => {
+            grid.innerHTML += createFlagCard(flag);
+        });
+    } else if (type === 'sinais') {
+        cerimonialData.sinaisBarroso.forEach(sinal => {
+            grid.innerHTML += createFlagCard(sinal);
+        });
+    }
+}
+
+// FUNÇÃO ATUALIZADA: Carregar todos os sinais (CIS, ATP, Numerais, Galhardetes)
+// FUNÇÃO ATUALIZADA: Carregar todos os sinais com novos filtros
+function loadSignals() {
+    const content = document.getElementById('signalsContent');
+    if (!content) return;
+    
+    content.innerHTML = `
+        <div style="padding: 20px;">
+            <h3 style="color: white; margin-bottom: 20px;">Códigos de Sinais Navais</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                Sistema de comunicação visual entre navios usando bandeiras alfabéticas, numerais, galhardetes e cornetas substitutas.
+            </p>
+            
+            <div class="filter-container" style="margin-bottom: 20px;">
+                <button class="filter-btn active" onclick="filterSignalsContent('all')">Todos</button>
+                <button class="filter-btn" onclick="filterSignalsContent('cis')">CIS</button>
+                <button class="filter-btn" onclick="filterSignalsContent('atp')">ATP</button>
+                <button class="filter-btn" onclick="filterSignalsContent('numerais')">Numerais</button>
+                <button class="filter-btn" onclick="filterSignalsContent('galhardetes')">Galhardetes</button>
+                <button class="filter-btn" onclick="filterSignalsContent('substitutas')">Substitutas</button>
+                <button class="filter-btn" onclick="filterSignalsContent('emergencia')">Emergência</button>
+                <button class="filter-btn" onclick="filterSignalsContent('formacao')">Formação</button>
+                <button class="filter-btn" onclick="filterSignalsContent('ausencia')">Ausência</button>
+            </div>
+            
+            <div class="search-container" style="margin-bottom: 20px;">
+                <input type="text" id="signalSearch" placeholder="Buscar sinal (ex: ALFA, SUBSTITUTA, incêndio...)" 
+                       onkeyup="searchSignals()" style="
+                    width: 100%;
+                    padding: 12px 15px;
+                    background: rgba(255,255,255,0.1);
+                    border: 1px solid rgba(255,255,255,0.2);
+                    border-radius: 8px;
+                    color: white;
+                    font-size: 1rem;
+                ">
+            </div>
+            
+            <div id="signalsList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                <!-- Sinais serão carregados aqui dinamicamente -->
+            </div>
+            
+            <div style="margin-top: 40px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                <h4 style="color: white; margin-bottom: 15px;">Legenda dos Tipos:</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <span style="display: inline-flex; align-items: center; gap: 5px; background: rgba(56, 161, 105, 0.3); color: #38a169; padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;">
+                        <div style="width: 10px; height: 10px; background: #38a169; border-radius: 50%;"></div>
+                        CIS - Código Internacional
+                    </span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px; background: rgba(214, 158, 46, 0.3); color: #d69e2e; padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;">
+                        <div style="width: 10px; height: 10px; background: #d69e2e; border-radius: 50%;"></div>
+                        ATP - Código Tático
+                    </span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px; background: rgba(66, 153, 225, 0.3); color: #4299e1; padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;">
+                        <div style="width: 10px; height: 10px; background: #4299e1; border-radius: 50%;"></div>
+                        Numerais
+                    </span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px; background: rgba(159, 122, 234, 0.3); color: #9f7aea; padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;">
+                        <div style="width: 10px; height: 10px; background: #9f7aea; border-radius: 50%;"></div>
+                        Galhardetes
+                    </span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px; background: rgba(245, 158, 11, 0.3); color: #f59e0b; padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;">
+                        <div style="width: 10px; height: 10px; background: #f59e0b; border-radius: 50%;"></div>
+                        Substitutas
+                    </span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px; background: rgba(229, 62, 62, 0.3); color: #e53e3e; padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;">
+                        <div style="width: 10px; height: 10px; background: #e53e3e; border-radius: 50%;"></div>
+                        Emergência
+                    </span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px; background: rgba(16, 185, 129, 0.3); color: #10b981; padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;">
+                        <div style="width: 10px; height: 10px; background: #10b981; border-radius: 50%;"></div>
+                        Formação
+                    </span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Carregar sinais inicialmente
+    displayAllSignals();
+}
+
+// FUNÇÃO ATUALIZADA: Exibir TODOS os sinais
+// FUNÇÃO ATUALIZADA: Exibir TODOS os sinais (incluindo substitutas)
+function displayAllSignals(filterType = 'all') {
+    const container = document.getElementById('signalsList');
+    if (!container) return;
+    
+    // Combinar TODOS os sinais
+    let allSignals = [
+        ...cerimonialData.sinaisCIS,
+        ...cerimonialData.sinaisATP,
+        ...cerimonialData.numeraisATP,
+        ...cerimonialData.galhardetes,
+        ...cerimonialData.cornetasSubstitutas,
+        ...cerimonialData.sinaisIncendio,
+        ...cerimonialData.indicativosUnidade
+    ];
+    
+    // Aplicar filtro
+    if (filterType !== 'all') {
+        allSignals = allSignals.filter(sinal => {
+            if (filterType === 'cis') return sinal.tipo === 'cis';
+            if (filterType === 'atp') return sinal.tipo === 'atp';
+            if (filterType === 'numerais') return sinal.tipo === 'atp' && sinal.categoria === 'numeral';
+            if (filterType === 'galhardetes') return sinal.tipo === 'galhardete';
+            if (filterType === 'substitutas') return sinal.tipo === 'substituta';
+            if (filterType === 'emergencia') return sinal.categoria === 'emergencia';
+            if (filterType === 'formacao') return sinal.categoria === 'formação';
+            if (filterType === 'ausencia') return sinal.categoria === 'ausencia';
+            return true;
+        });
+    }
+    
+    container.innerHTML = allSignals.map(sinal => createSignalCard(sinal)).join('');
+}
+
+// FUNÇÃO ATUALIZADA: Criar card de sinal com cores por tipo
+// FUNÇÃO ATUALIZADA: Criar card de sinal com nova cor para substitutas
+function createSignalCard(sinal) {
+    // Cores baseadas no tipo
+    const tipoCores = {
+        'cis': '#38a169',
+        'atp': '#d69e2e',
+        'galhardete': '#9f7aea',
+        'numeral': '#4299e1',
+        'substituta': '#f59e0b'  // NOVA COR PARA SUBSTITUTAS
+    };
+    
+    const cor = tipoCores[sinal.tipo] || '#718096';
+    const isEmergency = sinal.categoria === 'emergencia';
+    const isAusencia = sinal.categoria === 'ausencia';
+    
+    return `
+        <div class="signal-card" onclick="openSignalModal('${sinal.codigo}', event)" style="
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid ${cor};
+            ${isEmergency ? 'border-top: 3px solid #e53e3e;' : ''}
+            ${isAusencia ? 'border-right: 3px solid #f59e0b;' : ''}
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        " onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.2)';" 
+           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+            
+            ${isEmergency ? `
+            <div style="position: absolute; top: 10px; right: 10px; background: #e53e3e; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.7rem; font-weight: bold;">
+                <i class="fas fa-exclamation-triangle"></i> EMERGÊNCIA
+            </div>` : ''}
+            
+            ${isAusencia ? `
+            <div style="position: absolute; top: 10px; right: 10px; background: #f59e0b; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.7rem; font-weight: bold;">
+                <i class="fas fa-user-slash"></i> AUSÊNCIA
+            </div>` : ''}
+            
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                <div style="
+                    width: 70px;
+                    height: 45px;
+                    background: ${cor}20;
+                    border: 2px solid ${cor};
+                    border-radius: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    overflow: hidden;
+                ">
+                    <img src="${sinal.imagem || 'https://via.placeholder.com/70x45/2d3748/ffffff?text=' + sinal.codigo.substring(0, 3)}" 
+                         alt="${sinal.codigo}" 
+                         style="width: 100%; height: 100%; object-fit: cover;"
+                         onerror="this.src='https://via.placeholder.com/70x45/2d3748/ffffff?text=' + this.alt.substring(0, 3)">
+                </div>
+                
+                <div>
+                    <div style="
+                        background: ${cor};
+                        color: white;
+                        padding: 3px 10px;
+                        border-radius: 4px;
+                        font-size: 0.8rem;
+                        font-weight: bold;
+                        display: inline-block;
+                    ">
+                        ${sinal.tipo ? sinal.tipo.toUpperCase() : 'GERAL'}
+                    </div>
+                </div>
+            </div>
+            
+            <h4 style="color: white; margin: 0 0 10px 0; font-size: 1.2rem; font-weight: 600;">
+                ${sinal.codigo}
+            </h4>
+            
+            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px;">
+                ${sinal.significado}
+            </p>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                <span style="color: var(--text-muted); font-size: 0.85rem;">
+                    <i class="fas fa-tag"></i> ${getCategoryLabel(sinal.categoria)}
+                </span>
+                <span style="color: ${cor}; font-size: 0.85rem;">
+                    <i class="fas fa-info-circle"></i> Clique para detalhes
+                </span>
+            </div>
+        </div>
+    `;
+}
+
+// Função auxiliar para traduzir categorias
+// Função auxiliar para traduzir categorias - ATUALIZADA
+function getCategoryLabel(categoria) {
+    const labels = {
+        'segurança': '🚨 Segurança',
+        'perigo': '⚠️ Perigo',
+        'emergencia': '🆘 Emergência',
+        'manobra': '⚓ Manobra',
+        'comunicação': '📡 Comunicação',
+        'navegação': '🧭 Navegação',
+        'saúde': '🏥 Saúde',
+        'mecânica': '🔧 Mecânica',
+        'ordem': '📢 Ordem',
+        'pesca': '🎣 Pesca',
+        'ancoragem': '⚓ Ancoragem',
+        'aeronaves': '✈️ Aeronaves',
+        'formação': '👥 Formação',
+        'operações': '🛠️ Operações',
+        'comando': '🎖️ Comando',
+        'numeral': '🔢 Numeral',
+        'serviço': '🏛️ Serviço',
+        'exercicio': '🎯 Exercício',
+        'reservado': '🔒 Reservado',
+        'ausencia': '👤 Ausência',  // NOVA CATEGORIA
+        'formacao': '🚢 Formação Naval'  // NOVA CATEGORIA
+    };
+    
+    return labels[categoria] || categoria.charAt(0).toUpperCase() + categoria.slice(1);
+}
+
+// FUNÇÃO ATUALIZADA: Filtrar conteúdo de sinais
+// FUNÇÃO ATUALIZADA: Filtrar conteúdo de sinais com novas opções
+function filterSignalsContent(filterType) {
+    const buttons = document.querySelectorAll('#signalsContent .filter-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
+    
+    displayAllSignals(filterType);
+}
+// FUNÇÃO ATUALIZADA: Buscar sinais em TODOS os tipos
+// FUNÇÃO ATUALIZADA: Buscar sinais em TODOS os tipos
+function searchSignals() {
+    const searchTerm = document.getElementById('signalSearch')?.value.toLowerCase() || '';
+    const container = document.getElementById('signalsList');
+    if (!container) return;
+    
+    // Combinar TODOS os sinais
+    const allSignals = [
+        ...cerimonialData.sinaisCIS,
+        ...cerimonialData.sinaisATP,
+        ...cerimonialData.numeraisATP,
+        ...cerimonialData.galhardetes,
+        ...cerimonialData.cornetasSubstitutas,
+        ...cerimonialData.sinaisIncendio,
+        ...cerimonialData.indicativosUnidade
+    ];
+    
+    const filteredSignals = allSignals.filter(sinal => 
+        sinal.codigo.toLowerCase().includes(searchTerm) ||
+        sinal.significado.toLowerCase().includes(searchTerm) ||
+        (sinal.categoria && sinal.categoria.toLowerCase().includes(searchTerm)) ||
+        (sinal.tipo && sinal.tipo.toLowerCase().includes(searchTerm)) ||
+        (sinal.detalhes && sinal.detalhes.toLowerCase().includes(searchTerm)) ||
+        (sinal.posicao && sinal.posicao.toLowerCase().includes(searchTerm))
+    );
+    
+    container.innerHTML = filteredSignals.map(sinal => createSignalCard(sinal)).join('');
+}
+
+// FUNÇÃO CORRIGIDA: Abrir modal de sinal
+// FUNÇÃO CORRIGIDA: Abrir modal de sinal (completa e corrigida)
+function openSignalModal(code, event) {
+    // Impedir propagação do evento
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+    
+    // Fechar modal anterior se existir
+    closeAllModals();
+    
+    // Encontrar o sinal em TODOS os arrays
+    const allSignals = [
+        ...cerimonialData.sinaisCIS,
+        ...cerimonialData.sinaisATP,
+        ...cerimonialData.numeraisATP,
+        ...cerimonialData.galhardetes,
+        ...cerimonialData.cornetasSubstitutas, // ADICIONAR SUBSTITUTAS
+        ...cerimonialData.sinaisIncendio,      // ADICIONAR INCÊNDIO
+        ...cerimonialData.indicativosUnidade   // ADICIONAR INDICATIVOS
+    ];
+    
+    const signal = allSignals.find(s => s.codigo === code);
+    if (!signal) {
+        showNotification('Sinal não encontrado: ' + code);
+        return;
+    }
+    
+    // Cores por tipo
+    const tipoCores = {
+        'cis': '#38a169',
+        'atp': '#d69e2e',
+        'galhardete': '#9f7aea',
+        'numeral': '#4299e1',
+        'substituta': '#f59e0b'  // NOVA COR PARA SUBSTITUTAS
+    };
+    
+    const cor = tipoCores[signal.tipo] || '#718096';
+    
+    // HTML do modal com todas as informações
+    const modalHTML = `
+        <div class="modal-overlay active" id="signalModal" onclick="closeCurrentModal()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeCurrentModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <div class="card-header">
+                    <div class="card-icon" style="background: ${cor};">
+                        <i class="fas fa-signal"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">${signal.codigo}</h2>
+                        <div class="card-subtitle">${signal.tipo ? signal.tipo.toUpperCase() : 'GERAL'} - ${getCategoryLabel(signal.categoria)}</div>
+                    </div>
+                </div>
+                
+                <div style="margin: 25px 0;">
+                    <h3 style="color: white; margin-bottom: 15px;">Significado:</h3>
+                    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px;">
+                        <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                            ${signal.significado}
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Informações específicas para substitutas -->
+                ${signal.tipo === 'substituta' ? `
+                <div style="margin: 20px 0;">
+                    <h3 style="color: white; margin-bottom: 10px;">Informações Específicas:</h3>
+                    <div style="background: rgba(245, 158, 11, 0.1); padding: 20px; border-radius: 8px; border-left: 3px solid #f59e0b;">
+                        <p style="color: var(--text-secondary); margin: 0;">
+                            <strong>Posicionamento:</strong> ${signal.posicao || 'Não especificado'}<br>
+                            <strong>Período de uso:</strong> Das 8h ao pôr do sol<br>
+                            <strong>Tempo máximo:</strong> Até 72 horas de ausência<br>
+                            <strong>Detalhes:</strong> ${signal.detalhes || 'Não disponível'}
+                        </p>
+                    </div>
+                </div>` : ''}
+                
+                <!-- Informações específicas para incêndio -->
+                ${signal.categoria === 'emergencia' && signal.descricao ? `
+                <div style="margin: 20px 0;">
+                    <h3 style="color: white; margin-bottom: 10px;">Procedimento de Emergência:</h3>
+                    <div style="background: rgba(229, 62, 62, 0.1); padding: 20px; border-radius: 8px; border-left: 3px solid #e53e3e;">
+                        <p style="color: var(--text-secondary); margin: 0;">
+                            <strong>Tipo de incêndio:</strong> ${signal.descricao}<br>
+                            <strong>Procedimento recomendado:</strong> ${signal.procedimento || 'Siga os protocolos de emergência'}
+                        </p>
+                    </div>
+                </div>` : ''}
+                
+                <div class="info-grid" style="margin: 25px 0;">
+                    <div class="info-item">
+                        <div class="info-label">Código</div>
+                        <div class="info-value">${signal.codigo}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Tipo</div>
+                        <div class="info-value">${signal.tipo ? signal.tipo.toUpperCase() : 'GERAL'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Categoria</div>
+                        <div class="info-value">${getCategoryLabel(signal.categoria)}</div>
+                    </div>
+                </div>
+                
+                <!-- Imagem do sinal -->
+                ${signal.imagem ? `
+                <div style="margin: 25px 0;">
+                    <h3 style="color: white; margin-bottom: 15px;">Representação Visual:</h3>
+                    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; text-align: center;">
+                        <img src="${signal.imagem}" alt="${signal.codigo}" 
+                             style="max-width: 100%; max-height: 200px; border-radius: 8px;"
+                             onerror="this.src='https://via.placeholder.com/300x200/2d3748/ffffff?text=${signal.codigo}'">
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">
+                            Bandeira/sinal representando "${signal.codigo}"
+                        </p>
+                    </div>
+                </div>` : ''}
+                
+                <!-- Seção de emergência -->
+                ${signal.categoria === 'emergencia' ? `
+                <div style="
+                    background: rgba(229, 62, 62, 0.2);
+                    border-left: 4px solid #e53e3e;
+                    padding: 20px;
+                    border-radius: 8px;
+                    margin-top: 20px;
+                ">
+                    <div style="color: white; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-exclamation-triangle"></i> PROCEDIMENTO DE EMERGÊNCIA
+                    </div>
+                    <div style="color: var(--text-secondary); font-size: 0.95rem;">
+                        <strong>⚠️ Ação imediata:</strong> Este sinal deve ser içado imediatamente quando a situação ocorrer.<br>
+                        <strong>🚨 Resposta dos outros navios:</strong> Todos devem prestar assistência e manter distância segura.<br>
+                        <strong>📡 Comunicação:</strong> Informar imediatamente ao comando mais próximo.
+                    </div>
+                </div>` : ''}
+                
+                <!-- Seção de ausência -->
+                ${signal.categoria === 'ausencia' ? `
+                <div style="
+                    background: rgba(245, 158, 11, 0.2);
+                    border-left: 4px solid #f59e0b;
+                    padding: 20px;
+                    border-radius: 8px;
+                    margin-top: 20px;
+                ">
+                    <div style="color: white; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-user-slash"></i> PROCEDIMENTO DE AUSÊNCIA
+                    </div>
+                    <div style="color: var(--text-secondary); font-size: 0.95rem;">
+                        <strong>⏰ Período de uso:</strong> Das 8h ao pôr do sol<br>
+                        <strong>🕒 Duração máxima:</strong> Até 72 horas de ausência<br>
+                        <strong>📍 Posicionamento:</strong> Adriça específica conforme autoridade ausente<br>
+                        <strong>🔄 Substituição:</strong> Após 72 horas, a 3ª Substituta passa para o Imediato
+                    </div>
+                </div>` : ''}
+            </div>
+        </div>
+    `;
+    
+    // Adicionar ao body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    activeModal = 'signalModal';
+}
+
+// Função para mostrar substitutas em uma seção separada
+// CORRIJA esta função - a linha do onclick está chamando openSignalModal sem o array completo
+function loadSubstitutasSection() {
+    const content = document.getElementById('insigniasContent');
+    if (!content) return;
+    
+    content.innerHTML = `
+        <div style="padding: 20px;">
+            <h3 style="color: white; margin-bottom: 20px;">Cornetas Substitutas</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                Indicam a ausência de autoridades a bordo durante o período das 8h ao pôr do sol, 
+                por até 72 horas de ausência.
+            </p>
+            
+            <div style="background: rgba(245, 158, 11, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+                <h4 style="color: #f59e0b; margin-bottom: 10px;">📌 Regras Gerais:</h4>
+                <ul style="color: var(--text-secondary); padding-left: 20px;">
+                    <li>Usadas apenas no período das 8h ao pôr do sol</li>
+                    <li>Indicam ausência por até 72 horas</li>
+                    <li>Posicionamento específico conforme a autoridade ausente</li>
+                    <li>Após 72 horas, a 3ª Substituta passa para o Imediato</li>
+                </ul>
+            </div>
+            
+            <div id="substitutasList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                ${cerimonialData.cornetasSubstitutas.map(substituta => `
+                    <div class="signal-card" onclick="openSignalModal('${substituta.codigo}')" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                            <div style="
+                                width: 70px;
+                                height: 45px;
+                                background: #f59e0b20;
+                                border: 2px solid #f59e0b;
+                                border-radius: 6px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-weight: bold;
+                                color: #f59e0b;
+                                font-size: 1.2rem;
+                            ">
+                                ${substituta.codigo.charAt(0)}
+                            </div>
+                            <div>
+                                <div style="background: #f59e0b; color: white; padding: 3px 10px; border-radius: 4px; 
+                                    font-size: 0.8rem; font-weight: bold; display: inline-block;">
+                                    SUBSTITUTA
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 style="color: white; margin: 0 0 10px 0; font-size: 1.2rem; font-weight: 600;">
+                            ${substituta.codigo}
+                        </h4>
+                        
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px;">
+                            ${substituta.significado}
+                        </p>
+                        
+                        <div style="color: #f59e0b; font-size: 0.85rem;">
+                            <i class="fas fa-info-circle"></i> Clique para detalhes
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div style="margin-top: 40px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                <h4 style="color: white; margin-bottom: 15px;">📋 Diagrama de Posicionamento:</h4>
+                <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+                    <div style="text-align: center;">
+                        <div style="width: 120px; height: 150px; background: rgba(255,255,255,0.05); border: 2px solid #f59e0b; 
+                            border-radius: 8px; position: relative; margin: 0 auto 10px;">
+                            <!-- Representação gráfica do posicionamento -->
+                            <div style="position: absolute; top: 10px; left: 10px; background: #f59e0b; color: white; 
+                                padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;">1ª</div>
+                            <div style="position: absolute; top: 10px; right: 10px; background: #f59e0b; color: white; 
+                                padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;">4ª</div>
+                            <div style="position: absolute; bottom: 10px; left: 10px; background: #f59e0b; color: white; 
+                                padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;">2ª</div>
+                            <div style="position: absolute; bottom: 10px; right: 10px; background: #f59e0b; color: white; 
+                                padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;">3ª</div>
+                        </div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                            <strong>BE (Bombordo)</strong> - 1ª e 4ª<br>
+                            <strong>BB (Boreste)</strong> - 2ª e 3ª
+                        </div>
+                    </div>
+                    
+                    <div style="max-width: 300px;">
+                        <h5 style="color: white; margin-bottom: 10px;">Legenda:</h5>
+                        <ul style="color: var(--text-secondary); padding-left: 20px; font-size: 0.9rem;">
+                            <li><strong>1ª Substituta:</strong> Comandante de Força</li>
+                            <li><strong>2ª Substituta:</strong> Chefe de Estado-Maior</li>
+                            <li><strong>3ª Substituta:</strong> Comandante do navio</li>
+                            <li><strong>4ª Substituta:</strong> Autoridade civil/militar</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+// Funções auxiliares para modais
+function closeCurrentModal() {
+    if (activeModal) {
+        const modal = document.getElementById(activeModal);
+        if (modal) {
+            modal.classList.remove('active');
+            setTimeout(() => modal.remove(), 300);
+        }
+        activeModal = null;
+    }
+}
+
+function closeAllModals() {
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+        modal.classList.remove('active');
+        setTimeout(() => modal.remove(), 300);
+    });
+    activeModal = null;
+}
+
+// Funções existentes (mantenha as outras funções)
+// FUNÇÃO CORRIGIDA: Mostrar detalhes da bandeira
+function showFlagDetail(flagId) {
+    closeAllModals();
+    
+    let flagData;
+    
+    // Buscar dados da bandeira
+    if (flagId === 'national') {
+        flagData = cerimonialData.bandeiraNacional;
+    } else {
+        flagData = cerimonialData.bandeirasDistintivas.find(f => f.id === flagId) ||
+                  cerimonialData.bandeirasInsignias.find(f => f.id === flagId) ||
+                  cerimonialData.sinaisBarroso.find(f => f.id === flagId);
+    }
+    
+    if (!flagData) {
+        showNotification('Detalhes não disponíveis para esta bandeira');
+        return;
+    }
+    
+    // Criar modal dinamicamente (igual ao dos sinais)
+    const modalHTML = `
+        <div class="modal-overlay active" id="flagModal" onclick="closeCurrentModal()">
+            <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 800px;">
+                <button class="modal-close" onclick="closeCurrentModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <div class="card-header">
+                    <div class="card-icon" style="background: ${getFlagColor(flagData.type)};">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">${flagData.title}</h2>
+                        <div class="card-subtitle">${flagData.subtitle}</div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <span style="
+                                background: ${getFlagColor(flagData.type)}20;
+                                color: ${getFlagColor(flagData.type)};
+                                padding: 4px 12px;
+                                border-radius: 20px;
+                                font-size: 0.85rem;
+                                font-weight: 500;
+                            ">
+                                <i class="fas fa-tag"></i> ${flagData.type}
+                            </span>
+                            <span style="
+                                background: rgba(255,255,255,0.1);
+                                color: var(--text-secondary);
+                                padding: 4px 12px;
+                                border-radius: 20px;
+                                font-size: 0.85rem;
+                            ">
+                                <i class="fas fa-info-circle"></i> Bandeira
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Imagem da bandeira -->
+                <div style="margin: 25px 0; text-align: center;">
+                    <div style="
+                        background: rgba(255,255,255,0.05);
+                        border-radius: 12px;
+                        padding: 30px;
+                        display: inline-block;
+                        max-width: 100%;
+                    ">
+                        ${flagData.imagePath ? `
+                            <img src="${flagData.imagePath}" 
+                                 alt="${flagData.title}" 
+                                 style="
+                                    max-width: 100%;
+                                    max-height: 300px;
+                                    border-radius: 8px;
+                                    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+                                 "
+                                 onerror="
+                                     this.onerror = null;
+                                     this.src = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 140%22>' +
+                                     '<rect width=%22200%22 height=%22140%22 fill=%22${getFlagColor(flagData.type)}%22/>' +
+                                     '<text x=%22100%22 y=%2270%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-size=%2224%22>${flagData.title.substring(0, 3)}</text>' +
+                                     '</svg>';
+                                 ">
+                        ` : `
+                            <div style="
+                                width: 200px;
+                                height: 140px;
+                                background: ${getFlagColor(flagData.type)};
+                                border-radius: 8px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: white;
+                                font-size: 24px;
+                                font-weight: bold;
+                                margin: 0 auto;
+                                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+                            ">
+                                ${flagData.title.substring(0, 3)}
+                            </div>
+                        `}
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 15px;">
+                            Representação da ${flagData.title}
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Descrição detalhada -->
+                <div style="margin: 30px 0;">
+                    <h3 style="color: white; margin-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                        <i class="fas fa-file-alt"></i> Descrição Detalhada
+                    </h3>
+                    <div style="
+                        background: rgba(255,255,255,0.03);
+                        border-radius: 10px;
+                        padding: 25px;
+                        line-height: 1.6;
+                        color: var(--text-secondary);
+                        font-size: 1rem;
+                    ">
+                        ${flagData.description}
+                    </div>
+                </div>
+                
+                <!-- Informações técnicas -->
+                <div class="info-grid" style="margin: 30px 0;">
+                    <div class="info-item">
+                        <div class="info-label">Tipo</div>
+                        <div class="info-value" style="color: ${getFlagColor(flagData.type)}; font-weight: 600;">
+                            ${flagData.type}
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Categoria</div>
+                        <div class="info-value">Bandeira ${flagData.type === 'nacional' ? 'Nacional' : 
+                                                         flagData.type === 'distintivo' ? 'Distintiva' : 
+                                                         flagData.type === 'insignia' ? 'Insígnia' : 'Sinal'}</div>
+                    </div>
+                </div>
+                
+                <!-- Botão de fechar -->
+                <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <button onclick="closeCurrentModal()" style="
+                        background: ${getFlagColor(flagData.type)};
+                        color: white;
+                        border: none;
+                        padding: 12px 30px;
+                        border-radius: 8px;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                        <i class="fas fa-times"></i> Fechar
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Adicionar modal ao body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    activeModal = 'flagModal';
+    
+    // Scroll para o topo do modal
+    setTimeout(() => {
+        const modal = document.getElementById('flagModal');
+        if (modal) {
+            modal.scrollTop = 0;
+        }
+    }, 10);
+}
+
+// Função auxiliar para obter cor da bandeira
+function getFlagColor(type) {
+    const colors = {
+        'nacional': '#38a169',
+        'distintivo': '#4299e1',
+        'insignia': '#d69e2e',
+        'sinal': '#9f7aea'
+    };
+    return colors[type] || '#718096';
+}
+
+function closeModal() {
+    closeAllModals();
+}
+
+// Adicione este evento para tecla ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeAllModals();
+    }
+});
+
+// Funções de utilidade
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: var(--primary);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        z-index: 10000;
+        animation: slideUp 0.3s;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        border-left: 4px solid var(--accent);
+        max-width: 300px;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', () => {
+    // Carregar tabela de salvas
+    const salvasTable = document.getElementById('salvasTable');
+    if (salvasTable && cerimonialData.salvas) {
+        cerimonialData.salvas.forEach(salva => {
+            salvasTable.innerHTML += `
+                <tr>
+                    <td>${salva.autoridade}</td>
+                    <td>${salva.tiros}</td>
+                    <td>${salva.obs}</td>
+                </tr>
+            `;
+        });
+    }
+    
+    // Carregar conteúdo inicial
+    loadAllFlags();
+    
+    // Animar entrada
+    setTimeout(() => {
+        const cards = document.querySelectorAll('.flag-card, .info-item');
+        cards.forEach((card, index) => {
+            card.style.animation = `slideUp 0.5s ${index * 0.1}s forwards`;
+            card.style.opacity = '0';
+        });
+    }, 100);
+    
+    // Mensagem de boas-vindas
+    setTimeout(() => {
+        showNotification('Bem-vindo ao Marujo Digital, aqui você verá os bizu sobre: •Cerimonial da Marinha');
+    }, 1500);
+});
+    </script>
+    
+</body>
+</html>
+
