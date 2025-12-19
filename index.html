@@ -29,13 +29,17 @@
 <meta property="og:image" content="imagens/logo.png">
 <meta property="og:url" content="https://marujodigital.onrender.com/">
     
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
       appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
     });
+
+    // 🚨 ISSO AQUI É O QUE FALTAVA
+    const permission = await OneSignal.Notifications.requestPermission();
+    console.log("OneSignal permission:", permission);
   });
 </script>
     
