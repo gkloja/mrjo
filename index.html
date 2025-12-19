@@ -1503,24 +1503,66 @@
             </div>
           
           
-          <!-- Nova Seção de Honras -->
-<section id="honras" class="content-section" style="display: none;">
-    <div class="content-card">
-        <div class="card-header">
-            <div class="card-icon" style="background: linear-gradient(45deg, #d69e2e, #b45309);">
-                <i class="fas fa-star"></i>
-            </div>
-            <div>
-                <h2 class="card-title">Honras aos Oficiais</h2>
-                <div class="card-subtitle">Seção 4.2.2 do Cerimonial da Marinha</div>
-            </div>
-        </div>
-        <div id="honrasContent">
-            <!-- Conteúdo será carregado dinamicamente -->
-        </div>
+<!-- ... após a seção de Salvas ... -->
+
+<!-- =============== SEÇÃO DE HONRAS =============== -->
+<div class="info-section">
+    <h3 class="section-title">Honras aos Oficiais da Marinha</h3>
+    
+    <div style="background: rgba(214, 158, 46, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 30px; border-left: 4px solid #d69e2e;">
+        <h4 style="color: #d69e2e; margin-bottom: 15px;">📋 Direito às Honras de Portaló</h4>
+        <p style="color: var(--text-secondary); line-height: 1.6;">
+            <strong>Todos os Oficiais,</strong> ao entrarem ou saírem de Organização Militar (OM) da Marinha do Brasil, 
+            têm direito às honras de portaló.
+        </p>
     </div>
-</section>
-            
+    
+    <!-- Tabela de "boys" por posto -->
+    <h4 style="color: white; margin: 25px 0 15px 0;">👥 Número de "boys" na Recepção e Despedida</h4>
+    <table class="navy-table">
+        <thead>
+            <tr>
+                <th>Autoridade</th>
+                <th>Nº de "boys"</th>
+                <th>Observação</th>
+            </tr>
+        </thead>
+        <tbody id="boysTable">
+            <!-- Preenchido por JavaScript -->
+        </tbody>
+    </table>
+    
+    <!-- Tabela de Situações com Restrições -->
+    <h4 style="color: white; margin: 25px 0 15px 0;">⚠️ Situações com Restrições</h4>
+    <table class="navy-table">
+        <thead>
+            <tr>
+                <th>Situação</th>
+                <th>Restrição</th>
+                <th>Detalhes</th>
+            </tr>
+        </thead>
+        <tbody id="restricoesTable">
+            <!-- Preenchido por JavaScript -->
+        </tbody>
+    </table>
+    
+    <!-- Tabela de Toques -->
+    <h4 style="color: white; margin: 25px 0 15px 0;">🎺 Toques de Comandante</h4>
+    <table class="navy-table">
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Direito</th>
+                <th>Observação</th>
+            </tr>
+        </thead>
+        <tbody id="toquesTable">
+            <!-- Preenchido por JavaScript -->
+        </tbody>
+    </table>
+</div>
+<!-- =============== FIM SEÇÃO DE HONRAS =============== -->
             <!-- Tabela de Salvas -->
             <div class="info-section">
                 <h3 class="section-title">Salvas de Honra</h3>
@@ -1820,6 +1862,28 @@ honrasOficiais: {
         </div>
     `
 },
+// No objeto cerimonialData, adicione:
+    // ... dados existentes ...
+    
+    // Dados para Honras (igual às Salvas)
+    honrasBoys: [
+        { autoridade: "Almirante, Almirante-de-Esquadra e Vice-Almirante", boys: "8", obs: "Oficiais-generais" },
+        { autoridade: "Contra-Almirante", boys: "6", obs: "Oficial-general inicial" },
+        { autoridade: "Oficial Superior", boys: "4", obs: "Capitão-de-Mar-e-Guerra, Capitão-de-Fragata, Capitão-de-Corveta" },
+        { autoridade: "Demais oficiais", boys: "2", obs: "Oficiais intermediários e subalternos" }
+    ],
+    
+    honrasRestricoes: [
+        { situacao: "Presidente da República no mar", restricao: "Honras restritas", detalhes: "Quando o Presidente estiver no mar (dentro da distância máxima de salvas)" },
+        { situacao: "Autoridade de maior precedência", restricao: "Limitação de toques", detalhes: "Quando houver autoridade de maior precedência na OM visitada" },
+        { situacao: "Autoridade nas proximidades", restricao: "Apenas continências", detalhes: "Limitam-se às continências de guarda e 'boys', sem toques" }
+    ],
+    
+    honrasToques: [
+        { tipo: "Oficial no exercício do comando", direito: "Toque de Comandante", obs: "Apenas no navio/unidade onde exerce o cargo" },
+        { tipo: "Comandantes de Força", direito: "Toque de Comandante de Força", obs: "Em OM não subordinadas" }
+    ]
+
     // Dados da Bandeira Nacional
     bandeiraNacional: {
         id: 'national',
@@ -3752,7 +3816,7 @@ function showNotification(message) {
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
-    // Carregar tabela de salvas
+    // 1. Carregar tabela de SALVAS (já existe)
     const salvasTable = document.getElementById('salvasTable');
     if (salvasTable && cerimonialData.salvas) {
         cerimonialData.salvas.forEach(salva => {
@@ -3766,15 +3830,56 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    loadHonrasSection()
+    // ===== 2. NOVO: Carregar tabela de BOYS =====
+    const boysTable = document.getElementById('boysTable');
+    if (boysTable && cerimonialData.honrasBoys) {
+        cerimonialData.honrasBoys.forEach(item => {
+            boysTable.innerHTML += `
+                <tr>
+                    <td>${item.autoridade}</td>
+                    <td><strong>${item.boys} "boys"</strong></td>
+                    <td>${item.obs}</td>
+                </tr>
+            `;
+        });
+    }
+    
+    // ===== 3. NOVO: Carregar tabela de RESTRIÇÕES =====
+    const restricoesTable = document.getElementById('restricoesTable');
+    if (restricoesTable && cerimonialData.honrasRestricoes) {
+        cerimonialData.honrasRestricoes.forEach(item => {
+            restricoesTable.innerHTML += `
+                <tr>
+                    <td>${item.situacao}</td>
+                    <td>${item.restricao}</td>
+                    <td>${item.detalhes}</td>
+                </tr>
+            `;
+        });
+    }
+    
+    // ===== 4. NOVO: Carregar tabela de TOQUES =====
+    const toquesTable = document.getElementById('toquesTable');
+    if (toquesTable && cerimonialData.honrasToques) {
+        cerimonialData.honrasToques.forEach(item => {
+            toquesTable.innerHTML += `
+                <tr>
+                    <td>${item.tipo}</td>
+                    <td>${item.direito}</td>
+                    <td>${item.obs}</td>
+                </tr>
+            `;
+        });
+    }
+    
     // Carregar conteúdo inicial
     loadAllFlags();
     
     // Animar entrada
     setTimeout(() => {
-        const cards = document.querySelectorAll('.flag-card, .info-item');
+        const cards = document.querySelectorAll('.flag-card, .info-item, .navy-table tr');
         cards.forEach((card, index) => {
-            card.style.animation = `slideUp 0.5s ${index * 0.1}s forwards`;
+            card.style.animation = `slideUp 0.5s ${index * 0.05}s forwards`;
             card.style.opacity = '0';
         });
     }, 100);
