@@ -432,6 +432,89 @@
         height: 140%;
     }
     
+    /* Estilos específicos para Honras aos Oficiais */
+.protocol-info {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 15px;
+}
+
+.intro-box {
+    background: linear-gradient(135deg, rgba(0, 102, 204, 0.1), transparent);
+    border-left: 4px solid var(--primary);
+    padding: 15px;
+    margin-bottom: 25px;
+    border-radius: 0 8px 8px 0;
+}
+
+.subsection-title {
+    color: white;
+    margin: 25px 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent);
+}
+
+.restrictions-list {
+    background: rgba(245, 158, 11, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.restriction-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+}
+
+.restriction-item i {
+    color: var(--accent);
+    font-size: 1.2rem;
+    margin-top: 3px;
+}
+
+.toques-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.toque-item {
+    background: rgba(0, 102, 204, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 102, 204, 0.3);
+}
+
+.notes-box {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 30px 0;
+}
+
+.legal-box {
+    background: linear-gradient(135deg, rgba(0, 102, 204, 0.2), rgba(255, 204, 0, 0.1));
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.category-badge {
+    background: var(--primary);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+    
     .floating-logo-btn {
         width: 60px;
         height: 60px;
@@ -1505,64 +1588,57 @@
           
 <!-- ... após a seção de Salvas ... -->
 
-<!-- =============== SEÇÃO DE HONRAS =============== -->
+<!-- =============== FIM SEÇÃO DEHONRAS =============== -->
+<!-- Seção para Honras aos Oficiais -->
+<!-- Seção para Honras aos Oficiais -->
 <div class="info-section">
     <h3 class="section-title">Honras aos Oficiais da Marinha</h3>
     
-    <div style="background: rgba(214, 158, 46, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 30px; border-left: 4px solid #d69e2e;">
-        <h4 style="color: #d69e2e; margin-bottom: 15px;">📋 Direito às Honras de Portaló</h4>
-        <p style="color: var(--text-secondary); line-height: 1.6;">
-            <strong>Todos os Oficiais,</strong> ao entrarem ou saírem de Organização Militar (OM) da Marinha do Brasil, 
-            têm direito às honras de portaló.
-        </p>
+    <div class="protocol-info">
+        <!-- Tabela de Boys -->
+        <h4 class="subsection-title">Número de "boys" na Recepção e Despedida</h4>
+        <table class="navy-table">
+            <thead>
+                <tr>
+                    <th>Autoridade</th>
+                    <th>Nº de "boys"</th>
+                    <th>Observação</th>
+                </tr>
+            </thead>
+            <tbody id="honrasOficiaisTable">
+                <!-- Preenchido por JavaScript -->
+            </tbody>
+        </table>
+        
+        <!-- Restrições -->
+        <h4 class="subsection-title">Situações com Restrições</h4>
+        <table class="navy-table">
+            <thead>
+                <tr>
+                    <th>Situação</th>
+                    <th>Descrição</th>
+                </tr>
+            </thead>
+            <tbody id="restricoesOficiaisTable">
+                <!-- Preenchido por JavaScript -->
+            </tbody>
+        </table>
+        
+        <!-- Toques -->
+        <h4 class="subsection-title">Toques de Comandante ou Comandante de Força</h4>
+        <table class="navy-table">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Direito</th>
+                </tr>
+            </thead>
+            <tbody id="toquesOficiaisTable">
+                <!-- Preenchido por JavaScript -->
+            </tbody>
+        </table>
     </div>
-    
-    <!-- Tabela de "boys" por posto -->
-    <h4 style="color: white; margin: 25px 0 15px 0;">👥 Número de "boys" na Recepção e Despedida</h4>
-    <table class="navy-table">
-        <thead>
-            <tr>
-                <th>Autoridade</th>
-                <th>Nº de "boys"</th>
-                <th>Observação</th>
-            </tr>
-        </thead>
-        <tbody id="boysTable">
-            <!-- Preenchido por JavaScript -->
-        </tbody>
-    </table>
-    
-    <!-- Tabela de Situações com Restrições -->
-    <h4 style="color: white; margin: 25px 0 15px 0;">⚠️ Situações com Restrições</h4>
-    <table class="navy-table">
-        <thead>
-            <tr>
-                <th>Situação</th>
-                <th>Restrição</th>
-                <th>Detalhes</th>
-            </tr>
-        </thead>
-        <tbody id="restricoesTable">
-            <!-- Preenchido por JavaScript -->
-        </tbody>
-    </table>
-    
-    <!-- Tabela de Toques -->
-    <h4 style="color: white; margin: 25px 0 15px 0;">🎺 Toques de Comandante</h4>
-    <table class="navy-table">
-        <thead>
-            <tr>
-                <th>Tipo</th>
-                <th>Direito</th>
-                <th>Observação</th>
-            </tr>
-        </thead>
-        <tbody id="toquesTable">
-            <!-- Preenchido por JavaScript -->
-        </tbody>
-    </table>
 </div>
-<!-- =============== FIM SEÇÃO DE HONRAS =============== -->
             <!-- Tabela de Salvas -->
             <div class="info-section">
                 <h3 class="section-title">Salvas de Honra</h3>
@@ -1767,122 +1843,94 @@
 const cerimonialData = {
   
   // Adicione isso no objeto cerimonialData, após os outros arrays
-honrasOficiais: {
-    id: 'honras-oficiais',
-    title: "Honras aos Oficiais da Marinha",
-    subtitle: "Seção 4.2.2 do Cerimonial",
-    type: "protocolo",
-    content: `
-        <div style="padding: 20px;">
-            <h3 style="color: white; margin-bottom: 20px; border-bottom: 2px solid var(--accent); padding-bottom: 10px;">
-                <i class="fas fa-star"></i> Honras aos Oficiais da Marinha
-            </h3>
+    // ... seus outros objetos existentes ...
+    
+    // Honras aos Oficiais da Marinha
+    honrasOficiais: {
+        id: 'honras-oficiais',
+        title: "Honras aos Oficiais da Marinha",
+        subtitle: "Seção 4.2.2 do Cerimonial",
+        type: "protocolo",
+        icon: "fa-star",
+        content: {
+            introducao: "Todos os Oficiais, ao entrarem ou saírem de Organização Militar (OM) da Marinha do Brasil, têm direito às honras de portaló.",
             
-            <div style="background: rgba(0, 102, 204, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 30px; border-left: 4px solid var(--primary);">
-                <h4 style="color: var(--accent); margin-bottom: 15px;">📋 Direito às Honras de Portaló</h4>
-                <p style="color: var(--text-secondary); line-height: 1.6;">
-                    <strong>Todos os Oficiais,</strong> ao entrarem ou saírem de Organização Militar (OM) da Marinha do Brasil, 
-                    têm direito às honras de portaló.
-                </p>
-            </div>
+            restricoes: [
+                {
+                    situacao: "Presidente da República no mar",
+                    descricao: "Quando o Presidente estiver no mar (dentra da distância máxima de salvas)",
+                    icon: "fa-anchor"
+                },
+                {
+                    situacao: "Autoridade de maior precedência",
+                    descricao: "Quando se encontrar na OM visitada autoridade de maior precedência",
+                    icon: "fa-crown"
+                },
+                {
+                    situacao: "Limitação de toques",
+                    descricao: "Caso a autoridade de maior precedência esteja nas proximidades do local das honras, estas limitar-se-ão às continências de guarda e 'boys', não sendo dados toques",
+                    icon: "fa-volume-mute"
+                }
+            ],
             
-            <h4 style="color: white; margin: 25px 0 15px 0;">⚠️ Situações com Restrições:</h4>
-            <div style="background: rgba(245, 158, 11, 0.1); padding: 20px; border-radius: 8px; margin-bottom: 25px;">
-                <ul style="color: var(--text-secondary); padding-left: 20px;">
-                    <li><strong>Presidente da República no mar:</strong> Quando o Presidente estiver no mar (dentro da distância máxima de salvas)</li>
-                    <li><strong>Autoridade de maior precedência:</strong> Quando se encontrar na OM visitada autoridade de maior precedência</li>
-                    <li><strong>Limitação de toques:</strong> Caso a autoridade de maior precedência esteja nas proximidades do local das honras, estas limitar-se-ão às continências de guarda e "boys", não sendo dados toques</li>
-                </ul>
-            </div>
+            toques: [
+                {
+                    tipo: "Oficial no exercício do comando",
+                    direito: "Só tem direito ao toque de Comandante no navio, unidade ou estabelecimento em que exerce tal cargo",
+                    icon: "fa-user-tie"
+                },
+                {
+                    tipo: "Comandantes de Força",
+                    direito: "Podem receber toques de Comandante de Força em OM não subordinadas",
+                    icon: "fa-flag"
+                }
+            ],
             
-            <h4 style="color: white; margin: 25px 0 15px 0;">🎺 Toques de Comandante ou Comandante de Força</h4>
-            <div class="info-grid" style="margin: 20px 0;">
-                <div class="info-item">
-                    <div class="info-label">Oficial no exercício do comando</div>
-                    <div class="info-value">Só tem direito ao toque de Comandante no navio, unidade ou estabelecimento em que exerce tal cargo</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Comandantes de Força</div>
-                    <div class="info-value">Podem receber toques de Comandante de Força em OM não subordinadas</div>
-                </div>
-            </div>
+            boys: [
+                {
+                    autoridade: "Almirante, Almirante-de-Esquadra e Vice-Almirante",
+                    quantidade: 8,
+                    obs: "Oficiais-generais",
+                    categoria: "Almirantado"
+                },
+                {
+                    autoridade: "Contra-Almirante",
+                    quantidade: 6,
+                    obs: "Oficial-general inicial",
+                    categoria: "Almirantado"
+                },
+                {
+                    autoridade: "Oficial Superior",
+                    quantidade: 4,
+                    obs: "Capitão-de-Mar-e-Guerra, Capitão-de-Fragata, Capitão-de-Corveta",
+                    categoria: "Superiores"
+                },
+                {
+                    autoridade: "Demais oficiais",
+                    quantidade: 2,
+                    obs: "Oficiais intermediários e subalternos",
+                    categoria: "Outros"
+                }
+            ],
             
-            <h4 style="color: white; margin: 25px 0 15px 0;">👥 Número de "boys" na Recepção e Despedida</h4>
-            <table class="navy-table">
-                <thead>
-                    <tr>
-                        <th>Autoridade</th>
-                        <th>Nº de "boys"</th>
-                        <th>Observação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Almirante, Almirante-de-Esquadra e Vice-Almirante</td>
-                        <td><strong>8 "boys"</strong></td>
-                        <td>Oficiais-generais</td>
-                    </tr>
-                    <tr>
-                        <td>Contra-Almirante</td>
-                        <td><strong>6 "boys"</strong></td>
-                        <td>Oficial-general inicial</td>
-                    </tr>
-                    <tr>
-                        <td>Oficial Superior</td>
-                        <td><strong>4 "boys"</strong></td>
-                        <td>Capitão-de-Mar-e-Guerra, Capitão-de-Fragata, Capitão-de-Corveta</td>
-                    </tr>
-                    <tr>
-                        <td>Demais oficiais</td>
-                        <td><strong>2 "boys"</strong></td>
-                        <td>Oficiais intermediários e subalternos</td>
-                    </tr>
-                </tbody>
-            </table>
+            notas: [
+                "As honras são prestadas conforme o posto e cargo do oficial",
+                "Os 'boys' são militares que formam uma guarda de honra",
+                "Os toques de apito e corneta são específicos para cada círculo hierárquico",
+                "Em situações de emergência ou exercício, as honras podem ser suspensas"
+            ],
             
-            <div style="margin-top: 30px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
-                <h5 style="color: var(--accent); margin-bottom: 10px;">📝 Notas Importantes:</h5>
-                <ul style="color: var(--text-secondary); padding-left: 20px; font-size: 0.95rem;">
-                    <li>As honras são prestadas conforme o <strong>posto e cargo</strong> do oficial</li>
-                    <li>Os "boys" são militares que formam uma guarda de honra</li>
-                    <li>Os toques de apito e corneta são específicos para cada círculo hierárquico</li>
-                    <li>Em situações de emergência ou exercício, as honras podem ser suspensas</li>
-                </ul>
-            </div>
-            
-            <div style="margin-top: 40px; padding: 25px; background: linear-gradient(135deg, rgba(0, 102, 204, 0.2), rgba(255, 204, 0, 0.1)); border-radius: 12px; text-align: center;">
-                <h4 style="color: white; margin-bottom: 15px;">⚓ Base Legal</h4>
-                <p style="color: var(--text-secondary); margin-bottom: 10px;">
-                    <i class="fas fa-book"></i> <strong>Cerimonial da Marinha:</strong> Decreto nº 6.806/2009
-                </p>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">
-                    Seção 4.2.2 - Honras aos Oficiais de Marinha
-                </p>
-            </div>
-        </div>
-    `
-},
+            baseLegal: {
+                titulo: "Cerimonial da Marinha",
+                decreto: "Decreto nº 6.806/2009",
+                secao: "Seção 4.2.2 - Honras aos Oficiais de Marinha"
+            }
+        }
+    },
+
 // No objeto cerimonialData, adicione:
     // ... dados existentes ...
     
-    // Dados para Honras (igual às Salvas)
-    honrasBoys: [
-        { autoridade: "Almirante, Almirante-de-Esquadra e Vice-Almirante", boys: "8", obs: "Oficiais-generais" },
-        { autoridade: "Contra-Almirante", boys: "6", obs: "Oficial-general inicial" },
-        { autoridade: "Oficial Superior", boys: "4", obs: "Capitão-de-Mar-e-Guerra, Capitão-de-Fragata, Capitão-de-Corveta" },
-        { autoridade: "Demais oficiais", boys: "2", obs: "Oficiais intermediários e subalternos" }
-    ],
-    
-    honrasRestricoes: [
-        { situacao: "Presidente da República no mar", restricao: "Honras restritas", detalhes: "Quando o Presidente estiver no mar (dentro da distância máxima de salvas)" },
-        { situacao: "Autoridade de maior precedência", restricao: "Limitação de toques", detalhes: "Quando houver autoridade de maior precedência na OM visitada" },
-        { situacao: "Autoridade nas proximidades", restricao: "Apenas continências", detalhes: "Limitam-se às continências de guarda e 'boys', sem toques" }
-    ],
-    
-    honrasToques: [
-        { tipo: "Oficial no exercício do comando", direito: "Toque de Comandante", obs: "Apenas no navio/unidade onde exerce o cargo" },
-        { tipo: "Comandantes de Força", direito: "Toque de Comandante de Força", obs: "Em OM não subordinadas" }
-    ]
 
     // Dados da Bandeira Nacional
     bandeiraNacional: {
@@ -3816,7 +3864,7 @@ function showNotification(message) {
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Carregar tabela de SALVAS (já existe)
+    // 1. Carregar tabela de SALVAS
     const salvasTable = document.getElementById('salvasTable');
     if (salvasTable && cerimonialData.salvas) {
         cerimonialData.salvas.forEach(salva => {
@@ -3830,7 +3878,53 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // ===== 2. NOVO: Carregar tabela de BOYS =====
+    // ===== 2. NOVO: Carregar tabela de HONRAS AOS OFICIAIS - BOYS =====
+    const honrasOficiaisTable = document.getElementById('honrasOficiaisTable');
+    if (honrasOficiaisTable && cerimonialData.honrasOficiais) {
+        const boys = cerimonialData.honrasOficiais.content.boys;
+        
+        boys.forEach(boy => {
+            honrasOficiaisTable.innerHTML += `
+                <tr>
+                    <td>${boy.autoridade}</td>
+                    <td><strong>${boy.quantidade} "boys"</strong></td>
+                    <td>${boy.obs} (${boy.categoria})</td>
+                </tr>
+            `;
+        });
+    }
+    
+    // ===== 3. NOVO: Carregar tabela de HONRAS AOS OFICIAIS - RESTRIÇÕES =====
+    const restricoesOficiaisTable = document.getElementById('restricoesOficiaisTable');
+    if (restricoesOficiaisTable && cerimonialData.honrasOficiais) {
+        const restricoes = cerimonialData.honrasOficiais.content.restricoes;
+        
+        restricoes.forEach(rest => {
+            restricoesOficiaisTable.innerHTML += `
+                <tr>
+                    <td>${rest.situacao}</td>
+                    <td>${rest.descricao}</td>
+                </tr>
+            `;
+        });
+    }
+    
+    // ===== 4. NOVO: Carregar tabela de HONRAS AOS OFICIAIS - TOQUES =====
+    const toquesOficiaisTable = document.getElementById('toquesOficiaisTable');
+    if (toquesOficiaisTable && cerimonialData.honrasOficiais) {
+        const toques = cerimonialData.honrasOficiais.content.toques;
+        
+        toques.forEach(toque => {
+            toquesOficiaisTable.innerHTML += `
+                <tr>
+                    <td>${toque.tipo}</td>
+                    <td>${toque.direito}</td>
+                </tr>
+            `;
+        });
+    }
+    
+    // ===== 5. NOVO: Carregar tabela de BOYS GERAL (se ainda existir) =====
     const boysTable = document.getElementById('boysTable');
     if (boysTable && cerimonialData.honrasBoys) {
         cerimonialData.honrasBoys.forEach(item => {
@@ -3844,7 +3938,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // ===== 3. NOVO: Carregar tabela de RESTRIÇÕES =====
+    // ===== 6. NOVO: Carregar tabela de RESTRIÇÕES GERAL =====
     const restricoesTable = document.getElementById('restricoesTable');
     if (restricoesTable && cerimonialData.honrasRestricoes) {
         cerimonialData.honrasRestricoes.forEach(item => {
@@ -3858,7 +3952,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // ===== 4. NOVO: Carregar tabela de TOQUES =====
+    // ===== 7. NOVO: Carregar tabela de TOQUES GERAL =====
     const toquesTable = document.getElementById('toquesTable');
     if (toquesTable && cerimonialData.honrasToques) {
         cerimonialData.honrasToques.forEach(item => {
