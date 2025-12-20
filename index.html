@@ -1251,6 +1251,7 @@
 <body>
 <!-- Botão Flutuante com Controles da Rádio Marinha -->
 <!-- Botão Flutuante com Múltiplas Rádios -->
+<!-- Botão Flutuante com Múltiplas Rádios -->
 <div class="floating-radio-container">
     <!-- Botão principal da rádio -->
     <div class="floating-radio-btn" onclick="toggleRadioControls()">
@@ -1319,8 +1320,9 @@
             </div>
         </div>
         
+    </div>
 </div>
-</div>
+
 <!-- Script para o Player de Múltiplas Rádios -->
 <script>
 // Configuração das rádios
@@ -1371,10 +1373,6 @@ function loadRadio(radioId) {
     document.getElementById('radioLocation').textContent = radio.location;
     document.getElementById('radioSlogan').textContent = `"${radio.slogan}"`;
     document.getElementById('radioLogo').src = radio.logo;
-    document.getElementById('radioSegment').textContent = radio.segment;
-    document.getElementById('radioCity').textContent = radio.city;
-    document.getElementById('radioWebsite').href = radio.website;
-    document.getElementById('radioWebsite').textContent = "Site Oficial";
     
     // Atualizar botões de seleção
     document.querySelectorAll('.radio-option').forEach(btn => {
