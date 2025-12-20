@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+
+Sitemap: https://marujodigital.onrender.com/sitemap.xml
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Block AI scrapers
+User-agent: ChatGPT-User
+Disallow: /
+User-agent: GPTBot
+Disallow: /
+User-agent: CCBot
+Disallow: /

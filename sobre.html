@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre - Marujo Digital</title>
+    <meta name="description" content="Informações sobre o Marujo Digital, plataforma educativa sobre Cerimonial da Marinha do Brasil">
+    
+    <!-- Usando o mesmo CSS do seu site principal -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Usando o mesmo estilo do seu site */
+        :root {
+            --primary: #0066cc;
+            --primary-dark: #004d99;
+            --accent: #ffcc00;
+            --bg-dark: #0a1929;
+            --bg-darker: #051223;
+            --text-primary: #ffffff;
+            --text-secondary: #a8c7fa;
+            --text-muted: #7a9ccc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(0, 102, 204, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 204, 0, 0.05) 0%, transparent 50%);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: linear-gradient(145deg, rgba(10, 25, 41, 0.9), rgba(5, 18, 35, 0.9));
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+        
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        
+        .content-section {
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: var(--accent);
+            margin: 25px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        ul {
+            color: var(--text-secondary);
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight {
+            background: rgba(0, 102, 204, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            margin: 20px 0;
+        }
+        
+        .navy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        
+        .navy-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .back-home {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .back-home a {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .back-home a:hover {
+            color: white;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .logo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo-header img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-header">
+            <h1>Marujo Digital</h1>
+            <div class="subtitle">Cerimonial da Marinha do Brasil</div>
+        </div>
+        
+        <div class="content-section">
+            <h2><i class="fas fa-info-circle"></i> Sobre o Projeto</h2>
+            <p>O <strong>Marujo Digital</strong> é uma plataforma educativa desenvolvida para disseminar conhecimento sobre o Cerimonial da Marinha do Brasil, baseada na publicação oficial EMN-006 (2ª Revisão - 2022).</p>
+            
+            <div class="info-card">
+                <p><strong>Finalidade:</strong> Didática</p>
+                <p><strong>Classificação:</strong> Ostensivo</p>
+                <p><strong>Publicação Base:</strong> EMN-006 - Apostila de Cerimonial da Marinha</p>
+                <p><strong>Data de Aprovação:</strong> 25 de outubro de 2022</p>
+                <p><strong>Comandante Aprovador:</strong> CF Rogério Alves Ribeiro</p>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2><i class="fas fa-book"></i> Conteúdo Disponibilizado</h2>
+            <p>A plataforma cobre todos os principais aspectos do cerimonial naval brasileiro:</p>
+            
+            <ul>
+                <li><strong>Bandeira Nacional:</strong> História, elementos e procedimentos</li>
+                <li><strong>Bandeiras-Insígnias:</strong> Autoridades e comandos</li>
+                <li><strong>Bandeiras Distintivas:</strong> Uso e significados</li>
+                <li><strong>Códigos de Sinais:</strong> CIS e Código Tático Naval (ATP)</li>
+                <li><strong>Procedimentos Cerimoniais:</strong> Hasteamento, arriamento e honras</li>
+                <li><strong>Salvas de Honra:</strong> Tiros por autoridade</li>
+                <li><strong>Datas Festivas:</strong> Embandeiramento e cerimônias especiais</li>
+            </ul>
+        </div>
+        
+        <div class="content-section">
+            <h2><i class="fas fa-graduation-cap"></i> Finalidade Educativa</h2>
+            <p>Este projeto tem como objetivo principal:</p>
+            
+            <div class="highlight">
+                <p>• Facilitar o estudo do Cerimonial Naval brasileiro</p>
+                <p>• Padronizar o conteúdo para aprendizes-marinheiros</p>
+                <p>• Servir como material de consulta rápida e organizada</p>
+                <p>• Preservar as tradições e protocolos navais</p>
+            </div>
+            
+            <p>Todas as informações são baseadas em documentos oficiais da Marinha do Brasil, garantindo precisão e fidelidade às normas estabelecidas.</p>
+        </div>
+        
+        <div class="content-section">
+            <h2><i class="fas fa-exclamation-triangle"></i> Aviso Importante</h2>
+            <p>Esta plataforma é de <strong>caráter exclusivamente educativo</strong> e não substitui os manuais e publicações oficiais da Marinha do Brasil.</p>
+            <p>Para procedimentos oficiais, sempre consulte as publicações originais disponibilizadas pela Marinha.</p>
+        </div>
+        
+        <div class="back-home">
+            <a href="index.html">
+                <i class="fas fa-arrow-left"></i> Voltar para o Marujo Digital
+            </a>
+        </div>
+    </div>
+</body>
+</html>
