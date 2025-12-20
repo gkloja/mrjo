@@ -1447,7 +1447,7 @@
     <table class="navy-table" style="margin-top: 20px;">
         <thead>
             <tr>
-                <th>Autoridade/Círculo</th>
+                <th>Autoridade</th>
                 <th>Número de "Boys"</th>
                 <th>Toques de Apito</th>
                 <th>Observações</th>
@@ -2401,18 +2401,32 @@ sinaisBarroso: [
     
     // Dados de Salvas
             salvas: [
-            { autoridade: "Presidente da República", tiros: 21, obs: "Máxima honra" },
-            { autoridade: "Vice-Presidente da República", tiros: 19, obs: "Vice-chefe de Estado" },
-            { autoridade: "Comandante da Marinha", tiros: 19, obs: "Patrono: Tamandaré" },
-            { autoridade: "Almirante", tiros: 19, obs: "Posto máximo" },
-            { autoridade: "Almirante-de-Esquadra", tiros: 17, obs: "Posto superior" },
-            { autoridade: "Vice-Almirante", tiros: 15, obs: "Posto intermediário" },
-            { autoridade: "Contra-Almirante", tiros: 13, obs: "Posto inicial" },
-            { autoridade: "Ministro de Estado", tiros: 19, obs: "Ministérios" },
-            { autoridade: "Governador", tiros: 19, obs: "Unidades da Federação" },
-            { autoridade: "Embaixador do Brasil", tiros: 19, obs: "Representação externa" },
-            { autoridade: "Cônsul Geral", tiros: 11, obs: "Representação consular" }
-        ],
+    { autoridade: "Presidente da República", tiros: 21, obs: "Máxima honra" },
+    
+    { autoridade: "Vice-Presidente da República", tiros: 19, obs: "Vice-chefe de Estado" },
+    { autoridade: "Presidente do Congresso Nacional", tiros: 19, obs: "—" },
+    { autoridade: "Presidente do Supremo Tribunal Federal", tiros: 19, obs: "—" },
+    { autoridade: "Presidente do Senado Federal", tiros: 19, obs: "—" },
+    { autoridade: "Presidente da Câmara dos Deputados", tiros: 19, obs: "—" },
+    { autoridade: "Ministro de Estado", tiros: 19, obs: "—" },
+    { autoridade: "Comandante do Exército", tiros: 19, obs: "—" },
+    { autoridade: "Comandante da Aeronáutica", tiros: 19, obs: "—" },
+    { autoridade: "Governador de Unidade da Federação", tiros: 19, obs: "—" },
+    { autoridade: "Embaixador do Brasil", tiros: 19, obs: "—" },
+    { autoridade: "Patrono da Marinha (Tamandaré)", tiros: 19, obs: "—" },
+    { autoridade: "Comandante da Marinha", tiros: 19, obs: "—" },
+    { autoridade: "Almirante", tiros: 19, obs: "Posto máximo" },
+    
+    { autoridade: "Presidente do Supremo Tribunal Militar", tiros: 17, obs: "—" },
+    { autoridade: "Almirante-de-Esquadra", tiros: 17, obs: "Posto superior" },
+    
+    { autoridade: "Vice-Almirante", tiros: 15, obs: "Posto intermediário" },
+    
+    { autoridade: "Encarregado de Negócios do Brasil", tiros: 13, obs: "—" },
+    { autoridade: "Contra-Almirante", tiros: 13, obs: "Posto inicial" },
+    
+    { autoridade: "Cônsul Geral do Brasil", tiros: 11, obs: "—" }
+],
     
     // Códigos de Sinais (exemplos) - ATUALIZADO
     sinaisCIS: [
@@ -2437,7 +2451,7 @@ sinaisBarroso: [
         { codigo: "SIERRA", significado: "Minhas máquinas estão dando atrás", tipo: "cis", categoria: "mecânica", imagem: "imagens/sinais/81.png" },
         { codigo: "TANGO", significado: "Mantenha-se afastado; estou arrastando rede em paralelo", tipo: "cis", categoria: "pesca", imagem: "imagens/sinais/82.png" },
         { codigo: "UNIFORM", significado: "Você se dirige para um perigo", tipo: "cis", categoria: "perigo", imagem: "imagens/sinais/83.png" },
-        { codigo: "VICTOR", significado: "Solicito auxílio", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/84.png" },
+        { codigo: "VICTOR", significado: "Solicito auxílio", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/84.jpg" },
         { codigo: "WHISKEY", significado: "Solicito assistência médica", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/85.png" },
         { codigo: "XRAY", significado: "Suspenda a execução do que você está fazendo e observe meus sinais", tipo: "cis", categoria: "ordem", imagem: "imagens/sinais/88.png" },
         { codigo: "YANKEE", significado: "Estou arrastando meu ferro", tipo: "cis", categoria: "ancoragem", imagem: "imagens/sinais/89.png" },
@@ -2466,7 +2480,7 @@ sinaisBarroso: [
         { codigo: "SIERRA (ATP)", significado: "Exercício de bandeiras", tipo: "atp", categoria: "exercicio", imagem: "imagens/sinais/81.png" },
         { codigo: "TANGO (ATP)", significado: "Indicador de hora", tipo: "atp", categoria: "comunicação", imagem: "imagens/sinais/82.png" },
         { codigo: "UNIFORM (ATP)", significado: "Manobra com o ferro (fundear, amarrar e suspender)", tipo: "atp", categoria: "manobra", imagem: "imagens/sinais/83.png" },
-        { codigo: "VICTOR (ATP)", significado: "Lançando ou recolhendo equipamento acústico rebocado", tipo: "atp", categoria: "operações", imagem: "imagens/sinais/84.png" },
+        { codigo: "VICTOR (ATP)", significado: "Lançando ou recolhendo equipamento acústico rebocado", tipo: "atp", categoria: "operações", imagem: "imagens/sinais/84.jpg" },
         { codigo: "WHISKEY (ATP)", significado: "Segue endereçados de informação", tipo: "atp", categoria: "comunicação", imagem: "imagens/sinais/85.png" },
         { codigo: "XRAY (ATP)", significado: "Evolução ou exercício concluído", tipo: "atp", categoria: "exercicio", imagem: "imagens/sinais/88.png" },
         { codigo: "YANKEE (ATP)", significado: "Sou o OCT (Operational Command Team)", tipo: "atp", categoria: "comando", imagem: "imagens/sinais/89.png" },
