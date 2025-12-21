@@ -394,8 +394,7 @@
 
     <script>
 
-
-class AssistenteNaval {
+ class AssistenteNaval {
     constructor() {
         // Usando api.allorigins.win como proxy HTTPS → HTTP
         this.PROXY_BASE = 'https://api.allorigins.win/raw?url=';
@@ -479,7 +478,7 @@ class AssistenteNaval {
             const resposta = await this.enviarViaProxy(text);
             this.adicionarRespostaAssistente(resposta, true);
         } catch (error) {
-            console.error('Erro:', error);
+            console.error('Erro no envio:', error);
             
             // Fallback local
             const respostaFallback = await this.respostaFallbackLocal(text);
@@ -507,102 +506,52 @@ class AssistenteNaval {
         const apiUrl = this.API_BASE + '/marinha-chat';
         const proxyUrl = this.PROXY_BASE + encodeURIComponent(apiUrl);
         
-        console.log('📤 Enviando via proxy:', proxyUrl.substring(0, 100) + '...');
+        console.log('📤 Enviando via proxy:', proxyUrl);
         
-        const response = await fetch(proxyUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                mensagem: mensagem,
-                userId: this.userId,
-                nome: this.userName
-            })
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        
-        if (data.sucesso) {
-            return data.resposta.texto;
-        } else {
-            throw new Error(data.erro || 'Erro na API');
+        try {
+            const response = await fetch(proxyUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    mensagem: mensagem,
+                    userId: this.userId,
+                    nome: this.userName
+                })
+            });
+            
+            console.log('📥 Status da resposta:', response.status, response.statusText);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('📄 Dados da resposta:', data);
+            
+            if (data.sucesso) {
+                return data.resposta.texto;
+            } else {
+                throw new Error(data.erro || 'Erro na API');
+            }
+            
+        } catch (error) {
+            console.error('❌ Erro no proxy:', error);
+            throw error;
         }
     }
     
-   async respostaFallbackLocal(mensagem) {
-        // Respostas pré-definidas para fallback
+    async respostaFallbackLocal(mensagem) {
         const respostas = {
-            'hastear': `🚩 **Hasteamento da Bandeira Nacional:**
+            'hastear': `🚩 **Hasteamento da Bandeira Nacional:**\n\nSegundo o Manual da Marinha:\n\n1. **Horário**: Diariamente às 8 horas\n2. **Procedimento**:\n   • Formação da tropa (quando houver)\n   • Toque de "Alvorada"\n   • Bandeira hasteada até o topo\n   • Todos em sentido, voltados para a bandeira\n   • Saudar no momento do hasteamento\n\n3. **Em Navios**: Segue o mesmo horário\n4. **Observações**:\n   • Nunca deve tocar o solo\n   • Em dias chuvosos, não é hasteada\n   • Ao anoitecer, deve ser iluminada\n\n⚓ *Fonte: Manual de Cerimonial da Marinha*`,
             
-            Segundo o Manual da Marinha:
+            'salva': `🎯 **Salvas de Artilharia:**\n\nProtocolos segundo o cerimonial naval:\n\n• **21 tiros**: Presidente da República\n• **19 tiros**: Chefes de Estado estrangeiros\n• **17 tiros**: Ministros de Estado\n• **15 tiros**: Oficiais-generais\n\nA salva é executada por baterias de artilharia, com intervalo de 5 segundos entre os tiros.`,
             
-            1. **Horário**: Diariamente às 8 horas
-            2. **Procedimento**:
-               • Formação da tropa (quando houver)
-               • Toque de "Alvorada"
-               • Bandeira hasteada até o topo
-               • Todos em sentido, voltados para a bandeira
-               • Saudar no momento do hasteamento
+            'portaló': `🎖️ **Honras de Portaló:**\n\nCerimonial de recepção a bordo:\n\n1. **Para autoridades militares**:\n   • Apito de vaia (varia conforme a patente)\n   • Tripulação em sentido\n   • Banda toca continência\n\n2. **Ordem de precedência**:\n   • Presidente da República (21 apitos)\n   • Ministros (19 apitos)\n   • Oficiais-generais (17 apitos)\n\n3. **Procedimento**:\n   • Visitante sobe pela boreste (direita)\n   • Comandante aguarda no portaló\n   • Troca de saudações\n\n⚓ *Protocolo Naval Brasileiro*`,
             
-            3. **Em Navios**: Segue o mesmo horário
-            4. **Observações**:
-               • Nunca deve tocar o solo
-               • Em dias chuvosos, não é hasteada
-               • Ao anoitecer, deve ser iluminada
-            
-            ⚓ *Fonte: Manual de Cerimonial da Marinha*`,
-            
-            'salva': `🎯 **Salvas de Artilharia:**
-            
-            Protocolos segundo o cerimonial naval:
-            
-            • **21 tiros**: Presidente da República
-            • **19 tiros**: Chefes de Estado estrangeiros
-            • **17 tiros**: Ministros de Estado
-            • **15 tiros**: Oficiais-generais
-            
-            A salva é executada por baterias de artilharia, com intervalo de 5 segundos entre os tiros.`,
-            
-            'portaló': `🎖️ **Honras de Portaló:**
-            
-            Cerimonial de recepção a bordo:
-            
-            1. **Para autoridades militares**:
-               • Apito de vaia (varia conforme a patente)
-               • Tripulação em sentido
-               • Banda toca continência
-            
-            2. **Ordem de precedência**:
-               • Presidente da República (21 apitos)
-               • Ministros (19 apitos)
-               • Oficiais-generais (17 apitos)
-            
-            3. **Procedimento**:
-               • Visitante sobe pela boreste (direita)
-               • Comandante aguarda no portaló
-               • Troca de saudações
-            
-            ⚓ *Protocolo Naval Brasileiro*`,
-            
-            'sinais': `📶 **Código Internacional de Sinais (CIS):**
-            
-            Sistema de comunicação visual:
-            
-            • **Bandeiras alfabéticas**: A a Z (26 bandeiras)
-            • **Bandeiras numéricas**: 0 a 9
-            • **Bandeiras substitutas**: 3 bandeiras
-            • **Código de resposta**: 1 bandeira
-            
-            **Exemplos importantes**:
-            • Bandeira "A": Tenho mergulhador submerso
-            • Bandeira "B": Estou carregando/descarregando
-            • Bandeira "H": Tenho piloto a bordo`
+            'sinais': `📶 **Código Internacional de Sinais (CIS):**\n\nSistema de comunicação visual:\n\n• **Bandeiras alfabéticas**: A a Z (26 bandeiras)\n• **Bandeiras numéricas**: 0 a 9\n• **Bandeiras substitutas**: 3 bandeiras\n• **Código de resposta**: 1 bandeira\n\n**Exemplos importantes**:\n• Bandeira "A": Tenho mergulhador submerso\n• Bandeira "B": Estou carregando/descarregando\n• Bandeira "H": Tenho piloto a bordo`
         };
         
         const msgLower = mensagem.toLowerCase();
@@ -616,17 +565,7 @@ class AssistenteNaval {
         } else if (msgLower.includes('sinal') || msgLower.includes('cis')) {
             return respostas.sinais;
         } else {
-            return `Olá ${this.userName}! Sou seu assistente naval. 🚢
-
-No momento estou operando em modo local. Posso ajudá-lo com informações sobre:
-
-• 🇧🇷 **Bandeira Nacional** - Cerimonial, hasteamento e arriamento
-• 🎯 **Salvas de Artilharia** - 21 tiros para o Presidente
-• 🚩 **Honras Navais** - Protocolos e saudações
-• 📶 **Código Internacional de Sinais** (CIS)
-• ⚓ **Procedimentos Navais** - Cerimonial a bordo
-
-Pergunte sobre um desses tópicos!`;
+            return `Olá ${this.userName}! Sou seu assistente naval. 🚢\n\nNo momento estou operando em modo local. Posso ajudá-lo com informações sobre:\n\n• 🇧🇷 **Bandeira Nacional** - Cerimonial, hasteamento e arriamento\n• 🎯 **Salvas de Artilharia** - 21 tiros para o Presidente\n• 🚩 **Honras Navais** - Protocolos e saudações\n• 📶 **Código Internacional de Sinais** (CIS)\n• ⚓ **Procedimentos Navais** - Cerimonial a bordo\n\nPergunte sobre um desses tópicos!`;
         }
     }
     
@@ -648,35 +587,6 @@ Pergunte sobre um desses tópicos!`;
                 ${badge}
             </div>
             <div class="message-text">${this.formatarResposta(texto)}</div>
-        `;
-        
-        chatMessages.appendChild(messageDiv);
-        this.scrollParaBaixo();
-    }
-    
-    adicionarMensagemErro() {
-        const chatMessages = document.getElementById('chatMessages');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message assistant';
-        messageDiv.innerHTML = `
-            <div class="message-header">🎖️ Sistema</div>
-            <div class="message-text">
-                ⚠️ <strong>Erro de Conexão</strong>
-                <br><br>
-                Não foi possível conectar ao servidor no momento.
-                <br>
-                <small>Erro: Não foi possível acessar a API via proxy</small>
-                <br><br>
-                <button onclick="testarConexaoDireta()" style="
-                    background: #1976d2;
-                    color: white;
-                    border: none;
-                    padding: 8px 16px;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    margin: 5px;
-                ">🔄 Testar Conexão</button>
-            </div>
         `;
         
         chatMessages.appendChild(messageDiv);
@@ -708,10 +618,10 @@ Pergunte sobre um desses tópicos!`;
         }
         
         // Tenta limpar no servidor via proxy
-        const apiEndpoint = encodeURIComponent(this.BASE_API_URL + '/marinha-limpar-historico');
-        const fullUrl = this.PROXY_URL + apiEndpoint;
+        const apiUrl = this.API_BASE + '/marinha-limpar-historico';
+        const proxyUrl = this.PROXY_BASE + encodeURIComponent(apiUrl);
         
-        fetch(fullUrl, {
+        fetch(proxyUrl, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ userId: this.userId })
@@ -741,43 +651,9 @@ Pergunte sobre um desses tópicos!`;
     }
 }
 
-// Funções auxiliares globais
-async function testarConexaoDireta() {
-    const proxyUrl = 'https://api.allorigins.win/raw?url=';
-    const apiUrl = encodeURIComponent('http://br2.bronxyshost.com:4009/marinha-status');
-    const fullUrl = proxyUrl + apiUrl;
-    
-    try {
-        const response = await fetch(fullUrl);
-        
-        if (response.ok) {
-            const data = await response.json();
-            alert(`✅ Conexão OK via api.allorigins.win!\n\nStatus: ${data.status}\nPDF: ${data.pdfCarregado ? 'Carregado' : 'Não'}\nUsuários: ${data.usuariosAtivos}`);
-            
-            // Atualizar status na interface
-            document.getElementById('connectionStatus').textContent = '✅ Online';
-            document.getElementById('connectionStatus').style.color = '#4caf50';
-            
-        } else {
-            alert(`❌ Proxy respondeu com erro: HTTP ${response.status}`);
-        }
-    } catch (error) {
-        alert(`❌ Falha na conexão:\n${error.message}\n\nVerifique:\n1. Se o servidor está rodando\n2. Se api.allorigins.win está acessível`);
-    }
-}
-
-function testarProxyManualmente() {
-    // Abre uma nova janela para testar o proxy manualmente
-    const testUrl = 'https://api.allorigins.win/raw?url=' + 
-                   encodeURIComponent('http://br2.bronxyshost.com:4009/marinha-status');
-    
-    window.open(testUrl, '_blank');
-}
-
 // Inicializar o assistente
 const assistente = new AssistenteNaval();
 
-// Funções globais para os botões
 function enviarMensagem() {
     assistente.enviarMensagem();
 }
@@ -791,47 +667,9 @@ function limparConversa() {
     assistente.limparConversa();
 }
 
-// Configurar timeout para fetch
-(function() {
-    const originalFetch = window.fetch;
-    window.fetch = function(resource, options = {}) {
-        const { timeout = 15000, ...restOptions } = options;
-        
-        if (timeout) {
-            const controller = new AbortController();
-            const { signal } = controller;
-            restOptions.signal = signal;
-            
-            const timeoutId = setTimeout(() => {
-                controller.abort();
-                console.log(`⏰ Timeout após ${timeout}ms:`, resource);
-            }, timeout);
-            
-            return originalFetch(resource, restOptions)
-                .then(response => {
-                    clearTimeout(timeoutId);
-                    return response;
-                })
-                .catch(error => {
-                    clearTimeout(timeoutId);
-                    throw error;
-                });
-        }
-        
-        return originalFetch(resource, restOptions);
-    };
-})();
-
 // Quando a página carregar
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('messageInput').focus();
-    
-    // Verificar conexão após 2 segundos
-    setTimeout(() => {
-        if (document.getElementById('connectionStatus').textContent.includes('Conectando')) {
-            assistente.testConnection();
-        }
-    }, 2000);
 });
 
     </script>
