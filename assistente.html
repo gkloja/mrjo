@@ -398,12 +398,9 @@ class AssistenteNaval {
         // URL base da sua API Node.js
         this.BASE_API_URL = 'http://br2.bronxyshost.com:4009';
         
-        // Lista de proxies CORS para tentar
-        this.PROXIES = [
-            'https://api.allorigins.win/raw?url='
-        ];
+        // Proxy CORS - usa apenas api.allorigins.win
+        this.PROXY_URL = 'https://api.allorigins.win/raw?url=';
         
-        this.currentProxy = 0;
         this.userId = this.getOrCreateUserId();
         this.userName = 'Marinheiro';
         this.initialize();
@@ -426,39 +423,32 @@ class AssistenteNaval {
     async testConnection() {
         const statusElement = document.getElementById('connectionStatus');
         
-        // Testar cada proxy
-        for (let i = 0; i < this.PROXIES.length; i++) {
-            try {
-                const proxyUrl = this.PROXIES[i];
-                const apiUrl = encodeURIComponent(this.BASE_API_URL + '/marinha-status');
-                const fullUrl = proxyUrl + apiUrl;
-                
-                console.log(`🔗 Testando proxy ${i + 1}: ${proxyUrl.substring(0, 30)}...`);
-                
-                const response = await fetch(fullUrl, {
-                    method: 'GET',
-                    timeout: 8000
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    this.currentProxy = i;
-                    statusElement.textContent = `✅ Online (Proxy ${i + 1})`;
-                    statusElement.style.color = '#4caf50';
-                    console.log(`✅ Proxy ${i + 1} funcionando:`, data);
-                    return true;
-                }
-            } catch (error) {
-                console.log(`❌ Proxy ${i + 1} falhou:`, error.message);
-                continue;
+        try {
+            const apiUrl = encodeURIComponent(this.BASE_API_URL + '/marinha-status');
+            const fullUrl = this.PROXY_URL + apiUrl;
+            
+            console.log('🔗 Testando conexão via api.allorigins.win...');
+            
+            const response = await fetch(fullUrl, {
+                method: 'GET',
+                timeout: 10000
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                statusElement.textContent = '✅ Online';
+                statusElement.style.color = '#4caf50';
+                console.log('✅ Conexão estabelecida:', data);
+                return true;
+            } else {
+                throw new Error(`HTTP ${response.status}`);
             }
+        } catch (error) {
+            console.warn('⚠️ Conexão falhou:', error.message);
+            statusElement.textContent = '⚠️ Modo Local';
+            statusElement.style.color = '#ff9800';
+            return false;
         }
-        
-        // Se todos os proxies falharem
-        statusElement.textContent = '⚠️ Modo Local';
-        statusElement.style.color = '#ff9800';
-        console.log('⚠️ Todos os proxies falharam, usando modo local');
-        return false;
     }
     
     setupEventListeners() {
@@ -492,10 +482,13 @@ class AssistenteNaval {
         
         try {
             const resposta = await this.enviarParaAPI(text);
-            this.adicionarRespostaAssistente(resposta, true); // true = tem info da API
+            this.adicionarRespostaAssistente(resposta, true);
         } catch (error) {
             console.error('Erro:', error);
-            this.adicionarMensagemErro();
+            
+            // Se a API falhar, mostrar fallback local
+            const respostaFallback = await this.respostaFallbackLocal(text);
+            this.adicionarRespostaAssistente(respostaFallback, false);
         } finally {
             this.mostrarLoading(false);
             input.focus();
@@ -515,37 +508,10 @@ class AssistenteNaval {
     }
     
     async enviarParaAPI(mensagem) {
-        // Tentar com o proxy atual
-        let tentativas = 0;
-        const maxTentativas = this.PROXIES.length;
-        
-        while (tentativas < maxTentativas) {
-            const proxyIndex = (this.currentProxy + tentativas) % this.PROXIES.length;
-            const proxyUrl = this.PROXIES[proxyIndex];
-            
-            try {
-                console.log(`🔄 Tentativa ${tentativas + 1} com proxy ${proxyIndex + 1}`);
-                return await this.enviarComProxy(mensagem, proxyUrl, proxyIndex);
-            } catch (error) {
-                console.log(`❌ Proxy ${proxyIndex + 1} falhou:`, error.message);
-                tentativas++;
-                
-                if (tentativas < maxTentativas) {
-                    console.log(`⏳ Aguardando 1s antes de próxima tentativa...`);
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                }
-            }
-        }
-        
-        // Se todos falharem, usar fallback local
-        throw new Error('Todos os proxies falharam');
-    }
-    
-    async enviarComProxy(mensagem, proxyUrl, proxyIndex) {
         const apiEndpoint = encodeURIComponent(this.BASE_API_URL + '/marinha-chat');
-        const fullUrl = proxyUrl + apiEndpoint;
+        const fullUrl = this.PROXY_URL + apiEndpoint;
         
-        console.log(`📤 Enviando via proxy ${proxyIndex + 1}:`, fullUrl.substring(0, 100) + '...');
+        console.log('📤 Enviando via api.allorigins.win:', fullUrl.substring(0, 80) + '...');
         
         const response = await fetch(fullUrl, {
             method: 'POST',
@@ -561,32 +527,30 @@ class AssistenteNaval {
             timeout: 15000
         });
         
-        console.log(`📥 Resposta recebida: ${response.status}`);
+        console.log('📥 Status da resposta:', response.status);
         
         if (!response.ok) {
             // Se for 404, tentar endpoint alternativo
             if (response.status === 404) {
-                console.log('🔍 Tentando endpoint alternativo...');
-                return await this.tentarEndpointAlternativo(mensagem, proxyUrl, proxyIndex);
+                console.log('🔍 Tentando endpoint alternativo /play...');
+                return await this.tentarEndpointAlternativo(mensagem);
             }
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
         const data = await response.json();
-        console.log('📄 Dados da resposta:', data);
+        console.log('📄 Resposta da API:', data);
         
         if (data.sucesso) {
-            this.currentProxy = proxyIndex; // Atualizar proxy atual se funcionou
             return data.resposta.texto;
         } else {
             throw new Error(data.erro || 'Erro na API');
         }
     }
     
-    async tentarEndpointAlternativo(mensagem, proxyUrl, proxyIndex) {
-        // Tenta endpoint diferente
+    async tentarEndpointAlternativo(mensagem) {
         const apiEndpoint = encodeURIComponent(this.BASE_API_URL + '/play');
-        const fullUrl = proxyUrl + apiEndpoint;
+        const fullUrl = this.PROXY_URL + apiEndpoint;
         
         const response = await fetch(fullUrl, {
             method: 'POST',
@@ -606,7 +570,6 @@ class AssistenteNaval {
         
         // Ajustar conforme estrutura
         if (data.resposta || data.texto || data.result || data.answer) {
-            this.currentProxy = proxyIndex;
             return data.resposta || data.texto || data.result || data.answer;
         }
         
@@ -694,27 +657,27 @@ class AssistenteNaval {
         } else if (msgLower.includes('sinal') || msgLower.includes('cis')) {
             return respostas.sinais;
         } else {
-            return `Olá ${this.userName}! 🚢
+            return `Olá ${this.userName}! Sou seu assistente naval. 🚢
 
-No momento estou usando o modo local. Posso ajudá-lo com:
+No momento estou operando em modo local. Posso ajudá-lo com informações sobre:
 
-• 🇧🇷 **Bandeira Nacional** - Hasteamento às 8h, arriamento ao pôr-do-sol
-• 🎯 **Salvas de Artilharia** - 21 tiros para Presidente
-• 🚩 **Honras Navais** - Protocolos de cerimonial
-• 📶 **Código de Sinais** - Comunicação visual entre navios
-• ⚓ **Procedimentos** - Cerimonial a bordo
+• 🇧🇷 **Bandeira Nacional** - Cerimonial, hasteamento e arriamento
+• 🎯 **Salvas de Artilharia** - 21 tiros para o Presidente
+• 🚩 **Honras Navais** - Protocolos e saudações
+• 📶 **Código Internacional de Sinais** (CIS)
+• ⚓ **Procedimentos Navais** - Cerimonial a bordo
 
 Pergunte sobre um desses tópicos!`;
         }
     }
     
-    adicionarRespostaAssistente(texto, temAPI = false) {
+    adicionarRespostaAssistente(texto, vemDaAPI = false) {
         const chatMessages = document.getElementById('chatMessages');
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message assistant';
         
         let badge = '';
-        if (temAPI) {
+        if (vemDaAPI) {
             badge = '<span class="pdf-badge">API</span>';
         } else {
             badge = '<span class="pdf-badge">LOCAL</span>';
@@ -739,11 +702,13 @@ Pergunte sobre um desses tópicos!`;
         messageDiv.innerHTML = `
             <div class="message-header">🎖️ Sistema</div>
             <div class="message-text">
-                ⚠️ <strong>Problema de conexão</strong>
+                ⚠️ <strong>Erro de Conexão</strong>
                 <br><br>
-                Não consegui conectar à API remota no momento.
+                Não foi possível conectar ao servidor no momento.
+                <br>
+                <small>Erro: Não foi possível acessar a API via proxy</small>
                 <br><br>
-                <button onclick="testarConexaoManual()" style="
+                <button onclick="testarConexaoDireta()" style="
                     background: #1976d2;
                     color: white;
                     border: none;
@@ -751,17 +716,7 @@ Pergunte sobre um desses tópicos!`;
                     border-radius: 4px;
                     cursor: pointer;
                     margin: 5px;
-                ">🔧 Testar Conexão</button>
-                
-                <button onclick="usarModoLocal()" style="
-                    background: #4caf50;
-                    color: white;
-                    border: none;
-                    padding: 8px 16px;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    margin: 5px;
-                ">⚡ Modo Local</button>
+                ">🔄 Testar Conexão</button>
             </div>
         `;
         
@@ -794,10 +749,10 @@ Pergunte sobre um desses tópicos!`;
         }
         
         // Tenta limpar no servidor via proxy
-        const proxyUrl = this.PROXIES[this.currentProxy];
         const apiEndpoint = encodeURIComponent(this.BASE_API_URL + '/marinha-limpar-historico');
+        const fullUrl = this.PROXY_URL + apiEndpoint;
         
-        fetch(proxyUrl + apiEndpoint, {
+        fetch(fullUrl, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ userId: this.userId })
@@ -828,60 +783,42 @@ Pergunte sobre um desses tópicos!`;
 }
 
 // Funções auxiliares globais
-async function testarConexaoManual() {
-    const proxies = [
-        'https://api.allorigins.win/raw?url=',
-        'https://corsproxy.io/?',
-        'https://thingproxy.freeboard.io/fetch/'
-    ];
+async function testarConexaoDireta() {
+    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+    const apiUrl = encodeURIComponent('http://br2.bronxyshost.com:4009/marinha-status');
+    const fullUrl = proxyUrl + apiUrl;
     
-    const baseUrl = 'http://br2.bronxyshost.com:4009/marinha-status';
-    let resultados = [];
-    
-    for (let i = 0; i < proxies.length; i++) {
-        try {
-            const proxyUrl = proxies[i] + encodeURIComponent(baseUrl);
-            const response = await fetch(proxyUrl, { timeout: 5000 });
+    try {
+        const response = await fetch(fullUrl);
+        
+        if (response.ok) {
+            const data = await response.json();
+            alert(`✅ Conexão OK via api.allorigins.win!\n\nStatus: ${data.status}\nPDF: ${data.pdfCarregado ? 'Carregado' : 'Não'}\nUsuários: ${data.usuariosAtivos}`);
             
-            if (response.ok) {
-                const data = await response.json();
-                resultados.push(`✅ Proxy ${i + 1}: Funcionando (${data.status})`);
-            } else {
-                resultados.push(`❌ Proxy ${i + 1}: HTTP ${response.status}`);
-            }
-        } catch (error) {
-            resultados.push(`❌ Proxy ${i + 1}: ${error.message}`);
+            // Atualizar status na interface
+            document.getElementById('connectionStatus').textContent = '✅ Online';
+            document.getElementById('connectionStatus').style.color = '#4caf50';
+            
+        } else {
+            alert(`❌ Proxy respondeu com erro: HTTP ${response.status}`);
         }
+    } catch (error) {
+        alert(`❌ Falha na conexão:\n${error.message}\n\nVerifique:\n1. Se o servidor está rodando\n2. Se api.allorigins.win está acessível`);
     }
-    
-    alert('Resultados dos testes:\n\n' + resultados.join('\n'));
 }
 
-function usarModoLocal() {
-    document.getElementById('connectionStatus').textContent = '🔧 Modo Local Ativo';
-    document.getElementById('connectionStatus').style.color = '#4caf50';
+function testarProxyManualmente() {
+    // Abre uma nova janela para testar o proxy manualmente
+    const testUrl = 'https://api.allorigins.win/raw?url=' + 
+                   encodeURIComponent('http://br2.bronxyshost.com:4009/marinha-status');
     
-    // Mostrar mensagem no chat
-    const chatMessages = document.getElementById('chatMessages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message assistant';
-    messageDiv.innerHTML = `
-        <div class="message-header">🎖️ Sistema</div>
-        <div class="message-text">
-            ✅ <strong>Modo Local Ativado</strong>
-            <br><br>
-            Agora estou usando apenas o banco de dados local.
-            As respostas serão baseadas nas informações pré-definidas.
-            <br><br>
-            Para voltar a tentar conexão com a API, recarregue a página.
-        </div>
-    `;
-    chatMessages.appendChild(messageDiv);
+    window.open(testUrl, '_blank');
 }
 
-// Inicializar
+// Inicializar o assistente
 const assistente = new AssistenteNaval();
 
+// Funções globais para os botões
 function enviarMensagem() {
     assistente.enviarMensagem();
 }
@@ -895,40 +832,49 @@ function limparConversa() {
     assistente.limparConversa();
 }
 
-// Adicionar timeout global para fetch
-if (!window.fetch) {
-    console.error('❌ Fetch API não suportada neste navegador');
-} else {
-    // Polyfill para timeout
+// Configurar timeout para fetch
+(function() {
     const originalFetch = window.fetch;
     window.fetch = function(resource, options = {}) {
-        const { timeout = 10000, ...restOptions } = options;
+        const { timeout = 15000, ...restOptions } = options;
         
         if (timeout) {
             const controller = new AbortController();
             const { signal } = controller;
             restOptions.signal = signal;
             
-            const timeoutId = setTimeout(() => controller.abort(), timeout);
+            const timeoutId = setTimeout(() => {
+                controller.abort();
+                console.log(`⏰ Timeout após ${timeout}ms:`, resource);
+            }, timeout);
             
             return originalFetch(resource, restOptions)
-                .finally(() => clearTimeout(timeoutId));
+                .then(response => {
+                    clearTimeout(timeoutId);
+                    return response;
+                })
+                .catch(error => {
+                    clearTimeout(timeoutId);
+                    throw error;
+                });
         }
         
         return originalFetch(resource, restOptions);
     };
-}
+})();
 
+// Quando a página carregar
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('messageInput').focus();
     
-    // Testar conexão imediatamente
+    // Verificar conexão após 2 segundos
     setTimeout(() => {
         if (document.getElementById('connectionStatus').textContent.includes('Conectando')) {
             assistente.testConnection();
         }
-    }, 1000);
+    }, 2000);
 });
+
     </script>
 </body>
 </html>
