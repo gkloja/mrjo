@@ -1961,7 +1961,7 @@ setInterval(() => {
 }
 </style>
     <!-- Watermark -->
-    <div class="watermark">Marinha do Brasil • Cerimonial Naval</div>
+    <div class="watermark">By: ๖ۣۜCabral™</>  +5521989047220</div>
     
     <!-- Header -->
 <!-- Header Aprimorado -->
@@ -2403,6 +2403,917 @@ setInterval(() => {
         </div>
     </footer>
     
+    
+    <!-- ======================= -->
+<!-- SEÇÃO DO JOGO INTERATIVO -->
+<!-- ======================= -->
+
+<section id="jogo" class="content-section" style="display: none;">
+    <div class="content-card">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="fas fa-gamepad"></i>
+            </div>
+            <div>
+                <h2 class="card-title">Memória Cerimonial Naval</h2>
+                <div class="card-subtitle">Teste seus conhecimentos sobre bandeiras e insígnias</div>
+            </div>
+        </div>
+        
+        <!-- Painel do Jogo -->
+        <div class="game-container" style="padding: 20px;">
+            <!-- Painel de Controle -->
+            <div class="game-controls" style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: rgba(0, 102, 204, 0.1);
+                padding: 15px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                border: 2px solid rgba(255, 204, 0, 0.3);
+            ">
+                <div class="game-stats">
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div>
+                            <span style="color: var(--text-secondary); font-size: 0.9rem;">Tempo:</span>
+                            <div style="color: white; font-size: 1.5rem; font-weight: bold;" id="gameTime">00:00</div>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-secondary); font-size: 0.9rem;">Movimentos:</span>
+                            <div style="color: white; font-size: 1.5rem; font-weight: bold;" id="gameMoves">0</div>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-secondary); font-size: 0.9rem;">Pontos:</span>
+                            <div style="color: white; font-size: 1.5rem; font-weight: bold;" id="gamePoints">0</div>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-secondary); font-size: 0.9rem;">Pares:</span>
+                            <div style="color: white; font-size: 1.5rem; font-weight: bold;" id="gamePairs">0/6</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-buttons">
+                    <button class="navy-btn primary" onclick="startGame()" style="background: linear-gradient(135deg, #38a169, #2f855a);">
+                        <i class="fas fa-play"></i> Novo Jogo
+                    </button>
+                    <button class="navy-btn" onclick="resetGame()" style="background: linear-gradient(135deg, #718096, #4a5568);">
+                        <i class="fas fa-redo"></i> Reiniciar
+                    </button>
+                    <button class="navy-btn" onclick="showGameRules()" style="background: linear-gradient(135deg, #d69e2e, #b7791f);">
+                        <i class="fas fa-question-circle"></i> Regras
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Grid do Jogo -->
+            <div class="memory-grid" id="memoryGrid" style="
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 15px;
+                margin: 20px 0;
+            ">
+                <!-- Cartas serão geradas por JavaScript -->
+            </div>
+            
+            <!-- Mensagem do Jogo -->
+            <div id="gameMessage" style="
+                text-align: center;
+                padding: 20px;
+                margin-top: 20px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 10px;
+                display: none;
+            ">
+                <h3 style="color: white; margin-bottom: 10px;" id="messageTitle"></h3>
+                <p style="color: var(--text-secondary);" id="messageText"></p>
+                <button class="navy-btn primary" onclick="hideMessage()" style="margin-top: 15px;">
+                    <i class="fas fa-check"></i> Continuar
+                </button>
+            </div>
+            
+            <!-- Dificuldade -->
+            <div class="difficulty-selector" style="
+                background: rgba(255, 255, 255, 0.03);
+                padding: 15px;
+                border-radius: 8px;
+                margin-top: 20px;
+            ">
+                <h4 style="color: white; margin-bottom: 10px;">Nível de Dificuldade:</h4>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="difficulty-btn active" onclick="setDifficulty('facil')" data-level="facil">
+                        Fácil (6 pares)
+                    </button>
+                    <button class="difficulty-btn" onclick="setDifficulty('medio')" data-level="medio">
+                        Médio (8 pares)
+                    </button>
+                    <button class="difficulty-btn" onclick="setDifficulty('dificil')" data-level="dificil">
+                        Difícil (10 pares)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======================= -->
+<!-- ESTILOS DO JOGO -->
+<!-- ======================= -->
+
+<style>
+/* Estilos do Jogo */
+.game-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.memory-card {
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, #1a237e, #283593);
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.memory-card.flipped {
+    transform: rotateY(180deg);
+}
+
+.memory-card.matched {
+    cursor: default;
+    opacity: 0.7;
+    transform: scale(0.95);
+    box-shadow: 0 0 15px rgba(72, 187, 120, 0.5);
+}
+
+.memory-card .card-front,
+.memory-card .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.memory-card .card-front {
+    background: linear-gradient(135deg, #004d99, #0066cc);
+    transform: rotateY(180deg);
+    border: 2px solid var(--accent);
+}
+
+.memory-card .card-back {
+    background: linear-gradient(135deg, #0d47a1, #1565c0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-back i {
+    font-size: 2.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    animation: pulse 2s infinite;
+}
+
+.flag-preview-game {
+    width: 100%;
+    height: 60%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.flag-preview-game img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.card-title-game {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.card-description-game {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.card-type-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 204, 0, 0.9);
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.difficulty-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+.difficulty-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.difficulty-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* Animações */
+@keyframes cardFlip {
+    0% { transform: rotateY(0); }
+    50% { transform: rotateY(90deg); }
+    100% { transform: rotateY(180deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes matchGlow {
+    0%, 100% { box-shadow: 0 0 10px rgba(72, 187, 120, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(72, 187, 120, 0.8); }
+}
+
+.memory-card.matched {
+    animation: matchGlow 1s ease-in-out;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .memory-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 10px !important;
+    }
+    
+    .game-controls {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .game-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .memory-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .memory-card {
+        aspect-ratio: 2/3;
+    }
+}
+</style>
+
+<!-- ======================= -->
+<!-- SCRIPT DO JOGO -->
+<!-- ======================= -->
+
+<script>
+// Dados do Jogo
+const gameData = {
+    facil: [
+        {
+            id: 'national',
+            title: 'Bandeira Nacional',
+            description: 'Símbolo máximo da Pátria, instituída em 19/11/1889',
+            type: 'nacional',
+            image: 'imagens/sinais/7.png'
+        },
+        {
+            id: 'cruzeiro',
+            title: 'Bandeira do Cruzeiro',
+            description: 'Bandeira distintiva da Marinha, azul com 21 estrelas',
+            type: 'distintivo',
+            image: 'imagens/sinais/19.png'
+        },
+        {
+            id: 'estandarte-presidencial',
+            title: 'Estandarte Presidencial',
+            description: 'Usada pelo Presidente da República, salva de 21 tiros',
+            type: 'insignia',
+            image: 'imagens/sinais/26.png'
+        },
+        {
+            id: 'pavilhao-almirante',
+            title: 'Pavilhão de Almirante',
+            description: 'Cinco estrelas em pentágono, salva de 19 tiros',
+            type: 'insignia',
+            image: 'imagens/sinais/36.png'
+        },
+        {
+            id: 'barroso-1',
+            title: 'Sinal de Barroso',
+            description: '"O Brasil espera que cada um cumpra o seu dever"',
+            type: 'sinal',
+            image: 'imagens/sinais/56.png'
+        },
+        {
+            id: 'alfa',
+            title: 'Sinal ALFA',
+            description: 'Tenho mergulhador n\'água, mantenha distância',
+            type: 'cis',
+            image: 'imagens/sinais/64.png'
+        }
+    ],
+    medio: [
+        // Adiciona mais 2 pares
+        {
+            id: 'pavilhao-vice-almirante',
+            title: 'Pavilhão Vice-Almirante',
+            description: 'Três estrelas em triângulo, salva de 15 tiros',
+            type: 'insignia',
+            image: 'imagens/sinais/38.png'
+        },
+        {
+            id: 'oscar',
+            title: 'Sinal OSCAR',
+            description: 'Homem ao mar - emergência máxima',
+            type: 'cis',
+            image: 'imagens/sinais/78.png'
+        }
+    ],
+    dificil: [
+        // Adiciona mais 2 pares
+        {
+            id: 'pavilhao-contra-almirante',
+            title: 'Pavilhão Contra-Almirante',
+            description: 'Duas estrelas horizontais, salva de 13 tiros',
+            type: 'insignia',
+            image: 'imagens/sinais/39.png'
+        },
+        {
+            id: 'victor',
+            title: 'Sinal VICTOR',
+            description: 'Solicito auxílio - emergência',
+            type: 'cis',
+            image: 'imagens/sinais/84.jpg'
+        }
+    ]
+};
+
+// Estado do Jogo
+let gameState = {
+    cards: [],
+    flippedCards: [],
+    matchedPairs: 0,
+    moves: 0,
+    points: 0,
+    gameTime: 0,
+    timer: null,
+    gameActive: false,
+    difficulty: 'facil'
+};
+
+// Inicializar Jogo
+function initializeGame() {
+    // Adicionar botão de jogo na navegação
+    addGameToNavigation();
+    
+    // Criar cartas iniciais
+    createCards('facil');
+}
+
+function addGameToNavigation() {
+    const navMenu = document.querySelector('.nav-menu');
+    if (navMenu) {
+        const gameNavItem = document.createElement('div');
+        gameNavItem.className = 'nav-item';
+        gameNavItem.innerHTML = `
+            <a href="#jogo" class="nav-link" onclick="showSection('jogo')">
+                <i class="fas fa-gamepad"></i> Jogo
+            </a>
+        `;
+        navMenu.appendChild(gameNavItem);
+    }
+}
+
+function createCards(difficulty) {
+    gameState.difficulty = difficulty;
+    const baseCards = [...gameData.facil];
+    
+    if (difficulty === 'medio') {
+        baseCards.push(...gameData.medio);
+    } else if (difficulty === 'dificil') {
+        baseCards.push(...gameData.medio, ...gameData.dificil);
+    }
+    
+    // Duplicar e embaralhar
+    let allCards = [];
+    baseCards.forEach(card => {
+        // Carta com bandeira
+        allCards.push({
+            ...card,
+            cardType: 'flag',
+            pairId: card.id + '-flag'
+        });
+        
+        // Carta com descrição
+        allCards.push({
+            ...card,
+            cardType: 'description',
+            pairId: card.id + '-desc'
+        });
+    });
+    
+    // Embaralhar
+    allCards = shuffleArray(allCards);
+    gameState.cards = allCards;
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function renderGameBoard() {
+    const grid = document.getElementById('memoryGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    
+    // Definir layout baseado na dificuldade
+    let columns = 4;
+    if (gameState.difficulty === 'medio') columns = 4;
+    if (gameState.difficulty === 'dificil') columns = 5;
+    
+    grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+    
+    // Criar cartas
+    gameState.cards.forEach((card, index) => {
+        const cardElement = document.createElement('div');
+        cardElement.className = 'memory-card';
+        cardElement.dataset.index = index;
+        cardElement.dataset.cardId = card.pairId;
+        cardElement.dataset.baseId = card.id;
+        
+        // Conteúdo da frente (virado)
+        const frontContent = card.cardType === 'flag' 
+            ? createFlagCardContent(card)
+            : createDescriptionCardContent(card);
+        
+        // Conteúdo de trás (não virado)
+        const backContent = `
+            <div class="card-back">
+                <i class="fas fa-anchor"></i>
+                <div style="position: absolute; bottom: 10px; color: rgba(255,255,255,0.5); font-size: 0.7rem;">
+                    Marujo Digital
+                </div>
+            </div>
+        `;
+        
+        cardElement.innerHTML = `
+            <div class="card-front">
+                ${frontContent}
+                <div class="card-type-badge">
+                    ${card.cardType === 'flag' ? '🏁 Bandeira' : '📝 Descrição'}
+                </div>
+            </div>
+            ${backContent}
+        `;
+        
+        cardElement.onclick = () => flipCard(index);
+        grid.appendChild(cardElement);
+    });
+    
+    // Atualizar contador de pares
+    const totalPairs = gameState.cards.length / 2;
+    document.getElementById('gamePairs').textContent = `0/${totalPairs}`;
+}
+
+function createFlagCardContent(card) {
+    return `
+        <div class="flag-preview-game">
+            ${card.image ? `
+                <img src="${card.image}" alt="${card.title}" 
+                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 70%22><rect width=%22100%22 height=%2270%22 fill=%22%232d3748%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23ffffff%22>${card.title.substring(0,3)}</text></svg>'">
+            ` : `
+                <div style="width: 100%; height: 100%; background: ${getFlagColor(card.type)}; 
+                     display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                    ${card.title.substring(0, 3)}
+                </div>
+            `}
+        </div>
+        <div class="card-title-game">${card.title}</div>
+        <div class="card-description-game" style="font-size: 0.7rem; margin-top: 5px;">
+            <i class="fas fa-tag"></i> ${card.type.toUpperCase()}
+        </div>
+    `;
+}
+
+function createDescriptionCardContent(card) {
+    return `
+        <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+            <div style="color: var(--accent); font-size: 2.5rem; text-align: center; margin-bottom: 10px;">
+                ${getFlagIcon(card.type)}
+            </div>
+            <div class="card-title-game" style="margin-bottom: 10px;">${card.title}</div>
+            <div class="card-description-game" style="flex: 1; overflow-y: auto;">
+                ${card.description}
+            </div>
+        </div>
+    `;
+}
+
+function getFlagIcon(type) {
+    const icons = {
+        'nacional': '🏁',
+        'distintivo': '🚩',
+        'insignia': '🎌',
+        'sinal': '🚨',
+        'cis': '📡'
+    };
+    return icons[type] || '🏴';
+}
+
+function flipCard(index) {
+    if (!gameState.gameActive) return;
+    
+    const card = gameState.cards[index];
+    const cardElement = document.querySelector(`.memory-card[data-index="${index}"]`);
+    
+    // Verificar se pode virar
+    if (!cardElement || 
+        cardElement.classList.contains('flipped') || 
+        cardElement.classList.contains('matched') ||
+        gameState.flippedCards.length >= 2) {
+        return;
+    }
+    
+    // Virar carta
+    cardElement.classList.add('flipped');
+    gameState.flippedCards.push({ index, card });
+    
+    // Verificar se temos 2 cartas viradas
+    if (gameState.flippedCards.length === 2) {
+        gameState.moves++;
+        updateGameStats();
+        checkForMatch();
+    }
+}
+
+function checkForMatch() {
+    const [card1, card2] = gameState.flippedCards;
+    
+    if (card1.card.baseId === card2.card.baseId) {
+        // É um par!
+        setTimeout(() => {
+            // Marcar como combinado
+            const card1Element = document.querySelector(`.memory-card[data-index="${card1.index}"]`);
+            const card2Element = document.querySelector(`.memory-card[data-index="${card2.index}"]`);
+            
+            if (card1Element && card2Element) {
+                card1Element.classList.add('matched');
+                card2Element.classList.add('matched');
+                
+                // Adicionar pontos
+                gameState.points += calculatePoints();
+                gameState.matchedPairs++;
+                
+                // Atualizar estatísticas
+                updateGameStats();
+                
+                // Verificar vitória
+                checkWinCondition();
+            }
+            
+            // Limpar cartas viradas
+            gameState.flippedCards = [];
+        }, 500);
+    } else {
+        // Não é par, virar de volta
+        setTimeout(() => {
+            const card1Element = document.querySelector(`.memory-card[data-index="${card1.index}"]`);
+            const card2Element = document.querySelector(`.memory-card[data-index="${card2.index}"]`);
+            
+            if (card1Element && card2Element) {
+                card1Element.classList.remove('flipped');
+                card2Element.classList.remove('flipped');
+            }
+            
+            // Limpar cartas viradas
+            gameState.flippedCards = [];
+        }, 1000);
+    }
+}
+
+function calculatePoints() {
+    const timeBonus = Math.max(100 - gameState.gameTime, 10);
+    const movesBonus = Math.max(50 - gameState.moves, 5);
+    const difficultyMultiplier = {
+        'facil': 1,
+        'medio': 1.5,
+        'dificil': 2
+    }[gameState.difficulty];
+    
+    return Math.floor((timeBonus + movesBonus) * difficultyMultiplier);
+}
+
+function checkWinCondition() {
+    const totalPairs = gameState.cards.length / 2;
+    
+    if (gameState.matchedPairs >= totalPairs) {
+        // Vitória!
+        gameState.gameActive = false;
+        clearInterval(gameState.timer);
+        
+        // Calcular pontuação final
+        const finalScore = gameState.points + Math.max(1000 - gameState.gameTime * 10, 100);
+        
+        // Mostrar mensagem de vitória
+        showGameMessage(
+            '🎉 Missão Cumprida!',
+            `Parabéns, Marinheiro!<br><br>
+            Você completou o jogo com:<br>
+            <strong>${gameState.moves}</strong> movimentos<br>
+            <strong>${formatTime(gameState.gameTime)}</strong> de tempo<br>
+            <strong>${Math.floor(finalScore)}</strong> pontos<br><br>
+            <small>Você é um verdadeiro conhecedor do Cerimonial Naval!</small>`,
+            'success'
+        );
+        
+        // Tocar som de vitória (se possível)
+        playSound('win');
+    }
+}
+
+function startGame() {
+    // Resetar estado
+    gameState = {
+        cards: [],
+        flippedCards: [],
+        matchedPairs: 0,
+        moves: 0,
+        points: 0,
+        gameTime: 0,
+        timer: null,
+        gameActive: true,
+        difficulty: gameState.difficulty
+    };
+    
+    // Criar cartas
+    createCards(gameState.difficulty);
+    
+    // Renderizar tabuleiro
+    renderGameBoard();
+    
+    // Iniciar timer
+    startTimer();
+    
+    // Atualizar estatísticas
+    updateGameStats();
+    
+    // Mostrar mensagem de início
+    showGameMessage(
+        '⚓ Preparar para Jogar!',
+        `Nível: ${gameState.difficulty.toUpperCase()}<br>
+        Encontre os pares de bandeiras com suas descrições.<br><br>
+        <small>Dica: Preste atenção nas cores e símbolos!</small>`,
+        'info'
+    );
+}
+
+function resetGame() {
+    if (confirm('Reiniciar o jogo atual?')) {
+        startGame();
+    }
+}
+
+function setDifficulty(level) {
+    // Atualizar botões
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.level === level) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Se o jogo estiver ativo, confirmar mudança
+    if (gameState.gameActive) {
+        if (confirm(`Mudar para nível ${level}? O jogo atual será reiniciado.`)) {
+            gameState.difficulty = level;
+            startGame();
+        } else {
+            // Reverter seleção
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.level === gameState.difficulty) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+    } else {
+        gameState.difficulty = level;
+    }
+}
+
+function startTimer() {
+    if (gameState.timer) {
+        clearInterval(gameState.timer);
+    }
+    
+    gameState.timer = setInterval(() => {
+        gameState.gameTime++;
+        updateGameStats();
+    }, 1000);
+}
+
+function updateGameStats() {
+    // Atualizar tempo
+    const timeElement = document.getElementById('gameTime');
+    if (timeElement) {
+        timeElement.textContent = formatTime(gameState.gameTime);
+    }
+    
+    // Atualizar movimentos
+    const movesElement = document.getElementById('gameMoves');
+    if (movesElement) {
+        movesElement.textContent = gameState.moves;
+    }
+    
+    // Atualizar pontos
+    const pointsElement = document.getElementById('gamePoints');
+    if (pointsElement) {
+        pointsElement.textContent = gameState.points;
+    }
+    
+    // Atualizar pares
+    const pairsElement = document.getElementById('gamePairs');
+    if (pairsElement) {
+        const totalPairs = gameState.cards.length / 2;
+        pairsElement.textContent = `${gameState.matchedPairs}/${totalPairs}`;
+    }
+}
+
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function showGameMessage(title, text, type = 'info') {
+    const messageElement = document.getElementById('gameMessage');
+    const titleElement = document.getElementById('messageTitle');
+    const textElement = document.getElementById('messageText');
+    
+    if (messageElement && titleElement && textElement) {
+        // Definir cor baseada no tipo
+        let borderColor = 'var(--primary)';
+        if (type === 'success') borderColor = '#38a169';
+        if (type === 'warning') borderColor = '#d69e2e';
+        if (type === 'error') borderColor = '#e53e3e';
+        
+        messageElement.style.borderLeft = `4px solid ${borderColor}`;
+        titleElement.textContent = title;
+        textElement.innerHTML = text;
+        messageElement.style.display = 'block';
+    }
+}
+
+function hideMessage() {
+    const messageElement = document.getElementById('gameMessage');
+    if (messageElement) {
+        messageElement.style.display = 'none';
+    }
+}
+
+function showGameRules() {
+    showGameMessage(
+        '📜 Regras do Jogo',
+        `<strong>Objetivo:</strong> Encontrar todos os pares correspondentes de bandeiras e suas descrições.<br><br>
+        <strong>Como Jogar:</strong><br>
+        1. Clique em uma carta para virá-la<br>
+        2. Clique em outra carta para tentar formar um par<br>
+        3. Se as cartas corresponderem (bandeira + sua descrição), você ganha pontos!<br>
+        4. Se não corresponderem, as cartas serão viradas novamente<br><br>
+        <strong>Pontuação:</strong><br>
+        • Par correto: +50 pontos<br>
+        • Bônus por tempo rápido<br>
+        • Bônus por poucos movimentos<br>
+        • Multiplicador por dificuldade<br><br>
+        <strong>Níveis:</strong><br>
+        • Fácil: 6 pares<br>
+        • Médio: 8 pares<br>
+        • Difícil: 10 pares`,
+        'info'
+    );
+}
+
+// Função para tocar sons (simplificada)
+function playSound(type) {
+    // Em um ambiente real, você teria arquivos de áudio
+    // Por enquanto, apenas um beep simples
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        if (type === 'flip') {
+            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // Dó
+        } else if (type === 'match') {
+            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime); // Mi
+        } else if (type === 'win') {
+            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime); // Sol
+        }
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (e) {
+        // Silenciosamente falha se AudioContext não for suportado
+    }
+}
+
+// Função para mostrar seção do jogo
+function showGameSection() {
+    showSection('jogo');
+    
+    // Inicializar jogo se não estiver inicializado
+    if (gameState.cards.length === 0) {
+        setTimeout(() => {
+            createCards('facil');
+            renderGameBoard();
+        }, 100);
+    }
+}
+
+// Inicializar quando a página carregar
+document.addEventListener('DOMContentLoaded', () => {
+    // Adicionar evento para a seção do jogo
+    const gameSection = document.getElementById('jogo');
+    if (gameSection) {
+        gameSection.style.display = 'none';
+    }
+    
+    // Inicializar jogo (mas não começar automaticamente)
+    initializeGame();
+    
+    // Adicionar evento para quando a seção do jogo for mostrada
+    const gameNavLink = document.querySelector('a[href="#jogo"]');
+    if (gameNavLink) {
+        gameNavLink.addEventListener('click', () => {
+            setTimeout(() => {
+                if (!gameState.gameActive) {
+                    showGameMessage(
+                        '⚓ Bem-vindo ao Jogo!',
+                        'Clique em "Novo Jogo" para começar sua missão naval.<br><br>Escolha o nível de dificuldade e teste seus conhecimentos sobre o Cerimonial da Marinha!',
+                        'info'
+                    );
+                }
+            }, 300);
+        });
+    }
+});
+</script>
     <!-- Modal de Detalhes -->
     <div class="modal-overlay" id="flagModal">
         <div class="modal-content">
