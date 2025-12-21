@@ -2465,6 +2465,22 @@ setInterval(() => {
                 border: 2px solid rgba(255, 204, 0, 0.2);
                 box-shadow: 0 5px 20px rgba(0, 51, 153, 0.2);
             ">
+              <!-- Adicione dentro do game-controls, antes do game-stats -->
+<div class="game-motivation" style="
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: linear-gradient(135deg, rgba(255,204,0,0.1), transparent);
+    border-radius: 10px;
+    border: 1px solid rgba(255,204,0,0.2);
+">
+    <div style="color: var(--accent); font-size: 0.9rem; font-weight: 600;">
+        <i class="fas fa-bullhorn"></i> DESAFIO NAVAL
+    </div>
+    <div style="color: var(--text-secondary); font-size: 0.8rem;">
+        Combine cada bandeira com sua descrição!
+    </div>
+</div>
                 <div class="game-stats" style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px;">
                     <div class="stat-item" style="text-align: center; min-width: 100px;">
                         <div style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 5px;">
@@ -2593,39 +2609,222 @@ setInterval(() => {
 
 <style>
 /* ======================= */
-/* CORREÇÃO COMPLETA DAS CARTAS */
+/* JOGO DA MEMÓRIA NAVAL - VERSÃO PREMIUM */
+/* ======================= */
+
+/* Container do jogo */
+.game-container {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efeito de água ao fundo */
+.game-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(0, 102, 204, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 150, 255, 0.1) 0%, transparent 50%),
+        linear-gradient(45deg, rgba(5, 18, 35, 0.8) 0%, rgba(10, 25, 47, 0.9) 100%);
+    z-index: -1;
+}
+
+/* Ondas animadas */
+.wave-effect {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 200%;
+    height: 100px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%23003366"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35,6.36,117.35-2.21C926.1,38.8,1033.6,31.3,1200,52.47V0Z" opacity=".5" fill="%230066cc"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%23ffcc00"/></svg>');
+    background-size: 50% 100px;
+    opacity: 0.3;
+    animation: wave 15s linear infinite;
+    z-index: -1;
+}
+
+@keyframes wave {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* Controles do jogo melhorados */
+.game-controls {
+    position: relative;
+    background: linear-gradient(135deg, 
+        rgba(0, 102, 204, 0.2), 
+        rgba(5, 18, 35, 0.4)) !important;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 204, 0, 0.3) !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+}
+
+.game-controls::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        transparent,
+        rgba(255, 204, 0, 0.1),
+        transparent 30%
+    );
+    animation: rotate 4s linear infinite;
+}
+
+@keyframes rotate {
+    100% { transform: rotate(360deg); }
+}
+
+/* Estatísticas melhoradas */
+.stat-item {
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+}
+
+.stat-item::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+}
+
+.stat-item:hover::after {
+    width: 80%;
+}
+
+/* Botões do jogo */
+.game-buttons button {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease !important;
+    border: none !important;
+}
+
+.game-buttons button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.game-buttons button:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.game-buttons button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ======================= */
+/* CARTAS PREMIUM */
 /* ======================= */
 
 .memory-card {
     width: 100%;
-    height: 180px;
-    border-radius: 12px;
+    height: 200px;
+    border-radius: 15px;
     cursor: pointer;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.6s;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     perspective: 1000px;
+    overflow: hidden;
 }
 
-/* CORREÇÃO: Flip funciona agora */
+/* Efeito de brilho na carta */
+.memory-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transform: rotate(45deg);
+    transition: all 0.6s ease;
+    opacity: 0;
+}
+
+.memory-card:hover::before {
+    opacity: 1;
+    animation: shine 1.5s ease-in-out infinite;
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* Flip animado */
 .memory-card.flipped {
     transform: rotateY(180deg);
 }
 
+/* Carta combinada - efeito especial */
 .memory-card.matched {
     cursor: default;
-    animation: matchGlow 1.5s ease-in-out infinite;
+    animation: victoryGlow 2s ease-in-out infinite;
     border: 3px solid var(--accent);
-    transform: rotateY(180deg); /* Mantém virada quando combinada */
+    box-shadow: 
+        0 0 20px var(--accent),
+        0 0 40px rgba(255, 204, 0, 0.3),
+        inset 0 0 20px rgba(255, 204, 0, 0.2);
 }
 
-/* CORREÇÃO: Container absoluto para ambas as faces */
+@keyframes victoryGlow {
+    0%, 100% { 
+        box-shadow: 
+            0 0 20px var(--accent),
+            0 0 40px rgba(255, 204, 0, 0.3),
+            inset 0 0 20px rgba(255, 204, 0, 0.2);
+        transform: rotateY(180deg) scale(1);
+    }
+    50% { 
+        box-shadow: 
+            0 0 30px var(--accent),
+            0 0 60px rgba(255, 204, 0, 0.5),
+            inset 0 0 30px rgba(255, 204, 0, 0.3);
+        transform: rotateY(180deg) scale(1.05);
+    }
+}
+
+/* Faces da carta */
 .card-face {
     position: absolute;
     width: 100%;
     height: 100%;
-    border-radius: 12px;
+    border-radius: 15px;
     backface-visibility: hidden;
     display: flex;
     flex-direction: column;
@@ -2636,31 +2835,56 @@ setInterval(() => {
     box-sizing: border-box;
 }
 
-/* VERSO da carta */
+/* VERSO DA CARTA - Design naval */
 .card-back {
     background: linear-gradient(135deg, #001a33, #003366);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    border: 3px solid rgba(255, 255, 255, 0.1);
     transform: rotateY(0deg);
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 204, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 102, 204, 0.1) 0%, transparent 50%),
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.03) 10px,
+            rgba(255, 255, 255, 0.03) 20px
+        );
 }
 
-/* FRENTE da carta - começa virada */
+/* Âncora animada */
+.card-back .anchor-icon {
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+    animation: floatAnchor 3s ease-in-out infinite;
+}
+
+@keyframes floatAnchor {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+/* FRENTE DA CARTA */
 .card-front {
-    background: linear-gradient(145deg, #051223, #0a1929);
+    background: linear-gradient(145deg, rgba(5, 18, 35, 0.95), rgba(10, 25, 47, 0.95));
     border: 2px solid var(--accent);
     color: white;
-    transform: rotateY(180deg); /* Começa virada para trás */
+    transform: rotateY(180deg);
+    backdrop-filter: blur(5px);
 }
 
-/* Conteúdo da frente */
+/* Conteúdo da carta */
 .card-content {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
-/* Imagem da bandeira */
-.flag-preview-game {
+/* Container da bandeira */
+.flag-container {
     width: 100%;
     height: 60%;
     display: flex;
@@ -2668,59 +2892,354 @@ setInterval(() => {
     justify-content: center;
     overflow: hidden;
     margin-bottom: 10px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    position: relative;
+    border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-.flag-preview-game img {
-    max-width: 100%;
-    max-height: 100%;
+.flag-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+    animation: flagShine 3s linear infinite;
+}
+
+@keyframes flagShine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.flag-image {
+    max-width: 90%;
+    max-height: 90%;
     object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    transition: transform 0.3s ease;
 }
 
-/* Conteúdo de descrição */
-.description-content {
+.memory-card:hover .flag-image {
+    transform: scale(1.05);
+}
+
+/* Container da descrição */
+.description-container {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 10px;
+    padding: 15px;
     text-align: center;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+    border-radius: 10px;
+    position: relative;
 }
 
-/* Animações */
-@keyframes matchGlow {
-    0%, 100% { 
-        box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
-    }
-    50% { 
-        box-shadow: 0 0 25px rgba(255, 204, 0, 0.8);
-    }
+.description-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
 }
 
-@keyframes cardAppear {
-    from { 
-        opacity: 0; 
-        transform: scale(0.8) rotateY(0deg); 
+/* Ícone grande */
+.icon-large {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    animation: iconFloat 2s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Badge de tipo */
+.card-type-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, var(--accent), #ff9900);
+    color: #000;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 2;
+}
+
+/* Número no canto */
+.card-corner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, var(--primary), #003366);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border-radius: 0 0 15px 0;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    z-index: 2;
+}
+
+/* Marca d'água */
+.card-watermark {
+    position: absolute;
+    bottom: 10px;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.7rem;
+    font-style: italic;
+    font-family: 'Times New Roman', serif;
+}
+
+/* Título da carta */
+.card-title {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 8px;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    width: 100%;
+}
+
+/* Descrição */
+.card-description {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    text-align: center;
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 5px;
+}
+
+/* ======================= */
+/* ANIMAÇÕES ESPECIAIS */
+/* ======================= */
+
+/* Animações para cartas */
+@keyframes cardReveal {
+    0% { 
+        opacity: 0;
+        transform: scale(0.8) rotateY(0deg) translateY(50px);
     }
-    to { 
-        opacity: 1; 
-        transform: scale(1) rotateY(0deg); 
+    100% { 
+        opacity: 1;
+        transform: scale(1) rotateY(0deg) translateY(0);
     }
 }
 
 .new-card {
-    animation: cardAppear 0.5s ease-out;
+    animation: cardReveal 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Efeito de partículas */
+.particle {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+}
+
+/* Progresso animado */
+#gameProgressBar {
+    position: relative;
+    overflow: hidden;
+}
+
+#gameProgressBar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 25%,
+        rgba(255, 255, 255, 0.3) 50%,
+        transparent 75%
+    );
+    animation: progressShine 2s infinite linear;
+}
+
+@keyframes progressShine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Modal de resultado melhorado */
+.modal-content {
+    background: linear-gradient(135deg, rgba(5, 18, 35, 0.95), rgba(10, 25, 47, 0.98));
+    backdrop-filter: blur(20px);
+    border: 2px solid var(--accent);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .memory-card {
+        height: 150px;
+    }
+    
+    .game-controls {
+        padding: 15px !important;
+    }
+    
+    .stat-item {
+        min-width: 80px !important;
+    }
+    
+    .game-buttons button {
+        min-width: 120px !important;
+        font-size: 0.9rem;
+    }
 }
 </style>
 
 <script>
-  
-  // SISTEMA DO JOGO DA MEMÓRIA - VERSÃO 2.0 CORRIGIDA
+  // SISTEMA DO JOGO DA MEMÓRIA NAVAL - VERSÃO CRIATIVA PREMIUM
 
-// Estado do jogo
+// Dados das cartas com informações detalhadas e criativas
+const gameCardsData = {
+    facil: [
+        {
+            id: 'national',
+            title: 'BANDEIRA NACIONAL BRASILEIRA',
+            description: 'Símbolo máximo da Pátria, com o lema "Ordem e Progresso". As estrelas representam os estados brasileiros e a constelação do Cruzeiro do Sul.',
+            type: 'nacional',
+            image: 'imagens/sinais/7.png',
+            color: '#38a169',
+            icon: '🇧🇷',
+            hint: 'Única bandeira nacional do jogo'
+        },
+        {
+            id: 'cruzeiro',
+            title: 'BANDEIRA DO CRUZEIRO',
+            description: 'Bandeira distintiva oficial da Marinha do Brasil. Representa a constelação do Cruzeiro do Sul, guia dos navegantes.',
+            type: 'distintivo',
+            image: 'imagens/sinais/19.png',
+            color: '#4299e1',
+            icon: '⭐',
+            hint: 'Usada em navios da Marinha'
+        },
+        {
+            id: 'estandarte-presidencial',
+            title: 'ESTANDARTE PRESIDENCIAL',
+            description: 'Insígnia oficial do Presidente da República. Símbolo de autoridade máxima do Poder Executivo brasileiro.',
+            type: 'insignia',
+            image: 'imagens/sinais/26.png',
+            color: '#d69e2e',
+            icon: '👑',
+            hint: 'Representa o Presidente'
+        },
+        {
+            id: 'pavilhao-almirante',
+            title: 'PAVILHÃO DE ALMIRANTE',
+            description: 'Cinco estrelas brancas dispostas em pentágono sobre fundo azul. Símbolo de comando naval de alto escalão.',
+            type: 'insignia',
+            image: 'imagens/sinais/36.png',
+            color: '#9f7aea',
+            icon: '⚓',
+            hint: 'Cinco estrelas em pentágono'
+        },
+        {
+            id: 'barroso',
+            title: 'SINAL DE BARROSO',
+            description: '"O Brasil espera que cada um cumpra o seu dever". Frase histórica do Almirante Barroso na Batalha do Riachuelo.',
+            type: 'sinal',
+            image: 'imagens/sinais/56.png',
+            color: '#e53e3e',
+            icon: '🚨',
+            hint: 'Frase histórica famosa'
+        },
+        {
+            id: 'alfa',
+            title: 'SINAL INTERNACIONAL ALFA',
+            description: 'Sinalização náutica internacional: "Tenho mergulhador na água, mantenha-se afastado e em baixa velocidade".',
+            type: 'cis',
+            image: 'imagens/sinais/64.png',
+            color: '#4fd1c7',
+            icon: '🚩',
+            hint: 'Aviso para mergulhadores'
+        }
+    ],
+    medio: [
+        {
+            id: 'bravo',
+            title: 'SINAL BRAVO',
+            description: '"Estou carregando ou descarregando ou transportando carga perigosa". Sinal de alerta para operações perigosas.',
+            type: 'cis',
+            image: 'imagens/sinais/65.png',
+            color: '#ed8936',
+            icon: '⚠️',
+            hint: 'Carga perigosa'
+        },
+        {
+            id: 'charlie',
+            title: 'SINAL CHARLIE',
+            description: '"Sim" ou "Afirmativo". Também usado para indicar "Estou em apuros, necessito ajuda".',
+            type: 'cis',
+            image: 'imagens/sinais/66.png',
+            color: '#48bb78',
+            icon: '✅',
+            hint: 'Sinal afirmativo'
+        }
+    ],
+    dificil: [
+        {
+            id: 'delta',
+            title: 'SINAL DELTA',
+            description: '"Mantenha-se afastado de mim, estou manobrando com dificuldade". Aviso de navegação problemática.',
+            type: 'cis',
+            image: 'imagens/sinais/67.png',
+            color: '#ed64a6',
+            icon: '🌀',
+            hint: 'Manobrando com dificuldade'
+        },
+        {
+            id: 'echo',
+            title: 'SINAL ECHO',
+            description: '"Estou alterando o rumo para boreste (direita)". Indicação de mudança de direção.',
+            type: 'cis',
+            image: 'imagens/sinais/68.png',
+            color: '#805ad5',
+            icon: '➡️',
+            hint: 'Alterando rumo à direita'
+        },
+        {
+            id: 'foxtrot',
+            title: 'SINAL FOXTROT',
+            description: '"Estou avariado, comunique-se comigo". Sinal de emergência ou pedido de comunicação.',
+            type: 'cis',
+            image: 'imagens/sinais/69.png',
+            color: '#ecc94b',
+            icon: '🆘',
+            hint: 'Embarcação avariada'
+        }
+    ]
+};
+
+// Estado do jogo com efeitos especiais
 let gameState = {
     cards: [],
     flippedCards: [],
@@ -2733,163 +3252,228 @@ let gameState = {
     isPlaying: false,
     canFlip: true,
     difficulty: 'facil',
-    soundEnabled: true
+    soundEnabled: true,
+    combos: 0,
+    streak: 0
 };
 
-// Dados das cartas corrigidos
-const gameCardsData = {
-    facil: [
-        {
-            id: 'national',
-            title: 'Bandeira Nacional',
-            description: 'Símbolo máximo da Pátria brasileira',
-            type: 'nacional',
-            image: 'imagens/sinais/7.png',
-            color: '#38a169'
-        },
-        {
-            id: 'cruzeiro',
-            title: 'Bandeira do Cruzeiro',
-            description: 'Bandeira distintiva da Marinha do Brasil',
-            type: 'distintivo',
-            image: 'imagens/sinais/19.png',
-            color: '#4299e1'
-        },
-        {
-            id: 'estandarte-presidencial',
-            title: 'Estandarte Presidencial',
-            description: 'Usado pelo Presidente da República',
-            type: 'insignia',
-            image: 'imagens/sinais/26.png',
-            color: '#d69e2e'
-        },
-        {
-            id: 'pavilhao-almirante',
-            title: 'Pavilhão de Almirante',
-            description: 'Cinco estrelas em pentágono',
-            type: 'insignia',
-            image: 'imagens/sinais/36.png',
-            color: '#9f7aea'
-        },
-        {
-            id: 'barroso',
-            title: 'Sinal de Barroso',
-            description: '"O Brasil espera que cada um cumpra o seu dever"',
-            type: 'sinal',
-            image: 'imagens/sinais/56.png',
-            color: '#e53e3e'
-        },
-        {
-            id: 'alfa',
-            title: 'Sinal ALFA',
-            description: 'Tenho mergulhador n\'água',
-            type: 'cis',
-            image: 'imagens/sinais/64.png',
-            color: '#4fd1c7'
+// Sistema de efeitos especiais
+const specialEffects = {
+    createParticles(x, y, color) {
+        const particles = [];
+        for (let i = 0; i < 15; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.cssText = `
+                position: fixed;
+                width: 8px;
+                height: 8px;
+                background: ${color};
+                border-radius: 50%;
+                left: ${x}px;
+                top: ${y}px;
+                pointer-events: none;
+                z-index: 10000;
+            `;
+            document.body.appendChild(particle);
+            particles.push(particle);
+            
+            // Animar partícula
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 2 + Math.random() * 3;
+            const duration = 800 + Math.random() * 400;
+            
+            particle.animate([
+                { 
+                    transform: `translate(0, 0) scale(1)`,
+                    opacity: 1 
+                },
+                { 
+                    transform: `translate(${Math.cos(angle) * speed * 50}px, ${Math.sin(angle) * speed * 50}px) scale(0)`,
+                    opacity: 0 
+                }
+            ], {
+                duration: duration,
+                easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+            }).onfinish = () => particle.remove();
         }
-    ]
+        return particles;
+    },
+    
+    showComboEffect(combo) {
+        if (combo > 1) {
+            const effect = document.createElement('div');
+            effect.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: ${3 + combo * 0.5}rem;
+                font-weight: 900;
+                color: var(--accent);
+                text-shadow: 0 0 30px var(--accent);
+                z-index: 10000;
+                pointer-events: none;
+                animation: comboPop 1s ease-out forwards;
+            `;
+            effect.textContent = `COMBO x${combo}!`;
+            document.body.appendChild(effect);
+            
+            setTimeout(() => effect.remove(), 1000);
+        }
+    },
+    
+    showStreakEffect(streak) {
+        if (streak >= 3) {
+            const stars = document.createElement('div');
+            stars.style.cssText = `
+                position: fixed;
+                top: 20%;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 2rem;
+                z-index: 10000;
+                pointer-events: none;
+            `;
+            stars.innerHTML = '⭐'.repeat(Math.min(streak, 5));
+            document.body.appendChild(stars);
+            
+            stars.animate([
+                { transform: 'translateX(-50%) scale(0)', opacity: 0 },
+                { transform: 'translateX(-50%) scale(1.5)', opacity: 1 },
+                { transform: 'translateX(-50%) scale(1)', opacity: 0.8 }
+            ], {
+                duration: 1000,
+                easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+            }).onfinish = () => stars.remove();
+        }
+    }
 };
 
-// Inicializar jogo
+// Inicialização premium
 function initGame() {
-    console.log('Inicializando jogo...');
+    console.log('🚢 Inicializando Memória Naval Premium...');
     
-    // Adicionar item de navegação do jogo
+    // Adicionar efeito de ondas
+    addWaveEffect();
+    
+    // Adicionar item de navegação
     addGameNavItem();
     
     // Criar deck inicial
     createGameDeck('facil');
     
-    // Renderizar o tabuleiro
+    // Renderizar tabuleiro
     renderGameBoard();
     
     // Atualizar interface
     updateGameUI();
+    
+    // Adicionar efeitos de CSS
+    addSpecialStyles();
 }
 
-// Adicionar navegação do jogo
-function addGameNavItem() {
-    const navMenu = document.querySelector('.nav-menu');
-    if (navMenu && !document.querySelector('a[href="#jogo"]')) {
-        const gameNav = document.createElement('div');
-        gameNav.className = 'nav-item';
-        gameNav.innerHTML = `
-            <a href="#jogo" class="nav-link" onclick="showSection('jogo')">
-                <i class="fas fa-gamepad"></i> Jogo
-            </a>
-        `;
-        navMenu.appendChild(gameNav);
+// Adicionar efeito de ondas
+function addWaveEffect() {
+    const container = document.querySelector('.game-container');
+    if (container) {
+        const wave = document.createElement('div');
+        wave.className = 'wave-effect';
+        container.appendChild(wave);
     }
 }
 
-// Criar deck de cartas
+// Adicionar estilos especiais
+function addSpecialStyles() {
+    if (!document.querySelector('#specialGameStyles')) {
+        const style = document.createElement('style');
+        style.id = 'specialGameStyles';
+        style.textContent = `
+            @keyframes comboPop {
+                0% { 
+                    transform: translate(-50%, -50%) scale(0.5); 
+                    opacity: 0; 
+                }
+                50% { 
+                    transform: translate(-50%, -50%) scale(1.2); 
+                    opacity: 1; 
+                }
+                100% { 
+                    transform: translate(-50%, -50%) scale(1); 
+                    opacity: 0; 
+                }
+            }
+            
+            @keyframes cardMatch {
+                0% { transform: rotateY(180deg) scale(1); }
+                50% { transform: rotateY(180deg) scale(1.1); }
+                100% { transform: rotateY(180deg) scale(1); }
+            }
+            
+            @keyframes hintPulse {
+                0%, 100% { opacity: 0.5; }
+                50% { opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+// Criar deck premium
 function createGameDeck(difficulty) {
-    console.log('Criando deck para dificuldade:', difficulty);
-    
     gameState.difficulty = difficulty;
     
     // Selecionar cartas baseadas na dificuldade
-    const baseCards = [...gameCardsData.facil];
+    let selectedCards = [...gameCardsData.facil];
     
     if (difficulty === 'medio') {
         gameState.totalPairs = 8;
+        selectedCards = [...gameCardsData.facil, ...gameCardsData.medio];
     } else if (difficulty === 'dificil') {
         gameState.totalPairs = 10;
+        selectedCards = [...gameCardsData.facil, ...gameCardsData.medio, ...gameCardsData.dificil];
     } else {
         gameState.totalPairs = 6;
     }
     
-    // Limitar cartas ao número de pares
-    const selectedCards = baseCards.slice(0, gameState.totalPairs);
-    
     // Criar pares de cartas
     let deck = [];
-    selectedCards.forEach((card, index) => {
-        // Carta 1: Com imagem
+    selectedCards.slice(0, gameState.totalPairs).forEach((card, index) => {
+        // Carta com imagem
         deck.push({
             ...card,
             pairId: index,
             cardType: 'image',
-            cardNumber: index * 2
+            cardNumber: index * 2,
+            showHint: false
         });
         
-        // Carta 2: Com descrição (mesmo ID de par)
+        // Carta com descrição
         deck.push({
             ...card,
             pairId: index,
             cardType: 'description',
-            cardNumber: (index * 2) + 1
+            cardNumber: (index * 2) + 1,
+            showHint: false
         });
     });
     
-    // Embaralhar
+    // Embaralhar com algoritmo Fisher-Yates
     gameState.cards = shuffleDeck(deck);
-    console.log('Deck criado com', gameState.cards.length, 'cartas');
+    
+    // Resetar combos
+    gameState.combos = 0;
+    gameState.streak = 0;
 }
 
-// Embaralhar cartas
-function shuffleDeck(deck) {
-    const newDeck = [...deck];
-    for (let i = newDeck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [newDeck[i], newDeck[j]] = [newDeck[j], newDeck[i]];
-    }
-    return newDeck;
-}
-
-// Renderizar tabuleiro do jogo - FUNÇÃO CORRIGIDA
+// Renderizar tabuleiro premium
 function renderGameBoard() {
     const grid = document.getElementById('memoryGrid');
-    if (!grid) {
-        console.error('Elemento memoryGrid não encontrado!');
-        return;
-    }
-    
-    console.log('Renderizando tabuleiro com', gameState.cards.length, 'cartas');
+    if (!grid) return;
     
     grid.innerHTML = '';
     
-    // Definir layout baseado na dificuldade
+    // Definir layout
     let columns = 4;
     if (gameState.difficulty === 'medio') columns = 4;
     if (gameState.difficulty === 'dificil') columns = 5;
@@ -2899,213 +3483,250 @@ function renderGameBoard() {
     // Criar cartas
     gameState.cards.forEach((card, index) => {
         const cardElement = document.createElement('div');
-        cardElement.className = 'memory-card';
+        cardElement.className = 'memory-card new-card';
         cardElement.dataset.index = index;
         cardElement.dataset.pairId = card.pairId;
         cardElement.dataset.cardType = card.cardType;
         
-        // Conteúdo baseado no tipo de carta
-        let frontContent = '';
-        let badgeIcon = '';
+        // Efeito de atraso para animação em cascata
+        cardElement.style.animationDelay = `${index * 0.05}s`;
         
+        // Conteúdo premium
+        let frontContent = '';
         if (card.cardType === 'image') {
-            frontContent = createFlagCardContent(card);
-            badgeIcon = '🏁';
+            frontContent = createPremiumImageCard(card);
         } else {
-            frontContent = createDescriptionCardContent(card);
-            badgeIcon = '📝';
+            frontContent = createPremiumDescriptionCard(card);
         }
         
-        // HTML da carta - ESTRUTURA CORRIGIDA
+        // HTML da carta premium
         cardElement.innerHTML = `
             <div class="card-face card-back">
-                <i class="fas fa-anchor" style="font-size: 2.5rem; color: rgba(255,255,255,0.9);"></i>
+                <div class="anchor-icon">⚓</div>
                 <div class="card-watermark">Marujo Digital</div>
             </div>
             <div class="card-face card-front">
                 <div class="card-content">
                     ${frontContent}
-                    <div class="card-type-badge">${badgeIcon}</div>
+                    <div class="card-type-badge">
+                        ${card.cardType === 'image' ? 'IMAGEM' : 'DESCRIÇÃO'}
+                    </div>
                     <div class="card-corner">${card.cardNumber + 1}</div>
                 </div>
             </div>
         `;
         
-        // Adicionar evento de clique - CORRIGIDO
-        cardElement.addEventListener('click', () => flipCard(index));
+        // Evento de clique com efeito
+        cardElement.addEventListener('click', () => handlePremiumCardClick(index, cardElement));
+        cardElement.addEventListener('mouseenter', () => showCardPreview(card));
+        
         grid.appendChild(cardElement);
         
-        // Pré-carregar imagem se necessário
+        // Pré-carregar com fallback criativo
         if (card.cardType === 'image' && card.image) {
-            preloadImage(card.image);
+            preloadImageWithFallback(card);
         }
     });
     
     updateProgress();
 }
 
-// Função para criar conteúdo de carta com bandeira
-function createFlagCardContent(card) {
+// Criar carta com imagem premium
+function createPremiumImageCard(card) {
     return `
-        <div class="flag-preview-game">
+        <div class="flag-container">
             <img src="${card.image}" 
                  alt="${card.title}"
-                 onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div style=\\'color:${card.color}; font-size:3rem;\\'>${getFlagIcon(card.type)}</div>';">
+                 class="flag-image"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml,${encodeURIComponent(createSVGFlag(card))}'">
+            ${card.showHint ? `<div class="card-hint">💡 ${card.hint}</div>` : ''}
         </div>
-        <div class="card-title-game">${card.title}</div>
-        <div class="card-description-game" style="color: ${card.color}; font-weight: 600;">
+        <div class="card-title">${card.title}</div>
+        <div class="card-description" style="color: ${card.color}; font-weight: 600;">
             ${card.type.toUpperCase()}
         </div>
     `;
 }
 
-// Função para criar conteúdo de carta com descrição
-function createDescriptionCardContent(card) {
+// Criar carta com descrição premium
+function createPremiumDescriptionCard(card) {
     return `
-        <div class="description-content">
-            <div style="color: ${card.color}; font-size: 2.5rem; margin-bottom: 15px;">
-                ${getFlagIcon(card.type)}
+        <div class="description-container">
+            <div class="icon-large">${card.icon}</div>
+            <div class="card-title" style="margin-bottom: 10px;">${card.title}</div>
+            <div class="card-description">
+                "${card.description}"
             </div>
-            <div class="card-title-game" style="font-size: 1rem;">${card.title}</div>
-            <div class="card-description-game" style="font-size: 0.85rem; line-height: 1.4;">
-                ${card.description}
-            </div>
+            ${card.showHint ? `<div class="card-hint" style="margin-top: 10px; color: ${card.color};">💡 Dica: ${card.hint}</div>` : ''}
         </div>
     `;
 }
 
-// Pré-carregar imagem
-function preloadImage(url) {
-    const img = new Image();
-    img.src = url;
-}
-
-// Obter ícone do tipo
-function getFlagIcon(type) {
-    const icons = {
-        'nacional': '🏁',
-        'distintivo': '🚩',
-        'insignia': '🎌',
-        'sinal': '🚨',
-        'cis': '📡'
+// Criar bandeira SVG de fallback criativa
+function createSVGFlag(card) {
+    const colors = {
+        'nacional': '#38a169',
+        'distintivo': '#4299e1',
+        'insignia': '#d69e2e',
+        'sinal': '#e53e3e',
+        'cis': '#4fd1c7'
     };
-    return icons[type] || '🏴';
+    
+    const color = colors[card.type] || '#003366';
+    
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 70" width="100" height="70">
+        <defs>
+            <linearGradient id="grad${card.type}" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:${color};stop-opacity:1" />
+                <stop offset="100%" style="stop-color:${color}99;stop-opacity:0.8" />
+            </linearGradient>
+        </defs>
+        <rect width="100" height="70" fill="url(#grad${card.type})" rx="8" ry="8"/>
+        <text x="50" y="25" text-anchor="middle" fill="white" font-family="Arial" font-size="6" font-weight="bold">
+            ${card.title.substring(0, 15)}
+        </text>
+        <text x="50" y="40" text-anchor="middle" fill="white" font-family="Arial" font-size="4">
+            ${card.type.toUpperCase()}
+        </text>
+        <text x="50" y="55" text-anchor="middle" fill="white" font-family="Arial" font-size="3" opacity="0.7">
+            MARUJO DIGITAL
+        </text>
+    </svg>`;
 }
 
-// VIRAR CARTA - FUNÇÃO PRINCIPAL CORRIGIDA
-function flipCard(index) {
-    console.log('Clicou na carta:', index);
+// Pré-carregar imagem com fallback
+function preloadImageWithFallback(card) {
+    const img = new Image();
+    img.onload = function() {
+        console.log(`Imagem carregada: ${card.title}`);
+    };
+    img.onerror = function() {
+        console.log(`Usando fallback para: ${card.title}`);
+    };
+    img.src = card.image;
+}
+
+// Clique premium na carta
+function handlePremiumCardClick(index, element) {
+    if (!gameState.canFlip) return;
     
-    // Verificar condições
-    if (!gameState.isPlaying && gameState.moves === 0) {
-        gameState.isPlaying = true;
-    }
-    
-    if (!gameState.canFlip) {
-        console.log('Não pode virar agora');
-        return;
-    }
-    
-    const cardElement = document.querySelector(`.memory-card[data-index="${index}"]`);
     const card = gameState.cards[index];
+    const isAlreadyFlipped = element.classList.contains('flipped');
+    const isMatched = element.classList.contains('matched');
     
-    // Verificar se a carta já está virada ou combinada
-    if (cardElement.classList.contains('flipped') || 
-        cardElement.classList.contains('matched')) {
-        console.log('Carta já virada ou combinada');
-        return;
-    }
+    if (isAlreadyFlipped || isMatched) return;
+    
+    // Efeito sonoro
+    playGameSound('flip');
+    
+    // Efeito visual
+    element.style.transform = 'rotateY(180deg) scale(1.05)';
+    setTimeout(() => {
+        element.style.transform = 'rotateY(180deg) scale(1)';
+    }, 150);
+    
+    // Virar carta
+    element.classList.add('flipped');
+    gameState.flippedCards.push({ index, card, element });
+    
+    // Criar partículas
+    const rect = element.getBoundingClientRect();
+    specialEffects.createParticles(
+        rect.left + rect.width / 2,
+        rect.top + rect.height / 2,
+        card.color
+    );
     
     // Iniciar timer no primeiro movimento
     if (gameState.moves === 0) {
         startGameTimer();
+        gameState.isPlaying = true;
     }
     
-    // Virar carta
-    cardElement.classList.add('flipped');
-    gameState.flippedCards.push({ index, card });
-    
-    // Tocar som
-    playGameSound('flip');
-    
-    console.log('Cartas viradas:', gameState.flippedCards.length);
-    
-    // Verificar se temos 2 cartas viradas
+    // Verificar combinação quando tiver 2 cartas
     if (gameState.flippedCards.length === 2) {
         gameState.moves++;
         gameState.canFlip = false;
         
-        // Aguardar e verificar combinação
         setTimeout(() => {
-            checkCardMatch();
+            checkPremiumMatch();
             gameState.canFlip = true;
-        }, 800);
+        }, 1000);
         
         updateGameUI();
     }
 }
 
-// VERIFICAR COMBINAÇÃO - CORRIGIDA
-function checkCardMatch() {
+// Verificar combinação premium
+function checkPremiumMatch() {
     if (gameState.flippedCards.length !== 2) return;
     
     const [card1, card2] = gameState.flippedCards;
-    const card1Element = document.querySelector(`.memory-card[data-index="${card1.index}"]`);
-    const card2Element = document.querySelector(`.memory-card[data-index="${card2.index}"]`);
+    const samePair = card1.card.pairId === card2.card.pairId;
     
-    console.log('Verificando combinação:', card1.card.pairId, card2.card.pairId);
-    
-    if (card1.card.pairId === card2.card.pairId) {
-        // COMBINAÇÃO CORRETA
-        console.log('Combinação correta!');
-        
-        card1Element.classList.add('matched');
-        card2Element.classList.add('matched');
-        
-        // Adicionar pontos
-        const points = calculatePoints();
-        gameState.score += points;
+    if (samePair) {
+        // COMBINAÇÃO CORRETA - EFEITOS ESPECIAIS
         gameState.matchedPairs++;
+        gameState.streak++;
         
-        // Tocar som de acerto
+        // Calcular pontos com bônus
+        const basePoints = 100;
+        const streakBonus = gameState.streak * 25;
+        const timeBonus = Math.max(300 - gameState.time, 50);
+        const points = basePoints + streakBonus + timeBonus;
+        gameState.score += points;
+        
+        // Efeitos visuais
+        card1.element.classList.add('matched');
+        card2.element.classList.add('matched');
+        
+        // Animação de combinação
+        card1.element.animate([
+            { transform: 'rotateY(180deg) scale(1)' },
+            { transform: 'rotateY(180deg) scale(1.2)' },
+            { transform: 'rotateY(180deg) scale(1)' }
+        ], {
+            duration: 500,
+            easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+        });
+        
+        // Sons e efeitos
         playGameSound('match');
+        specialEffects.createParticles(
+            card1.element.getBoundingClientRect().left + card1.element.offsetWidth / 2,
+            card1.element.getBoundingClientRect().top + card1.element.offsetHeight / 2,
+            card1.card.color
+        );
         
-        // Mostrar animação de pontos
-        showPointsAnimation(points, card1Element);
+        // Mostrar pontos
+        showPointsAnimation(points, card1.element);
+        
+        // Verificar combos
+        if (gameState.streak > 1) {
+            specialEffects.showComboEffect(gameState.streak);
+            specialEffects.showStreakEffect(gameState.streak);
+        }
         
         // Verificar vitória
         if (gameState.matchedPairs >= gameState.totalPairs) {
-            endGame(true);
+            setTimeout(() => endPremiumGame(), 1000);
         }
-        
-        updateGameUI();
     } else {
-        // COMBINAÇÃO INCORRETA
-        console.log('Combinação incorreta');
+        // COMBINAÇÃO ERRADA
+        gameState.streak = 0;
         
         setTimeout(() => {
-            card1Element.classList.remove('flipped');
-            card2Element.classList.remove('flipped');
-            
-            // Tocar som de erro
+            card1.element.classList.remove('flipped');
+            card2.element.classList.remove('flipped');
             playGameSound('error');
         }, 1000);
     }
     
-    // Limpar cartas viradas
     gameState.flippedCards = [];
+    updateGameUI();
 }
 
-// Calcular pontos
-function calculatePoints() {
-    const basePoints = 100;
-    const timeBonus = Math.max(50 - Math.floor(gameState.time / 10), 10);
-    const efficiencyBonus = Math.max(75 - (gameState.moves * 2), 25);
-    
-    return basePoints + timeBonus + efficiencyBonus;
-}
-
-// Mostrar animação de pontos
+// Mostrar animação de pontos premium
 function showPointsAnimation(points, element) {
     const rect = element.getBoundingClientRect();
     const pointsElement = document.createElement('div');
@@ -3115,263 +3736,254 @@ function showPointsAnimation(points, element) {
         top: ${rect.top}px;
         left: ${rect.left + rect.width / 2}px;
         color: var(--accent);
-        font-size: 1.2rem;
-        font-weight: 800;
-        background: rgba(0,0,0,0.7);
-        padding: 5px 10px;
-        border-radius: 20px;
+        font-size: 1.5rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(0,0,0,0.9));
+        padding: 8px 16px;
+        border-radius: 25px;
+        border: 2px solid var(--accent);
         z-index: 10000;
         pointer-events: none;
         transform: translate(-50%, -50%);
-        animation: floatUp 1s ease-out forwards;
+        animation: floatUp 1.2s ease-out forwards;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     `;
     
-    pointsElement.textContent = `+${points}`;
+    pointsElement.textContent = `+${points} pontos`;
     document.body.appendChild(pointsElement);
     
-    setTimeout(() => pointsElement.remove(), 1000);
+    // Adicionar efeito de brilho
+    const glow = document.createElement('div');
+    glow.style.cssText = `
+        position: fixed;
+        top: ${rect.top}px;
+        left: ${rect.left + rect.width / 2}px;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+        opacity: 0.5;
+        z-index: 9999;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        animation: fadeOut 1s ease-out forwards;
+    `;
+    document.body.appendChild(glow);
+    
+    setTimeout(() => {
+        pointsElement.remove();
+        glow.remove();
+    }, 1200);
 }
 
-// INICIAR NOVO JOGO - CORRIGIDA
-function startNewGame() {
-    console.log('Iniciando novo jogo...');
-    
-    // Parar timer anterior
-    if (gameState.timer) {
-        clearInterval(gameState.timer);
-        gameState.timer = null;
-    }
-    
-    // Resetar estado
-    gameState = {
-        cards: [],
-        flippedCards: [],
-        matchedPairs: 0,
-        totalPairs: gameState.difficulty === 'facil' ? 6 : gameState.difficulty === 'medio' ? 8 : 10,
-        moves: 0,
-        score: 0,
-        time: 0,
-        timer: null,
-        isPlaying: true,
-        canFlip: true,
-        difficulty: gameState.difficulty,
-        soundEnabled: gameState.soundEnabled
-    };
-    
-    // Criar novo deck
-    createGameDeck(gameState.difficulty);
-    
-    // Renderizar tabuleiro
-    renderGameBoard();
-    
-    // Atualizar UI
-    updateGameUI();
-    
-    // Tocar som de início
-    playGameSound('start');
-    
-    console.log('Novo jogo iniciado');
-}
-
-// Resetar jogo
-function resetGame() {
-    if (gameState.isPlaying && gameState.moves > 0) {
-        if (confirm('Reiniciar o jogo atual? Seu progresso será perdido.')) {
-            startNewGame();
-        }
-    } else {
-        startNewGame();
-    }
-}
-
-// Definir dificuldade
-function setGameDifficulty(level) {
-    console.log('Mudando dificuldade para:', level);
-    
-    // Atualizar botões
-    document.querySelectorAll('.difficulty-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.level === level) {
-            btn.classList.add('active');
-        }
-    });
-    
-    // Se o jogo estiver ativo, confirmar reinício
-    if (gameState.isPlaying && gameState.moves > 0) {
-        if (confirm(`Mudar para nível ${level}? O jogo atual será reiniciado.`)) {
-            gameState.difficulty = level;
-            startNewGame();
-        }
-    } else {
-        gameState.difficulty = level;
-        startNewGame();
-    }
-}
-
-// Alternar som
-function toggleGameSound() {
-    gameState.soundEnabled = !gameState.soundEnabled;
-    const icon = document.getElementById('gameSoundIcon');
-    if (icon) {
-        icon.className = gameState.soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
-    }
-    playGameSound('click');
-}
-
-// Tocar som do jogo
-function playGameSound(type) {
-    if (!gameState.soundEnabled) return;
-    
-    try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        let frequency, duration;
-        
-        switch(type) {
-            case 'flip': frequency = 523.25; duration = 0.2; break;
-            case 'match': frequency = 659.25; duration = 0.5; break;
-            case 'error': frequency = 392.00; duration = 0.3; break;
-            case 'start': frequency = 783.99; duration = 0.8; break;
-            case 'win': frequency = 1046.50; duration = 1.0; break;
-            case 'click': frequency = 349.23; duration = 0.1; break;
-            default: frequency = 440; duration = 0.2;
-        }
-        
-        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-        
-        oscillator.start();
-        oscillator.stop(audioContext.currentTime + duration);
-    } catch (e) {
-        console.log('Audio não suportado:', e);
-    }
-}
-
-// Iniciar timer
-function startGameTimer() {
-    if (gameState.timer) clearInterval(gameState.timer);
-    
-    gameState.timer = setInterval(() => {
-        gameState.time++;
-        updateGameUI();
-    }, 1000);
-}
-
-// Atualizar interface do jogo
-function updateGameUI() {
-    // Tempo
-    const timeElement = document.getElementById('gameTime');
-    if (timeElement) {
-        const minutes = Math.floor(gameState.time / 60);
-        const seconds = gameState.time % 60;
-        timeElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-    
-    // Movimentos
-    const movesElement = document.getElementById('gameMoves');
-    if (movesElement) movesElement.textContent = gameState.moves;
-    
-    // Pontos
-    const pointsElement = document.getElementById('gamePoints');
-    if (pointsElement) pointsElement.textContent = gameState.score;
-    
-    // Pares
-    const pairsElement = document.getElementById('gamePairs');
-    if (pairsElement) pairsElement.textContent = `${gameState.matchedPairs}/${gameState.totalPairs}`;
-    
-    // Progresso
-    updateProgress();
-}
-
-// Atualizar progresso
-function updateProgress() {
-    const progressBar = document.getElementById('gameProgressBar');
-    const progressText = document.getElementById('gameProgressText');
-    if (progressBar && progressText) {
-        const percentage = gameState.totalPairs > 0 
-            ? Math.floor((gameState.matchedPairs / gameState.totalPairs) * 100)
-            : 0;
-        progressBar.style.width = `${percentage}%`;
-        progressText.textContent = `${percentage}%`;
-    }
-}
-
-// Finalizar jogo
-function endGame(win) {
+// Finalizar jogo premium
+function endPremiumGame() {
     gameState.isPlaying = false;
     clearInterval(gameState.timer);
     
-    if (win) {
-        // Vitória
-        playGameSound('win');
+    // Efeitos de vitória
+    playGameSound('win');
+    
+    // Chuva de confetes
+    createConfettiEffect();
+    
+    // Calcular pontuação final
+    const efficiency = gameState.moves > 0 
+        ? Math.floor((gameState.totalPairs * 2 / gameState.moves) * 100) 
+        : 0;
+    const timeBonus = Math.max(1000 - gameState.time * 5, 100);
+    const streakBonus = gameState.streak * 50;
+    const finalScore = gameState.score + timeBonus + streakBonus;
+    
+    // Mostrar resultado após delay
+    setTimeout(() => showPremiumResult(finalScore, efficiency), 1500);
+}
+
+// Criar efeito de confete
+function createConfettiEffect() {
+    const colors = ['#FFCC00', '#0066CC', '#38A169', '#9F7AEA', '#E53E3E'];
+    
+    for (let i = 0; i < 150; i++) {
+        const confetti = document.createElement('div');
+        confetti.style.cssText = `
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            top: -20px;
+            left: ${Math.random() * 100}vw;
+            border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+            opacity: 0.9;
+            z-index: 10000;
+            pointer-events: none;
+        `;
+        document.body.appendChild(confetti);
         
-        // Calcular pontuação final
-        const finalScore = gameState.score + Math.max(1000 - gameState.time * 10, 100);
-        
-        // Mostrar resultado após 1 segundo
-        setTimeout(() => showGameResult(finalScore), 1000);
+        // Animação
+        const duration = 2000 + Math.random() * 1000;
+        confetti.animate([
+            { 
+                transform: `translate(0, 0) rotate(0deg)`,
+                opacity: 1 
+            },
+            { 
+                transform: `translate(${Math.random() * 200 - 100}px, 100vh) rotate(${Math.random() * 360}deg)`,
+                opacity: 0 
+            }
+        ], {
+            duration: duration,
+            easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+        }).onfinish = () => confetti.remove();
     }
 }
 
-// Mostrar resultado
-function showGameResult(finalScore) {
-    // Remover modal existente
-    const existingModal = document.getElementById('gameResultModal');
-    if (existingModal) existingModal.remove();
-    
-    // Criar modal de resultado
+// Mostrar resultado premium
+function showPremiumResult(finalScore, efficiency) {
     const modalHTML = `
         <div class="modal-overlay active" id="gameResultModal" style="display: flex;">
-            <div class="modal-content" style="max-width: 500px; text-align: center;">
-                <button class="modal-close" onclick="this.parentElement.parentElement.remove()">
-                    <i class="fas fa-times"></i>
-                </button>
-                
-                <div style="margin: 20px 0;">
-                    <div style="font-size: 4rem; margin-bottom: 20px;">🏆</div>
-                    <h2 style="color: white; margin-bottom: 10px;">Missão Cumprida!</h2>
-                    <div style="color: var(--text-secondary); margin-bottom: 25px;">
-                        Excelente desempenho marinheiro!
+            <div class="modal-content" style="max-width: 600px; text-align: center;">
+                <div style="
+                    background: linear-gradient(135deg, rgba(255, 204, 0, 0.1), rgba(0, 102, 204, 0.1));
+                    padding: 30px;
+                    border-radius: 20px;
+                    position: relative;
+                    overflow: hidden;
+                ">
+                    <!-- Efeito de brilho -->
+                    <div style="
+                        position: absolute;
+                        top: -50%;
+                        left: -50%;
+                        width: 200%;
+                        height: 200%;
+                        background: conic-gradient(
+                            transparent,
+                            rgba(255, 204, 0, 0.1),
+                            rgba(0, 102, 204, 0.1),
+                            transparent 70%
+                        );
+                        animation: rotate 4s linear infinite;
+                    "></div>
+                    
+                    <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    
+                    <!-- Troféu animado -->
+                    <div style="
+                        font-size: 5rem;
+                        margin-bottom: 20px;
+                        animation: bounce 2s ease-in-out infinite;
+                    ">
+                        🏆
                     </div>
                     
+                    <h2 style="
+                        color: white;
+                        margin-bottom: 10px;
+                        font-size: 2.2rem;
+                        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+                    ">
+                        MISSAÃO CUMPRIDA!
+                    </h2>
+                    
+                    <div style="color: var(--accent); margin-bottom: 30px; font-size: 1.1rem;">
+                        Excelente trabalho, Marinheiro! Você dominou os sinais navais!
+                    </div>
+                    
+                    <!-- Estatísticas em cards -->
                     <div style="
                         display: grid;
                         grid-template-columns: repeat(2, 1fr);
                         gap: 15px;
-                        margin: 25px 0;
+                        margin: 30px 0;
                     ">
-                        <div style="background: rgba(0, 102, 204, 0.2); padding: 15px; border-radius: 10px;">
-                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Tempo</div>
-                            <div style="color: white; font-size: 1.5rem; font-weight: 800;">${formatTime(gameState.time)}</div>
+                        <div style="
+                            background: linear-gradient(135deg, rgba(0, 102, 204, 0.3), rgba(5, 18, 35, 0.6));
+                            padding: 20px;
+                            border-radius: 15px;
+                            border: 2px solid rgba(0, 102, 204, 0.5);
+                            backdrop-filter: blur(10px);
+                        ">
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 8px;">
+                                <i class="fas fa-clock"></i> TEMPO
+                            </div>
+                            <div style="color: white; font-size: 2rem; font-weight: 800;">${formatTime(gameState.time)}</div>
                         </div>
-                        <div style="background: rgba(56, 161, 105, 0.2); padding: 15px; border-radius: 10px;">
-                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Movimentos</div>
-                            <div style="color: white; font-size: 1.5rem; font-weight: 800;">${gameState.moves}</div>
+                        
+                        <div style="
+                            background: linear-gradient(135deg, rgba(56, 161, 105, 0.3), rgba(5, 18, 35, 0.6));
+                            padding: 20px;
+                            border-radius: 15px;
+                            border: 2px solid rgba(56, 161, 105, 0.5);
+                            backdrop-filter: blur(10px);
+                        ">
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 8px;">
+                                <i class="fas fa-shoe-prints"></i> MOVIMENTOS
+                            </div>
+                            <div style="color: white; font-size: 2rem; font-weight: 800;">${gameState.moves}</div>
                         </div>
-                        <div style="background: rgba(214, 158, 46, 0.2); padding: 15px; border-radius: 10px;">
-                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Pontuação</div>
-                            <div style="color: white; font-size: 1.5rem; font-weight: 800;">${finalScore}</div>
+                        
+                        <div style="
+                            background: linear-gradient(135deg, rgba(214, 158, 46, 0.3), rgba(5, 18, 35, 0.6));
+                            padding: 20px;
+                            border-radius: 15px;
+                            border: 2px solid rgba(214, 158, 46, 0.5);
+                            backdrop-filter: blur(10px);
+                        ">
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 8px;">
+                                <i class="fas fa-star"></i> PONTUAÇÃO
+                            </div>
+                            <div style="color: white; font-size: 2rem; font-weight: 800;">${finalScore}</div>
                         </div>
-                        <div style="background: rgba(159, 122, 234, 0.2); padding: 15px; border-radius: 10px;">
-                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Eficiência</div>
-                            <div style="color: white; font-size: 1.5rem; font-weight: 800;">${gameState.totalPairs > 0 ? Math.floor((gameState.totalPairs * 2 / gameState.moves) * 100) : 0}%</div>
+                        
+                        <div style="
+                            background: linear-gradient(135deg, rgba(159, 122, 234, 0.3), rgba(5, 18, 35, 0.6));
+                            padding: 20px;
+                            border-radius: 15px;
+                            border: 2px solid rgba(159, 122, 234, 0.5);
+                            backdrop-filter: blur(10px);
+                        ">
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 8px;">
+                                <i class="fas fa-bolt"></i> EFICIÊNCIA
+                            </div>
+                            <div style="color: white; font-size: 2rem; font-weight: 800;">${efficiency}%</div>
                         </div>
                     </div>
                     
+                    <!-- Bônus -->
+                    <div style="
+                        background: linear-gradient(135deg, rgba(255, 204, 0, 0.1), transparent);
+                        padding: 15px;
+                        border-radius: 10px;
+                        margin: 20px 0;
+                        border: 1px solid rgba(255, 204, 0, 0.3);
+                    ">
+                        <div style="color: var(--accent); margin-bottom: 5px;">
+                            <i class="fas fa-trophy"></i> CONQUISTAS
+                        </div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                            ${gameState.streak >= 3 ? `🔥 ${gameState.streak} acertos consecutivos!` : ''}
+                            ${gameState.time < 60 ? `⚡ Finalizado em menos de 1 minuto!` : ''}
+                            ${gameState.moves <= gameState.totalPairs * 2 ? `🎯 Eficiência perfeita!` : ''}
+                        </div>
+                    </div>
+                    
+                    <!-- Botões -->
                     <div style="margin-top: 30px;">
-                        <button class="navy-btn" onclick="shareGameResult()" 
-                                style="background: linear-gradient(135deg, #38a169, #2f855a); margin-right: 10px;">
-                            <i class="fas fa-share-alt"></i> Compartilhar
+                        <button class="navy-btn" onclick="sharePremiumResult(${finalScore})" 
+                                style="
+                                    background: linear-gradient(135deg, #38a169, #2f855a);
+                                    margin-right: 10px;
+                                    min-width: 160px;
+                                ">
+                            <i class="fas fa-share-alt"></i> COMPARTILHAR VITÓRIA
                         </button>
                         <button class="navy-btn" onclick="document.getElementById('gameResultModal').remove(); startNewGame();" 
-                                style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
-                            <i class="fas fa-redo"></i> Jogar Novamente
+                                style="
+                                    background: linear-gradient(135deg, var(--primary), #003366);
+                                    min-width: 160px;
+                                ">
+                            <i class="fas fa-redo"></i> JOGAR NOVAMENTE
                         </button>
                     </div>
                 </div>
@@ -3380,122 +3992,81 @@ function showGameResult(finalScore) {
     `;
     
     document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Adicionar animação de bounce
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            to { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+        }
+    `;
+    document.head.appendChild(style);
 }
 
-// Formatar tempo
-function formatTime(seconds) {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
-
-// Compartilhar resultado
-function shareGameResult() {
-    const message = `🎮 Memória Naval - Marujo Digital\n` +
-                   `🏆 Nível: ${gameState.difficulty.toUpperCase()}\n` +
+// Compartilhar resultado premium
+function sharePremiumResult(finalScore) {
+    const message = `🎮 MEMÓRIA NAVAL - MARUJO DIGITAL\n` +
+                   `🏆 VITÓRIA NO NÍVEL ${gameState.difficulty.toUpperCase()}!\n` +
                    `⏰ Tempo: ${formatTime(gameState.time)}\n` +
                    `👣 Movimentos: ${gameState.moves}\n` +
-                   `⭐ Pontuação: ${gameState.score}\n\n` +
+                   `⭐ Pontuação: ${finalScore}\n` +
+                   `🎯 Eficiência: ${gameState.totalPairs > 0 ? Math.floor((gameState.totalPairs * 2 / gameState.moves) * 100) : 0}%\n\n` +
+                   `🌊 Teste seus conhecimentos navais!\n` +
                    `🔗 ${window.location.href}`;
     
     if (navigator.share) {
         navigator.share({
-            title: 'Meu resultado no Memória Naval',
+            title: 'Venci o Memória Naval! 🏆',
             text: message,
             url: window.location.href
         });
     } else {
         navigator.clipboard.writeText(message).then(() => {
-            alert('Resultado copiado para a área de transferência!');
+            alert('🎉 Resultado copiado! Compartilhe sua vitória!');
         });
     }
 }
 
-// Mostrar instruções do jogo
-function showGameInstructions() {
-    // Remover modal existente
-    document.querySelectorAll('.modal-overlay').forEach(modal => modal.remove());
-    
-    const instructionsHTML = `
-        <div style="text-align: left; line-height: 1.6;">
-            <h3 style="color: white; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-book-open"></i> Como Jogar
-            </h3>
-            
-            <ol style="color: var(--text-secondary); padding-left: 20px; margin-bottom: 20px;">
-                <li>Clique em uma carta para virá-la</li>
-                <li>Clique em outra carta para tentar formar um par</li>
-                <li>O objetivo é combinar cada bandeira com sua descrição correspondente</li>
-                <li>Complete todos os pares no menor tempo possível</li>
-                <li>Ganhe mais pontos sendo rápido e eficiente</li>
-            </ol>
-            
-            <div style="background: rgba(255, 204, 0, 0.1); padding: 15px; border-radius: 8px;">
-                <h4 style="color: var(--accent); margin-bottom: 10px;">Dicas:</h4>
-                <ul style="color: var(--text-secondary); padding-left: 20px;">
-                    <li>Memorize a posição das cartas</li>
-                    <li>Preste atenção nas cores das bordas</li>
-                    <li>Comece pelo nível fácil para aprender</li>
-                    <li>Tente fazer menos movimentos para ganhar mais pontos</li>
-                </ul>
-            </div>
-        </div>
-    `;
-    
-    // Criar modal de instruções
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay active';
-    modal.style.display = 'flex';
-    modal.innerHTML = `
-        <div class="modal-content" style="max-width: 500px;">
-            <button class="modal-close" onclick="this.parentElement.parentElement.remove()">
-                <i class="fas fa-times"></i>
-            </button>
-            ${instructionsHTML}
-            <div style="text-align: center; margin-top: 25px;">
-                <button class="navy-btn" onclick="this.parentElement.parentElement.remove(); startNewGame();"
-                        style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
-                    <i class="fas fa-play"></i> Começar Jogo
-                </button>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-}
-
-// Fechar modal
-function closeModal() {
-    const modal = document.getElementById('gameResultModal');
-    if (modal) modal.remove();
+// Mostrar preview da carta
+function showCardPreview(card) {
+    // Implementar tooltip ou preview hover
 }
 
 // Inicializar quando a página carregar
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM carregado, inicializando jogo...');
-    initGame();
-    
-    // Adicionar animação CSS se não existir
-    if (!document.querySelector('#floatUpAnimation')) {
-        const style = document.createElement('style');
-        style.id = 'floatUpAnimation';
-        style.textContent = `
-            @keyframes floatUp {
-                0% { 
-                    opacity: 1;
-                    transform: translate(-50%, -50%) scale(1);
-                }
-                100% { 
-                    opacity: 0;
-                    transform: translate(-50%, -100px) scale(1.5);
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
+    console.log('🚀 Memória Naval Premium carregando...');
+    setTimeout(() => {
+        initGame();
+        console.log('✅ Jogo inicializado com sucesso!');
+    }, 500);
 });
 
+// Adicionar efeito de floatUp para pontos
+if (!document.querySelector('#floatUpAnimation')) {
+    const style = document.createElement('style');
+    style.id = 'floatUpAnimation';
+    style.textContent = `
+        @keyframes floatUp {
+            0% { 
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% { 
+                opacity: 0;
+                transform: translate(-50%, -150px) scale(1.5);
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
 </script>
+
+<!-- Adicione dentro do game-controls, antes do game-stats -->
     <!-- Modal de Detalhes -->
     <div class="modal-overlay" id="flagModal">
         <div class="modal-content">
