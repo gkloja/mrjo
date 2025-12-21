@@ -2435,12 +2435,8 @@ setInterval(() => {
     </footer>
     
     
-    <!-- ======================= -->
-<!-- SEÇÃO DO JOGO INTERATIVO -->
 <!-- ======================= -->
-
-<!-- ======================= -->
-<!-- SEÇÃO DO JOGO INTERATIVO - VERSÃO MELHORADA -->
+<!-- SEÇÃO DO JOGO INTERATIVO - VERSÃO CORRIGIDA -->
 <!-- ======================= -->
 
 <section id="jogo" class="content-section" style="display: none;">
@@ -2451,7 +2447,7 @@ setInterval(() => {
             </div>
             <div>
                 <h2 class="card-title">Memória Naval</h2>
-                <div class="card-subtitle">Treine seu conhecimento sobre bandeiras e sinais navais</div>
+                <div class="card-subtitle">Encontre os pares de bandeiras e suas descrições</div>
             </div>
         </div>
         
@@ -2512,7 +2508,7 @@ setInterval(() => {
                 </div>
                 
                 <div class="game-buttons" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-                    <button class="navy-btn game-btn-start" onclick="startGame()" 
+                    <button class="navy-btn game-btn-start" onclick="startNewGame()" 
                             style="background: linear-gradient(135deg, #38a169, #2f855a); min-width: 140px;">
                         <i class="fas fa-play"></i> NOVO JOGO
                     </button>
@@ -2520,11 +2516,11 @@ setInterval(() => {
                             style="background: linear-gradient(135deg, #718096, #4a5568);">
                         <i class="fas fa-redo"></i>
                     </button>
-                    <button class="navy-btn game-btn-sound" onclick="toggleSound()" 
+                    <button class="navy-btn game-btn-sound" onclick="toggleGameSound()" 
                             style="background: linear-gradient(135deg, #d69e2e, #b7791f);">
-                        <i class="fas fa-volume-up" id="soundIcon"></i>
+                        <i class="fas fa-volume-up" id="gameSoundIcon"></i>
                     </button>
-                    <button class="navy-btn game-btn-help" onclick="showGameRules()" 
+                    <button class="navy-btn game-btn-help" onclick="showGameInstructions()" 
                             style="background: linear-gradient(135deg, #4299e1, #3182ce);">
                         <i class="fas fa-question-circle"></i>
                     </button>
@@ -2535,7 +2531,7 @@ setInterval(() => {
             <div class="memory-grid" id="memoryGrid" style="
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
-                gap: 12px;
+                gap: 15px;
                 margin: 20px 0;
                 justify-items: center;
             ">
@@ -2554,15 +2550,15 @@ setInterval(() => {
                     <i class="fas fa-chart-line"></i> Nível de Dificuldade:
                 </h4>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                    <button class="difficulty-btn active" onclick="setDifficulty('facil')" data-level="facil"
+                    <button class="difficulty-btn active" onclick="setGameDifficulty('facil')" data-level="facil"
                             style="background: linear-gradient(135deg, #38a169, #2f855a);">
                         <i class="fas fa-anchor"></i> Fácil (6 pares)
                     </button>
-                    <button class="difficulty-btn" onclick="setDifficulty('medio')" data-level="medio"
+                    <button class="difficulty-btn" onclick="setGameDifficulty('medio')" data-level="medio"
                             style="background: linear-gradient(135deg, #d69e2e, #b7791f);">
                         <i class="fas fa-ship"></i> Médio (8 pares)
                     </button>
-                    <button class="difficulty-btn" onclick="setDifficulty('dificil')" data-level="dificil"
+                    <button class="difficulty-btn" onclick="setGameDifficulty('dificil')" data-level="dificil"
                             style="background: linear-gradient(135deg, #e53e3e, #c53030);">
                         <i class="fas fa-rocket"></i> Difícil (10 pares)
                     </button>
@@ -2573,7 +2569,7 @@ setInterval(() => {
             <div style="margin-top: 25px;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                     <span style="color: var(--text-secondary); font-size: 0.9rem;">Progresso:</span>
-                    <span style="color: var(--accent); font-weight: 600;" id="progressText">0%</span>
+                    <span style="color: var(--accent); font-weight: 600;" id="gameProgressText">0%</span>
                 </div>
                 <div style="
                     width: 100%;
@@ -2582,7 +2578,7 @@ setInterval(() => {
                     border-radius: 5px;
                     overflow: hidden;
                 ">
-                    <div id="progressBar" style="
+                    <div id="gameProgressBar" style="
                         width: 0%;
                         height: 100%;
                         background: linear-gradient(90deg, var(--primary), var(--accent));
@@ -2595,70 +2591,19 @@ setInterval(() => {
     </div>
 </section>
 
-<!-- ======================= -->
-<!-- MODAL DE RESULTADO -->
-<!-- ======================= -->
-
-<div class="modal-overlay" id="gameResultModal" style="display: none;">
-    <div class="modal-content" style="max-width: 500px; text-align: center; background: linear-gradient(145deg, #0a1929, #051223);">
-        <button class="modal-close" onclick="hideGameResult()">
-            <i class="fas fa-times"></i>
-        </button>
-        
-        <div style="margin: 20px 0 30px;">
-            <div style="font-size: 4rem; margin-bottom: 20px;" id="resultIcon">🏆</div>
-            <h2 style="color: white; margin-bottom: 10px;" id="resultTitle">Missão Cumprida!</h2>
-            <div style="color: var(--text-secondary); margin-bottom: 25px;" id="resultMessage"></div>
-            
-            <div style="
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
-                margin: 25px 0;
-            ">
-                <div style="background: rgba(0, 102, 204, 0.2); padding: 15px; border-radius: 10px;">
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Tempo</div>
-                    <div style="color: white; font-size: 1.5rem; font-weight: 800;" id="resultTime"></div>
-                </div>
-                <div style="background: rgba(56, 161, 105, 0.2); padding: 15px; border-radius: 10px;">
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Movimentos</div>
-                    <div style="color: white; font-size: 1.5rem; font-weight: 800;" id="resultMoves"></div>
-                </div>
-                <div style="background: rgba(214, 158, 46, 0.2); padding: 15px; border-radius: 10px;">
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Pontuação</div>
-                    <div style="color: white; font-size: 1.5rem; font-weight: 800;" id="resultScore"></div>
-                </div>
-                <div style="background: rgba(159, 122, 234, 0.2); padding: 15px; border-radius: 10px;">
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Eficiência</div>
-                    <div style="color: white; font-size: 1.5rem; font-weight: 800;" id="resultEfficiency"></div>
-                </div>
-            </div>
-            
-            <div style="margin-top: 30px;">
-                <button class="navy-btn primary" onclick="shareResult()" 
-                        style="background: linear-gradient(135deg, #38a169, #2f855a); margin-right: 10px;">
-                    <i class="fas fa-share-alt"></i> Compartilhar
-                </button>
-                <button class="navy-btn" onclick="hideGameResult(); startGame();" 
-                        style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
-                    <i class="fas fa-redo"></i> Jogar Novamente
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ======================= -->
-<!-- ESTILOS DO JOGO - MELHORADOS -->
-<!-- ======================= -->
-
 <style>
-/* Estilos do Jogo */
-.game-container {
-    max-width: 1000px;
-    margin: 0 auto;
+/* ESTILOS ESPECÍFICOS PARA O JOGO */
+
+/* Grid do jogo */
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+    justify-items: center;
 }
-/* CORREÇÃO COMPLETA DAS CARTAS */
+
+/* Cartas do jogo */
 .memory-card {
     width: 100%;
     aspect-ratio: 3/4;
@@ -2672,7 +2617,41 @@ setInterval(() => {
     overflow: hidden;
 }
 
-/* CORREÇÃO: Quando virada, gira 180 graus */
+.memory-card .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.memory-card .card-back {
+    background: linear-gradient(135deg, #001a33, #003366);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 204, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 102, 204, 0.1) 0%, transparent 50%);
+}
+
+.memory-card .card-back i {
+    font-size: 2.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    animation: pulse 2s infinite;
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+}
+
+.memory-card .card-front {
+    background: linear-gradient(145deg, #051223, #0a1929);
+    border: 2px solid var(--accent);
+    transform: rotateY(180deg);
+}
+
 .memory-card.flipped {
     transform: rotateY(180deg);
 }
@@ -2683,60 +2662,14 @@ setInterval(() => {
     border: 3px solid var(--accent);
 }
 
-/* CORREÇÃO: Faces da carta */
-.memory-card .card-front,
-.memory-card .card-back {
-    position: absolute;
+.memory-card.matched .card-front {
+    background: linear-gradient(145deg, #0a2e0a, #051a05);
+}
+
+/* Área da imagem da carta */
+.flag-image-container {
     width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    backface-visibility: hidden; /* IMPORTANTE: esconde o verso */
-}
-
-/* CORREÇÃO: Frente da carta (começa virada) */
-.memory-card .card-front {
-    background: linear-gradient(145deg, #051223, #0a1929);
-    border: 2px solid var(--accent);
-    transform: rotateY(180deg); /* Começa virada */
-}
-
-/* CORREÇÃO: Verso da carta (visível inicialmente) */
-.memory-card .card-back {
-    background: linear-gradient(135deg, #001a33, #003366);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    background-image: 
-        radial-gradient(circle at 20% 80%, rgba(255, 204, 0, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(0, 102, 204, 0.1) 0%, transparent 50%);
-    /* Não precisa de transform porque é a face visível inicialmente */
-}
-
-/* Restante do CSS permanece igual... */
-.card-back i {
-    font-size: 2.5rem;
-    color: rgba(255, 255, 255, 0.9);
-    animation: pulse 2s infinite;
-    text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
-}
-/* CORREÇÃO: A classe .flipped deve transformar em 180 graus */
-
-
-.card-back .card-watermark {
-    position: absolute;
-    bottom: 10px;
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 0.7rem;
-    font-style: italic;
-}
-
-.flag-preview-game {
-    width: 100%;
-    height: 55%;
+    height: 60%;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     margin-bottom: 12px;
@@ -2748,18 +2681,19 @@ setInterval(() => {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.flag-preview-game img {
+.flag-image-container img {
     width: 100%;
     height: 100%;
     object-fit: contain;
     transition: transform 0.3s ease;
 }
 
-.memory-card.matched .flag-preview-game img {
+.memory-card.matched .flag-image-container img {
     transform: scale(1.1);
     filter: brightness(1.2) drop-shadow(0 0 5px rgba(255, 204, 0, 0.5));
 }
 
+/* Texto da carta */
 .card-title-game {
     color: white;
     font-size: 0.85rem;
@@ -2795,57 +2729,7 @@ setInterval(() => {
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
-.card-corner {
-    position: absolute;
-    width: 25px;
-    height: 25px;
-    background: var(--primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    font-weight: bold;
-    border-radius: 0 0 8px 0;
-    top: 0;
-    left: 0;
-}
-
-.difficulty-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    color: var(--text-secondary);
-    padding: 12px 20px;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-size: 0.9rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 160px;
-    justify-content: center;
-}
-
-.difficulty-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
-.difficulty-btn.active {
-    color: white;
-    border-color: transparent;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
 /* Animações */
-@keyframes cardFlip {
-    0% { transform: rotateY(0) scale(1); }
-    50% { transform: rotateY(90deg) scale(1.05); }
-    100% { transform: rotateY(180deg) scale(1); }
-}
-
 @keyframes pulse {
     0%, 100% { transform: scale(1); opacity: 0.8; }
     50% { transform: scale(1.1); opacity: 1; }
@@ -2862,153 +2746,25 @@ setInterval(() => {
     }
 }
 
-@keyframes newGame {
-    0% { transform: scale(0.8); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+@keyframes newCard {
+    0% { transform: scale(0.8) rotateY(0); opacity: 0; }
+    100% { transform: scale(1) rotateY(0); opacity: 1; }
 }
 
-/* Responsividade Melhorada */
-@media (max-width: 1200px) {
-    .memory-grid {
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 10px !important;
-    }
-}
-
-@media (max-width: 992px) {
-    .memory-grid {
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 10px !important;
-    }
-    
-    .memory-card {
-        aspect-ratio: 3/4;
-    }
-    
-    .game-controls {
-        padding: 15px !important;
-    }
-    
-    .stat-item {
-        min-width: 80px !important;
-    }
-    
-    .stat-item div:first-child {
-        font-size: 0.7rem !important;
-    }
-    
-    .stat-item div:last-child {
-        font-size: 1.5rem !important;
-        padding: 6px 12px !important;
-    }
-}
-
+/* Responsividade */
 @media (max-width: 768px) {
     .memory-grid {
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 8px !important;
+        gap: 10px !important;
     }
     
     .memory-card {
-        aspect-ratio: 3/4;
         max-width: 110px;
         margin: 0 auto;
     }
-    
-    .card-title-game {
-        font-size: 0.75rem !important;
-    }
-    
-    .card-description-game {
-        font-size: 0.65rem !important;
-    }
-    
-    .flag-preview-game {
-        height: 50% !important;
-    }
-    
-    .difficulty-btn {
-        min-width: 140px !important;
-        padding: 10px 15px !important;
-        font-size: 0.8rem !important;
-    }
-    
-    .game-buttons {
-        flex-wrap: wrap !important;
-    }
-    
-    .game-btn-start {
-        order: -1;
-        width: 100%;
-        margin-bottom: 10px;
-    }
 }
 
-@media (max-width: 576px) {
-    .memory-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 6px !important;
-    }
-    
-    .memory-card {
-        aspect-ratio: 2/3;
-        max-width: 95px;
-    }
-    
-    .flag-preview-game {
-        height: 45% !important;
-        padding: 5px !important;
-    }
-    /* Garantir que as imagens apareçam */
-.flag-preview-game img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    display: block;
-}
-
-/* Estilo para o fallback */
-.flag-preview-game .fallback-flag {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
-    font-weight: bold;
-}
-    
-    .card-title-game {
-        font-size: 0.7rem !important;
-        margin-bottom: 5px !important;
-    }
-    
-    .card-description-game {
-        font-size: 0.6rem !important;
-    }
-    
-    .card-type-badge {
-        font-size: 0.55rem !important;
-        padding: 2px 6px !important;
-    }
-    
-    .stat-item {
-        min-width: 70px !important;
-    }
-    
-    .stat-item div:first-child {
-        font-size: 0.65rem !important;
-    }
-    
-    .stat-item div:last-child {
-        font-size: 1.3rem !important;
-        padding: 5px 10px !important;
-    }
-}
-
-@media (max-width: 380px) {
+@media (max-width: 480px) {
     .memory-grid {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 8px !important;
@@ -3016,178 +2772,63 @@ setInterval(() => {
     
     .memory-card {
         max-width: 130px;
-        aspect-ratio: 3/4;
     }
-    
-    .difficulty-selector {
-        padding: 15px !important;
-    }
-    
-    .difficulty-btn {
-        min-width: 100% !important;
-        margin-bottom: 8px;
-    }
-}
-
-/* Efeitos especiais */
-.memory-card.new-card {
-    animation: newGame 0.5s ease-out;
-}
-
-.game-btn-start:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(56, 161, 105, 0.4) !important;
-}
-
-.game-btn-reset:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(113, 128, 150, 0.4) !important;
-}
-
-.game-btn-sound:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(214, 158, 46, 0.4) !important;
-}
-
-.game-btn-help:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(66, 153, 225, 0.4) !important;
 }
 </style>
 
-<!-- ======================= -->
-<!-- SCRIPT DO JOGO - MELHORADO -->
-<!-- ======================= -->
-
 <script>
-// Configurações do Jogo
-const GAME_CONFIG = {
-    sounds: {
-        enabled: true,
-        flip: 'flip',
-        match: 'match',
-        win: 'win',
-        lose: 'lose',
-        click: 'click'
-    },
-    points: {
-        match: 100,
-        timeBonus: 50,
-        efficiencyBonus: 75,
-        difficultyMultiplier: {
-            facil: 1.0,
-            medio: 1.5,
-            dificil: 2.0
-        }
-    }
+// SISTEMA DO JOGO DA MEMÓRIA - VERSÃO CORRIGIDA
+
+// Estado do jogo
+let gameState = {
+    cards: [],
+    flippedCards: [],
+    matchedPairs: 0,
+    totalPairs: 6,
+    moves: 0,
+    score: 0,
+    time: 0,
+    timer: null,
+    isPlaying: false,
+    canFlip: true,
+    difficulty: 'facil',
+    soundEnabled: true
 };
 
-// Sistema de Sons
-const SoundSystem = {
-    enabled: GAME_CONFIG.sounds.enabled,
-    audioContext: null,
-    
-    init() {
-        try {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        } catch (e) {
-            console.log('AudioContext não suportado, sons desativados');
-            this.enabled = false;
-        }
-    },
-    
-    play(soundType) {
-        if (!this.enabled || !this.audioContext) return;
-        
-        try {
-            const oscillator = this.audioContext.createOscillator();
-            const gainNode = this.audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(this.audioContext.destination);
-            
-            let frequency = 440;
-            let duration = 0.3;
-            
-            switch(soundType) {
-                case 'flip':
-                    frequency = 523.25; // C5
-                    duration = 0.2;
-                    break;
-                case 'match':
-                    frequency = 659.25; // E5
-                    duration = 0.5;
-                    break;
-                case 'win':
-                    frequency = 783.99; // G5
-                    duration = 1.0;
-                    break;
-                case 'lose':
-                    frequency = 392.00; // G4
-                    duration = 0.3;
-                    break;
-                case 'click':
-                    frequency = 349.23; // F4
-                    duration = 0.1;
-                    break;
-            }
-            
-            oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-            gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
-            
-            oscillator.start(this.audioContext.currentTime);
-            oscillator.stop(this.audioContext.currentTime + duration);
-            
-        } catch (e) {
-            // Silenciosamente falha
-        }
-    },
-    
-    toggle() {
-        this.enabled = !this.enabled;
-        const icon = document.getElementById('soundIcon');
-        if (icon) {
-            icon.className = this.enabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
-        }
-        return this.enabled;
-    }
-};
-
-// Dados do Jogo (com imagens garantidas)
-const gameData = {
+// Dados das cartas com imagens garantidas
+const gameCardsData = {
     facil: [
         {
             id: 'national',
             title: 'Bandeira Nacional',
-            description: 'Símbolo máximo da Pátria, instituída em 19/11/1889',
+            description: 'Símbolo máximo da Pátria brasileira',
             type: 'nacional',
             image: 'imagens/sinais/7.png',
-            fallbackColor: '#38a169'
+            color: '#38a169'
         },
         {
             id: 'cruzeiro',
             title: 'Bandeira do Cruzeiro',
-            description: 'Bandeira distintiva da Marinha, azul com 21 estrelas',
+            description: 'Bandeira distintiva da Marinha do Brasil',
             type: 'distintivo',
             image: 'imagens/sinais/19.png',
-            fallbackColor: '#4299e1'
+            color: '#4299e1'
         },
         {
             id: 'estandarte-presidencial',
             title: 'Estandarte Presidencial',
-            description: 'Usada pelo Presidente da República, salva de 21 tiros',
+            description: 'Usado pelo Presidente da República',
             type: 'insignia',
             image: 'imagens/sinais/26.png',
-            fallbackColor: '#d69e2e'
+            color: '#d69e2e'
         },
         {
             id: 'pavilhao-almirante',
             title: 'Pavilhão de Almirante',
-            description: 'Cinco estrelas em pentágono, salva de 19 tiros',
+            description: 'Cinco estrelas em pentágono',
             type: 'insignia',
             image: 'imagens/sinais/36.png',
-            fallbackColor: '#9f7aea'
+            color: '#9f7aea'
         },
         {
             id: 'barroso',
@@ -3195,208 +2836,93 @@ const gameData = {
             description: '"O Brasil espera que cada um cumpra o seu dever"',
             type: 'sinal',
             image: 'imagens/sinais/56.png',
-            fallbackColor: '#e53e3e'
+            color: '#e53e3e'
         },
         {
             id: 'alfa',
             title: 'Sinal ALFA',
-            description: 'Tenho mergulhador n\'água, mantenha distância',
+            description: 'Tenho mergulhador n\'água',
             type: 'cis',
             image: 'imagens/sinais/64.png',
-            fallbackColor: '#4fd1c7'
-        }
-    ],
-    medio: [
-        {
-            id: 'pavilhao-vice-almirante',
-            title: 'Pavilhão Vice-Almirante',
-            description: 'Três estrelas em triângulo, salva de 15 tiros',
-            type: 'insignia',
-            image: 'imagens/sinais/38.png',
-            fallbackColor: '#9f7aea'
-        },
-        {
-            id: 'oscar',
-            title: 'Sinal OSCAR',
-            description: 'Homem ao mar - emergência máxima',
-            type: 'cis',
-            image: 'imagens/sinais/78.png',
-            fallbackColor: '#4299e1'
-        }
-    ],
-    dificil: [
-        {
-            id: 'pavilhao-contra-almirante',
-            title: 'Pavilhão Contra-Almirante',
-            description: 'Duas estrelas horizontais, salva de 13 tiros',
-            type: 'insignia',
-            image: 'imagens/sinais/39.png',
-            fallbackColor: '#d69e2e'
-        },
-        {
-            id: 'victor',
-            title: 'Sinal VICTOR',
-            description: 'Solicito auxílio - emergência',
-            type: 'cis',
-            image: 'imagens/sinais/84.jpg',
-            fallbackColor: '#e53e3e'
+            color: '#4fd1c7'
         }
     ]
 };
 
-// Estado do Jogo
-let gameState = {
-    cards: [],
-    flippedCards: [],
-    matchedPairs: 0,
-    moves: 0,
-    points: 0,
-    gameTime: 0,
-    timer: null,
-    gameActive: false,
-    difficulty: 'facil',
-    firstMoveTime: null,
-    canClick: true
-};
-
-// Inicializar Jogo
-function initializeGame() {
-    SoundSystem.init();
-    addGameToNavigation();
-    createCards('facil');
+// Inicializar jogo
+function initGame() {
+    // Adicionar item de navegação do jogo
+    addGameNavItem();
     
-    // Adicionar evento para a seção do jogo
-    const gameSection = document.getElementById('jogo');
-    if (gameSection) {
-        gameSection.style.display = 'none';
-    }
+    // Criar deck inicial
+    createGameDeck('facil');
+    
+    // Atualizar interface
+    updateGameUI();
 }
 
-function addGameToNavigation() {
+// Adicionar navegação do jogo
+function addGameNavItem() {
     const navMenu = document.querySelector('.nav-menu');
     if (navMenu && !document.querySelector('a[href="#jogo"]')) {
-        const gameNavItem = document.createElement('div');
-        gameNavItem.className = 'nav-item';
-        gameNavItem.innerHTML = `
-            <a href="#jogo" class="nav-link" onclick="showGameSection()">
+        const gameNav = document.createElement('div');
+        gameNav.className = 'nav-item';
+        gameNav.innerHTML = `
+            <a href="#jogo" class="nav-link" onclick="showSection('jogo')">
                 <i class="fas fa-gamepad"></i> Jogo
             </a>
         `;
-        navMenu.appendChild(gameNavItem);
+        navMenu.appendChild(gameNav);
     }
 }
 
-function createCards(difficulty) {
+// Criar deck de cartas
+function createGameDeck(difficulty) {
     gameState.difficulty = difficulty;
-    const baseCards = [...gameData.facil];
+    
+    // Selecionar cartas baseadas na dificuldade
+    const baseCards = [...gameCardsData.facil];
     
     if (difficulty === 'medio') {
-        baseCards.push(...gameData.medio);
+        // Adicionar mais cartas para médio
+        gameState.totalPairs = 8;
     } else if (difficulty === 'dificil') {
-        baseCards.push(...gameData.medio, ...gameData.dificil);
+        // Adicionar mais cartas para difícil
+        gameState.totalPairs = 10;
     }
     
-    // Duplicar e embaralhar
-    let allCards = [];
-    baseCards.forEach((card, index) => {
-        // Carta com bandeira
-        allCards.push({
+    // Criar pares de cartas
+    let deck = [];
+    baseCards.slice(0, gameState.totalPairs).forEach((card, index) => {
+        // Carta com imagem
+        deck.push({
             ...card,
-            cardType: 'flag',
-            pairId: card.id + '-flag',
-            cardNumber: index * 2
+            pairId: `pair-${index}`,
+            cardType: 'image'
         });
         
         // Carta com descrição
-        allCards.push({
+        deck.push({
             ...card,
-            cardType: 'description',
-            pairId: card.id + '-desc',
-            cardNumber: index * 2 + 1
+            pairId: `pair-${index}`,
+            cardType: 'description'
         });
     });
     
     // Embaralhar
-    allCards = shuffleArray(allCards);
-    gameState.cards = allCards;
+    gameState.cards = shuffleDeck(deck);
 }
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
+// Embaralhar cartas
+function shuffleDeck(deck) {
+    for (let i = deck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+        [deck[i], deck[j]] = [deck[j], deck[i]];
     }
-    return array;
+    return deck;
 }
 
-function createFlagCardContent(card) {
-    // Usar imagem se existir, senão usar fallback
-    if (card.image) {
-        return `
-            <div class="flag-preview-game">
-                <img src="${card.image}" 
-                     alt="${card.title}"
-                     onerror="this.onerror=null; this.src='data:image/svg+xml;charset=utf-8,${encodeURIComponent(getFallbackSVG(card))}'">
-            </div>
-            <div class="card-title-game">${card.title}</div>
-            <div class="card-description-game" style="
-                color: ${card.fallbackColor};
-                font-weight: 600;
-                font-size: 0.7rem;
-                margin-top: 5px;
-            ">
-                ${card.type.toUpperCase()}
-            </div>
-        `;
-    } else {
-        return getFallbackFlagHTML(card);
-    }
-}
-
-// Função para gerar SVG de fallback
-function getFallbackSVG(card) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 70">
-        <rect width="100" height="70" fill="${card.fallbackColor}"/>
-        <text x="50" y="35" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-size="12" font-weight="bold">
-            ${card.title.substring(0, 15)}
-        </text>
-    </svg>`;
-}
-
-// Função para HTML de fallback
-function getFallbackFlagHTML(card) {
-    return `
-        <div class="flag-preview-game" style="background: ${card.fallbackColor};">
-            <div style="
-                width: 100%;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                text-align: center;
-                padding: 10px;
-            ">
-                <div style="font-size: 2rem; margin-bottom: 5px;">🚩</div>
-                <div style="font-weight: bold; font-size: 0.8rem; margin-bottom: 3px;">${card.title}</div>
-                <div style="font-size: 0.65rem; opacity: 0.9;">${card.type}</div>
-            </div>
-        </div>
-        <div class="card-title-game">${card.title}</div>
-        <div class="card-description-game" style="
-            color: ${card.fallbackColor};
-            font-weight: 600;
-            font-size: 0.7rem;
-            margin-top: 5px;
-        ">
-            ${card.type.toUpperCase()}
-        </div>
-    `;
-}
-
-// CORREÇÃO DA FUNÇÃO renderGameBoard
-// CORREÇÃO DA FUNÇÃO renderGameBoard
+// Renderizar tabuleiro do jogo
 function renderGameBoard() {
     const grid = document.getElementById('memoryGrid');
     if (!grid) return;
@@ -3412,145 +2938,71 @@ function renderGameBoard() {
     
     // Criar cartas
     gameState.cards.forEach((card, index) => {
-        const cardElement = document.createElement('div');
-        cardElement.className = 'memory-card new-card';
-        cardElement.dataset.index = index;
-        cardElement.dataset.cardId = card.pairId;
-        cardElement.dataset.baseId = card.id;
-        
-        // Conteúdo da frente (bandeira ou descrição)
-        const frontContent = card.cardType === 'flag' 
-            ? createFlagCardContent(card)
-            : createDescriptionCardContent(card);
-        
-        // CORREÇÃO: Ordem CORRETA das faces - VERSO primeiro, FRENTE depois
-        cardElement.innerHTML = `
-            <div class="card-back">
-                <i class="fas fa-anchor"></i>
-                <div class="card-watermark">Marujo Digital</div>
-            </div>
-            <div class="card-front">
-                ${frontContent}
-                <div class="card-type-badge">
-                    ${card.cardType === 'flag' ? '🏁' : '📝'}
-                </div>
-                <div class="card-corner">${card.cardNumber + 1}</div>
-            </div>
-        `;
-        
-        // Adicionar evento
-        cardElement.addEventListener('click', () => handleCardClick(index));
+        const cardElement = createCardElement(card, index);
         grid.appendChild(cardElement);
     });
-    
-    // Atualizar contador de pares
-    updateProgress();
 }
 
-// CORREÇÃO DA FUNÇÃO createFlagCardContent
-
-
-// Função para criar fallback se imagem não existir
-function getFallbackFlag(card) {
-    return `
-        <div class="flag-preview-game" style="background: ${card.fallbackColor};">
-            <div style="
-                width: 100%;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                text-align: center;
-                padding: 10px;
-            ">
-                <div style="font-size: 2rem; margin-bottom: 10px;">🚩</div>
-                <div style="font-weight: bold; font-size: 0.9rem;">${card.title}</div>
-                <div style="font-size: 0.7rem; opacity: 0.9;">${card.type}</div>
+// Criar elemento de carta
+function createCardElement(card, index) {
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'memory-card';
+    cardDiv.dataset.index = index;
+    cardDiv.dataset.pairId = card.pairId;
+    cardDiv.dataset.cardId = card.id;
+    
+    // Conteúdo da carta
+    const frontContent = card.cardType === 'image' 
+        ? createImageCardContent(card)
+        : createDescriptionCardContent(card);
+    
+    cardDiv.innerHTML = `
+        <div class="card-face card-back">
+            <i class="fas fa-anchor"></i>
+            <div style="position: absolute; bottom: 10px; color: rgba(255,255,255,0.3); font-size: 0.7rem; font-style: italic;">
+                Marujo Digital
             </div>
         </div>
+        <div class="card-face card-front">
+            ${frontContent}
+            <div class="card-type-badge">
+                ${card.cardType === 'image' ? '🏁' : '📝'}
+            </div>
+            <div style="position: absolute; top: 0; left: 0; width: 25px; height: 25px; background: ${card.color}; 
+                color: white; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; 
+                font-weight: bold; border-radius: 0 0 8px 0;">
+                ${index + 1}
+            </div>
+        </div>
+    `;
+    
+    // Adicionar evento de clique
+    cardDiv.addEventListener('click', () => flipCard(index));
+    
+    return cardDiv;
+}
+
+// Criar conteúdo para carta com imagem
+function createImageCardContent(card) {
+    return `
+        <div class="flag-image-container">
+            <img src="${card.image}" 
+                 alt="${card.title}"
+                 onerror="this.onerror=null; this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 70%22><rect width=%22100%22 height=%2270%22 fill=%22${card.color.replace('#', '%23')}%22/><text x=%2250%22 y=%2235%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-family=%22Arial%22 font-size=%228%22>${card.title.substring(0, 10)}</text></svg>'">
+        </div>
         <div class="card-title-game">${card.title}</div>
-        <div class="card-description-game" style="
-            color: ${card.fallbackColor};
-            font-weight: 600;
-            font-size: 0.7rem;
-            margin-top: 5px;
-        ">
+        <div class="card-description-game" style="color: ${card.color}; font-weight: 600; font-size: 0.7rem;">
             ${card.type.toUpperCase()}
         </div>
     `;
 }
 
-// Função para verificar se imagem existe
-function checkImageExists(url) {
-    return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = url;
-    });
-}
-
-// CORREÇÃO: Adicionar esta função para teste de imagens
-function testImage(url) {
-    return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = url;
-    });
-}
-
-// CORREÇÃO NA FUNÇÃO flipCard - garantir que as cartas fiquem viradas corretamente
-function flipCard(cardElement, index, card) {
-    gameState.canClick = false;
-    
-    // CORREÇÃO: Adicionar animação suave
-    cardElement.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-    cardElement.classList.add('flipped');
-    
-    // Verificar se existe imagem e carregar fallback se necessário
-    const img = cardElement.querySelector('img');
-    if (img) {
-        img.onerror = function() {
-            // Substituir por fallback
-            const fallbackHTML = getFallbackFlag(card);
-            const previewDiv = cardElement.querySelector('.flag-preview-game');
-            if (previewDiv) {
-                previewDiv.innerHTML = getFallbackFlag(card);
-            }
-        };
-        
-        // Tentar carregar a imagem
-        img.src = card.image;
-    }
-    
-    gameState.flippedCards.push({ index, card });
-    
-    // Verificar se temos 2 cartas viradas
-    if (gameState.flippedCards.length === 2) {
-        gameState.moves++;
-        updateGameStats();
-        
-        setTimeout(() => {
-            checkForMatch();
-            gameState.canClick = true;
-        }, 600);
-    } else {
-        setTimeout(() => {
-            gameState.canClick = true;
-        }, 300);
-    }
-}
-
-
-
+// Criar conteúdo para carta com descrição
 function createDescriptionCardContent(card) {
     return `
-        <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center;">
-            <div style="color: ${card.fallbackColor}; font-size: 2rem; text-align: center; margin-bottom: 10px;">
-                ${getFlagIcon(card.type)}
+        <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;">
+            <div style="color: ${card.color}; font-size: 2rem; text-align: center; margin-bottom: 10px;">
+                ${getCardIcon(card.type)}
             </div>
             <div class="card-title-game" style="margin-bottom: 10px;">${card.title}</div>
             <div class="card-description-game">
@@ -3560,7 +3012,8 @@ function createDescriptionCardContent(card) {
     `;
 }
 
-function getFlagIcon(type) {
+// Obter ícone baseado no tipo
+function getCardIcon(type) {
     const icons = {
         'nacional': '🏁',
         'distintivo': '🚩',
@@ -3571,99 +3024,102 @@ function getFlagIcon(type) {
     return icons[type] || '🏴';
 }
 
-function handleCardClick(index) {
-    if (!gameState.gameActive || !gameState.canClick) return;
+// Virar carta
+function flipCard(index) {
+    if (!gameState.isPlaying || !gameState.canFlip || gameState.flippedCards.length >= 2) return;
     
-    const card = gameState.cards[index];
     const cardElement = document.querySelector(`.memory-card[data-index="${index}"]`);
+    const card = gameState.cards[index];
     
-    // Verificar se pode virar
-    if (!cardElement || 
-        cardElement.classList.contains('flipped') || 
-        cardElement.classList.contains('matched') ||
-        gameState.flippedCards.length >= 2) {
+    // Verificar se a carta já está virada ou combinada
+    if (cardElement.classList.contains('flipped') || 
+        cardElement.classList.contains('matched')) {
         return;
     }
     
-    // Registrar primeiro movimento
+    // Iniciar timer no primeiro movimento
     if (gameState.moves === 0) {
-        gameState.firstMoveTime = Date.now();
+        startGameTimer();
     }
     
     // Virar carta
-    flipCard(cardElement, index, card);
+    cardElement.classList.add('flipped');
+    gameState.flippedCards.push({ index, card });
     
     // Tocar som
-    SoundSystem.play('flip');
-}
-
-
-
-function checkForMatch() {
-    const [card1, card2] = gameState.flippedCards;
+    playGameSound('flip');
     
-    if (card1.card.baseId === card2.card.baseId) {
-        // É um par!
+    // Verificar se temos 2 cartas viradas
+    if (gameState.flippedCards.length === 2) {
+        gameState.moves++;
+        gameState.canFlip = false;
+        
         setTimeout(() => {
-            // Marcar como combinado
-            const card1Element = document.querySelector(`.memory-card[data-index="${card1.index}"]`);
-            const card2Element = document.querySelector(`.memory-card[data-index="${card2.index}"]`);
-            
-            if (card1Element && card2Element) {
-                card1Element.classList.add('matched');
-                card2Element.classList.add('matched');
-                
-                // Adicionar pontos
-                const pointsEarned = calculatePoints();
-                gameState.points += pointsEarned;
-                gameState.matchedPairs++;
-                
-                // Atualizar estatísticas
-                updateGameStats();
-                updateProgress();
-                
-                // Efeito de pontos
-                showPointsAnimation(pointsEarned, card1Element);
-                
-                // Tocar som de acerto
-                SoundSystem.play('match');
-                
-                // Verificar vitória
-                checkWinCondition();
-            }
-            
-            // Limpar cartas viradas
-            gameState.flippedCards = [];
-        }, 500);
-    } else {
-        // Não é par, virar de volta
-        setTimeout(() => {
-            const card1Element = document.querySelector(`.memory-card[data-index="${card1.index}"]`);
-            const card2Element = document.querySelector(`.memory-card[data-index="${card2.index}"]`);
-            
-            if (card1Element && card2Element) {
-                card1Element.classList.remove('flipped');
-                card2Element.classList.remove('flipped');
-                
-                // Tocar som de erro
-                SoundSystem.play('lose');
-            }
-            
-            // Limpar cartas viradas
-            gameState.flippedCards = [];
-        }, 1000);
+            checkCardMatch();
+            gameState.canFlip = true;
+        }, 800);
+        
+        updateGameUI();
     }
 }
 
-function calculatePoints() {
-    const basePoints = GAME_CONFIG.points.match;
-    const timeBonus = Math.max(GAME_CONFIG.points.timeBonus - Math.floor(gameState.gameTime / 10), 0);
-    const efficiencyBonus = Math.max(GAME_CONFIG.points.efficiencyBonus - (gameState.moves * 2), 0);
-    const difficultyMultiplier = GAME_CONFIG.points.difficultyMultiplier[gameState.difficulty];
+// Verificar combinação
+function checkCardMatch() {
+    const [card1, card2] = gameState.flippedCards;
     
-    return Math.floor((basePoints + timeBonus + efficiencyBonus) * difficultyMultiplier);
+    if (card1.card.pairId === card2.card.pairId) {
+        // Combinação correta
+        const card1Element = document.querySelector(`.memory-card[data-index="${card1.index}"]`);
+        const card2Element = document.querySelector(`.memory-card[data-index="${card2.index}"]`);
+        
+        card1Element.classList.add('matched');
+        card2Element.classList.add('matched');
+        
+        // Adicionar pontos
+        const points = calculatePoints();
+        gameState.score += points;
+        gameState.matchedPairs++;
+        
+        // Tocar som de acerto
+        playGameSound('match');
+        
+        // Mostrar animação de pontos
+        showPointsAnimation(points, card1Element);
+        
+        // Verificar vitória
+        if (gameState.matchedPairs >= gameState.totalPairs) {
+            endGame(true);
+        }
+        
+        updateGameUI();
+    } else {
+        // Combinação incorreta
+        setTimeout(() => {
+            const card1Element = document.querySelector(`.memory-card[data-index="${card1.index}"]`);
+            const card2Element = document.querySelector(`.memory-card[data-index="${card2.index}"]`);
+            
+            card1Element.classList.remove('flipped');
+            card2Element.classList.remove('flipped');
+            
+            // Tocar som de erro
+            playGameSound('error');
+        }, 1000);
+    }
+    
+    // Limpar cartas viradas
+    gameState.flippedCards = [];
 }
 
+// Calcular pontos
+function calculatePoints() {
+    const basePoints = 100;
+    const timeBonus = Math.max(50 - Math.floor(gameState.time / 10), 10);
+    const efficiencyBonus = Math.max(75 - (gameState.moves * 2), 25);
+    
+    return basePoints + timeBonus + efficiencyBonus;
+}
+
+// Mostrar animação de pontos
 function showPointsAnimation(points, element) {
     const rect = element.getBoundingClientRect();
     const pointsElement = document.createElement('div');
@@ -3687,86 +3143,58 @@ function showPointsAnimation(points, element) {
     pointsElement.textContent = `+${points}`;
     document.body.appendChild(pointsElement);
     
-    setTimeout(() => {
-        pointsElement.remove();
-    }, 1000);
+    setTimeout(() => pointsElement.remove(), 1000);
 }
 
-function checkWinCondition() {
-    const totalPairs = gameState.cards.length / 2;
-    
-    if (gameState.matchedPairs >= totalPairs) {
-        // Vitória!
-        gameState.gameActive = false;
-        clearInterval(gameState.timer);
-        
-        // Tocar som de vitória
-        SoundSystem.play('win');
-        
-        // Calcular pontuação final
-        const finalScore = gameState.points + Math.max(1000 - gameState.gameTime * 10, 100);
-        
-        // Mostrar resultado
-        setTimeout(() => {
-            showGameResult(finalScore);
-        }, 1000);
-    }
-}
-
-function startGame() {
-    SoundSystem.play('click');
-    
+// Iniciar novo jogo
+function startNewGame() {
     // Resetar estado
     gameState = {
         cards: [],
         flippedCards: [],
         matchedPairs: 0,
+        totalPairs: gameState.totalPairs,
         moves: 0,
-        points: 0,
-        gameTime: 0,
+        score: 0,
+        time: 0,
         timer: null,
-        gameActive: true,
+        isPlaying: true,
+        canFlip: true,
         difficulty: gameState.difficulty,
-        firstMoveTime: null,
-        canClick: true
+        soundEnabled: gameState.soundEnabled
     };
     
-    // Criar cartas
-    createCards(gameState.difficulty);
+    // Parar timer anterior
+    if (gameState.timer) {
+        clearInterval(gameState.timer);
+    }
+    
+    // Criar novo deck
+    createGameDeck(gameState.difficulty);
     
     // Renderizar tabuleiro
     renderGameBoard();
     
-    // Iniciar timer
-    startTimer();
+    // Atualizar UI
+    updateGameUI();
     
-    // Atualizar estatísticas
-    updateGameStats();
-    
-    // Adicionar classe para animação
-    const grid = document.getElementById('memoryGrid');
-    if (grid) {
-        grid.style.animation = 'newGame 0.5s ease-out';
-        setTimeout(() => {
-            grid.style.animation = '';
-        }, 500);
-    }
+    // Tocar som de início
+    playGameSound('start');
 }
 
+// Resetar jogo
 function resetGame() {
-    if (gameState.gameActive) {
+    if (gameState.isPlaying) {
         if (confirm('Reiniciar o jogo atual? Seu progresso será perdido.')) {
-            SoundSystem.play('click');
-            startGame();
+            startNewGame();
         }
     } else {
-        startGame();
+        startNewGame();
     }
 }
 
-function setDifficulty(level) {
-    SoundSystem.play('click');
-    
+// Definir dificuldade
+function setGameDifficulty(level) {
     // Atualizar botões
     document.querySelectorAll('.difficulty-btn').forEach(btn => {
         btn.classList.remove('active');
@@ -3775,158 +3203,194 @@ function setDifficulty(level) {
         }
     });
     
-    // Se o jogo estiver ativo, confirmar mudança
-    if (gameState.gameActive) {
+    gameState.difficulty = level;
+    
+    // Se o jogo estiver ativo, confirmar reinício
+    if (gameState.isPlaying) {
         if (confirm(`Mudar para nível ${level}? O jogo atual será reiniciado.`)) {
-            gameState.difficulty = level;
-            startGame();
-        } else {
-            // Reverter seleção
-            document.querySelectorAll('.difficulty-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.level === gameState.difficulty) {
-                    btn.classList.add('active');
-                }
-            });
+            startNewGame();
         }
-    } else {
-        gameState.difficulty = level;
     }
 }
 
-function toggleSound() {
-    const enabled = SoundSystem.toggle();
-    SoundSystem.play(enabled ? 'click' : 'lose');
+// Alternar som
+function toggleGameSound() {
+    gameState.soundEnabled = !gameState.soundEnabled;
+    const icon = document.getElementById('gameSoundIcon');
+    if (icon) {
+        icon.className = gameState.soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+    }
+    playGameSound('click');
 }
 
-function startTimer() {
-    if (gameState.timer) {
-        clearInterval(gameState.timer);
+// Tocar som do jogo
+function playGameSound(type) {
+    if (!gameState.soundEnabled) return;
+    
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        let frequency, duration;
+        
+        switch(type) {
+            case 'flip': frequency = 523.25; duration = 0.2; break;
+            case 'match': frequency = 659.25; duration = 0.5; break;
+            case 'error': frequency = 392.00; duration = 0.3; break;
+            case 'start': frequency = 783.99; duration = 0.8; break;
+            case 'win': frequency = 1046.50; duration = 1.0; break;
+            case 'click': frequency = 349.23; duration = 0.1; break;
+            default: frequency = 440; duration = 0.2;
+        }
+        
+        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+        
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + duration);
+    } catch (e) {
+        // Silenciosamente falha se AudioContext não for suportado
     }
+}
+
+// Iniciar timer
+function startGameTimer() {
+    if (gameState.timer) clearInterval(gameState.timer);
     
     gameState.timer = setInterval(() => {
-        gameState.gameTime++;
-        updateGameStats();
+        gameState.time++;
+        updateGameUI();
     }, 1000);
 }
 
-function updateGameStats() {
-    // Atualizar tempo
+// Atualizar interface do jogo
+function updateGameUI() {
+    // Tempo
     const timeElement = document.getElementById('gameTime');
     if (timeElement) {
-        timeElement.textContent = formatTime(gameState.gameTime);
+        const minutes = Math.floor(gameState.time / 60);
+        const seconds = gameState.time % 60;
+        timeElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
     
-    // Atualizar movimentos
+    // Movimentos
     const movesElement = document.getElementById('gameMoves');
-    if (movesElement) {
-        movesElement.textContent = gameState.moves;
-    }
+    if (movesElement) movesElement.textContent = gameState.moves;
     
-    // Atualizar pontos
+    // Pontos
     const pointsElement = document.getElementById('gamePoints');
-    if (pointsElement) {
-        pointsElement.textContent = gameState.points;
-        // Efeito de brilho ao atualizar pontos
-        pointsElement.style.animation = 'pulse 0.5s ease';
-        setTimeout(() => {
-            pointsElement.style.animation = '';
-        }, 500);
-    }
+    if (pointsElement) pointsElement.textContent = gameState.score;
     
-    // Atualizar pares
-    updateProgress();
-}
-
-function updateProgress() {
-    const totalPairs = gameState.cards.length / 2;
+    // Pares
     const pairsElement = document.getElementById('gamePairs');
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
+    if (pairsElement) pairsElement.textContent = `${gameState.matchedPairs}/${gameState.totalPairs}`;
     
-    if (pairsElement) {
-        pairsElement.textContent = `${gameState.matchedPairs}/${totalPairs}`;
-    }
-    
+    // Progresso
+    const progressBar = document.getElementById('gameProgressBar');
+    const progressText = document.getElementById('gameProgressText');
     if (progressBar && progressText) {
-        const percentage = totalPairs > 0 ? Math.floor((gameState.matchedPairs / totalPairs) * 100) : 0;
+        const percentage = Math.floor((gameState.matchedPairs / gameState.totalPairs) * 100);
         progressBar.style.width = `${percentage}%`;
         progressText.textContent = `${percentage}%`;
     }
 }
 
+// Finalizar jogo
+function endGame(win) {
+    gameState.isPlaying = false;
+    clearInterval(gameState.timer);
+    
+    if (win) {
+        // Vitória
+        playGameSound('win');
+        
+        // Calcular pontuação final
+        const finalScore = gameState.score + Math.max(1000 - gameState.time * 10, 100);
+        
+        // Mostrar resultado
+        setTimeout(() => showGameResult(finalScore), 500);
+    }
+}
+
+// Mostrar resultado
+function showGameResult(finalScore) {
+    // Criar modal de resultado
+    const modalHTML = `
+        <div class="modal-overlay active" id="gameResultModal">
+            <div class="modal-content" style="max-width: 500px; text-align: center;">
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <div style="margin: 20px 0;">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">🏆</div>
+                    <h2 style="color: white; margin-bottom: 10px;">Missão Cumprida!</h2>
+                    <div style="color: var(--text-secondary); margin-bottom: 25px;">
+                        Excelente desempenho marinheiro!
+                    </div>
+                    
+                    <div style="
+                        display: grid;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 15px;
+                        margin: 25px 0;
+                    ">
+                        <div style="background: rgba(0, 102, 204, 0.2); padding: 15px; border-radius: 10px;">
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Tempo</div>
+                            <div style="color: white; font-size: 1.5rem; font-weight: 800;">${formatTime(gameState.time)}</div>
+                        </div>
+                        <div style="background: rgba(56, 161, 105, 0.2); padding: 15px; border-radius: 10px;">
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Movimentos</div>
+                            <div style="color: white; font-size: 1.5rem; font-weight: 800;">${gameState.moves}</div>
+                        </div>
+                        <div style="background: rgba(214, 158, 46, 0.2); padding: 15px; border-radius: 10px;">
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Pontuação</div>
+                            <div style="color: white; font-size: 1.5rem; font-weight: 800;">${finalScore}</div>
+                        </div>
+                        <div style="background: rgba(159, 122, 234, 0.2); padding: 15px; border-radius: 10px;">
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Eficiência</div>
+                            <div style="color: white; font-size: 1.5rem; font-weight: 800;">${Math.floor((gameState.totalPairs * 2 / gameState.moves) * 100)}%</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <button class="navy-btn primary" onclick="shareGameResult()" 
+                                style="background: linear-gradient(135deg, #38a169, #2f855a); margin-right: 10px;">
+                            <i class="fas fa-share-alt"></i> Compartilhar
+                        </button>
+                        <button class="navy-btn" onclick="closeModal(); startNewGame();" 
+                                style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
+                            <i class="fas fa-redo"></i> Jogar Novamente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+// Formatar tempo
 function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
-function showGameResult(finalScore) {
-    const modal = document.getElementById('gameResultModal');
-    const totalPairs = gameState.cards.length / 2;
-    
-    // Calcular eficiência
-    const minMoves = totalPairs * 2; // Mínimo teórico
-    const efficiency = Math.floor((minMoves / gameState.moves) * 100);
-    
-    // Determinar classificação
-    let rating = 'Recruta';
-    let icon = '🎖️';
-    let message = '';
-    
-    if (finalScore > 2000) {
-        rating = 'Almirante';
-        icon = '👑';
-        message = 'Excelente desempenho! Você domina o cerimonial naval!';
-    } else if (finalScore > 1500) {
-        rating = 'Capitão';
-        icon = '⭐';
-        message = 'Ótimo trabalho! Conhecimento naval exemplar!';
-    } else if (finalScore > 1000) {
-        rating = 'Oficial';
-        icon = '⚓';
-        message = 'Bom trabalho! Continue estudando!';
-    } else {
-        rating = 'Marinheiro';
-        icon = '🎖️';
-        message = 'Bom começo! Pratique mais para melhorar!';
-    }
-    
-    // Atualizar modal
-    document.getElementById('resultIcon').textContent = icon;
-    document.getElementById('resultTitle').textContent = `${rating} - Missão Cumprida!`;
-    document.getElementById('resultMessage').innerHTML = `
-        ${message}<br><br>
-        <small>Nível: ${gameState.difficulty.toUpperCase()} | Pares: ${totalPairs}</small>
-    `;
-    
-    document.getElementById('resultTime').textContent = formatTime(gameState.gameTime);
-    document.getElementById('resultMoves').textContent = gameState.moves;
-    document.getElementById('resultScore').textContent = finalScore;
-    document.getElementById('resultEfficiency').textContent = `${efficiency}%`;
-    
-    // Mostrar modal
-    modal.style.display = 'flex';
-    setTimeout(() => {
-        modal.classList.add('active');
-    }, 10);
-}
-
-function hideGameResult() {
-    const modal = document.getElementById('gameResultModal');
-    modal.classList.remove('active');
-    setTimeout(() => {
-        modal.style.display = 'none';
-    }, 300);
-}
-
-function shareResult() {
+// Compartilhar resultado
+function shareGameResult() {
     const message = `🎮 Memória Naval - Marujo Digital\n` +
                    `🏆 Nível: ${gameState.difficulty.toUpperCase()}\n` +
-                   `⏰ Tempo: ${formatTime(gameState.gameTime)}\n` +
+                   `⏰ Tempo: ${formatTime(gameState.time)}\n` +
                    `👣 Movimentos: ${gameState.moves}\n` +
-                   `⭐ Pontuação: ${gameState.points}\n\n` +
-                   `🔗 ${window.location.origin}${window.location.pathname}`;
+                   `⭐ Pontuação: ${gameState.score}\n\n` +
+                   `🔗 ${window.location.href}`;
     
     if (navigator.share) {
         navigator.share({
@@ -3941,105 +3405,62 @@ function shareResult() {
     }
 }
 
-function showGameRules() {
-    SoundSystem.play('click');
-    
-    const rulesHTML = `
+// Mostrar instruções do jogo
+function showGameInstructions() {
+    const instructionsHTML = `
         <div style="text-align: left; line-height: 1.6;">
             <h3 style="color: white; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-book-open"></i> Regras do Memória Naval
+                <i class="fas fa-book-open"></i> Como Jogar
             </h3>
             
-            <div style="margin-bottom: 20px;">
-                <h4 style="color: var(--accent); margin-bottom: 10px;">🎯 OBJETIVO</h4>
-                <p style="color: var(--text-secondary);">
-                    Encontrar todos os pares correspondentes entre bandeiras/sinais navais e suas descrições.
-                </p>
-            </div>
+            <ol style="color: var(--text-secondary); padding-left: 20px; margin-bottom: 20px;">
+                <li>Clique em uma carta para virá-la</li>
+                <li>Clique em outra carta para tentar formar um par</li>
+                <li>O objetivo é combinar cada bandeira com sua descrição correspondente</li>
+                <li>Complete todos os pares no menor tempo possível</li>
+                <li>Ganhe mais pontos sendo rápido e eficiente</li>
+            </ol>
             
-            <div style="margin-bottom: 20px;">
-                <h4 style="color: var(--accent); margin-bottom: 10px;">🎮 COMO JOGAR</h4>
-                <ol style="color: var(--text-secondary); padding-left: 20px;">
-                    <li>Clique em uma carta para virá-la</li>
-                    <li>Clique em outra carta para tentar formar um par</li>
-                    <li>Se as cartas corresponderem (bandeira + sua descrição), você ganha pontos!</li>
-                    <li>Se não corresponderem, as cartas serão viradas novamente</li>
-                    <li>Complete todos os pares no menor tempo possível</li>
-                </ol>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <h4 style="color: var(--accent); margin-bottom: 10px;">⭐ PONTUAÇÃO</h4>
+            <div style="background: rgba(255, 204, 0, 0.1); padding: 15px; border-radius: 8px;">
+                <h4 style="color: var(--accent); margin-bottom: 10px;">Dicas:</h4>
                 <ul style="color: var(--text-secondary); padding-left: 20px;">
-                    <li><strong>Par correto:</strong> +100 pontos base</li>
-                    <li><strong>Bônus por tempo:</strong> +50 pontos (diminui com o tempo)</li>
-                    <li><strong>Bônus por eficiência:</strong> +75 pontos (diminui com movimentos extras)</li>
-                    <li><strong>Multiplicador por dificuldade:</strong> Fácil (1x), Médio (1.5x), Difícil (2x)</li>
-                </ul>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <h4 style="color: var(--accent); margin-bottom: 10px;">📊 CLASSIFICAÇÃO</h4>
-                <ul style="color: var(--text-secondary); padding-left: 20px;">
-                    <li><strong>+2000 pontos:</strong> Almirante 👑</li>
-                    <li><strong>+1500 pontos:</strong> Capitão ⭐</li>
-                    <li><strong>+1000 pontos:</strong> Oficial ⚓</li>
-                    <li><strong>Menos de 1000:</strong> Marinheiro 🎖️</li>
-                </ul>
-            </div>
-            
-            <div style="background: rgba(255, 204, 0, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
-                <h4 style="color: var(--accent); margin-bottom: 10px;">💡 DICAS</h4>
-                <ul style="color: var(--text-secondary); padding-left: 20px;">
-                    <li>Memorize as cores das bordas das cartas</li>
-                    <li>Presta atenção nos ícones de tipo (🏁 bandeira, 📝 descrição)</li>
+                    <li>Memorize a posição das cartas</li>
+                    <li>Preste atenção nas cores das bordas</li>
                     <li>Comece pelo nível fácil para aprender</li>
-                    <li>Tente completar com o mínimo de movimentos</li>
+                    <li>Tente fazer menos movimentos para ganhar mais pontos</li>
                 </ul>
             </div>
         </div>
     `;
     
-    // Criar modal de regras
-    const rulesModal = document.createElement('div');
-    rulesModal.className = 'modal-overlay active';
-    rulesModal.innerHTML = `
-        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 500px; max-height: 80vh; overflow-y: auto;">
+    // Criar modal de instruções
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 500px;">
             <button class="modal-close" onclick="this.parentElement.parentElement.remove()">
                 <i class="fas fa-times"></i>
             </button>
-            ${rulesHTML}
+            ${instructionsHTML}
             <div style="text-align: center; margin-top: 25px;">
-                <button class="navy-btn primary" onclick="this.parentElement.parentElement.parentElement.remove(); startGame();"
+                <button class="navy-btn primary" onclick="this.parentElement.parentElement.remove(); startNewGame();"
                         style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
-                    <i class="fas fa-play"></i> Jogar Agora
+                    <i class="fas fa-play"></i> Começar Jogo
                 </button>
             </div>
         </div>
     `;
     
-    rulesModal.onclick = function() {
-        this.remove();
-    };
-    
-    document.body.appendChild(rulesModal);
+    modal.onclick = function() { this.remove(); };
+    document.body.appendChild(modal);
 }
 
-// Função para mostrar seção do jogo
-function showGameSection() {
-    showSection('jogo');
-    
-    // Inicializar jogo se não estiver inicializado
-    if (gameState.cards.length === 0) {
-        setTimeout(() => {
-            createCards('facil');
-            renderGameBoard();
-            updateProgress();
-        }, 100);
-    }
-}
+// Inicializar quando a página carregar
+document.addEventListener('DOMContentLoaded', () => {
+    initGame();
+});
 
-// Adicionar CSS para animação de pontos
+// Adicionar animação de floatUp para pontos
 const style = document.createElement('style');
 style.textContent = `
     @keyframes floatUp {
@@ -4054,30 +3475,6 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
-
-// Inicializar quando a página carregar
-document.addEventListener('DOMContentLoaded', () => {
-    initializeGame();
-});
-
-// Adicionar ao array de sections para navegação
-window.showSection = function(sectionId, event) {
-    // Esconder todas as seções
-    document.querySelectorAll('.content-section').forEach(section => {
-        section.style.display = 'none';
-    });
-    
-    // Atualizar navegação
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-    });
-    
-    if (event && event.target) {
-        event.target.classList.add('active');
-    }
-    
-    
-};
 </script>
     <!-- Modal de Detalhes -->
     <div class="modal-overlay" id="flagModal">
