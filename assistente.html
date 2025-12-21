@@ -393,9 +393,9 @@
     </div>
 
     <script>
-       class AssistenteNaval {
+class AssistenteNaval {
     constructor() {
-        // Use HTTP se seu site permitir
+        // URL da sua API Node.js - HTTP direto
         this.API_URL = 'http://br2.bronxyshost.com:4009';
         this.userId = this.getOrCreateUserId();
         this.userName = 'Marinheiro';
@@ -419,25 +419,60 @@
     async testConnection() {
         const statusElement = document.getElementById('connectionStatus');
         try {
-            // Use 'no-cors' mode para diagnosticar
+            // Testa conexão direta sem CORS restritivo
             const response = await fetch(`${this.API_URL}/marinha-status`, {
                 method: 'GET',
-                mode: 'no-cors', // ← MUDE PARA no-cors
+                // Não use 'cors' mode, deixe o navegador decidir
                 cache: 'no-cache'
             });
             
-            // Em modo no-cors, não podemos ler a resposta, mas podemos saber se a requisição foi feita
-            statusElement.textContent = '✅ Online';
-            statusElement.style.color = '#4caf50';
-            console.log('✅ Conexão HTTP estabelecida (no-cors mode)');
-            return true;
-            
+            if (response.ok) {
+                const data = await response.json();
+                statusElement.textContent = '✅ Online';
+                statusElement.style.color = '#4caf50';
+                console.log('✅ Conectado à API:', data);
+                return true;
+            } else {
+                throw new Error('Status não OK');
+            }
         } catch (error) {
-            console.warn('⚠️ HTTP falhou:', error.message);
-            statusElement.textContent = '⚠️ Modo Local';
-            statusElement.style.color = '#ff9800';
-            return false;
+            console.warn('⚠️ Conexão direta falhou:', error.message);
+            
+            // Tenta testar com uma requisição POST simples
+            try {
+                await this.testDirectPOST();
+                statusElement.textContent = '✅ Online (POST ok)';
+                statusElement.style.color = '#4caf50';
+                return true;
+            } catch (postError) {
+                console.warn('⚠️ Teste POST também falhou:', postError.message);
+                statusElement.textContent = '⚠️ Modo Local';
+                statusElement.style.color = '#ff9800';
+                return false;
+            }
         }
+    }
+    
+    async testDirectPOST() {
+        // Testa uma requisição POST simples
+        const testResponse = await fetch(`${this.API_URL}/marinha-chat`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                mensagem: "teste de conexão",
+                userId: this.userId,
+                nome: this.userName
+            })
+        });
+        
+        if (!testResponse.ok) {
+            throw new Error(`POST falhou: ${testResponse.status}`);
+        }
+        
+        console.log('✅ Teste POST bem sucedido');
+        return true;
     }
     
     setupEventListeners() {
@@ -458,7 +493,6 @@
         
         if (!text) return;
         
-        // Verificar se é comando de limpar
         if (text.toLowerCase().includes('limpar')) {
             this.limparConversa();
             input.value = '';
@@ -468,7 +502,6 @@
         this.adicionarMensagemUsuario(text);
         input.value = '';
         
-        // Mostrar loading
         this.mostrarLoading(true);
         
         try {
@@ -497,33 +530,108 @@
     
     async enviarParaAPI(mensagem) {
         try {
-            // Para POST em modo no-cors, precisamos usar uma abordagem diferente
-            // Como no-cors não permite ler a resposta, usamos fallback local
-            console.log('📤 Tentando enviar mensagem (modo no-cors)...');
+            console.log(`📤 Enviando para API: ${this.API_URL}/marinha-chat`);
             
-            // Tentar enviar (mas não ler resposta em no-cors)
-            await fetch(`${this.API_URL}/marinha-chat`, {
+            const response = await fetch(`${this.API_URL}/marinha-chat`, {
                 method: 'POST',
-                mode: 'no-cors', // ← no-cors mode
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({
                     mensagem: mensagem,
                     userId: this.userId,
                     nome: this.userName
                 })
+                // IMPORTANTE: Não especifique 'mode', deixe padrão
             });
             
-            console.log('✅ Requisição enviada (no-cors), usando fallback local');
+            console.log(`📥 Resposta recebida: ${response.status}`);
             
-            // Como não podemos ler a resposta em no-cors, sempre usamos fallback local
-            return await this.respostaFallbackLocal(mensagem);
+            if (!response.ok) {
+                // Se der 404, tente endpoint alternativo
+                if (response.status === 404) {
+                    console.log('🔍 Tentando endpoint alternativo...');
+                    return await this.tentarEndpointAlternativo(mensagem);
+                }
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('📄 Dados da resposta:', data);
+            
+            if (data.sucesso) {
+                return data.resposta.texto;
+            } else {
+                throw new Error(data.erro || 'Erro na API');
+            }
             
         } catch (error) {
-            console.log('❌ API falhou, usando fallback local:', error.message);
-            return await this.respostaFallbackLocal(mensagem);
+            console.log('❌ API falhou:', error.message);
+            
+            // Tenta fallback com proxy CORS
+            try {
+                return await this.tentarComProxy(mensagem);
+            } catch (proxyError) {
+                console.log('❌ Proxy também falhou:', proxyError.message);
+                return await this.respostaFallbackLocal(mensagem);
+            }
         }
+    }
+    
+    async tentarEndpointAlternativo(mensagem) {
+        // Tenta endpoint diferente baseado no seu exemplo
+        const response = await fetch(`${this.API_URL}/play`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query: mensagem,
+                userId: this.userId,
+                User: this.userName
+            })
+        });
+        
+        if (!response.ok) throw new Error(`Alternativo falhou: ${response.status}`);
+        
+        const data = await response.json();
+        
+        // Ajusta conforme a estrutura da resposta do endpoint /play
+        if (data.resposta || data.texto || data.result) {
+            return data.resposta || data.texto || data.result;
+        }
+        
+        throw new Error('Resposta inválida do endpoint alternativo');
+    }
+    
+    async tentarComProxy(mensagem) {
+        // Tenta usar um proxy CORS
+        const proxyUrl = 'https://corsproxy.io/?';
+        const apiUrl = encodeURIComponent(`${this.API_URL}/marinha-chat`);
+        
+        const response = await fetch(`${proxyUrl}${apiUrl}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                mensagem: mensagem,
+                userId: this.userId,
+                nome: this.userName
+            })
+        });
+        
+        if (!response.ok) throw new Error(`Proxy falhou: ${response.status}`);
+        
+        const data = await response.json();
+        
+        if (data.sucesso) {
+            return data.resposta.texto;
+        }
+        
+        throw new Error('Proxy retornou erro');
     }
     
     async respostaFallbackLocal(mensagem) {
@@ -596,7 +704,6 @@
             • Bandeira "H": Tenho piloto a bordo`
         };
         
-        // Buscar por palavras-chave
         const msgLower = mensagem.toLowerCase();
         
         if (msgLower.includes('hastear') || msgLower.includes('bandeira')) {
@@ -618,7 +725,7 @@ Não consegui conectar ao banco de dados completo no momento, mas posso ajudar c
 • 🎖️ Honras de Portaló
 • 📶 Código Internacional de Sinais
 
-Pergunte sobre um desses tópicos ou tente novamente mais tarde! ⚓`;
+Pergunte sobre um desses tópicos! ⚓`;
         }
     }
     
@@ -655,14 +762,28 @@ Pergunte sobre um desses tópicos ou tente novamente mais tarde! ⚓`;
                 <br><br>
                 Não consegui acessar o banco de dados completo no momento.
                 <br><br>
-                Você pode:
-                1. Tentar novamente em alguns instantes
-                2. Usar os botões de tópicos rápidos
-                3. Perguntar sobre os assuntos básicos
-                <br><br>
-                <em>Desculpe pelo inconveniente!</em> 😔
+                <button onclick="testarConexaoManual()" style="
+                    background: #1976d2;
+                    color: white;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    margin: 5px;
+                ">🔧 Testar Conexão Manual</button>
+                
+                <button onclick="usarModoLocal()" style="
+                    background: #4caf50;
+                    color: white;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    margin: 5px;
+                ">⚡ Usar Modo Local</button>
             </div>
         `;
+        
         chatMessages.appendChild(messageDiv);
         this.scrollParaBaixo();
     }
@@ -685,17 +806,15 @@ Pergunte sobre um desses tópicos ou tente novamente mais tarde! ⚓`;
     
     limparConversa() {
         const chatMessages = document.getElementById('chatMessages');
-        // Manter apenas a primeira mensagem (boas-vindas)
         const welcomeMessage = chatMessages.querySelector('.message.assistant');
         chatMessages.innerHTML = '';
         if (welcomeMessage) {
             chatMessages.appendChild(welcomeMessage);
         }
         
-        // Tentar limpar no servidor (no-cors mode)
+        // Tenta limpar no servidor
         fetch(`${this.API_URL}/marinha-limpar-historico`, {
             method: 'POST',
-            mode: 'no-cors',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ userId: this.userId })
         }).catch(() => {/* Ignorar erros */});
@@ -716,21 +835,38 @@ Pergunte sobre um desses tópicos ou tente novamente mais tarde! ⚓`;
     
     formatarResposta(texto) {
         let formatted = this.escapeHtml(texto);
-        
-        // Melhorar formatação
         formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         formatted = formatted.replace(/\n{3,}/g, '\n\n');
         formatted = formatted.replace(/\n/g, '<br>');
         formatted = formatted.replace(/•\s*/g, '• ');
-        
         return formatted;
     }
 }
 
-// Inicializar o assistente
+// Funções auxiliares globais
+function testarConexaoManual() {
+    const apiUrl = 'http://br2.bronxyshost.com:4009';
+    
+    fetch(`${apiUrl}/marinha-status`)
+        .then(res => res.json())
+        .then(data => {
+            alert(`✅ Conexão OK!\nStatus: ${data.status}\nPDF: ${data.pdfCarregado ? 'Carregado' : 'Não'}`);
+            location.reload();
+        })
+        .catch(err => {
+            alert(`❌ Falha na conexão:\n${err.message}\n\nVerifique se o servidor está rodando.`);
+        });
+}
+
+function usarModoLocal() {
+    document.getElementById('connectionStatus').textContent = '🔧 Modo Local Ativo';
+    document.getElementById('connectionStatus').style.color = '#4caf50';
+    alert('Modo local ativado. As respostas serão baseadas no banco de dados local.');
+}
+
+// Inicializar
 const assistente = new AssistenteNaval();
 
-// Funções globais para os botões
 function enviarMensagem() {
     assistente.enviarMensagem();
 }
@@ -744,7 +880,6 @@ function limparConversa() {
     assistente.limparConversa();
 }
 
-// Focus no input ao carregar
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('messageInput').focus();
 });
