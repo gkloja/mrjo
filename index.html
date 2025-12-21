@@ -2050,6 +2050,25 @@ setInterval(() => {
                     <i class="fas fa-book-open"></i> Protocolos
                 </a>
             </div>
+            <li class="nav-item">
+    <a class="nav-link" href="#jogo" onclick="
+        // Esconde todas as seções
+        document.querySelectorAll('.content-section').forEach(section => {
+            section.style.display = 'none';
+        });
+        // Mostra o jogo
+        document.getElementById('jogo').style.display = 'block';
+        // Inicializa o jogo
+        if (typeof initGame === 'function') {
+            initGame();
+        }
+        // Rola até o jogo
+        document.getElementById('jogo').scrollIntoView({ behavior: 'smooth' });
+        return false;
+    ">
+        <i class="fas fa-gamepad"></i> Jogo da Memória
+    </a>
+</li>
             <a href="sobre.html" class="nav-link">
     <i class="fas fa-info-circle"></i> Sobre
 </a>
