@@ -3,8 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistente Naval - Cerimonial da Marinha</title>
+    <title>Assistente Naval - Marujo Digital</title>
+    <meta name="description" content="Assistente especializado em Cerimonial da Marinha do Brasil">
     <style>
+        :root {
+            --azul-marinha: #0d47a1;
+            --azul-claro: #1976d2;
+            --branco: #ffffff;
+            --cinza-claro: #f5f7fa;
+            --verde: #4caf50;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -19,64 +28,86 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            color: #333;
         }
         
         .chat-container {
             width: 100%;
-            max-width: 800px;
-            height: 80vh;
-            background: white;
+            max-width: 900px;
+            height: 85vh;
+            background: var(--branco);
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
         
+        /* Cabeçalho */
         .chat-header {
-            background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
-            color: white;
-            padding: 20px;
+            background: linear-gradient(135deg, var(--azul-claro) 0%, var(--azul-marinha) 100%);
+            color: var(--branco);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .header-left {
             display: flex;
             align-items: center;
             gap: 15px;
-        }
-        
-        .chat-header h1 {
-            font-size: 24px;
             flex: 1;
         }
         
         .status-indicator {
             width: 12px;
             height: 12px;
-            background: #4caf50;
+            background: var(--verde);
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
         
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
+        .chat-header h1 {
+            font-size: 24px;
+            margin: 0;
         }
         
+        .site-info {
+            font-size: 14px;
+            opacity: 0.9;
+            text-align: right;
+        }
+        
+        .site-info a {
+            color: var(--branco);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .site-info a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Área de mensagens */
         .chat-messages {
             flex: 1;
-            padding: 20px;
+            padding: 25px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            background: #f5f7fa;
+            gap: 18px;
+            background: var(--cinza-claro);
         }
         
         .message {
             max-width: 80%;
-            padding: 12px 16px;
+            padding: 15px 20px;
             border-radius: 18px;
             position: relative;
             animation: fadeIn 0.3s ease;
+            line-height: 1.5;
         }
         
         @keyframes fadeIn {
@@ -86,99 +117,122 @@
         
         .message.user {
             align-self: flex-end;
-            background: #1976d2;
-            color: white;
+            background: var(--azul-claro);
+            color: var(--branco);
             border-bottom-right-radius: 5px;
         }
         
         .message.assistant {
             align-self: flex-start;
-            background: white;
+            background: var(--branco);
             color: #333;
             border-bottom-left-radius: 5px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
         }
         
         .message-header {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 5px;
+            gap: 10px;
+            margin-bottom: 8px;
             font-size: 14px;
             font-weight: 600;
         }
         
         .message-text {
-            line-height: 1.5;
             white-space: pre-wrap;
+            word-wrap: break-word;
         }
         
+        /* Tópicos rápidos */
         .quick-topics {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            padding: 15px 20px;
-            background: white;
+            gap: 10px;
+            padding: 20px;
+            background: var(--branco);
             border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
         }
         
         .topic-btn {
-            padding: 8px 16px;
+            padding: 10px 18px;
             background: #e3f2fd;
             border: 2px solid #bbdefb;
             border-radius: 20px;
             font-size: 14px;
-            color: #1976d2;
+            color: var(--azul-claro);
             cursor: pointer;
             transition: all 0.3s ease;
+            font-weight: 500;
         }
         
         .topic-btn:hover {
             background: #bbdefb;
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
+        /* Área de input */
         .chat-input-container {
             padding: 20px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
+            background: var(--branco);
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            align-items: center;
         }
         
         .chat-input {
             flex: 1;
-            padding: 12px 16px;
+            padding: 14px 18px;
             border: 2px solid #e0e0e0;
             border-radius: 25px;
             font-size: 16px;
             outline: none;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
+            font-family: inherit;
         }
         
         .chat-input:focus {
-            border-color: #1976d2;
+            border-color: var(--azul-claro);
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
         }
         
         .send-btn {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
-            color: white;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--azul-claro) 0%, var(--azul-marinha) 100%);
+            color: var(--branco);
             border: none;
             border-radius: 25px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            min-width: 100px;
         }
         
         .send-btn:hover {
             transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(25, 118, 210, 0.3);
         }
         
         .send-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Badges e indicadores */
+        .pdf-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            background: var(--verde);
+            color: var(--branco);
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
         }
         
         .loading {
@@ -186,9 +240,10 @@
             width: 20px;
             height: 20px;
             border: 3px solid #f3f3f3;
-            border-top: 3px solid #1976d2;
+            border-top: 3px solid var(--azul-claro);
             border-radius: 50%;
             animation: spin 1s linear infinite;
+            margin: 0 auto;
         }
         
         @keyframes spin {
@@ -196,20 +251,28 @@
             100% { transform: rotate(360deg); }
         }
         
-        .pdf-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            background: #4caf50;
-            color: white;
-            border-radius: 10px;
-            font-size: 12px;
-            margin-left: 10px;
-        }
-        
+        /* Responsividade */
         @media (max-width: 768px) {
             .chat-container {
                 height: 90vh;
-                border-radius: 10px;
+                border-radius: 15px;
+            }
+            
+            .chat-header {
+                padding: 15px 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .header-left {
+                width: 100%;
+            }
+            
+            .site-info {
+                text-align: left;
+                width: 100%;
+                margin-top: 5px;
             }
             
             .chat-header h1 {
@@ -218,46 +281,101 @@
             
             .message {
                 max-width: 90%;
+                padding: 12px 16px;
             }
+            
+            .chat-input-container {
+                padding: 15px;
+            }
+            
+            .chat-input {
+                padding: 12px 16px;
+            }
+            
+            .send-btn {
+                padding: 12px 20px;
+                min-width: 80px;
+            }
+            
+            .quick-topics {
+                padding: 15px;
+                gap: 8px;
+            }
+            
+            .topic-btn {
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+        }
+        
+        /* Estilos para links e formatação */
+        a {
+            color: var(--azul-claro);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        strong {
+            color: var(--azul-marinha);
+        }
+        
+        .welcome-message {
+            text-align: center;
+            padding: 10px 0;
+            color: #666;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            <div class="status-indicator"></div>
-            <h1>🚢 Assistente Naval</h1>
-            <div style="font-size: 14px; opacity: 0.9;">Online</div>
+            <div class="header-left">
+                <div class="status-indicator"></div>
+                <h1>🚢 Assistente Naval</h1>
+                <div class="connection-status" id="connectionStatus">Conectando...</div>
+            </div>
+            <div class="site-info">
+                <span>🏴‍☠️ <a href="https://marujodigital.onrender.com" target="_blank">Marujo Digital</a></span>
+            </div>
         </div>
         
         <div class="chat-messages" id="chatMessages">
             <div class="message assistant">
                 <div class="message-header">
                     <span>🎖️ Especialista Naval</span>
-                    <span class="pdf-badge">PDF</span>
+                    <span class="pdf-badge">MANUAL</span>
                 </div>
                 <div class="message-text">
-                    Olá! Sou seu assistente especializado em Cerimonial da Marinha. 
-                    Posso ajudar com dúvidas sobre:
+                    <strong>Olá, Marinheiro!</strong> 👋
                     
-                    • Bandeira Nacional e seu cerimonial
-                    • Hasteamento e arriamento
-                    • Salvas de canhão
-                    • Honras de Portaló
-                    • Código Internacional de Sinais
-                    • Procedimentos navais
+                    Sou seu assistente especializado em <strong>Cerimonial da Marinha do Brasil</strong>.
                     
-                    O que gostaria de saber? 😊
+                    Posso ajudá-lo com informações sobre:
+                    
+                    • 🇧🇷 <strong>Bandeira Nacional</strong> - cerimonial, hasteamento e arriamento
+                    • 🎯 <strong>Salvas de Artilharia</strong> - 21 tiros para o Presidente
+                    • 🚩 <strong>Honras Navais</strong> - protocolos e saudações
+                    • 📶 <strong>Código Internacional de Sinais</strong> (CIS)
+                    • ⚓ <strong>Procedimentos Navais</strong> - cerimonial a bordo
+                    • 🎖️ <strong>Insígnias e Distintivos</strong>
+                    
+                    <em>Baseado no Manual de Cerimonial da Marinha (2022)</em>
+                    
+                    Como posso servi-lo hoje? 😊
                 </div>
             </div>
         </div>
         
         <div class="quick-topics">
-            <button class="topic-btn" onclick="enviarTopico('Bandeira Nacional')">🇧🇷 Bandeira Nacional</button>
-            <button class="topic-btn" onclick="enviarTopico('Hasteamento da bandeira')">🚩 Hasteamento</button>
-            <button class="topic-btn" onclick="enviarTopico('Salvas de canhão')">🎯 Salvas</button>
-            <button class="topic-btn" onclick="enviarTopico('Código Internacional de Sinais')">📶 Sinais CIS</button>
-            <button class="topic-btn" onclick="enviarTopico('Honras de Portaló')">🎖️ Honras</button>
+            <button class="topic-btn" onclick="enviarTopico('Como hastear a Bandeira Nacional?')">🇧🇷 Hasteamento</button>
+            <button class="topic-btn" onclick="enviarTopico('Quantos tiros tem uma salva para o Presidente?')">🎯 Salvas</button>
+            <button class="topic-btn" onclick="enviarTopico('O que são Honras de Portaló?')">🎖️ Portaló</button>
+            <button class="topic-btn" onclick="enviarTopico('Como funciona o Código Internacional de Sinais?')">📶 Sinais CIS</button>
+            <button class="topic-btn" onclick="limparConversa()">🗑️ Limpar</button>
         </div>
         
         <div class="chat-input-container">
@@ -265,151 +383,313 @@
                    class="chat-input" 
                    id="messageInput" 
                    placeholder="Digite sua pergunta sobre cerimonial naval..."
-                   onkeypress="if(event.key === 'Enter') enviarMensagem()">
-            <button class="send-btn" id="sendBtn" onclick="enviarMensagem()">Enviar</button>
+                   onkeypress="if(event.key === 'Enter') enviarMensagem()"
+                   autocomplete="off">
+            <button class="send-btn" id="sendBtn" onclick="enviarMensagem()">
+                <span id="btnText">Enviar</span>
+                <div class="loading" id="btnLoading" style="display: none;"></div>
+            </button>
         </div>
     </div>
 
     <script>
-        class MarinhaChat {
+        class AssistenteNaval {
             constructor() {
-                this.userId = localStorage.getItem('marinhaUserId') || `user-${Date.now()}`;
-                this.userName = 'Você';
-                this.apiEndpoint = 'http://br2.bronxyshost.com:4009/marinha-chat';
+                // URL da sua API Node.js
+                this.API_URL = 'https://br2.bronxyshost.com:4009'; // Altere para sua URL real
+                this.userId = this.getOrCreateUserId();
+                this.userName = 'Marinheiro';
                 this.initialize();
             }
             
-            initialize() {
-                localStorage.setItem('marinhaUserId', this.userId);
-                this.testConnection();
-                this.loadInitialMessage();
+            getOrCreateUserId() {
+                let userId = localStorage.getItem('marinhaUserId');
+                if (!userId) {
+                    userId = `marinheiro-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                    localStorage.setItem('marinhaUserId', userId);
+                }
+                return userId;
+            }
+            
+            async initialize() {
+                await this.testConnection();
+                this.setupEventListeners();
             }
             
             async testConnection() {
+                const statusElement = document.getElementById('connectionStatus');
                 try {
-                    const response = await fetch('http://br2.bronxyshost.com:4009/marinha-status');
+                    const response = await fetch(`${this.API_URL}/marinha-status`, {
+                        method: 'GET',
+                        mode: 'cors',
+                        cache: 'no-cache'
+                    });
+                    
                     if (response.ok) {
-                        console.log('✅ Conectado ao serviço Marinha');
+                        const data = await response.json();
+                        statusElement.textContent = '✅ Online';
+                        statusElement.style.color = '#4caf50';
+                        console.log('✅ Conectado à API:', data);
                         return true;
+                    } else {
+                        throw new Error('Status não OK');
                     }
                 } catch (error) {
-                    console.warn('⚠️ Serviço Marinha não disponível');
+                    console.warn('⚠️ API offline, usando modo local:', error.message);
+                    statusElement.textContent = '⚠️ Modo Local';
+                    statusElement.style.color = '#ff9800';
                     return false;
                 }
             }
             
-            loadInitialMessage() {
-                // Mensagem inicial já está no HTML
+            setupEventListeners() {
+                const input = document.getElementById('messageInput');
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.enviarMensagem();
+                    }
+                });
+                
+                input.focus();
             }
             
-            async sendMessage(text) {
-                const chatMessages = document.getElementById('chatMessages');
+            async enviarMensagem() {
                 const input = document.getElementById('messageInput');
-                const sendBtn = document.getElementById('sendBtn');
+                const text = input.value.trim();
                 
-                // Adicionar mensagem do usuário
-                const userMessage = document.createElement('div');
-                userMessage.className = 'message user';
-                userMessage.innerHTML = `
-                    <div class="message-header">${this.userName}</div>
-                    <div class="message-text">${this.escapeHtml(text)}</div>
-                `;
-                chatMessages.appendChild(userMessage);
+                if (!text) return;
                 
-                // Limpar input e desabilitar botão
+                // Verificar se é comando de limpar
+                if (text.toLowerCase().includes('limpar')) {
+                    this.limparConversa();
+                    input.value = '';
+                    return;
+                }
+                
+                this.adicionarMensagemUsuario(text);
                 input.value = '';
-                sendBtn.disabled = true;
-                sendBtn.innerHTML = '<div class="loading"></div>';
                 
-                // Scroll para baixo
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                // Mostrar loading
+                this.mostrarLoading(true);
                 
                 try {
-                    // Enviar para o backend
-                    const response = await fetch(this.apiEndpoint, {
+                    const resposta = await this.enviarParaAPI(text);
+                    this.adicionarRespostaAssistente(resposta);
+                } catch (error) {
+                    console.error('Erro:', error);
+                    this.adicionarMensagemErro();
+                } finally {
+                    this.mostrarLoading(false);
+                    input.focus();
+                }
+            }
+            
+            adicionarMensagemUsuario(texto) {
+                const chatMessages = document.getElementById('chatMessages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message user';
+                messageDiv.innerHTML = `
+                    <div class="message-header">${this.userName}</div>
+                    <div class="message-text">${this.escapeHtml(texto)}</div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                this.scrollParaBaixo();
+            }
+            
+            async enviarParaAPI(mensagem) {
+                // Primeiro tentar a API remota
+                try {
+                    const response = await fetch(`${this.API_URL}/marinha-chat`, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
                         },
                         body: JSON.stringify({
-                            mensagem: text,
+                            mensagem: mensagem,
                             userId: this.userId,
                             nome: this.userName
-                        })
+                        }),
+                        mode: 'cors'
                     });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
                     
                     const data = await response.json();
                     
                     if (data.sucesso) {
-                        // Adicionar resposta
-                        const assistantMessage = document.createElement('div');
-                        assistantMessage.className = 'message assistant';
-                        
-                        let badge = '';
-                        if (data.resposta.temInfoPDF) {
-                            badge = '<span class="pdf-badge">PDF</span>';
-                        }
-                        
-                        assistantMessage.innerHTML = `
-                            <div class="message-header">
-                                <span>🎖️ Especialista Naval</span>
-                                ${badge}
-                            </div>
-                            <div class="message-text">${this.formatResponse(data.resposta.texto)}</div>
-                        `;
-                        
-                        chatMessages.appendChild(assistantMessage);
+                        return data.resposta.texto;
                     } else {
-                        throw new Error(data.erro || 'Erro no servidor');
+                        throw new Error(data.erro || 'Erro na API');
                     }
-                    
                 } catch (error) {
-                    console.error('Erro:', error);
-                    
-                    // Mensagem de erro
-                    const errorMessage = document.createElement('div');
-                    errorMessage.className = 'message assistant';
-                    errorMessage.innerHTML = `
-                        <div class="message-header">🎖️ Especialista Naval</div>
-                        <div class="message-text">
-                            Desculpe, tive um problema ao processar sua pergunta. 😔
-                            Tente novamente ou pergunte sobre outro assunto naval.
-                        </div>
-                    `;
-                    chatMessages.appendChild(errorMessage);
-                } finally {
-                    // Reabilitar botão
-                    sendBtn.disabled = false;
-                    sendBtn.textContent = 'Enviar';
-                    
-                    // Focus no input
-                    input.focus();
-                    
-                    // Scroll para baixo
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    console.log('API remota falhou, usando fallback local:', error.message);
+                    // Fallback local
+                    return await this.respostaFallbackLocal(mensagem);
                 }
             }
             
-            escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
+            async respostaFallbackLocal(mensagem) {
+                // Respostas pré-definidas para fallback
+                const respostas = {
+                    'hastear': `🚩 **Hasteamento da Bandeira Nacional:**
+                    
+                    Segundo o Manual da Marinha:
+                    
+                    1. **Horário**: Diariamente às 8 horas
+                    2. **Procedimento**:
+                       • Formação da tropa (quando houver)
+                       • Toque de "Alvorada"
+                       • Bandeira hasteada até o topo
+                       • Todos em sentido, voltados para a bandeira
+                       • Saudar no momento do hasteamento
+                    
+                    3. **Em Navios**: Segue o mesmo horário
+                    4. **Observações**:
+                       • Nunca deve tocar o solo
+                       • Em dias chuvosos, não é hasteada
+                       • Ao anoitecer, deve ser iluminada
+                    
+                    ⚓ *Fonte: Manual de Cerimonial da Marinha*`,
+                    
+                    'salva': `🎯 **Salvas de Artilharia:**
+                    
+                    Protocolos segundo o cerimonial naval:
+                    
+                    • **21 tiros**: Presidente da República
+                    • **19 tiros**: Chefes de Estado estrangeiros
+                    • **17 tiros**: Ministros de Estado
+                    • **15 tiros**: Oficiais-generais
+                    
+                    A salva é executada por baterias de artilharia, com intervalo de 5 segundos entre os tiros.`,
+                    
+                    'portaló': `🎖️ **Honras de Portaló:**
+                    
+                    Cerimonial de recepção a bordo:
+                    
+                    1. **Para autoridades militares**:
+                       • Apito de vaia (varia conforme a patente)
+                       • Tripulação em sentido
+                       • Banda toca continência
+                    
+                    2. **Ordem de precedência**:
+                       • Presidente da República (21 apitos)
+                       • Ministros (19 apitos)
+                       • Oficiais-generais (17 apitos)
+                    
+                    3. **Procedimento**:
+                       • Visitante sobe pela boreste (direita)
+                       • Comandante aguarda no portaló
+                       • Troca de saudações
+                    
+                    ⚓ *Protocolo Naval Brasileiro*`,
+                    
+                    'sinais': `📶 **Código Internacional de Sinais (CIS):**
+                    
+                    Sistema de comunicação visual:
+                    
+                    • **Bandeiras alfabéticas**: A a Z (26 bandeiras)
+                    • **Bandeiras numéricas**: 0 a 9
+                    • **Bandeiras substitutas**: 3 bandeiras
+                    • **Código de resposta**: 1 bandeira
+                    
+                    **Exemplos importantes**:
+                    • Bandeira "A": Tenho mergulhador submerso
+                    • Bandeira "B": Estou carregando/descarregando
+                    • Bandeira "H": Tenho piloto a bordo`
+                };
+                
+                // Buscar por palavras-chave
+                const msgLower = mensagem.toLowerCase();
+                
+                if (msgLower.includes('hastear') || msgLower.includes('bandeira')) {
+                    return respostas.hastear;
+                } else if (msgLower.includes('salva') || msgLower.includes('tiro')) {
+                    return respostas.salva;
+                } else if (msgLower.includes('portalo') || msgLower.includes('honra')) {
+                    return respostas.portaló;
+                } else if (msgLower.includes('sinal') || msgLower.includes('cis')) {
+                    return respostas.sinais;
+                } else {
+                    return `Olá ${this.userName}! Sou seu assistente naval. 🚢
+
+Não consegui conectar ao banco de dados completo no momento, mas posso ajudar com:
+
+• 🇧🇷 Cerimonial da Bandeira Nacional
+• 🎯 Salvas de artilharia
+• 🚩 Hasteamento e arriamento
+• 🎖️ Honras de Portaló
+• 📶 Código Internacional de Sinais
+
+Pergunte sobre um desses tópicos ou tente novamente mais tarde! ⚓`;
+                }
             }
             
-            formatResponse(text) {
-                // Converter quebras de linha
-                let formatted = this.escapeHtml(text);
+            adicionarRespostaAssistente(texto, temPDF = false) {
+                const chatMessages = document.getElementById('chatMessages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message assistant';
                 
-                // Destacar títulos
-                formatted = formatted.replace(/(•|–|-)\s*(.+?)(?=\n|$)/g, '<br><strong>$1 $2</strong>');
+                let badge = '';
+                if (temPDF) {
+                    badge = '<span class="pdf-badge">MANUAL</span>';
+                }
                 
-                // Converter URLs em links
-                formatted = formatted.replace(/https?:\/\/[^\s]+/g, '<a href="$&" target="_blank">$&</a>');
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <span>🎖️ Especialista Naval</span>
+                        ${badge}
+                    </div>
+                    <div class="message-text">${this.formatarResposta(texto)}</div>
+                `;
                 
-                return formatted;
+                chatMessages.appendChild(messageDiv);
+                this.scrollParaBaixo();
             }
             
-            clearHistory() {
+            adicionarMensagemErro() {
+                const chatMessages = document.getElementById('chatMessages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message assistant';
+                messageDiv.innerHTML = `
+                    <div class="message-header">🎖️ Sistema</div>
+                    <div class="message-text">
+                        ⚠️ <strong>Problema de conexão</strong>
+                        <br><br>
+                        Não consegui acessar o banco de dados completo no momento.
+                        <br><br>
+                        Você pode:
+                        1. Tentar novamente em alguns instantes
+                        2. Usar os botões de tópicos rápidos
+                        3. Perguntar sobre os assuntos básicos
+                        <br><br>
+                        <em>Desculpe pelo inconveniente!</em> 😔
+                    </div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                this.scrollParaBaixo();
+            }
+            
+            mostrarLoading(mostrar) {
+                const btnText = document.getElementById('btnText');
+                const btnLoading = document.getElementById('btnLoading');
+                const sendBtn = document.getElementById('sendBtn');
+                
+                if (mostrar) {
+                    btnText.style.display = 'none';
+                    btnLoading.style.display = 'block';
+                    sendBtn.disabled = true;
+                } else {
+                    btnText.style.display = 'inline';
+                    btnLoading.style.display = 'none';
+                    sendBtn.disabled = false;
+                }
+            }
+            
+            limparConversa() {
                 const chatMessages = document.getElementById('chatMessages');
                 // Manter apenas a primeira mensagem (boas-vindas)
                 const welcomeMessage = chatMessages.querySelector('.message.assistant');
@@ -418,45 +698,61 @@
                     chatMessages.appendChild(welcomeMessage);
                 }
                 
-                // Limpar no servidor também
-                fetch('http://br2.bronxyshost.com:4009/marinha-limpar-historico', {
+                // Tentar limpar no servidor também
+                fetch(`${this.API_URL}/marinha-limpar-historico`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ userId: this.userId })
-                });
+                    body: JSON.stringify({ userId: this.userId }),
+                    mode: 'cors'
+                }).catch(() => {/* Ignorar erros */});
+                
+                this.adicionarRespostaAssistente('✅ Conversa limpa com sucesso! Como posso ajudá-lo agora? ⚓');
+            }
+            
+            scrollParaBaixo() {
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            formatarResposta(texto) {
+                let formatted = this.escapeHtml(texto);
+                
+                // Melhorar formatação
+                formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                formatted = formatted.replace(/\n{3,}/g, '\n\n');
+                formatted = formatted.replace(/\n/g, '<br>');
+                formatted = formatted.replace(/•\s*/g, '• ');
+                
+                return formatted;
             }
         }
         
-        // Inicializar chat
-        const marinhaChat = new MarinhaChat();
+        // Inicializar o assistente
+        const assistente = new AssistenteNaval();
         
-        // Funções globais
+        // Funções globais para os botões
         function enviarMensagem() {
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-            
-            if (text) {
-                marinhaChat.sendMessage(text);
-            }
+            assistente.enviarMensagem();
         }
         
         function enviarTopico(topic) {
             document.getElementById('messageInput').value = topic;
-            enviarMensagem();
+            assistente.enviarMensagem();
         }
         
-        // Event listeners
+        function limparConversa() {
+            assistente.limparConversa();
+        }
+        
+        // Focus no input ao carregar
         document.addEventListener('DOMContentLoaded', () => {
-            const input = document.getElementById('messageInput');
-            input.focus();
-            
-            // Auto-expand textarea (se for textarea)
-            if (input.tagName === 'TEXTAREA') {
-                input.addEventListener('input', function() {
-                    this.style.height = 'auto';
-                    this.style.height = (this.scrollHeight) + 'px';
-                });
-            }
+            document.getElementById('messageInput').focus();
         });
     </script>
 </body>
