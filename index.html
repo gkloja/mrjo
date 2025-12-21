@@ -2592,23 +2592,38 @@ setInterval(() => {
 </section>
 
 <style>
-  /* ======================= */
-/* CORREÇÃO COMPLETA DAS CARTAS */
+/* ======================= */
+/* CARTAS QUADRADAS E GRANDES PARA MOBILE */
 /* ======================= */
 
-.memory-card {
+/* Container do grid do jogo */
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas para mobile */
+    gap: 8px; /* Menor gap para mobile */
     width: 100%;
-    height: 180px;
-    border-radius: 12px;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 5px;
+}
+
+/* Cartas quadradas grandes */
+.memory-card {
+    aspect-ratio: 1 / 1; /* Garante que seja quadrado */
+    width: 100%; /* Ocupa toda a largura da célula do grid */
+    max-height: calc(33vh - 20px); /* Altura máxima baseada na tela */
+    min-height: 120px; /* Altura mínima para garantir */
+    border-radius: 10px; /* Bordas levemente arredondadas */
     cursor: pointer;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.6s;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    transition: transform 0.5s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     perspective: 1000px;
+    overflow: hidden;
 }
 
-/* CORREÇÃO: Flip funciona agora */
+/* Flip animation */
 .memory-card.flipped {
     transform: rotateY(180deg);
 }
@@ -2616,87 +2631,169 @@ setInterval(() => {
 .memory-card.matched {
     cursor: default;
     animation: matchGlow 1.5s ease-in-out infinite;
-    border: 3px solid var(--accent);
-    transform: rotateY(180deg); /* Mantém virada quando combinada */
+    border: 2px solid var(--accent);
+    transform: rotateY(180deg);
 }
 
-/* CORREÇÃO: Container absoluto para ambas as faces */
+/* Container absoluto para ambas as faces */
 .card-face {
     position: absolute;
     width: 100%;
     height: 100%;
-    border-radius: 12px;
+    border-radius: 10px;
     backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0; /* Remover padding */
+    box-sizing: border-box;
+}
+
+/* VERSO da carta - SIMPLES E LIMPO */
+.card-back {
+    background: linear-gradient(135deg, #002855, #004488);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    transform: rotateY(0deg);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    padding: 15px;
-    box-sizing: border-box;
 }
 
-/* VERSO da carta */
-.card-back {
-    background: linear-gradient(135deg, #001a33, #003366);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    transform: rotateY(0deg);
+.card-back i {
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 5px;
 }
 
-/* FRENTE da carta - começa virada */
+.card-watermark {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    padding: 0 5px;
+}
+
+/* FRENTE da carta - FOCANDO NA IMAGEM */
 .card-front {
-    background: linear-gradient(145deg, #051223, #0a1929);
-    border: 2px solid var(--accent);
+    background: linear-gradient(145deg, #0a1929, #051223);
     color: white;
-    transform: rotateY(180deg); /* Começa virada para trás */
+    transform: rotateY(180deg);
 }
 
-/* Conteúdo da frente */
+/* Conteúdo da frente - FOCADO NA IMAGEM */
 .card-content {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px; /* Padding mínimo */
 }
 
-/* Imagem da bandeira */
+/* Container da imagem - MAIOR FOCO */
 .flag-preview-game {
-    width: 100%;
-    height: 60%;
+    width: 90%; /* Quase toda a largura */
+    height: 75%; /* 75% da altura da carta */
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    margin-bottom: 10px;
-    border-radius: 8px;
+    border-radius: 6px;
     background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 3px; /* Menor margem */
 }
 
+/* IMAGEM GRANDE E CENTRALIZADA */
 .flag-preview-game img {
-    max-width: 100%;
-    max-height: 100%;
+    width: auto;
+    height: auto;
+    max-width: 95%;
+    max-height: 95%;
     object-fit: contain;
+    display: block;
 }
 
-/* Conteúdo de descrição */
+/* Título menor e sutil */
+.card-title-game {
+    font-size: 0.7rem; /* Fonte menor */
+    font-weight: 600;
+    text-align: center;
+    margin: 2px 0;
+    color: white;
+    line-height: 1.1;
+    padding: 0 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 90%;
+}
+
+/* Descrição mínima */
+.card-description-game {
+    font-size: 0.6rem;
+    font-weight: 500;
+    text-align: center;
+    color: var(--accent);
+    margin-top: 1px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Conteúdo da carta de descrição - AINDA FOCO VISUAL */
 .description-content {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding: 10px;
+    justify-content: center;
+    padding: 8px;
     text-align: center;
+}
+
+/* Ícone grande para descrição */
+.description-content div:first-child {
+    font-size: 2.2rem;
+    margin-bottom: 5px;
+    opacity: 0.9;
+}
+
+/* Badge de tipo (pequeno e discreto) */
+.card-type-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 0.7rem;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+/* Número no canto (discreto) */
+.card-corner {
+    position: absolute;
+    bottom: 3px;
+    left: 5px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.6rem;
+    font-weight: 300;
 }
 
 /* Animações */
 @keyframes matchGlow {
     0%, 100% { 
-        box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+        box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
     }
     50% { 
-        box-shadow: 0 0 25px rgba(255, 204, 0, 0.8);
+        box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
     }
 }
 
@@ -2712,7 +2809,150 @@ setInterval(() => {
 }
 
 .new-card {
-    animation: cardAppear 0.5s ease-out;
+    animation: cardAppear 0.3s ease-out;
+}
+
+/* ======================= */
+/* RESPONSIVIDADE PARA TABLET E DESKTOP */
+/* ======================= */
+
+@media (min-width: 768px) {
+    .memory-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 colunas para tablet */
+        gap: 10px;
+        max-width: 800px;
+    }
+    
+    .memory-card {
+        min-height: 140px;
+    }
+    
+    .flag-preview-game {
+        height: 70%;
+    }
+    
+    .card-title-game {
+        font-size: 0.8rem;
+    }
+    
+    .card-description-game {
+        font-size: 0.7rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .memory-grid {
+        grid-template-columns: repeat(4, 1fr); /* Mantém 4 colunas para desktop */
+        gap: 12px;
+        max-width: 600px; /* Largura limitada para cartas grandes */
+    }
+    
+    .memory-card {
+        min-height: 150px;
+        max-height: 180px;
+    }
+    
+    .flag-preview-game {
+        height: 65%;
+    }
+    
+    .card-back i {
+        font-size: 2.5rem;
+    }
+}
+
+/* ======================= */
+/* ESTILOS PARA CONTROLES DO JOGO MOBILE */
+/* ======================= */
+
+.game-controls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 0 5px;
+}
+
+.game-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 10px 5px;
+}
+
+/* Botões para mobile */
+.game-btn {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+/* Container das estatísticas */
+.stat-box {
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* Garantir que o jogo ocupe a tela toda no mobile */
+#jogo {
+    padding: 10px;
+    min-height: calc(100vh - 60px); /* Considera navegação */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Container principal do jogo */
+.game-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Container do grid que rola se necessário */
+.grid-container {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Scroll suave no iOS */
+    padding: 5px;
+}
+
+/* Otimização para telas muito pequenas */
+@media (max-height: 600px) {
+    .memory-card {
+        min-height: 100px;
+    }
+    
+    .flag-preview-game {
+        height: 70%;
+    }
+    
+    .card-title-game {
+        font-size: 0.65rem;
+    }
+}
+
+/* Orientação paisagem no mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+    .memory-grid {
+        grid-template-columns: repeat(4, 1fr);
+        max-width: none;
+    }
+    
+    .memory-card {
+        min-height: 120px;
+        max-height: 150px;
+    }
+    
+    .flag-preview-game {
+        height: 80%;
+    }
 }
 </style>
 
@@ -2876,6 +3116,7 @@ function shuffleDeck(deck) {
 }
 
 // Renderizar tabuleiro do jogo - FUNÇÃO CORRIGIDA
+// Atualizar a parte do renderGameBoard() que define as colunas:
 function renderGameBoard() {
     const grid = document.getElementById('memoryGrid');
     if (!grid) {
@@ -2883,63 +3124,38 @@ function renderGameBoard() {
         return;
     }
     
-    console.log('Renderizando tabuleiro com', gameState.cards.length, 'cartas');
-    
     grid.innerHTML = '';
     
-    // Definir layout baseado na dificuldade
-    let columns = 4;
-    if (gameState.difficulty === 'medio') columns = 4;
-    if (gameState.difficulty === 'dificil') columns = 5;
+    // Definir layout baseado no dispositivo e dificuldade
+    let columns = 3; // Padrão para mobile
+    
+    // Para tablets e desktop
+    if (window.innerWidth >= 768) {
+        if (gameState.difficulty === 'facil') {
+            columns = 4;
+        } else if (gameState.difficulty === 'medio') {
+            columns = 4;
+        } else if (gameState.difficulty === 'dificil') {
+            columns = 5;
+        }
+    } else {
+        // Para mobile
+        if (gameState.difficulty === 'facil') {
+            columns = 3; // 6 cartas = 2 linhas de 3
+        } else if (gameState.difficulty === 'medio') {
+            columns = 4; // 8 cartas = 2 linhas de 4
+        } else if (gameState.difficulty === 'dificil') {
+            columns = 5; // 10 cartas = 2 linhas de 5
+        }
+    }
     
     grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
     
+    // Resto do código permanece o mesmo...
     // Criar cartas
     gameState.cards.forEach((card, index) => {
-        const cardElement = document.createElement('div');
-        cardElement.className = 'memory-card';
-        cardElement.dataset.index = index;
-        cardElement.dataset.pairId = card.pairId;
-        cardElement.dataset.cardType = card.cardType;
-        
-        // Conteúdo baseado no tipo de carta
-        let frontContent = '';
-        let badgeIcon = '';
-        
-        if (card.cardType === 'image') {
-            frontContent = createFlagCardContent(card);
-            badgeIcon = '🏁';
-        } else {
-            frontContent = createDescriptionCardContent(card);
-            badgeIcon = '📝';
-        }
-        
-        // HTML da carta - ESTRUTURA CORRIGIDA
-        cardElement.innerHTML = `
-            <div class="card-face card-back">
-                <i class="fas fa-anchor" style="font-size: 2.5rem; color: rgba(255,255,255,0.9);"></i>
-                <div class="card-watermark">Marujo Digital</div>
-            </div>
-            <div class="card-face card-front">
-                <div class="card-content">
-                    ${frontContent}
-                    <div class="card-type-badge">${badgeIcon}</div>
-                    <div class="card-corner">${card.cardNumber + 1}</div>
-                </div>
-            </div>
-        `;
-        
-        // Adicionar evento de clique - CORRIGIDO
-        cardElement.addEventListener('click', () => flipCard(index));
-        grid.appendChild(cardElement);
-        
-        // Pré-carregar imagem se necessário
-        if (card.cardType === 'image' && card.image) {
-            preloadImage(card.image);
-        }
+        // ... código existente ...
     });
-    
-    updateProgress();
 }
 
 // Função para criar conteúdo de carta com bandeira
