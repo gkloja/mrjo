@@ -2408,15 +2408,19 @@ setInterval(() => {
 <!-- SEÇÃO DO JOGO INTERATIVO -->
 <!-- ======================= -->
 
+<!-- ======================= -->
+<!-- SEÇÃO DO JOGO INTERATIVO - VERSÃO MELHORADA -->
+<!-- ======================= -->
+
 <section id="jogo" class="content-section" style="display: none;">
     <div class="content-card">
         <div class="card-header">
-            <div class="card-icon">
+            <div class="card-icon" style="background: linear-gradient(135deg, #9f7aea, #805ad5);">
                 <i class="fas fa-gamepad"></i>
             </div>
             <div>
-                <h2 class="card-title">Memória Cerimonial Naval</h2>
-                <div class="card-subtitle">Teste seus conhecimentos sobre bandeiras e insígnias</div>
+                <h2 class="card-title">Memória Naval</h2>
+                <div class="card-subtitle">Treine seu conhecimento sobre bandeiras e sinais navais</div>
             </div>
         </div>
         
@@ -2425,44 +2429,73 @@ setInterval(() => {
             <!-- Painel de Controle -->
             <div class="game-controls" style="
                 display: flex;
-                justify-content: space-between;
-                align-items: center;
-                background: rgba(0, 102, 204, 0.1);
-                padding: 15px;
-                border-radius: 10px;
-                margin-bottom: 20px;
-                border: 2px solid rgba(255, 204, 0, 0.3);
+                flex-direction: column;
+                gap: 15px;
+                background: linear-gradient(135deg, rgba(0, 102, 204, 0.15), rgba(5, 18, 35, 0.3));
+                padding: 20px;
+                border-radius: 15px;
+                margin-bottom: 25px;
+                border: 2px solid rgba(255, 204, 0, 0.2);
+                box-shadow: 0 5px 20px rgba(0, 51, 153, 0.2);
             ">
-                <div class="game-stats">
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div>
-                            <span style="color: var(--text-secondary); font-size: 0.9rem;">Tempo:</span>
-                            <div style="color: white; font-size: 1.5rem; font-weight: bold;" id="gameTime">00:00</div>
+                <div class="game-stats" style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px;">
+                    <div class="stat-item" style="text-align: center; min-width: 100px;">
+                        <div style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 5px;">
+                            <i class="fas fa-clock"></i> TEMPO
                         </div>
-                        <div>
-                            <span style="color: var(--text-secondary); font-size: 0.9rem;">Movimentos:</span>
-                            <div style="color: white; font-size: 1.5rem; font-weight: bold;" id="gameMoves">0</div>
+                        <div style="color: white; font-size: 1.8rem; font-weight: 800; font-family: 'Courier New', monospace; 
+                            background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 8px; border: 2px solid var(--accent);" 
+                            id="gameTime">00:00
                         </div>
-                        <div>
-                            <span style="color: var(--text-secondary); font-size: 0.9rem;">Pontos:</span>
-                            <div style="color: white; font-size: 1.5rem; font-weight: bold;" id="gamePoints">0</div>
+                    </div>
+                    
+                    <div class="stat-item" style="text-align: center; min-width: 100px;">
+                        <div style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 5px;">
+                            <i class="fas fa-shoe-prints"></i> MOVIMENTOS
                         </div>
-                        <div>
-                            <span style="color: var(--text-secondary); font-size: 0.9rem;">Pares:</span>
-                            <div style="color: white; font-size: 1.5rem; font-weight: bold;" id="gamePairs">0/6</div>
+                        <div style="color: white; font-size: 1.8rem; font-weight: 800; font-family: 'Courier New', monospace;
+                            background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 8px; border: 2px solid #38a169;" 
+                            id="gameMoves">0
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item" style="text-align: center; min-width: 100px;">
+                        <div style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 5px;">
+                            <i class="fas fa-star"></i> PONTOS
+                        </div>
+                        <div style="color: white; font-size: 1.8rem; font-weight: 800; font-family: 'Courier New', monospace;
+                            background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 8px; border: 2px solid #d69e2e;" 
+                            id="gamePoints">0
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item" style="text-align: center; min-width: 100px;">
+                        <div style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 5px;">
+                            <i class="fas fa-flag"></i> PARES
+                        </div>
+                        <div style="color: white; font-size: 1.8rem; font-weight: 800; font-family: 'Courier New', monospace;
+                            background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 8px; border: 2px solid #9f7aea;" 
+                            id="gamePairs">0/6
                         </div>
                     </div>
                 </div>
                 
-                <div class="game-buttons">
-                    <button class="navy-btn primary" onclick="startGame()" style="background: linear-gradient(135deg, #38a169, #2f855a);">
-                        <i class="fas fa-play"></i> Novo Jogo
+                <div class="game-buttons" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <button class="navy-btn game-btn-start" onclick="startGame()" 
+                            style="background: linear-gradient(135deg, #38a169, #2f855a); min-width: 140px;">
+                        <i class="fas fa-play"></i> NOVO JOGO
                     </button>
-                    <button class="navy-btn" onclick="resetGame()" style="background: linear-gradient(135deg, #718096, #4a5568);">
-                        <i class="fas fa-redo"></i> Reiniciar
+                    <button class="navy-btn game-btn-reset" onclick="resetGame()" 
+                            style="background: linear-gradient(135deg, #718096, #4a5568);">
+                        <i class="fas fa-redo"></i>
                     </button>
-                    <button class="navy-btn" onclick="showGameRules()" style="background: linear-gradient(135deg, #d69e2e, #b7791f);">
-                        <i class="fas fa-question-circle"></i> Regras
+                    <button class="navy-btn game-btn-sound" onclick="toggleSound()" 
+                            style="background: linear-gradient(135deg, #d69e2e, #b7791f);">
+                        <i class="fas fa-volume-up" id="soundIcon"></i>
+                    </button>
+                    <button class="navy-btn game-btn-help" onclick="showGameRules()" 
+                            style="background: linear-gradient(135deg, #4299e1, #3182ce);">
+                        <i class="fas fa-question-circle"></i>
                     </button>
                 </div>
             </div>
@@ -2471,46 +2504,60 @@ setInterval(() => {
             <div class="memory-grid" id="memoryGrid" style="
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
-                gap: 15px;
+                gap: 12px;
                 margin: 20px 0;
+                justify-items: center;
             ">
                 <!-- Cartas serão geradas por JavaScript -->
-            </div>
-            
-            <!-- Mensagem do Jogo -->
-            <div id="gameMessage" style="
-                text-align: center;
-                padding: 20px;
-                margin-top: 20px;
-                background: rgba(255, 255, 255, 0.05);
-                border-radius: 10px;
-                display: none;
-            ">
-                <h3 style="color: white; margin-bottom: 10px;" id="messageTitle"></h3>
-                <p style="color: var(--text-secondary);" id="messageText"></p>
-                <button class="navy-btn primary" onclick="hideMessage()" style="margin-top: 15px;">
-                    <i class="fas fa-check"></i> Continuar
-                </button>
             </div>
             
             <!-- Dificuldade -->
             <div class="difficulty-selector" style="
                 background: rgba(255, 255, 255, 0.03);
-                padding: 15px;
-                border-radius: 8px;
-                margin-top: 20px;
+                padding: 20px;
+                border-radius: 12px;
+                margin-top: 30px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
             ">
-                <h4 style="color: white; margin-bottom: 10px;">Nível de Dificuldade:</h4>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button class="difficulty-btn active" onclick="setDifficulty('facil')" data-level="facil">
-                        Fácil (6 pares)
+                <h4 style="color: white; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-chart-line"></i> Nível de Dificuldade:
+                </h4>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                    <button class="difficulty-btn active" onclick="setDifficulty('facil')" data-level="facil"
+                            style="background: linear-gradient(135deg, #38a169, #2f855a);">
+                        <i class="fas fa-anchor"></i> Fácil (6 pares)
                     </button>
-                    <button class="difficulty-btn" onclick="setDifficulty('medio')" data-level="medio">
-                        Médio (8 pares)
+                    <button class="difficulty-btn" onclick="setDifficulty('medio')" data-level="medio"
+                            style="background: linear-gradient(135deg, #d69e2e, #b7791f);">
+                        <i class="fas fa-ship"></i> Médio (8 pares)
                     </button>
-                    <button class="difficulty-btn" onclick="setDifficulty('dificil')" data-level="dificil">
-                        Difícil (10 pares)
+                    <button class="difficulty-btn" onclick="setDifficulty('dificil')" data-level="dificil"
+                            style="background: linear-gradient(135deg, #e53e3e, #c53030);">
+                        <i class="fas fa-rocket"></i> Difícil (10 pares)
                     </button>
+                </div>
+            </div>
+            
+            <!-- Progresso -->
+            <div style="margin-top: 25px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: var(--text-secondary); font-size: 0.9rem;">Progresso:</span>
+                    <span style="color: var(--accent); font-weight: 600;" id="progressText">0%</span>
+                </div>
+                <div style="
+                    width: 100%;
+                    height: 10px;
+                    background: rgba(255, 255, 255, 0.1);
+                    border-radius: 5px;
+                    overflow: hidden;
+                ">
+                    <div id="progressBar" style="
+                        width: 0%;
+                        height: 100%;
+                        background: linear-gradient(90deg, var(--primary), var(--accent));
+                        border-radius: 5px;
+                        transition: width 0.5s ease;
+                    "></div>
                 </div>
             </div>
         </div>
@@ -2518,7 +2565,60 @@ setInterval(() => {
 </section>
 
 <!-- ======================= -->
-<!-- ESTILOS DO JOGO -->
+<!-- MODAL DE RESULTADO -->
+<!-- ======================= -->
+
+<div class="modal-overlay" id="gameResultModal" style="display: none;">
+    <div class="modal-content" style="max-width: 500px; text-align: center; background: linear-gradient(145deg, #0a1929, #051223);">
+        <button class="modal-close" onclick="hideGameResult()">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <div style="margin: 20px 0 30px;">
+            <div style="font-size: 4rem; margin-bottom: 20px;" id="resultIcon">🏆</div>
+            <h2 style="color: white; margin-bottom: 10px;" id="resultTitle">Missão Cumprida!</h2>
+            <div style="color: var(--text-secondary); margin-bottom: 25px;" id="resultMessage"></div>
+            
+            <div style="
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                margin: 25px 0;
+            ">
+                <div style="background: rgba(0, 102, 204, 0.2); padding: 15px; border-radius: 10px;">
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Tempo</div>
+                    <div style="color: white; font-size: 1.5rem; font-weight: 800;" id="resultTime"></div>
+                </div>
+                <div style="background: rgba(56, 161, 105, 0.2); padding: 15px; border-radius: 10px;">
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Movimentos</div>
+                    <div style="color: white; font-size: 1.5rem; font-weight: 800;" id="resultMoves"></div>
+                </div>
+                <div style="background: rgba(214, 158, 46, 0.2); padding: 15px; border-radius: 10px;">
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Pontuação</div>
+                    <div style="color: white; font-size: 1.5rem; font-weight: 800;" id="resultScore"></div>
+                </div>
+                <div style="background: rgba(159, 122, 234, 0.2); padding: 15px; border-radius: 10px;">
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Eficiência</div>
+                    <div style="color: white; font-size: 1.5rem; font-weight: 800;" id="resultEfficiency"></div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <button class="navy-btn primary" onclick="shareResult()" 
+                        style="background: linear-gradient(135deg, #38a169, #2f855a); margin-right: 10px;">
+                    <i class="fas fa-share-alt"></i> Compartilhar
+                </button>
+                <button class="navy-btn" onclick="hideGameResult(); startGame();" 
+                        style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
+                    <i class="fas fa-redo"></i> Jogar Novamente
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================= -->
+<!-- ESTILOS DO JOGO - MELHORADOS -->
 <!-- ======================= -->
 
 <style>
@@ -2529,15 +2629,22 @@ setInterval(() => {
 }
 
 .memory-card {
+    width: 100%;
     aspect-ratio: 3/4;
     background: linear-gradient(135deg, #1a237e, #283593);
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     overflow: hidden;
+    perspective: 1000px;
+}
+
+.memory-card:hover:not(.flipped):not(.matched) {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
 .memory-card.flipped {
@@ -2546,9 +2653,9 @@ setInterval(() => {
 
 .memory-card.matched {
     cursor: default;
-    opacity: 0.7;
     transform: scale(0.95);
-    box-shadow: 0 0 15px rgba(72, 187, 120, 0.5);
+    animation: matchGlow 1.5s ease-in-out infinite;
+    border: 3px solid var(--accent);
 }
 
 .memory-card .card-front,
@@ -2567,151 +2674,435 @@ setInterval(() => {
 }
 
 .memory-card .card-front {
-    background: linear-gradient(135deg, #004d99, #0066cc);
+    background: linear-gradient(145deg, #051223, #0a1929);
     transform: rotateY(180deg);
     border: 2px solid var(--accent);
 }
 
 .memory-card .card-back {
-    background: linear-gradient(135deg, #0d47a1, #1565c0);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, #001a33, #003366);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 204, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 102, 204, 0.1) 0%, transparent 50%);
 }
 
 .card-back i {
     font-size: 2.5rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.9);
     animation: pulse 2s infinite;
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+}
+
+.card-back .card-watermark {
+    position: absolute;
+    bottom: 10px;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.7rem;
+    font-style: italic;
 }
 
 .flag-preview-game {
     width: 100%;
-    height: 60%;
-    background: rgba(255, 255, 255, 0.1);
+    height: 55%;
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .flag-preview-game img {
-    max-width: 100%;
-    max-height: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.memory-card.matched .flag-preview-game img {
+    transform: scale(1.1);
+    filter: brightness(1.2) drop-shadow(0 0 5px rgba(255, 204, 0, 0.5));
 }
 
 .card-title-game {
     color: white;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 700;
     text-align: center;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .card-description-game {
     color: var(--text-secondary);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     text-align: center;
     line-height: 1.3;
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 5px;
 }
 
 .card-type-badge {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: rgba(255, 204, 0, 0.9);
+    background: linear-gradient(135deg, var(--accent), #ff9900);
     color: #000;
-    padding: 2px 8px;
-    border-radius: 12px;
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.card-corner {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 0.7rem;
     font-weight: bold;
+    border-radius: 0 0 8px 0;
+    top: 0;
+    left: 0;
 }
 
 .difficulty-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 255, 255, 0.2);
     color: var(--text-secondary);
-    padding: 8px 16px;
-    border-radius: 20px;
+    padding: 12px 20px;
+    border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s;
     font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 160px;
+    justify-content: center;
 }
 
 .difficulty-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 .difficulty-btn.active {
-    background: var(--primary);
     color: white;
-    border-color: var(--primary);
+    border-color: transparent;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 /* Animações */
 @keyframes cardFlip {
-    0% { transform: rotateY(0); }
-    50% { transform: rotateY(90deg); }
-    100% { transform: rotateY(180deg); }
+    0% { transform: rotateY(0) scale(1); }
+    50% { transform: rotateY(90deg) scale(1.05); }
+    100% { transform: rotateY(180deg) scale(1); }
 }
 
 @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 0.7; }
+    0%, 100% { transform: scale(1); opacity: 0.8; }
     50% { transform: scale(1.1); opacity: 1; }
 }
 
 @keyframes matchGlow {
-    0%, 100% { box-shadow: 0 0 10px rgba(72, 187, 120, 0.5); }
-    50% { box-shadow: 0 0 20px rgba(72, 187, 120, 0.8); }
+    0%, 100% { 
+        box-shadow: 0 0 15px rgba(255, 204, 0, 0.5),
+                    inset 0 0 20px rgba(255, 204, 0, 0.1); 
+    }
+    50% { 
+        box-shadow: 0 0 25px rgba(255, 204, 0, 0.8),
+                    inset 0 0 30px rgba(255, 204, 0, 0.2); 
+    }
 }
 
-.memory-card.matched {
-    animation: matchGlow 1s ease-in-out;
+@keyframes newGame {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
+/* Responsividade Melhorada */
+@media (max-width: 1200px) {
     .memory-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 10px !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .memory-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
         gap: 10px !important;
     }
     
-    .game-controls {
-        flex-direction: column;
-        gap: 15px;
+    .memory-card {
+        aspect-ratio: 3/4;
     }
     
-    .game-buttons {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        justify-content: center;
+    .game-controls {
+        padding: 15px !important;
+    }
+    
+    .stat-item {
+        min-width: 80px !important;
+    }
+    
+    .stat-item div:first-child {
+        font-size: 0.7rem !important;
+    }
+    
+    .stat-item div:last-child {
+        font-size: 1.5rem !important;
+        padding: 6px 12px !important;
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .memory-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important;
+    }
+    
+    .memory-card {
+        aspect-ratio: 3/4;
+        max-width: 110px;
+        margin: 0 auto;
+    }
+    
+    .card-title-game {
+        font-size: 0.75rem !important;
+    }
+    
+    .card-description-game {
+        font-size: 0.65rem !important;
+    }
+    
+    .flag-preview-game {
+        height: 50% !important;
+    }
+    
+    .difficulty-btn {
+        min-width: 140px !important;
+        padding: 10px 15px !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .game-buttons {
+        flex-wrap: wrap !important;
+    }
+    
+    .game-btn-start {
+        order: -1;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .memory-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 6px !important;
     }
     
     .memory-card {
         aspect-ratio: 2/3;
+        max-width: 95px;
     }
+    
+    .flag-preview-game {
+        height: 45% !important;
+        padding: 5px !important;
+    }
+    
+    .card-title-game {
+        font-size: 0.7rem !important;
+        margin-bottom: 5px !important;
+    }
+    
+    .card-description-game {
+        font-size: 0.6rem !important;
+    }
+    
+    .card-type-badge {
+        font-size: 0.55rem !important;
+        padding: 2px 6px !important;
+    }
+    
+    .stat-item {
+        min-width: 70px !important;
+    }
+    
+    .stat-item div:first-child {
+        font-size: 0.65rem !important;
+    }
+    
+    .stat-item div:last-child {
+        font-size: 1.3rem !important;
+        padding: 5px 10px !important;
+    }
+}
+
+@media (max-width: 380px) {
+    .memory-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+    
+    .memory-card {
+        max-width: 130px;
+        aspect-ratio: 3/4;
+    }
+    
+    .difficulty-selector {
+        padding: 15px !important;
+    }
+    
+    .difficulty-btn {
+        min-width: 100% !important;
+        margin-bottom: 8px;
+    }
+}
+
+/* Efeitos especiais */
+.memory-card.new-card {
+    animation: newGame 0.5s ease-out;
+}
+
+.game-btn-start:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(56, 161, 105, 0.4) !important;
+}
+
+.game-btn-reset:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(113, 128, 150, 0.4) !important;
+}
+
+.game-btn-sound:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(214, 158, 46, 0.4) !important;
+}
+
+.game-btn-help:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(66, 153, 225, 0.4) !important;
 }
 </style>
 
 <!-- ======================= -->
-<!-- SCRIPT DO JOGO -->
+<!-- SCRIPT DO JOGO - MELHORADO -->
 <!-- ======================= -->
 
 <script>
-// Dados do Jogo
+// Configurações do Jogo
+const GAME_CONFIG = {
+    sounds: {
+        enabled: true,
+        flip: 'flip',
+        match: 'match',
+        win: 'win',
+        lose: 'lose',
+        click: 'click'
+    },
+    points: {
+        match: 100,
+        timeBonus: 50,
+        efficiencyBonus: 75,
+        difficultyMultiplier: {
+            facil: 1.0,
+            medio: 1.5,
+            dificil: 2.0
+        }
+    }
+};
+
+// Sistema de Sons
+const SoundSystem = {
+    enabled: GAME_CONFIG.sounds.enabled,
+    audioContext: null,
+    
+    init() {
+        try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            console.log('AudioContext não suportado, sons desativados');
+            this.enabled = false;
+        }
+    },
+    
+    play(soundType) {
+        if (!this.enabled || !this.audioContext) return;
+        
+        try {
+            const oscillator = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(this.audioContext.destination);
+            
+            let frequency = 440;
+            let duration = 0.3;
+            
+            switch(soundType) {
+                case 'flip':
+                    frequency = 523.25; // C5
+                    duration = 0.2;
+                    break;
+                case 'match':
+                    frequency = 659.25; // E5
+                    duration = 0.5;
+                    break;
+                case 'win':
+                    frequency = 783.99; // G5
+                    duration = 1.0;
+                    break;
+                case 'lose':
+                    frequency = 392.00; // G4
+                    duration = 0.3;
+                    break;
+                case 'click':
+                    frequency = 349.23; // F4
+                    duration = 0.1;
+                    break;
+            }
+            
+            oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+            
+            oscillator.start(this.audioContext.currentTime);
+            oscillator.stop(this.audioContext.currentTime + duration);
+            
+        } catch (e) {
+            // Silenciosamente falha
+        }
+    },
+    
+    toggle() {
+        this.enabled = !this.enabled;
+        const icon = document.getElementById('soundIcon');
+        if (icon) {
+            icon.className = this.enabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+        }
+        return this.enabled;
+    }
+};
+
+// Dados do Jogo (com imagens garantidas)
 const gameData = {
     facil: [
         {
@@ -2719,76 +3110,84 @@ const gameData = {
             title: 'Bandeira Nacional',
             description: 'Símbolo máximo da Pátria, instituída em 19/11/1889',
             type: 'nacional',
-            image: 'imagens/sinais/7.png'
+            image: 'imagens/sinais/7.png',
+            fallbackColor: '#38a169'
         },
         {
             id: 'cruzeiro',
             title: 'Bandeira do Cruzeiro',
             description: 'Bandeira distintiva da Marinha, azul com 21 estrelas',
             type: 'distintivo',
-            image: 'imagens/sinais/19.png'
+            image: 'imagens/sinais/19.png',
+            fallbackColor: '#4299e1'
         },
         {
             id: 'estandarte-presidencial',
             title: 'Estandarte Presidencial',
             description: 'Usada pelo Presidente da República, salva de 21 tiros',
             type: 'insignia',
-            image: 'imagens/sinais/26.png'
+            image: 'imagens/sinais/26.png',
+            fallbackColor: '#d69e2e'
         },
         {
             id: 'pavilhao-almirante',
             title: 'Pavilhão de Almirante',
             description: 'Cinco estrelas em pentágono, salva de 19 tiros',
             type: 'insignia',
-            image: 'imagens/sinais/36.png'
+            image: 'imagens/sinais/36.png',
+            fallbackColor: '#9f7aea'
         },
         {
-            id: 'barroso-1',
+            id: 'barroso',
             title: 'Sinal de Barroso',
             description: '"O Brasil espera que cada um cumpra o seu dever"',
             type: 'sinal',
-            image: 'imagens/sinais/56.png'
+            image: 'imagens/sinais/56.png',
+            fallbackColor: '#e53e3e'
         },
         {
             id: 'alfa',
             title: 'Sinal ALFA',
             description: 'Tenho mergulhador n\'água, mantenha distância',
             type: 'cis',
-            image: 'imagens/sinais/64.png'
+            image: 'imagens/sinais/64.png',
+            fallbackColor: '#4fd1c7'
         }
     ],
     medio: [
-        // Adiciona mais 2 pares
         {
             id: 'pavilhao-vice-almirante',
             title: 'Pavilhão Vice-Almirante',
             description: 'Três estrelas em triângulo, salva de 15 tiros',
             type: 'insignia',
-            image: 'imagens/sinais/38.png'
+            image: 'imagens/sinais/38.png',
+            fallbackColor: '#9f7aea'
         },
         {
             id: 'oscar',
             title: 'Sinal OSCAR',
             description: 'Homem ao mar - emergência máxima',
             type: 'cis',
-            image: 'imagens/sinais/78.png'
+            image: 'imagens/sinais/78.png',
+            fallbackColor: '#4299e1'
         }
     ],
     dificil: [
-        // Adiciona mais 2 pares
         {
             id: 'pavilhao-contra-almirante',
             title: 'Pavilhão Contra-Almirante',
             description: 'Duas estrelas horizontais, salva de 13 tiros',
             type: 'insignia',
-            image: 'imagens/sinais/39.png'
+            image: 'imagens/sinais/39.png',
+            fallbackColor: '#d69e2e'
         },
         {
             id: 'victor',
             title: 'Sinal VICTOR',
             description: 'Solicito auxílio - emergência',
             type: 'cis',
-            image: 'imagens/sinais/84.jpg'
+            image: 'imagens/sinais/84.jpg',
+            fallbackColor: '#e53e3e'
         }
     ]
 };
@@ -2803,25 +3202,31 @@ let gameState = {
     gameTime: 0,
     timer: null,
     gameActive: false,
-    difficulty: 'facil'
+    difficulty: 'facil',
+    firstMoveTime: null,
+    canClick: true
 };
 
 // Inicializar Jogo
 function initializeGame() {
-    // Adicionar botão de jogo na navegação
+    SoundSystem.init();
     addGameToNavigation();
-    
-    // Criar cartas iniciais
     createCards('facil');
+    
+    // Adicionar evento para a seção do jogo
+    const gameSection = document.getElementById('jogo');
+    if (gameSection) {
+        gameSection.style.display = 'none';
+    }
 }
 
 function addGameToNavigation() {
     const navMenu = document.querySelector('.nav-menu');
-    if (navMenu) {
+    if (navMenu && !document.querySelector('a[href="#jogo"]')) {
         const gameNavItem = document.createElement('div');
         gameNavItem.className = 'nav-item';
         gameNavItem.innerHTML = `
-            <a href="#jogo" class="nav-link" onclick="showSection('jogo')">
+            <a href="#jogo" class="nav-link" onclick="showGameSection()">
                 <i class="fas fa-gamepad"></i> Jogo
             </a>
         `;
@@ -2841,19 +3246,21 @@ function createCards(difficulty) {
     
     // Duplicar e embaralhar
     let allCards = [];
-    baseCards.forEach(card => {
+    baseCards.forEach((card, index) => {
         // Carta com bandeira
         allCards.push({
             ...card,
             cardType: 'flag',
-            pairId: card.id + '-flag'
+            pairId: card.id + '-flag',
+            cardNumber: index * 2
         });
         
         // Carta com descrição
         allCards.push({
             ...card,
             cardType: 'description',
-            pairId: card.id + '-desc'
+            pairId: card.id + '-desc',
+            cardNumber: index * 2 + 1
         });
     });
     
@@ -2879,14 +3286,14 @@ function renderGameBoard() {
     // Definir layout baseado na dificuldade
     let columns = 4;
     if (gameState.difficulty === 'medio') columns = 4;
-    if (gameState.difficulty === 'dificil') columns = 5;
+    if (gameState.difficulty === 'dificil') columns = 4; // Mantemos 4 colunas para melhor responsividade
     
     grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
     
     // Criar cartas
     gameState.cards.forEach((card, index) => {
         const cardElement = document.createElement('div');
-        cardElement.className = 'memory-card';
+        cardElement.className = 'memory-card new-card';
         cardElement.dataset.index = index;
         cardElement.dataset.cardId = card.pairId;
         cardElement.dataset.baseId = card.id;
@@ -2900,9 +3307,7 @@ function renderGameBoard() {
         const backContent = `
             <div class="card-back">
                 <i class="fas fa-anchor"></i>
-                <div style="position: absolute; bottom: 10px; color: rgba(255,255,255,0.5); font-size: 0.7rem;">
-                    Marujo Digital
-                </div>
+                <div class="card-watermark">Marujo Digital</div>
             </div>
         `;
         
@@ -2910,37 +3315,52 @@ function renderGameBoard() {
             <div class="card-front">
                 ${frontContent}
                 <div class="card-type-badge">
-                    ${card.cardType === 'flag' ? '🏁 Bandeira' : '📝 Descrição'}
+                    ${card.cardType === 'flag' ? '🏁' : '📝'}
                 </div>
+                <div class="card-corner">${card.cardNumber + 1}</div>
             </div>
             ${backContent}
         `;
         
-        cardElement.onclick = () => flipCard(index);
+        // Adicionar evento com debounce
+        cardElement.addEventListener('click', () => handleCardClick(index));
         grid.appendChild(cardElement);
     });
     
     // Atualizar contador de pares
-    const totalPairs = gameState.cards.length / 2;
-    document.getElementById('gamePairs').textContent = `0/${totalPairs}`;
+    updateProgress();
 }
 
 function createFlagCardContent(card) {
+    const fallbackSVG = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 70">
+            <rect width="100" height="70" fill="${card.fallbackColor}"/>
+            <text x="50%" y="50%" text-anchor="middle" dy=".3em" 
+                  fill="white" font-family="Arial" font-size="24" font-weight="bold">
+                ${card.title.substring(0, 2)}
+            </text>
+        </svg>
+    `;
+    
+    const imgSrc = `data:image/svg+xml;base64,${btoa(fallbackSVG)}`;
+    
     return `
         <div class="flag-preview-game">
-            ${card.image ? `
-                <img src="${card.image}" alt="${card.title}" 
-                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 70%22><rect width=%22100%22 height=%2270%22 fill=%22%232d3748%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23ffffff%22>${card.title.substring(0,3)}</text></svg>'">
-            ` : `
-                <div style="width: 100%; height: 100%; background: ${getFlagColor(card.type)}; 
-                     display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
-                    ${card.title.substring(0, 3)}
-                </div>
-            `}
+            <img src="${card.image}" 
+                 alt="${card.title}"
+                 onerror="
+                    this.onerror = null;
+                    this.src = '${imgSrc}';
+                 ">
         </div>
         <div class="card-title-game">${card.title}</div>
-        <div class="card-description-game" style="font-size: 0.7rem; margin-top: 5px;">
-            <i class="fas fa-tag"></i> ${card.type.toUpperCase()}
+        <div class="card-description-game" style="
+            color: ${card.fallbackColor};
+            font-weight: 600;
+            font-size: 0.7rem;
+            margin-top: 5px;
+        ">
+            ${card.type.toUpperCase()}
         </div>
     `;
 }
@@ -2948,11 +3368,11 @@ function createFlagCardContent(card) {
 function createDescriptionCardContent(card) {
     return `
         <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center;">
-            <div style="color: var(--accent); font-size: 2.5rem; text-align: center; margin-bottom: 10px;">
+            <div style="color: ${card.fallbackColor}; font-size: 2rem; text-align: center; margin-bottom: 10px;">
                 ${getFlagIcon(card.type)}
             </div>
             <div class="card-title-game" style="margin-bottom: 10px;">${card.title}</div>
-            <div class="card-description-game" style="flex: 1; overflow-y: auto;">
+            <div class="card-description-game">
                 ${card.description}
             </div>
         </div>
@@ -2970,8 +3390,8 @@ function getFlagIcon(type) {
     return icons[type] || '🏴';
 }
 
-function flipCard(index) {
-    if (!gameState.gameActive) return;
+function handleCardClick(index) {
+    if (!gameState.gameActive || !gameState.canClick) return;
     
     const card = gameState.cards[index];
     const cardElement = document.querySelector(`.memory-card[data-index="${index}"]`);
@@ -2984,7 +3404,20 @@ function flipCard(index) {
         return;
     }
     
+    // Registrar primeiro movimento
+    if (gameState.moves === 0) {
+        gameState.firstMoveTime = Date.now();
+    }
+    
     // Virar carta
+    flipCard(cardElement, index, card);
+    
+    // Tocar som
+    SoundSystem.play('flip');
+}
+
+function flipCard(cardElement, index, card) {
+    gameState.canClick = false;
     cardElement.classList.add('flipped');
     gameState.flippedCards.push({ index, card });
     
@@ -2992,7 +3425,17 @@ function flipCard(index) {
     if (gameState.flippedCards.length === 2) {
         gameState.moves++;
         updateGameStats();
-        checkForMatch();
+        
+        // Pequeno delay para verificar combinação
+        setTimeout(() => {
+            checkForMatch();
+            gameState.canClick = true;
+        }, 600);
+    } else {
+        // Se for só uma carta, liberar click mais rápido
+        setTimeout(() => {
+            gameState.canClick = true;
+        }, 300);
     }
 }
 
@@ -3011,11 +3454,19 @@ function checkForMatch() {
                 card2Element.classList.add('matched');
                 
                 // Adicionar pontos
-                gameState.points += calculatePoints();
+                const pointsEarned = calculatePoints();
+                gameState.points += pointsEarned;
                 gameState.matchedPairs++;
                 
                 // Atualizar estatísticas
                 updateGameStats();
+                updateProgress();
+                
+                // Efeito de pontos
+                showPointsAnimation(pointsEarned, card1Element);
+                
+                // Tocar som de acerto
+                SoundSystem.play('match');
                 
                 // Verificar vitória
                 checkWinCondition();
@@ -3033,6 +3484,9 @@ function checkForMatch() {
             if (card1Element && card2Element) {
                 card1Element.classList.remove('flipped');
                 card2Element.classList.remove('flipped');
+                
+                // Tocar som de erro
+                SoundSystem.play('lose');
             }
             
             // Limpar cartas viradas
@@ -3042,15 +3496,40 @@ function checkForMatch() {
 }
 
 function calculatePoints() {
-    const timeBonus = Math.max(100 - gameState.gameTime, 10);
-    const movesBonus = Math.max(50 - gameState.moves, 5);
-    const difficultyMultiplier = {
-        'facil': 1,
-        'medio': 1.5,
-        'dificil': 2
-    }[gameState.difficulty];
+    const basePoints = GAME_CONFIG.points.match;
+    const timeBonus = Math.max(GAME_CONFIG.points.timeBonus - Math.floor(gameState.gameTime / 10), 0);
+    const efficiencyBonus = Math.max(GAME_CONFIG.points.efficiencyBonus - (gameState.moves * 2), 0);
+    const difficultyMultiplier = GAME_CONFIG.points.difficultyMultiplier[gameState.difficulty];
     
-    return Math.floor((timeBonus + movesBonus) * difficultyMultiplier);
+    return Math.floor((basePoints + timeBonus + efficiencyBonus) * difficultyMultiplier);
+}
+
+function showPointsAnimation(points, element) {
+    const rect = element.getBoundingClientRect();
+    const pointsElement = document.createElement('div');
+    
+    pointsElement.style.cssText = `
+        position: fixed;
+        top: ${rect.top}px;
+        left: ${rect.left + rect.width / 2}px;
+        color: var(--accent);
+        font-size: 1.2rem;
+        font-weight: 800;
+        background: rgba(0,0,0,0.7);
+        padding: 5px 10px;
+        border-radius: 20px;
+        z-index: 10000;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        animation: floatUp 1s ease-out forwards;
+    `;
+    
+    pointsElement.textContent = `+${points}`;
+    document.body.appendChild(pointsElement);
+    
+    setTimeout(() => {
+        pointsElement.remove();
+    }, 1000);
 }
 
 function checkWinCondition() {
@@ -3061,27 +3540,22 @@ function checkWinCondition() {
         gameState.gameActive = false;
         clearInterval(gameState.timer);
         
+        // Tocar som de vitória
+        SoundSystem.play('win');
+        
         // Calcular pontuação final
         const finalScore = gameState.points + Math.max(1000 - gameState.gameTime * 10, 100);
         
-        // Mostrar mensagem de vitória
-        showGameMessage(
-            '🎉 Missão Cumprida!',
-            `Parabéns, Marinheiro!<br><br>
-            Você completou o jogo com:<br>
-            <strong>${gameState.moves}</strong> movimentos<br>
-            <strong>${formatTime(gameState.gameTime)}</strong> de tempo<br>
-            <strong>${Math.floor(finalScore)}</strong> pontos<br><br>
-            <small>Você é um verdadeiro conhecedor do Cerimonial Naval!</small>`,
-            'success'
-        );
-        
-        // Tocar som de vitória (se possível)
-        playSound('win');
+        // Mostrar resultado
+        setTimeout(() => {
+            showGameResult(finalScore);
+        }, 1000);
     }
 }
 
 function startGame() {
+    SoundSystem.play('click');
+    
     // Resetar estado
     gameState = {
         cards: [],
@@ -3092,7 +3566,9 @@ function startGame() {
         gameTime: 0,
         timer: null,
         gameActive: true,
-        difficulty: gameState.difficulty
+        difficulty: gameState.difficulty,
+        firstMoveTime: null,
+        canClick: true
     };
     
     // Criar cartas
@@ -3107,23 +3583,30 @@ function startGame() {
     // Atualizar estatísticas
     updateGameStats();
     
-    // Mostrar mensagem de início
-    showGameMessage(
-        '⚓ Preparar para Jogar!',
-        `Nível: ${gameState.difficulty.toUpperCase()}<br>
-        Encontre os pares de bandeiras com suas descrições.<br><br>
-        <small>Dica: Preste atenção nas cores e símbolos!</small>`,
-        'info'
-    );
+    // Adicionar classe para animação
+    const grid = document.getElementById('memoryGrid');
+    if (grid) {
+        grid.style.animation = 'newGame 0.5s ease-out';
+        setTimeout(() => {
+            grid.style.animation = '';
+        }, 500);
+    }
 }
 
 function resetGame() {
-    if (confirm('Reiniciar o jogo atual?')) {
+    if (gameState.gameActive) {
+        if (confirm('Reiniciar o jogo atual? Seu progresso será perdido.')) {
+            SoundSystem.play('click');
+            startGame();
+        }
+    } else {
         startGame();
     }
 }
 
 function setDifficulty(level) {
+    SoundSystem.play('click');
+    
     // Atualizar botões
     document.querySelectorAll('.difficulty-btn').forEach(btn => {
         btn.classList.remove('active');
@@ -3149,6 +3632,11 @@ function setDifficulty(level) {
     } else {
         gameState.difficulty = level;
     }
+}
+
+function toggleSound() {
+    const enabled = SoundSystem.toggle();
+    SoundSystem.play(enabled ? 'click' : 'lose');
 }
 
 function startTimer() {
@@ -3179,13 +3667,31 @@ function updateGameStats() {
     const pointsElement = document.getElementById('gamePoints');
     if (pointsElement) {
         pointsElement.textContent = gameState.points;
+        // Efeito de brilho ao atualizar pontos
+        pointsElement.style.animation = 'pulse 0.5s ease';
+        setTimeout(() => {
+            pointsElement.style.animation = '';
+        }, 500);
     }
     
     // Atualizar pares
+    updateProgress();
+}
+
+function updateProgress() {
+    const totalPairs = gameState.cards.length / 2;
     const pairsElement = document.getElementById('gamePairs');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    
     if (pairsElement) {
-        const totalPairs = gameState.cards.length / 2;
         pairsElement.textContent = `${gameState.matchedPairs}/${totalPairs}`;
+    }
+    
+    if (progressBar && progressText) {
+        const percentage = totalPairs > 0 ? Math.floor((gameState.matchedPairs / totalPairs) * 100) : 0;
+        progressBar.style.width = `${percentage}%`;
+        progressText.textContent = `${percentage}%`;
     }
 }
 
@@ -3195,82 +3701,168 @@ function formatTime(seconds) {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
-function showGameMessage(title, text, type = 'info') {
-    const messageElement = document.getElementById('gameMessage');
-    const titleElement = document.getElementById('messageTitle');
-    const textElement = document.getElementById('messageText');
+function showGameResult(finalScore) {
+    const modal = document.getElementById('gameResultModal');
+    const totalPairs = gameState.cards.length / 2;
     
-    if (messageElement && titleElement && textElement) {
-        // Definir cor baseada no tipo
-        let borderColor = 'var(--primary)';
-        if (type === 'success') borderColor = '#38a169';
-        if (type === 'warning') borderColor = '#d69e2e';
-        if (type === 'error') borderColor = '#e53e3e';
-        
-        messageElement.style.borderLeft = `4px solid ${borderColor}`;
-        titleElement.textContent = title;
-        textElement.innerHTML = text;
-        messageElement.style.display = 'block';
+    // Calcular eficiência
+    const minMoves = totalPairs * 2; // Mínimo teórico
+    const efficiency = Math.floor((minMoves / gameState.moves) * 100);
+    
+    // Determinar classificação
+    let rating = 'Recruta';
+    let icon = '🎖️';
+    let message = '';
+    
+    if (finalScore > 2000) {
+        rating = 'Almirante';
+        icon = '👑';
+        message = 'Excelente desempenho! Você domina o cerimonial naval!';
+    } else if (finalScore > 1500) {
+        rating = 'Capitão';
+        icon = '⭐';
+        message = 'Ótimo trabalho! Conhecimento naval exemplar!';
+    } else if (finalScore > 1000) {
+        rating = 'Oficial';
+        icon = '⚓';
+        message = 'Bom trabalho! Continue estudando!';
+    } else {
+        rating = 'Marinheiro';
+        icon = '🎖️';
+        message = 'Bom começo! Pratique mais para melhorar!';
     }
+    
+    // Atualizar modal
+    document.getElementById('resultIcon').textContent = icon;
+    document.getElementById('resultTitle').textContent = `${rating} - Missão Cumprida!`;
+    document.getElementById('resultMessage').innerHTML = `
+        ${message}<br><br>
+        <small>Nível: ${gameState.difficulty.toUpperCase()} | Pares: ${totalPairs}</small>
+    `;
+    
+    document.getElementById('resultTime').textContent = formatTime(gameState.gameTime);
+    document.getElementById('resultMoves').textContent = gameState.moves;
+    document.getElementById('resultScore').textContent = finalScore;
+    document.getElementById('resultEfficiency').textContent = `${efficiency}%`;
+    
+    // Mostrar modal
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.classList.add('active');
+    }, 10);
 }
 
-function hideMessage() {
-    const messageElement = document.getElementById('gameMessage');
-    if (messageElement) {
-        messageElement.style.display = 'none';
+function hideGameResult() {
+    const modal = document.getElementById('gameResultModal');
+    modal.classList.remove('active');
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300);
+}
+
+function shareResult() {
+    const message = `🎮 Memória Naval - Marujo Digital\n` +
+                   `🏆 Nível: ${gameState.difficulty.toUpperCase()}\n` +
+                   `⏰ Tempo: ${formatTime(gameState.gameTime)}\n` +
+                   `👣 Movimentos: ${gameState.moves}\n` +
+                   `⭐ Pontuação: ${gameState.points}\n\n` +
+                   `🔗 ${window.location.origin}${window.location.pathname}`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Meu resultado no Memória Naval',
+            text: message,
+            url: window.location.href
+        });
+    } else {
+        navigator.clipboard.writeText(message).then(() => {
+            alert('Resultado copiado para a área de transferência!');
+        });
     }
 }
 
 function showGameRules() {
-    showGameMessage(
-        '📜 Regras do Jogo',
-        `<strong>Objetivo:</strong> Encontrar todos os pares correspondentes de bandeiras e suas descrições.<br><br>
-        <strong>Como Jogar:</strong><br>
-        1. Clique em uma carta para virá-la<br>
-        2. Clique em outra carta para tentar formar um par<br>
-        3. Se as cartas corresponderem (bandeira + sua descrição), você ganha pontos!<br>
-        4. Se não corresponderem, as cartas serão viradas novamente<br><br>
-        <strong>Pontuação:</strong><br>
-        • Par correto: +50 pontos<br>
-        • Bônus por tempo rápido<br>
-        • Bônus por poucos movimentos<br>
-        • Multiplicador por dificuldade<br><br>
-        <strong>Níveis:</strong><br>
-        • Fácil: 6 pares<br>
-        • Médio: 8 pares<br>
-        • Difícil: 10 pares`,
-        'info'
-    );
-}
-
-// Função para tocar sons (simplificada)
-function playSound(type) {
-    // Em um ambiente real, você teria arquivos de áudio
-    // Por enquanto, apenas um beep simples
-    try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        if (type === 'flip') {
-            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // Dó
-        } else if (type === 'match') {
-            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime); // Mi
-        } else if (type === 'win') {
-            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime); // Sol
-        }
-        
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.5);
-    } catch (e) {
-        // Silenciosamente falha se AudioContext não for suportado
-    }
+    SoundSystem.play('click');
+    
+    const rulesHTML = `
+        <div style="text-align: left; line-height: 1.6;">
+            <h3 style="color: white; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-book-open"></i> Regras do Memória Naval
+            </h3>
+            
+            <div style="margin-bottom: 20px;">
+                <h4 style="color: var(--accent); margin-bottom: 10px;">🎯 OBJETIVO</h4>
+                <p style="color: var(--text-secondary);">
+                    Encontrar todos os pares correspondentes entre bandeiras/sinais navais e suas descrições.
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h4 style="color: var(--accent); margin-bottom: 10px;">🎮 COMO JOGAR</h4>
+                <ol style="color: var(--text-secondary); padding-left: 20px;">
+                    <li>Clique em uma carta para virá-la</li>
+                    <li>Clique em outra carta para tentar formar um par</li>
+                    <li>Se as cartas corresponderem (bandeira + sua descrição), você ganha pontos!</li>
+                    <li>Se não corresponderem, as cartas serão viradas novamente</li>
+                    <li>Complete todos os pares no menor tempo possível</li>
+                </ol>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h4 style="color: var(--accent); margin-bottom: 10px;">⭐ PONTUAÇÃO</h4>
+                <ul style="color: var(--text-secondary); padding-left: 20px;">
+                    <li><strong>Par correto:</strong> +100 pontos base</li>
+                    <li><strong>Bônus por tempo:</strong> +50 pontos (diminui com o tempo)</li>
+                    <li><strong>Bônus por eficiência:</strong> +75 pontos (diminui com movimentos extras)</li>
+                    <li><strong>Multiplicador por dificuldade:</strong> Fácil (1x), Médio (1.5x), Difícil (2x)</li>
+                </ul>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h4 style="color: var(--accent); margin-bottom: 10px;">📊 CLASSIFICAÇÃO</h4>
+                <ul style="color: var(--text-secondary); padding-left: 20px;">
+                    <li><strong>+2000 pontos:</strong> Almirante 👑</li>
+                    <li><strong>+1500 pontos:</strong> Capitão ⭐</li>
+                    <li><strong>+1000 pontos:</strong> Oficial ⚓</li>
+                    <li><strong>Menos de 1000:</strong> Marinheiro 🎖️</li>
+                </ul>
+            </div>
+            
+            <div style="background: rgba(255, 204, 0, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <h4 style="color: var(--accent); margin-bottom: 10px;">💡 DICAS</h4>
+                <ul style="color: var(--text-secondary); padding-left: 20px;">
+                    <li>Memorize as cores das bordas das cartas</li>
+                    <li>Presta atenção nos ícones de tipo (🏁 bandeira, 📝 descrição)</li>
+                    <li>Comece pelo nível fácil para aprender</li>
+                    <li>Tente completar com o mínimo de movimentos</li>
+                </ul>
+            </div>
+        </div>
+    `;
+    
+    // Criar modal de regras
+    const rulesModal = document.createElement('div');
+    rulesModal.className = 'modal-overlay active';
+    rulesModal.innerHTML = `
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 500px; max-height: 80vh; overflow-y: auto;">
+            <button class="modal-close" onclick="this.parentElement.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+            ${rulesHTML}
+            <div style="text-align: center; margin-top: 25px;">
+                <button class="navy-btn primary" onclick="this.parentElement.parentElement.parentElement.remove(); startGame();"
+                        style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
+                    <i class="fas fa-play"></i> Jogar Agora
+                </button>
+            </div>
+        </div>
+    `;
+    
+    rulesModal.onclick = function() {
+        this.remove();
+    };
+    
+    document.body.appendChild(rulesModal);
 }
 
 // Função para mostrar seção do jogo
@@ -3282,37 +3874,50 @@ function showGameSection() {
         setTimeout(() => {
             createCards('facil');
             renderGameBoard();
+            updateProgress();
         }, 100);
     }
 }
 
+// Adicionar CSS para animação de pontos
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes floatUp {
+        0% { 
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        100% { 
+            opacity: 0;
+            transform: translate(-50%, -100px) scale(1.5);
+        }
+    }
+`;
+document.head.appendChild(style);
+
 // Inicializar quando a página carregar
 document.addEventListener('DOMContentLoaded', () => {
-    // Adicionar evento para a seção do jogo
-    const gameSection = document.getElementById('jogo');
-    if (gameSection) {
-        gameSection.style.display = 'none';
-    }
-    
-    // Inicializar jogo (mas não começar automaticamente)
     initializeGame();
-    
-    // Adicionar evento para quando a seção do jogo for mostrada
-    const gameNavLink = document.querySelector('a[href="#jogo"]');
-    if (gameNavLink) {
-        gameNavLink.addEventListener('click', () => {
-            setTimeout(() => {
-                if (!gameState.gameActive) {
-                    showGameMessage(
-                        '⚓ Bem-vindo ao Jogo!',
-                        'Clique em "Novo Jogo" para começar sua missão naval.<br><br>Escolha o nível de dificuldade e teste seus conhecimentos sobre o Cerimonial da Marinha!',
-                        'info'
-                    );
-                }
-            }, 300);
-        });
-    }
 });
+
+// Adicionar ao array de sections para navegação
+window.showSection = function(sectionId, event) {
+    // Esconder todas as seções
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Atualizar navegação
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
+    
+    
+};
 </script>
     <!-- Modal de Detalhes -->
     <div class="modal-overlay" id="flagModal">
@@ -4282,6 +4887,9 @@ function showSection(sectionId, event) {
     
     // Carregar conteúdo específico
     switch(sectionId) {
+      case 'jogo':
+            showGameSection();
+            break;
         case 'bandeiras':
             loadAllFlags();
             break;
