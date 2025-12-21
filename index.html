@@ -2627,7 +2627,7 @@ setInterval(() => {
     max-width: 1000px;
     margin: 0 auto;
 }
-
+/* CORREÇÃO DO CSS DAS CARTAS */
 .memory-card {
     width: 100%;
     aspect-ratio: 3/4;
@@ -2642,28 +2642,25 @@ setInterval(() => {
     perspective: 1000px;
 }
 
-.memory-card:hover:not(.flipped):not(.matched) {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-}
-
+/* CORREÇÃO: A classe .flipped deve transformar em 180 graus */
 .memory-card.flipped {
     transform: rotateY(180deg);
 }
 
 .memory-card.matched {
     cursor: default;
-    transform: scale(0.95);
+    transform: scale(0.95) rotateY(180deg); /* CORREÇÃO: manter virada quando combinada */
     animation: matchGlow 1.5s ease-in-out infinite;
     border: 3px solid var(--accent);
 }
 
+/* CORREÇÃO: Ajustar o posicionamento das faces */
 .memory-card .card-front,
 .memory-card .card-back {
     position: absolute;
     width: 100%;
     height: 100%;
-    backface-visibility: hidden;
+    backface-visibility: hidden; /* CORREÇÃO: manter essa propriedade */
     border-radius: 10px;
     padding: 15px;
     display: flex;
@@ -2673,15 +2670,18 @@ setInterval(() => {
     overflow: hidden;
 }
 
+/* CORREÇÃO: O card-front começa virado (180 graus) */
 .memory-card .card-front {
     background: linear-gradient(145deg, #051223, #0a1929);
-    transform: rotateY(180deg);
+    transform: rotateY(180deg); /* CORREÇÃO: Começar virado */
     border: 2px solid var(--accent);
 }
 
+/* CORREÇÃO: O card-back começa na posição normal (0 graus) */
 .memory-card .card-back {
     background: linear-gradient(135deg, #001a33, #003366);
     border: 2px solid rgba(255, 255, 255, 0.15);
+    transform: rotateY(0deg); /* CORREÇÃO: Especificar rotação inicial */
     background-image: 
         radial-gradient(circle at 20% 80%, rgba(255, 204, 0, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(0, 102, 204, 0.1) 0%, transparent 50%);
@@ -3277,6 +3277,7 @@ function shuffleArray(array) {
     return array;
 }
 
+// CORREÇÃO DA FUNÇÃO renderGameBoard
 function renderGameBoard() {
     const grid = document.getElementById('memoryGrid');
     if (!grid) return;
@@ -3286,7 +3287,7 @@ function renderGameBoard() {
     // Definir layout baseado na dificuldade
     let columns = 4;
     if (gameState.difficulty === 'medio') columns = 4;
-    if (gameState.difficulty === 'dificil') columns = 4; // Mantemos 4 colunas para melhor responsividade
+    if (gameState.difficulty === 'dificil') columns = 4;
     
     grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
     
@@ -3303,7 +3304,7 @@ function renderGameBoard() {
             ? createFlagCardContent(card)
             : createDescriptionCardContent(card);
         
-        // Conteúdo de trás (não virado)
+        // CORREÇÃO: Conteúdo de trás (não virado) - usar SVG como fallback seguro
         const backContent = `
             <div class="card-back">
                 <i class="fas fa-anchor"></i>
@@ -3311,7 +3312,9 @@ function renderGameBoard() {
             </div>
         `;
         
+        // CORREÇÃO: Ordenar as divs corretamente
         cardElement.innerHTML = `
+            ${backContent}
             <div class="card-front">
                 ${frontContent}
                 <div class="card-type-badge">
@@ -3319,10 +3322,9 @@ function renderGameBoard() {
                 </div>
                 <div class="card-corner">${card.cardNumber + 1}</div>
             </div>
-            ${backContent}
         `;
         
-        // Adicionar evento com debounce
+        // Adicionar evento
         cardElement.addEventListener('click', () => handleCardClick(index));
         grid.appendChild(cardElement);
     });
@@ -3331,18 +3333,17 @@ function renderGameBoard() {
     updateProgress();
 }
 
+// CORREÇÃO DA FUNÇÃO createFlagCardContent
 function createFlagCardContent(card) {
-    const fallbackSVG = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 70">
-            <rect width="100" height="70" fill="${card.fallbackColor}"/>
-            <text x="50%" y="50%" text-anchor="middle" dy=".3em" 
-                  fill="white" font-family="Arial" font-size="24" font-weight="bold">
-                ${card.title.substring(0, 2)}
-            </text>
-        </svg>
-    `;
+    // Usar base64 para garantir que o fallback funcione
+    const fallbackSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 70">
+        <rect width="100" height="70" fill="${card.fallbackColor}"/>
+        <text x="50" y="35" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-size="16" font-weight="bold">
+            ${card.title.substring(0, 2)}
+        </text>
+    </svg>`;
     
-    const imgSrc = `data:image/svg+xml;base64,${btoa(fallbackSVG)}`;
+    const fallbackSrc = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(fallbackSVG)}`;
     
     return `
         <div class="flag-preview-game">
@@ -3350,7 +3351,7 @@ function createFlagCardContent(card) {
                  alt="${card.title}"
                  onerror="
                     this.onerror = null;
-                    this.src = '${imgSrc}';
+                    this.src = '${fallbackSrc}';
                  ">
         </div>
         <div class="card-title-game">${card.title}</div>
@@ -3364,6 +3365,58 @@ function createFlagCardContent(card) {
         </div>
     `;
 }
+
+// CORREÇÃO: Adicionar esta função para teste de imagens
+function testImage(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+    });
+}
+
+// CORREÇÃO NA FUNÇÃO flipCard - garantir que as cartas fiquem viradas corretamente
+function flipCard(cardElement, index, card) {
+    gameState.canClick = false;
+    
+    // CORREÇÃO: Adicionar animação suave
+    cardElement.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    cardElement.classList.add('flipped');
+    
+    // Verificar se a imagem carregou
+    const img = cardElement.querySelector('img');
+    if (img) {
+        img.onerror = function() {
+            const fallbackSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 70">
+                <rect width="100" height="70" fill="${card.fallbackColor}"/>
+                <text x="50" y="35" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-size="16" font-weight="bold">
+                    ${card.title.substring(0, 2)}
+                </text>
+            </svg>`;
+            this.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(fallbackSVG)}`;
+        };
+    }
+    
+    gameState.flippedCards.push({ index, card });
+    
+    // Verificar se temos 2 cartas viradas
+    if (gameState.flippedCards.length === 2) {
+        gameState.moves++;
+        updateGameStats();
+        
+        setTimeout(() => {
+            checkForMatch();
+            gameState.canClick = true;
+        }, 600);
+    } else {
+        setTimeout(() => {
+            gameState.canClick = true;
+        }, 300);
+    }
+}
+
+
 
 function createDescriptionCardContent(card) {
     return `
@@ -3416,28 +3469,7 @@ function handleCardClick(index) {
     SoundSystem.play('flip');
 }
 
-function flipCard(cardElement, index, card) {
-    gameState.canClick = false;
-    cardElement.classList.add('flipped');
-    gameState.flippedCards.push({ index, card });
-    
-    // Verificar se temos 2 cartas viradas
-    if (gameState.flippedCards.length === 2) {
-        gameState.moves++;
-        updateGameStats();
-        
-        // Pequeno delay para verificar combinação
-        setTimeout(() => {
-            checkForMatch();
-            gameState.canClick = true;
-        }, 600);
-    } else {
-        // Se for só uma carta, liberar click mais rápido
-        setTimeout(() => {
-            gameState.canClick = true;
-        }, 300);
-    }
-}
+
 
 function checkForMatch() {
     const [card1, card2] = gameState.flippedCards;
