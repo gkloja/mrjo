@@ -85,6 +85,37 @@
             radial-gradient(circle at 80% 70%, rgba(255, 204, 0, 0.05) 0%, transparent 50%);
     }
     
+    
+    /* Garantir que as imagens das cartas apareçam */
+.flag-preview-game {
+    width: 100%;
+    height: 55%;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.flag-preview-game img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.memory-card:hover .flag-preview-game img {
+    transform: scale(1.05);
+}
+
+.memory-card.matched .flag-preview-game img {
+    transform: scale(1.1);
+    filter: brightness(1.2) drop-shadow(0 0 5px rgba(255, 204, 0, 0.5));
+}
  /* Logo Circular Aprimorada */
 .logo-container-enhanced {
     display: flex;
@@ -2627,7 +2658,7 @@ setInterval(() => {
     max-width: 1000px;
     margin: 0 auto;
 }
-/* CORREÇÃO DO CSS DAS CARTAS */
+/* CORREÇÃO COMPLETA DAS CARTAS */
 .memory-card {
     width: 100%;
     aspect-ratio: 3/4;
@@ -2636,31 +2667,28 @@ setInterval(() => {
     cursor: pointer;
     position: relative;
     transform-style: preserve-3d;
-    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.6s;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     overflow: hidden;
-    perspective: 1000px;
 }
 
-/* CORREÇÃO: A classe .flipped deve transformar em 180 graus */
+/* CORREÇÃO: Quando virada, gira 180 graus */
 .memory-card.flipped {
     transform: rotateY(180deg);
 }
 
 .memory-card.matched {
     cursor: default;
-    transform: scale(0.95) rotateY(180deg); /* CORREÇÃO: manter virada quando combinada */
     animation: matchGlow 1.5s ease-in-out infinite;
     border: 3px solid var(--accent);
 }
 
-/* CORREÇÃO: Ajustar o posicionamento das faces */
+/* CORREÇÃO: Faces da carta */
 .memory-card .card-front,
 .memory-card .card-back {
     position: absolute;
     width: 100%;
     height: 100%;
-    backface-visibility: hidden; /* CORREÇÃO: manter essa propriedade */
     border-radius: 10px;
     padding: 15px;
     display: flex;
@@ -2668,31 +2696,35 @@ setInterval(() => {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    backface-visibility: hidden; /* IMPORTANTE: esconde o verso */
 }
 
-/* CORREÇÃO: O card-front começa virado (180 graus) */
+/* CORREÇÃO: Frente da carta (começa virada) */
 .memory-card .card-front {
     background: linear-gradient(145deg, #051223, #0a1929);
-    transform: rotateY(180deg); /* CORREÇÃO: Começar virado */
     border: 2px solid var(--accent);
+    transform: rotateY(180deg); /* Começa virada */
 }
 
-/* CORREÇÃO: O card-back começa na posição normal (0 graus) */
+/* CORREÇÃO: Verso da carta (visível inicialmente) */
 .memory-card .card-back {
     background: linear-gradient(135deg, #001a33, #003366);
     border: 2px solid rgba(255, 255, 255, 0.15);
-    transform: rotateY(0deg); /* CORREÇÃO: Especificar rotação inicial */
     background-image: 
         radial-gradient(circle at 20% 80%, rgba(255, 204, 0, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(0, 102, 204, 0.1) 0%, transparent 50%);
+    /* Não precisa de transform porque é a face visível inicialmente */
 }
 
+/* Restante do CSS permanece igual... */
 .card-back i {
     font-size: 2.5rem;
     color: rgba(255, 255, 255, 0.9);
     animation: pulse 2s infinite;
     text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
 }
+/* CORREÇÃO: A classe .flipped deve transformar em 180 graus */
+
 
 .card-back .card-watermark {
     position: absolute;
@@ -2927,6 +2959,26 @@ setInterval(() => {
         height: 45% !important;
         padding: 5px !important;
     }
+    /* Garantir que as imagens apareçam */
+.flag-preview-game img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* Estilo para o fallback */
+.flag-preview-game .fallback-flag {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+}
     
     .card-title-game {
         font-size: 0.7rem !important;
@@ -3277,6 +3329,73 @@ function shuffleArray(array) {
     return array;
 }
 
+function createFlagCardContent(card) {
+    // Usar imagem se existir, senão usar fallback
+    if (card.image) {
+        return `
+            <div class="flag-preview-game">
+                <img src="${card.image}" 
+                     alt="${card.title}"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml;charset=utf-8,${encodeURIComponent(getFallbackSVG(card))}'">
+            </div>
+            <div class="card-title-game">${card.title}</div>
+            <div class="card-description-game" style="
+                color: ${card.fallbackColor};
+                font-weight: 600;
+                font-size: 0.7rem;
+                margin-top: 5px;
+            ">
+                ${card.type.toUpperCase()}
+            </div>
+        `;
+    } else {
+        return getFallbackFlagHTML(card);
+    }
+}
+
+// Função para gerar SVG de fallback
+function getFallbackSVG(card) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 70">
+        <rect width="100" height="70" fill="${card.fallbackColor}"/>
+        <text x="50" y="35" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-size="12" font-weight="bold">
+            ${card.title.substring(0, 15)}
+        </text>
+    </svg>`;
+}
+
+// Função para HTML de fallback
+function getFallbackFlagHTML(card) {
+    return `
+        <div class="flag-preview-game" style="background: ${card.fallbackColor};">
+            <div style="
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                text-align: center;
+                padding: 10px;
+            ">
+                <div style="font-size: 2rem; margin-bottom: 5px;">🚩</div>
+                <div style="font-weight: bold; font-size: 0.8rem; margin-bottom: 3px;">${card.title}</div>
+                <div style="font-size: 0.65rem; opacity: 0.9;">${card.type}</div>
+            </div>
+        </div>
+        <div class="card-title-game">${card.title}</div>
+        <div class="card-description-game" style="
+            color: ${card.fallbackColor};
+            font-weight: 600;
+            font-size: 0.7rem;
+            margin-top: 5px;
+        ">
+            ${card.type.toUpperCase()}
+        </div>
+    `;
+}
+
+// CORREÇÃO DA FUNÇÃO renderGameBoard
 // CORREÇÃO DA FUNÇÃO renderGameBoard
 function renderGameBoard() {
     const grid = document.getElementById('memoryGrid');
@@ -3287,7 +3406,7 @@ function renderGameBoard() {
     // Definir layout baseado na dificuldade
     let columns = 4;
     if (gameState.difficulty === 'medio') columns = 4;
-    if (gameState.difficulty === 'dificil') columns = 4;
+    if (gameState.difficulty === 'dificil') columns = 5;
     
     grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
     
@@ -3299,22 +3418,17 @@ function renderGameBoard() {
         cardElement.dataset.cardId = card.pairId;
         cardElement.dataset.baseId = card.id;
         
-        // Conteúdo da frente (virado)
+        // Conteúdo da frente (bandeira ou descrição)
         const frontContent = card.cardType === 'flag' 
             ? createFlagCardContent(card)
             : createDescriptionCardContent(card);
         
-        // CORREÇÃO: Conteúdo de trás (não virado) - usar SVG como fallback seguro
-        const backContent = `
+        // CORREÇÃO: Ordem CORRETA das faces - VERSO primeiro, FRENTE depois
+        cardElement.innerHTML = `
             <div class="card-back">
                 <i class="fas fa-anchor"></i>
                 <div class="card-watermark">Marujo Digital</div>
             </div>
-        `;
-        
-        // CORREÇÃO: Ordenar as divs corretamente
-        cardElement.innerHTML = `
-            ${backContent}
             <div class="card-front">
                 ${frontContent}
                 <div class="card-type-badge">
@@ -3334,25 +3448,27 @@ function renderGameBoard() {
 }
 
 // CORREÇÃO DA FUNÇÃO createFlagCardContent
-function createFlagCardContent(card) {
-    // Usar base64 para garantir que o fallback funcione
-    const fallbackSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 70">
-        <rect width="100" height="70" fill="${card.fallbackColor}"/>
-        <text x="50" y="35" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-size="16" font-weight="bold">
-            ${card.title.substring(0, 2)}
-        </text>
-    </svg>`;
-    
-    const fallbackSrc = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(fallbackSVG)}`;
-    
+
+
+// Função para criar fallback se imagem não existir
+function getFallbackFlag(card) {
     return `
-        <div class="flag-preview-game">
-            <img src="${card.image}" 
-                 alt="${card.title}"
-                 onerror="
-                    this.onerror = null;
-                    this.src = '${fallbackSrc}';
-                 ">
+        <div class="flag-preview-game" style="background: ${card.fallbackColor};">
+            <div style="
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                text-align: center;
+                padding: 10px;
+            ">
+                <div style="font-size: 2rem; margin-bottom: 10px;">🚩</div>
+                <div style="font-weight: bold; font-size: 0.9rem;">${card.title}</div>
+                <div style="font-size: 0.7rem; opacity: 0.9;">${card.type}</div>
+            </div>
         </div>
         <div class="card-title-game">${card.title}</div>
         <div class="card-description-game" style="
@@ -3364,6 +3480,16 @@ function createFlagCardContent(card) {
             ${card.type.toUpperCase()}
         </div>
     `;
+}
+
+// Função para verificar se imagem existe
+function checkImageExists(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+    });
 }
 
 // CORREÇÃO: Adicionar esta função para teste de imagens
@@ -3384,18 +3510,20 @@ function flipCard(cardElement, index, card) {
     cardElement.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
     cardElement.classList.add('flipped');
     
-    // Verificar se a imagem carregou
+    // Verificar se existe imagem e carregar fallback se necessário
     const img = cardElement.querySelector('img');
     if (img) {
         img.onerror = function() {
-            const fallbackSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 70">
-                <rect width="100" height="70" fill="${card.fallbackColor}"/>
-                <text x="50" y="35" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-size="16" font-weight="bold">
-                    ${card.title.substring(0, 2)}
-                </text>
-            </svg>`;
-            this.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(fallbackSVG)}`;
+            // Substituir por fallback
+            const fallbackHTML = getFallbackFlag(card);
+            const previewDiv = cardElement.querySelector('.flag-preview-game');
+            if (previewDiv) {
+                previewDiv.innerHTML = getFallbackFlag(card);
+            }
         };
+        
+        // Tentar carregar a imagem
+        img.src = card.image;
     }
     
     gameState.flippedCards.push({ index, card });
