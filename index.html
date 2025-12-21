@@ -3113,35 +3113,36 @@ setInterval(() => {
 /* ======================= */
 /* CARTAS QUADRADAS E GRANDES PARA MOBILE */
 /* ======================= */
+/* ======================= */
+/* CORREÇÃO DO FLIP DAS CARTAS */
+/* ======================= */
 
 /* Container do grid do jogo */
 .memory-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 colunas para mobile */
-    gap: 8px; /* Menor gap para mobile */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
     padding: 5px;
 }
 
-/* Cartas quadradas grandes */
+/* Cartas quadradas grandes - CORREÇÃO PRINCIPAL */
 .memory-card {
-    aspect-ratio: 1 / 1; /* Garante que seja quadrado */
-    width: 100%; /* Ocupa toda a largura da célula do grid */
-    max-height: calc(33vh - 20px); /* Altura máxima baseada na tela */
-    min-height: 120px; /* Altura mínima para garantir */
-    border-radius: 10px; /* Bordas levemente arredondadas */
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    min-height: 120px;
+    border-radius: 10px;
     cursor: pointer;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.5s ease;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     perspective: 1000px;
-    overflow: hidden;
 }
 
-/* Flip animation */
+/* CORREÇÃO CRÍTICA: Flip funciona agora */
 .memory-card.flipped {
     transform: rotateY(180deg);
 }
@@ -3153,7 +3154,7 @@ setInterval(() => {
     transform: rotateY(180deg);
 }
 
-/* Container absoluto para ambas as faces */
+/* Container absoluto para ambas as faces - CORRIGIDO */
 .card-face {
     position: absolute;
     width: 100%;
@@ -3164,11 +3165,13 @@ setInterval(() => {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    padding: 0; /* Remover padding */
+    padding: 8px;
     box-sizing: border-box;
+    top: 0;
+    left: 0;
 }
 
-/* VERSO da carta - SIMPLES E LIMPO */
+/* VERSO da carta */
 .card-back {
     background: linear-gradient(135deg, #002855, #004488);
     border: 2px solid rgba(255, 255, 255, 0.15);
@@ -3177,6 +3180,7 @@ setInterval(() => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    z-index: 2; /* Adicionado para garantir que fique na frente inicialmente */
 }
 
 .card-back i {
@@ -3192,14 +3196,15 @@ setInterval(() => {
     padding: 0 5px;
 }
 
-/* FRENTE da carta - FOCANDO NA IMAGEM */
+/* FRENTE da carta - CORREÇÃO CRÍTICA */
 .card-front {
     background: linear-gradient(145deg, #0a1929, #051223);
     color: white;
-    transform: rotateY(180deg);
+    transform: rotateY(180deg); /* Começa virada */
+    z-index: 1; /* Fica atrás inicialmente */
 }
 
-/* Conteúdo da frente - FOCADO NA IMAGEM */
+/* Conteúdo da frente - GARANTIR VISIBILIDADE */
 .card-content {
     width: 100%;
     height: 100%;
@@ -3207,23 +3212,23 @@ setInterval(() => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 5px; /* Padding mínimo */
+    padding: 5px;
 }
 
-/* Container da imagem - MAIOR FOCO */
+/* Container da imagem - VISÍVEL */
 .flag-preview-game {
-    width: 90%; /* Quase toda a largura */
-    height: 75%; /* 75% da altura da carta */
+    width: 90%;
+    height: 70%; /* Reduzido para caber título */
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.05);
-    margin-bottom: 3px; /* Menor margem */
+    margin-bottom: 5px;
 }
 
-/* IMAGEM GRANDE E CENTRALIZADA */
+/* IMAGEM VISÍVEL */
 .flag-preview-game img {
     width: auto;
     height: auto;
@@ -3233,12 +3238,12 @@ setInterval(() => {
     display: block;
 }
 
-/* Título menor e sutil */
+/* Título visível */
 .card-title-game {
-    font-size: 0.7rem; /* Fonte menor */
+    font-size: 0.7rem;
     font-weight: 600;
     text-align: center;
-    margin: 2px 0;
+    margin: 3px 0;
     color: white;
     line-height: 1.1;
     padding: 0 3px;
@@ -3248,18 +3253,18 @@ setInterval(() => {
     width: 90%;
 }
 
-/* Descrição mínima */
+/* Descrição visível */
 .card-description-game {
     font-size: 0.6rem;
     font-weight: 500;
     text-align: center;
     color: var(--accent);
-    margin-top: 1px;
+    margin-top: 2px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-/* Conteúdo da carta de descrição - AINDA FOCO VISUAL */
+/* Conteúdo da carta de descrição - VISÍVEL */
 .description-content {
     width: 100%;
     height: 100%;
@@ -3271,14 +3276,14 @@ setInterval(() => {
     text-align: center;
 }
 
-/* Ícone grande para descrição */
-.description-content div:first-child {
-    font-size: 2.2rem;
-    margin-bottom: 5px;
+/* Ícone grande visível */
+.description-content > div:first-child {
+    font-size: 2.2rem !important;
+    margin-bottom: 8px !important;
     opacity: 0.9;
 }
 
-/* Badge de tipo (pequeno e discreto) */
+/* Badge de tipo */
 .card-type-badge {
     position: absolute;
     top: 5px;
@@ -3292,10 +3297,10 @@ setInterval(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2;
+    z-index: 3;
 }
 
-/* Número no canto (discreto) */
+/* Número no canto */
 .card-corner {
     position: absolute;
     bottom: 3px;
@@ -3303,8 +3308,147 @@ setInterval(() => {
     color: rgba(255, 255, 255, 0.4);
     font-size: 0.6rem;
     font-weight: 300;
+    z-index: 3;
 }
 
+/* ======================= */
+/* ANIMAÇÕES */
+/* ======================= */
+
+@keyframes matchGlow {
+    0%, 100% { 
+        box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+    }
+    50% { 
+        box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
+    }
+}
+
+@keyframes cardAppear {
+    from { 
+        opacity: 0; 
+        transform: scale(0.8); 
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
+}
+
+.new-card {
+    animation: cardAppear 0.3s ease-out;
+}
+
+/* ======================= */
+/* OUTRAS ANIMAÇÕES FALTANTES */
+/* ======================= */
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes progressShine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes floatUp {
+    0% { 
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% { 
+        opacity: 0;
+        transform: translate(-50%, -100px) scale(1.5);
+    }
+}
+
+/* ======================= */
+/* RESPONSIVIDADE */
+/* ======================= */
+
+@media (min-width: 768px) {
+    .memory-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        max-width: 800px;
+    }
+    
+    .memory-card {
+        min-height: 140px;
+    }
+    
+    .flag-preview-game {
+        height: 65%;
+    }
+    
+    .card-title-game {
+        font-size: 0.8rem;
+    }
+    
+    .card-description-game {
+        font-size: 0.7rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .memory-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        max-width: 600px;
+    }
+    
+    .memory-card {
+        min-height: 150px;
+    }
+    
+    .flag-preview-game {
+        height: 60%;
+    }
+    
+    .card-back i {
+        font-size: 2.5rem;
+    }
+}
+
+/* ======================= */
+/* OTIMIZAÇÃO MOBILE */
+/* ======================= */
+
+@media (max-width: 767px) and (orientation: landscape) {
+    .memory-grid {
+        grid-template-columns: repeat(4, 1fr);
+        max-width: none;
+    }
+    
+    .memory-card {
+        min-height: 100px;
+    }
+    
+    .flag-preview-game {
+        height: 70%;
+    }
+}
+
+@media (max-height: 600px) {
+    .memory-card {
+        min-height: 100px;
+    }
+    
+    .flag-preview-game {
+        height: 65%;
+    }
+    
+    .card-title-game {
+        font-size: 0.65rem;
+    }
+}
 /* Animações */
 @keyframes matchGlow {
     0%, 100% { 
@@ -3334,50 +3478,7 @@ setInterval(() => {
 /* RESPONSIVIDADE PARA TABLET E DESKTOP */
 /* ======================= */
 
-@media (min-width: 768px) {
-    .memory-grid {
-        grid-template-columns: repeat(4, 1fr); /* 4 colunas para tablet */
-        gap: 10px;
-        max-width: 800px;
-    }
-    
-    .memory-card {
-        min-height: 140px;
-    }
-    
-    .flag-preview-game {
-        height: 70%;
-    }
-    
-    .card-title-game {
-        font-size: 0.8rem;
-    }
-    
-    .card-description-game {
-        font-size: 0.7rem;
-    }
-}
 
-@media (min-width: 1024px) {
-    .memory-grid {
-        grid-template-columns: repeat(4, 1fr); /* Mantém 4 colunas para desktop */
-        gap: 12px;
-        max-width: 600px; /* Largura limitada para cartas grandes */
-    }
-    
-    .memory-card {
-        min-height: 150px;
-        max-height: 180px;
-    }
-    
-    .flag-preview-game {
-        height: 65%;
-    }
-    
-    .card-back i {
-        font-size: 2.5rem;
-    }
-}
 
 /* ======================= */
 /* ESTILOS PARA CONTROLES DO JOGO MOBILE */
