@@ -1801,14 +1801,14 @@ audio::-webkit-media-controls-mute-button {
     background: linear-gradient(135deg, #8b0000, #b22222);
 }
 
+
 /* BOTÃO DE DOWNLOAD - ESTILO IGUAL AO DA RÁDIO */
 .floating-download-container {
     position: fixed;
-    bottom: 30px;
-    right: 30px; /* Mudei para left em vez de right */
+    bottom: -8%; /* Percentual da altura da tela */
+    left: 30px;
     z-index: 1000;
 }
-
 /* Botão flutuante principal - IGUAL AO DA RÁDIO */
 .floating-download-btn {
     width: 70px;
@@ -2101,12 +2101,12 @@ audio::-webkit-media-controls-mute-button {
 
 /* Responsividade */
 @media (max-width: 768px) {
-    .floating-download-container {
-        width: 60px;
-        height: 60px;
-        bottom: 20px;
-        left: 20px;
-    }
+.floating-download-container {
+    position: fixed;
+    bottom: -8%; /* Percentual da altura da tela */
+    left: 30px;
+    z-index: 1000;
+}
     
     .floating-download-btn {
         width: 60px;
@@ -2856,15 +2856,16 @@ audio::-webkit-media-controls-mute-button {
         animation: none;
     }
     
-    .watermark {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        color: rgba(255, 255, 255, 0.1);
-        font-size: 0.8rem;
-        z-index: 1;
-        pointer-events: none;
-    }
+.watermark {
+    position: fixed;
+    bottom: 20px;
+    left: 50%; /* Move para o meio */
+    transform: translateX(-50%); /* Corrige o posicionamento */
+    color: rgba(255, 255, 255, 0.1);
+    font-size: 0.8rem;
+    z-index: 1;
+    pointer-events: none;
+}
     
     /* Novos Estilos para Sinais e Insígnias */
     .signal-card {
