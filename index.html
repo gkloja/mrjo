@@ -3552,7 +3552,9 @@ function loadApitosSection() {
                 ${createApitosCards('all')}
             </div>
         </div>
-    `;
+    `
+    
+    setTimeout(setupAudioEvents, 500);
 }
 
 // Função para criar cards de apito
@@ -3568,7 +3570,7 @@ function createApitosCards(category = 'all') {
     }
     
     return apitos.map(apito => `
-        <div class="apito-card" onclick="openSignalModal('${apito.nome}', event)" style="
+        <div class="apito-card" style="
             background: rgba(255,255,255,0.05);
             border-radius: 12px;
             padding: 20px;
@@ -3582,43 +3584,42 @@ function createApitosCards(category = 'all') {
                 ${apito.nome}
             </h4>
             
-            <!-- Player de áudio -->
-            <div style="margin-bottom: 15px;" onclick="event.stopPropagation()">
+            <!-- Player de áudio SIMPLIFICADO -->
+            <div style="margin-bottom: 15px;">
+                <!-- Áudio oculto -->
                 <audio id="audio-${apito.nome.replace(/\s+/g, '-')}" 
                        src="${apito.audio}" 
                        preload="none"
-                       style="display: none;"></audio>
+                       style="display: none;">
+                </audio>
                 
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button onclick="playApito('${apito.nome}'); event.stopPropagation()" 
-                            style="background: #f59e0b; color: white; border: none; width: 40px; height: 40px; 
+                <!-- Botão Play/Pause SIMPLES -->
+                <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+                    <button onclick="playApito('${apito.nome}')" 
+                            style="background: #f59e0b; color: white; border: none; width: 50px; height: 50px; 
                                    border-radius: 50%; cursor: pointer; display: flex; align-items: center; 
-                                   justify-content: center; transition: all 0.3s;"
+                                   justify-content: center; transition: all 0.3s; font-size: 1.2rem;"
                             onmouseover="this.style.background='#d69e2e'"
                             onmouseout="this.style.background='#f59e0b'">
-                        <i class="fas fa-play"></i>
+                        <i class="fas fa-play" id="icon-${apito.nome.replace(/\s+/g, '-')}"></i>
                     </button>
                     
-                    <div style="flex: 1;">
-                        <input type="range" min="0" max="1" step="0.01" value="1" 
-                               onchange="changeApitoVolume('${apito.nome}', this.value)" 
-                               onclick="event.stopPropagation()"
-                               style="width: 100%; height: 6px; border-radius: 3px; cursor: pointer;">
+                    <!-- Controle de volume -->
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-volume-down" style="color: var(--text-secondary);"></i>
+                        <input type="range" min="0" max="1" step="0.1" value="0.7" 
+                               oninput="changeApitoVolume('${apito.nome}', this.value)"
+                               style="width: 100px; height: 6px; border-radius: 3px; cursor: pointer;">
+                        <i class="fas fa-volume-up" style="color: var(--text-secondary);"></i>
                     </div>
-                    
-                    <span style="color: var(--text-secondary); font-size: 0.9rem;">
-                        <i class="fas fa-volume-up"></i>
-                    </span>
                 </div>
             </div>
             
             <!-- Botões de ação -->
-            <div style="display: flex; gap: 10px;" onclick="event.stopPropagation()">
-                <a href="${apito.audio}" 
-                   target="_blank"
-                   style="flex: 1; text-decoration: none;">
-                    <button style="
-                        width: 100%;
+            <div style="display: flex; gap: 10px;">
+                <button onclick="playApito('${apito.nome}')"
+                   style="
+                        flex: 1;
                         padding: 10px;
                         background: rgba(66, 153, 225, 0.2);
                         border: 1px solid #4299e1;
@@ -3629,9 +3630,8 @@ function createApitosCards(category = 'all') {
                         transition: all 0.3s;
                     " onmouseover="this.style.background='rgba(66, 153, 225, 0.3)'"
                       onmouseout="this.style.background='rgba(66, 153, 225, 0.2)'">
-                        <i class="fas fa-headphones"></i> Ouvir
-                    </button>
-                </a>
+                    <i class="fas fa-headphones"></i> Ouvir Agora
+                </button>
                 
                 <a href="${apito.download}" 
                    target="_blank"
@@ -3655,7 +3655,7 @@ function createApitosCards(category = 'all') {
             
             <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
                 <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0;">
-                    <i class="fas fa-info-circle"></i> Clique no card para mais informações
+                    <i class="fas fa-info-circle"></i> Clique em "Ouvir Agora" para reproduzir
                 </p>
             </div>
         </div>
@@ -3665,35 +3665,80 @@ function createApitosCards(category = 'all') {
 // Funções de controle de áudio
 let currentAudio = null;
 
+// Função para atualizar ícones dos botões
+function updateApitoButton(nome, isPlaying) {
+    const buttonId = `icon-${nome.replace(/\s+/g, '-')}`;
+    const buttonIcon = document.getElementById(buttonId);
+    
+    if (buttonIcon) {
+        buttonIcon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+    }
+}
+
+// Modificar a função playApito para usar esta função
 function playApito(nome) {
+    console.log('Tentando tocar apito:', nome);
+    
     const audioId = `audio-${nome.replace(/\s+/g, '-')}`;
     const audioElement = document.getElementById(audioId);
     
-    if (!audioElement) return;
+    if (!audioElement) {
+        console.error('Elemento de áudio não encontrado:', audioId);
+        return;
+    }
     
     // Pausar áudio atual se estiver tocando
     if (currentAudio && currentAudio !== audioElement) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
+        updateApitoButton(currentAudio.dataset.nome, false);
     }
     
-    // Tocar o áudio selecionado
+    // Tocar/pausar o áudio
     if (audioElement.paused) {
-        audioElement.play();
-        currentAudio = audioElement;
-        
-        // Atualizar ícone do botão
-        const button = audioElement.parentElement.querySelector('button');
-        button.innerHTML = '<i class="fas fa-pause"></i>';
+        audioElement.play()
+            .then(() => {
+                currentAudio = audioElement;
+                updateApitoButton(nome, true);
+                console.log('Áudio tocando:', nome);
+            })
+            .catch(error => {
+                console.error('Erro ao tocar:', error);
+                showNotification('Erro ao reproduzir. Verifique o console para detalhes.');
+            });
     } else {
         audioElement.pause();
         audioElement.currentTime = 0;
-        
-        // Atualizar ícone do botão
-        const button = audioElement.parentElement.querySelector('button');
-        button.innerHTML = '<i class="fas fa-play"></i>';
+        updateApitoButton(nome, false);
     }
 }
+
+// Adicionar após a função playApito
+function setupAudioEvents() {
+    // Adicionar eventos a todos os elementos de áudio
+    document.querySelectorAll('audio').forEach(audio => {
+        audio.addEventListener('play', function() {
+            console.log('Áudio começou a tocar:', this.id);
+        });
+        
+        audio.addEventListener('pause', function() {
+            console.log('Áudio pausado:', this.id);
+        });
+        
+        audio.addEventListener('error', function(e) {
+            console.error('Erro no áudio:', this.id, e);
+            showNotification('Erro ao carregar áudio. Verifique a conexão.');
+        });
+        
+        audio.addEventListener('canplay', function() {
+            console.log('Áudio pronto para tocar:', this.id);
+        });
+    });
+}
+
+// Chamar esta função após carregar os apitos
+// Na função loadApitosSection, adicione no final:
+
 
 function changeApitoVolume(nome, volume) {
     const audioId = `audio-${nome.replace(/\s+/g, '-')}`;
