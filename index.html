@@ -85,6 +85,307 @@
             radial-gradient(circle at 80% 70%, rgba(255, 204, 0, 0.05) 0%, transparent 50%);
     }
     
+    /* ESTILOS OTIMIZADOS PARA APITOS NO CELULAR */
+.mobile-apitos-container {
+    padding: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Grid responsiva para os apitos */
+.apitos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+    margin: 0;
+    padding: 15px;
+}
+
+@media (max-width: 768px) {
+    .apitos-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 12px;
+    }
+}
+
+/* Cards de apito otimizados */
+.apito-card-mobile {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    width: 100%;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.apito-card-mobile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Header do card menor */
+.apito-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.apito-card-name {
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.apito-card-category {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+/* Controles menores */
+.apito-controls-mobile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.apito-play-btn-mobile {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    background: rgba(0, 102, 204, 0.15);
+    border: 1px solid rgba(0, 102, 204, 0.3);
+    border-radius: 8px;
+    color: var(--primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.apito-play-btn-mobile:hover {
+    background: rgba(0, 102, 204, 0.25);
+}
+
+.apito-play-btn-mobile.playing {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* Barra de busca otimizada */
+.apito-search-container {
+    position: sticky;
+    top: 0;
+    background: var(--bg-darker);
+    padding: 15px;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.apito-search-box {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 0 15px;
+    height: 46px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.apito-search-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 0.95rem;
+    padding: 0 10px;
+    height: 100%;
+    outline: none;
+}
+
+.apito-search-box input::placeholder {
+    color: var(--text-muted);
+}
+
+/* Filtros otimizados */
+.apito-filters {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 0 15px 15px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.apito-filters::-webkit-scrollbar {
+    display: none;
+}
+
+.apito-filter-btn {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.apito-filter-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* Contador de resultados */
+.apito-results-count {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 0 15px 10px;
+    text-align: center;
+}
+
+/* Player fixo na parte inferior */
+.apito-player-fixed {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(5, 18, 35, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 15px;
+    display: none;
+    z-index: 1000;
+}
+
+.apito-player-fixed.show {
+    display: block;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+/* Conteúdo do player fixo */
+.apito-player-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.apito-player-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.apito-player-track {
+    color: white;
+    font-weight: 500;
+    font-size: 0.95rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.apito-player-status {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.apito-player-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.apito-player-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Volume no card menor */
+.apito-volume-mobile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.apito-volume-mobile input {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    -webkit-appearance: none;
+}
+
+.apito-volume-mobile input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+}
+
+/* Botão de download menor */
+.apito-download-btn {
+    padding: 6px 12px;
+    background: rgba(56, 161, 105, 0.1);
+    border: 1px solid rgba(56, 161, 105, 0.3);
+    border-radius: 6px;
+    color: #38a169;
+    font-size: 0.8rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+/* Mensagem "nenhum resultado" */
+.apito-no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+}
+
+.apito-no-results i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.3;
+}
+    
     
     /* Garantir que as imagens das cartas apareçam */
 .flag-preview-game {
@@ -822,6 +1123,441 @@ audio::-webkit-media-controls-mute-button {
     background: linear-gradient(135deg, #8b0000, #b22222);
 }
 
+/* Botão de Download do App Android */
+.floating-download-btn {
+    position: fixed;
+    bottom: 100px;
+    left: 20px;
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #34d399, #10b981);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+        0 8px 25px rgba(16, 185, 129, 0.4),
+        0 0 0 3px rgba(52, 211, 153, 0.3);
+    border: 2px solid #d1fae5;
+    cursor: pointer;
+    z-index: 999;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    animation: floatDownload 3s ease-in-out infinite;
+}
+
+.floating-download-btn:hover {
+    transform: scale(1.15);
+    box-shadow: 
+        0 12px 35px rgba(16, 185, 129, 0.6),
+        0 0 0 5px rgba(52, 211, 153, 0.4);
+    animation-play-state: paused;
+}
+
+.floating-download-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, 
+        rgba(255, 255, 255, 0.3) 0%, 
+        transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+.floating-download-btn::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: conic-gradient(
+        from 0deg,
+        transparent,
+        #d1fae5,
+        transparent,
+        #10b981,
+        transparent,
+        #34d399,
+        transparent
+    );
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.8;
+    animation: rotateBorder 4s linear infinite;
+}
+
+.floating-download-icon {
+    width: 55px;
+    height: 55px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    box-shadow: 
+        inset 0 3px 10px rgba(0, 0, 0, 0.1),
+        0 5px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.floating-download-icon img {
+    width: 65%;
+    height: 65%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Badge de notificação */
+.download-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border: 2px solid var(--bg-darker);
+    animation: pulseBadge 2s infinite;
+    z-index: 3;
+}
+
+/* Tooltip */
+.floating-download-tooltip {
+    position: absolute;
+    left: 85px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(5, 18, 35, 0.95);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.floating-download-tooltip::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 6px 6px 6px 0;
+    border-style: solid;
+    border-color: transparent rgba(5, 18, 35, 0.95) transparent transparent;
+}
+
+.floating-download-tooltip strong {
+    color: #34d399;
+    font-weight: 600;
+}
+
+.floating-download-btn:hover .floating-download-tooltip {
+    opacity: 1;
+    left: 90px;
+}
+
+/* Modal de Download */
+.download-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.download-modal-overlay.active {
+    display: flex;
+    opacity: 1;
+    animation: fadeIn 0.3s;
+}
+
+.download-modal-content {
+    background: linear-gradient(145deg, #051223, #0a1929);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(52, 211, 153, 0.1);
+    overflow: hidden;
+}
+
+.download-modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        #34d399 20%, 
+        #10b981 50%, 
+        #34d399 80%, 
+        transparent);
+}
+
+.download-modal-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.download-modal-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #34d399, #10b981);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+}
+
+.download-modal-icon i {
+    color: white;
+    font-size: 2.5rem;
+}
+
+.download-modal-title {
+    color: white;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.download-modal-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.download-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.download-info-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.download-info-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.download-info-value {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.download-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.download-btn-primary {
+    background: linear-gradient(135deg, #34d399, #10b981);
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.download-btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+}
+
+.download-btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.download-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.download-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.download-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* Animações */
+@keyframes floatDownload {
+    0%, 100% { 
+        transform: translateY(0px); 
+    }
+    50% { 
+        transform: translateY(-10px); 
+    }
+}
+
+@keyframes pulseBadge {
+    0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    50% { 
+        transform: scale(1.1); 
+    }
+    70% { 
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); 
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .floating-download-btn {
+        bottom: 80px;
+        left: 15px;
+        width: 60px;
+        height: 60px;
+    }
+    
+    .floating-download-icon {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .download-badge {
+        width: 20px;
+        height: 20px;
+        font-size: 0.6rem;
+    }
+    
+    .floating-download-tooltip {
+        display: none;
+    }
+    
+    .download-modal-content {
+        padding: 30px 20px;
+    }
+    
+    .download-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mensagem de instalação */
+.install-message {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: none;
+    align-items: center;
+    gap: 15px;
+    z-index: 1000;
+    animation: slideInRight 0.5s ease;
+    max-width: 300px;
+}
+
+.install-message.show {
+    display: flex;
+}
+
+.install-message i {
+    font-size: 1.5rem;
+    color: var(--accent);
+}
+
+.install-message p {
+    margin: 0;
+    font-size: 0.9rem;
+    flex: 1;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
 .flag-preview.barroso::before {
     background-image: 
         linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.15) 50%, transparent 55%),
@@ -1320,6 +2056,90 @@ audio::-webkit-media-controls-mute-button {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  
+  
+  <!-- Botão Flutuante de Download do App -->
+<div class="floating-download-btn" onclick="showDownloadModal()">
+    <div class="download-badge">APP</div>
+    <div class="floating-download-icon">
+        <i class="fas fa-ship"></i>
+    </div>
+    <div class="floating-download-tooltip">
+        <strong>Baixe o App!</strong><br>
+        Marujo Digital para Android
+    </div>
+</div>
+
+<!-- Modal de Download -->
+<div class="download-modal-overlay" id="downloadModal">
+    <div class="download-modal-content">
+        <button class="download-modal-close" onclick="closeDownloadModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <div class="download-modal-header">
+            <div class="download-modal-icon">
+                <i class="fas fa-ship"></i>
+            </div>
+            <h2 class="download-modal-title">Marujo Digital App</h2>
+            <p class="download-modal-subtitle">
+                O Guia Completo do Cerimonial Naval no seu celular
+            </p>
+        </div>
+        
+        <div class="download-info-grid">
+            <div class="download-info-item">
+                <div class="download-info-label">Versão</div>
+                <div class="download-info-value">1.0.0</div>
+            </div>
+            <div class="download-info-item">
+                <div class="download-info-label">Tamanho</div>
+                <div class="download-info-value">15 MB</div>
+            </div>
+            <div class="download-info-item">
+                <div class="download-info-label">Android</div>
+                <div class="download-info-value">5.0+</div>
+            </div>
+            <div class="download-info-item">
+                <div class="download-info-label">Offline</div>
+                <div class="download-info-value">Sim</div>
+            </div>
+        </div>
+        
+        <div class="download-buttons">
+            <button class="download-btn-primary" onclick="downloadApp()">
+                <i class="fas fa-download"></i>
+                Baixar App (APK)
+            </button>
+            <button class="download-btn-secondary" onclick="shareApp()">
+                <i class="fas fa-share-alt"></i>
+                Compartilhar App
+            </button>
+        </div>
+        
+        <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; line-height: 1.5;">
+                <i class="fas fa-info-circle"></i> 
+                Permissão de fontes desconhecidas necessária. App não disponível na Play Store.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Mensagem de instalação -->
+<div class="install-message" id="installMessage">
+    <i class="fas fa-check-circle"></i>
+    <p>Download iniciado! Verifique suas notificações.</p>
+    <button onclick="hideInstallMessage()" style="
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 5px;
+    ">
+        <i class="fas fa-times"></i>
+    </button>
+</div>
 <!-- Botão Flutuante com Controles da Rádio Marinha -->
 <!-- Botão Flutuante com Múltiplas Rádios -->
 <!-- Botão Flutuante com Múltiplas Rádios -->
@@ -1432,6 +2252,118 @@ radioPlayer.volume = 0.7;
 radioPlayer.preload = "auto";
 loadRadio(currentRadio);
 
+
+// Funções para o botão de download
+function showDownloadModal() {
+    const modal = document.getElementById('downloadModal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeDownloadModal() {
+    const modal = document.getElementById('downloadModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function downloadApp() {
+    // URL do arquivo APK (coloque o caminho correto)
+    const apkUrl = 'marujodigitalandroid.apk';
+    
+    // Criar link temporário para download
+    const link = document.createElement('a');
+    link.href = apkUrl;
+    link.download = 'MarujoDigital.apk';
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    
+    // Iniciar download
+    link.click();
+    
+    // Limpar
+    document.body.removeChild(link);
+    
+    // Mostrar mensagem
+    showInstallMessage();
+    
+    // Fechar modal
+    closeDownloadModal();
+    
+    // Analytics/rastreamento (opcional)
+    console.log('Download iniciado: Marujo Digital App');
+}
+
+function shareApp() {
+    if (navigator.share) {
+        // Usar Web Share API se disponível
+        navigator.share({
+            title: 'Marujo Digital App',
+            text: 'Baixe o app Marujo Digital - Guia Completo do Cerimonial Naval',
+            url: window.location.href
+        });
+    } else {
+        // Fallback para copiar link
+        navigator.clipboard.writeText(window.location.href)
+            .then(() => {
+                showNotification('Link copiado para a área de transferência!');
+            })
+            .catch(() => {
+                showNotification('Compartilhe este site: ' + window.location.href);
+            });
+    }
+}
+
+function showInstallMessage() {
+    const message = document.getElementById('installMessage');
+    if (message) {
+        message.classList.add('show');
+        
+        // Auto-esconder após 5 segundos
+        setTimeout(hideInstallMessage, 5000);
+    }
+}
+
+function hideInstallMessage() {
+    const message = document.getElementById('installMessage');
+    if (message) {
+        message.classList.remove('show');
+    }
+}
+
+// Fechar modal ao clicar fora
+document.addEventListener('click', (event) => {
+    const modal = document.getElementById('downloadModal');
+    if (modal && event.target === modal) {
+        closeDownloadModal();
+    }
+});
+
+// Fechar modal com ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeDownloadModal();
+    }
+});
+
+// Verificar se é dispositivo móvel e mostrar instruções especiais
+function checkDeviceForApp() {
+    const isAndroid = /Android/.test(navigator.userAgent);
+    const isMobile = /Mobi/.test(navigator.userAgent);
+    
+    if (isAndroid && isMobile) {
+        // Mostrar mensagem especial após 10 segundos
+        setTimeout(() => {
+            showNotification('📱 Baixe nosso app para uma experiência ainda melhor!');
+        }, 10000);
+    }
+}
+
+// Inicializar verificação de dispositivo
+document.addEventListener('DOMContentLoaded', checkDeviceForApp);
 // Função para carregar uma rádio
 function loadRadio(radioId) {
     const radio = radioStations[radioId];
@@ -3824,119 +4756,54 @@ function loadApitosSection() {
     
     content.innerHTML = `
         <div class="mobile-apitos-container">
-            <!-- Cabeçalho mobile -->
-            <div class="mobile-apito-header">
-                <div class="mobile-header-content">
-                    <div class="mobile-header-icon">
-                        <i class="fas fa-anchor"></i>
-                    </div>
-                    <div>
-                        <h3 class="mobile-header-title">O Apito Marinheiro</h3>
-                        <p class="mobile-header-subtitle">
-                            Toques tradicionais da Marinha do Brasil
-                        </p>
-                    </div>
-                </div>
-                <div class="mobile-stats">
-                    <div class="mobile-stat">
-                        <span class="mobile-stat-number">${apitosData.continencia.length + apitosData.rotina.length}</span>
-                        <span class="mobile-stat-label">Toques</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Barra de busca mobile -->
-            <div class="mobile-search-container">
-                <div class="mobile-search-box">
-                    <i class="fas fa-search"></i>
+            <!-- Barra de busca fixa no topo -->
+            <div class="apito-search-container">
+                <div class="apito-search-box">
+                    <i class="fas fa-search" style="color: var(--text-muted);"></i>
                     <input type="text" 
-                           id="mobileApitoSearch" 
+                           id="apitoSearchInput" 
                            placeholder="Buscar apito..."
-                           oninput="searchApitos()"
-                           onfocus="this.placeholder=''"
-                           onblur="this.placeholder='Buscar apito...'">
-                    <button class="mobile-search-clear" onclick="clearSearch()" style="display: none;">
-                        <i class="fas fa-times"></i>
-                    </button>
+                           oninput="searchApitosMobile()">
                 </div>
             </div>
             
-            <!-- Filtros mobile -->
-            <div class="mobile-filters">
-                <div class="mobile-filter-tabs">
-                    <button class="mobile-filter-tab active" onclick="filterApitos('all')">
-                        <i class="fas fa-th"></i>
-                        <span>Todos</span>
-                    </button>
-                    <button class="mobile-filter-tab" onclick="filterApitos('continencia')">
-                        <i class="fas fa-flag"></i>
-                        <span>Cerimonial</span>
-                    </button>
-                    <button class="mobile-filter-tab" onclick="filterApitos('rotina')">
-                        <i class="fas fa-ship"></i>
-                        <span>Rotina</span>
-                    </button>
-                </div>
+            <!-- Filtros horizontais -->
+            <div class="apito-filters">
+                <button class="apito-filter-btn active" onclick="filterApitosMobile('all')">Todos</button>
+                <button class="apito-filter-btn" onclick="filterApitosMobile('continencia')">Continência</button>
+                <button class="apito-filter-btn" onclick="filterApitosMobile('rotina')">Rotina</button>
             </div>
             
             <!-- Contador de resultados -->
-            <div class="mobile-results-info">
-                <span id="mobileResultsCount" class="mobile-results-text">
-                    Carregando apitos...
-                </span>
-                <div class="mobile-sort">
-                    <select id="mobileSortSelect" class="mobile-sort-select" onchange="sortApitos()">
-                        <option value="name-asc">Ordenar: A-Z</option>
-                        <option value="name-desc">Ordenar: Z-A</option>
-                        <option value="category">Ordenar: Categoria</option>
-                    </select>
-                </div>
+            <div class="apito-results-count" id="apitoResultsCount">
+                Carregando apitos...
             </div>
             
-            <!-- Lista de apitos mobile -->
-            <div id="mobileApitosList" class="mobile-apitos-list">
-                ${createMobileApitosCards('all')}
+            <!-- Grid de apitos -->
+            <div id="apitoGrid" class="apitos-grid">
+                <!-- Apitos serão carregados aqui -->
             </div>
             
-            <!-- Nenhum resultado -->
-            <div id="mobileNoResults" class="mobile-no-results" style="display: none;">
-                <div class="mobile-no-results-icon">
-                    <i class="fas fa-search"></i>
-                </div>
-                <h4 class="mobile-no-results-title">Nenhum apito encontrado</h4>
-                <p class="mobile-no-results-text">Tente usar outros termos de busca</p>
-                <button onclick="clearSearch()" class="mobile-clear-search-btn">
-                    Limpar busca
-                </button>
+            <!-- Mensagem de nenhum resultado -->
+            <div id="apitoNoResults" class="apito-no-results" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h4>Nenhum apito encontrado</h4>
+                <p>Tente usar outros termos de busca</p>
             </div>
             
-            <!-- Player mobile fixo no rodapé -->
-            <div id="mobilePlayer" class="mobile-player" style="display: none;">
-                <div class="mobile-player-content">
-                    <div class="mobile-player-info">
-                        <div class="mobile-player-track">
-                            <span class="mobile-player-name" id="mobileCurrentTrackName"></span>
-                            <span class="mobile-player-status" id="mobilePlayerStatus">Pausado</span>
-                        </div>
-                        <div class="mobile-player-time" id="mobilePlayerTime">00:00</div>
+            <!-- Player fixo na parte inferior -->
+            <div id="apitoFixedPlayer" class="apito-player-fixed">
+                <div class="apito-player-content">
+                    <div class="apito-player-info">
+                        <div class="apito-player-track" id="fixedPlayerTrack">Nome do apito</div>
+                        <div class="apito-player-status" id="fixedPlayerStatus">Parado</div>
                     </div>
-                    <div class="mobile-player-controls">
-                        <button class="mobile-player-btn" onclick="playPauseCurrent()">
-                            <i class="fas fa-play" id="mobilePlayPauseIcon"></i>
+                    <div class="apito-player-controls">
+                        <button class="apito-player-btn" onclick="toggleFixedPlayer()">
+                            <i class="fas fa-play" id="fixedPlayerIcon"></i>
                         </button>
-                        <div class="mobile-player-volume">
-                            <i class="fas fa-volume-down"></i>
-                            <input type="range" 
-                                   min="0" 
-                                   max="1" 
-                                   step="0.1" 
-                                   value="0.7" 
-                                   id="mobilePlayerVolume"
-                                   oninput="changePlayerVolume(this.value)">
-                            <i class="fas fa-volume-up"></i>
-                        </div>
-                        <button class="mobile-player-close" onclick="hideMobilePlayer()">
-                            <i class="fas fa-times"></i>
+                        <button class="apito-player-btn" onclick="stopFixedPlayer()" style="background: #e53e3e;">
+                            <i class="fas fa-stop"></i>
                         </button>
                     </div>
                 </div>
@@ -3944,15 +4811,261 @@ function loadApitosSection() {
         </div>
     `;
     
-    // Adicionar estilos mobile
-    addMobileApitosStyles();
+    // Carregar apitos
+    loadApitosGrid();
     
-    // Inicializar
-    setTimeout(() => {
-        setupMobileAudioEvents();
-        updateMobileResultsCount('all');
-        setupSearchEvents();
-    }, 100);
+    // Atualizar contador
+    updateApitosCount();
+}
+
+function loadApitosGrid(category = 'all', searchTerm = '') {
+    const grid = document.getElementById('apitoGrid');
+    const noResults = document.getElementById('apitoNoResults');
+    
+    if (!grid) return;
+    
+    let apitos = [];
+    
+    // Filtrar por categoria
+    if (category === 'all') {
+        apitos = [...apitosData.continencia, ...apitosData.rotina];
+    } else if (category === 'continencia') {
+        apitos = apitosData.continencia;
+    } else if (category === 'rotina') {
+        apitos = apitosData.rotina;
+    }
+    
+    // Aplicar busca
+    if (searchTerm) {
+        searchTerm = searchTerm.toLowerCase().trim();
+        apitos = apitos.filter(apito => 
+            apito.nome.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    // Limpar grid
+    grid.innerHTML = '';
+    
+    // Mostrar mensagem se não houver resultados
+    if (apitos.length === 0) {
+        grid.style.display = 'none';
+        noResults.style.display = 'block';
+        return;
+    }
+    
+    grid.style.display = 'grid';
+    noResults.style.display = 'none';
+    
+    // Adicionar apitos ao grid
+    apitos.forEach(apito => {
+        const isContinencia = apitosData.continencia.includes(apito);
+        const audioId = `audio-${apito.nome.replace(/[^a-zA-Z0-9]/g, '-')}`;
+        
+        grid.innerHTML += `
+            <div class="apito-card-mobile">
+                <div class="apito-card-header">
+                    <h4 class="apito-card-name">${apito.nome}</h4>
+                    <span class="apito-card-category" style="
+                        background: ${isContinencia ? 'rgba(0, 102, 204, 0.2)' : 'rgba(245, 158, 11, 0.2)'};
+                        color: ${isContinencia ? 'var(--primary)' : 'var(--accent)'};
+                    ">
+                        ${isContinencia ? 'Continência' : 'Rotina'}
+                    </span>
+                </div>
+                
+                <audio id="${audioId}" preload="none" style="display: none;">
+                    <source src="${apito.audio}" type="audio/mpeg">
+                </audio>
+                
+                <div class="apito-controls-mobile">
+                    <button class="apito-play-btn-mobile" 
+                            onclick="playApitoMobile('${apito.nome}', '${audioId}')"
+                            id="btn-${audioId}">
+                        <i class="fas fa-play" id="icon-${audioId}"></i>
+                        <span id="text-${audioId}">Ouvir</span>
+                    </button>
+                </div>
+                
+                <div class="apito-volume-mobile">
+                    <i class="fas fa-volume-down" style="color: var(--text-muted); font-size: 0.8rem;"></i>
+                    <input type="range" min="0" max="1" step="0.1" value="0.7" 
+                           oninput="changeApitoVolume('${audioId}', this.value)">
+                    <i class="fas fa-volume-up" style="color: var(--text-muted); font-size: 0.8rem;"></i>
+                </div>
+                
+                ${apito.download ? `
+                <a href="${apito.download}" class="apito-download-btn" target="_blank">
+                    <i class="fas fa-download"></i> Baixar
+                </a>
+                ` : ''}
+            </div>
+        `;
+    });
+}
+
+// Variáveis globais para controle de áudio
+let currentAudio = null;
+let currentAudioName = null;
+let currentAudioId = null;
+
+function playApitoMobile(nome, audioId) {
+    const audioElement = document.getElementById(audioId);
+    const button = document.getElementById(`btn-${audioId}`);
+    const icon = document.getElementById(`icon-${audioId}`);
+    const text = document.getElementById(`text-${audioId}`);
+    const player = document.getElementById('apitoFixedPlayer');
+    const trackName = document.getElementById('fixedPlayerTrack');
+    const status = document.getElementById('fixedPlayerStatus');
+    const playerIcon = document.getElementById('fixedPlayerIcon');
+    
+    if (!audioElement) return;
+    
+    // Se já estiver tocando, pausar
+    if (currentAudio === audioElement && !audioElement.paused) {
+        audioElement.pause();
+        button.classList.remove('playing');
+        icon.className = 'fas fa-play';
+        text.textContent = 'Ouvir';
+        status.textContent = 'Pausado';
+        playerIcon.className = 'fas fa-play';
+        return;
+    }
+    
+    // Parar áudio atual se houver outro tocando
+    if (currentAudio && currentAudio !== audioElement) {
+        const oldButton = document.getElementById(`btn-${currentAudioId}`);
+        const oldIcon = document.getElementById(`icon-${currentAudioId}`);
+        const oldText = document.getElementById(`text-${currentAudioId}`);
+        
+        if (oldButton) oldButton.classList.remove('playing');
+        if (oldIcon) oldIcon.className = 'fas fa-play';
+        if (oldText) oldText.textContent = 'Ouvir';
+        
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+    
+    // Tocar novo áudio
+    audioElement.play()
+        .then(() => {
+            currentAudio = audioElement;
+            currentAudioName = nome;
+            currentAudioId = audioId;
+            
+            button.classList.add('playing');
+            icon.className = 'fas fa-pause';
+            text.textContent = 'Pausar';
+            
+            // Atualizar player fixo
+            player.classList.add('show');
+            trackName.textContent = nome;
+            status.textContent = 'Tocando...';
+            playerIcon.className = 'fas fa-pause';
+        })
+        .catch(error => {
+            console.error('Erro ao reproduzir:', error);
+            showNotification('Erro ao reproduzir áudio', 'error');
+        });
+}
+
+function toggleFixedPlayer() {
+    if (currentAudio) {
+        if (currentAudio.paused) {
+            currentAudio.play();
+            document.getElementById('fixedPlayerStatus').textContent = 'Tocando...';
+            document.getElementById('fixedPlayerIcon').className = 'fas fa-pause';
+            document.getElementById(`icon-${currentAudioId}`).className = 'fas fa-pause';
+            document.getElementById(`text-${currentAudioId}`).textContent = 'Pausar';
+        } else {
+            currentAudio.pause();
+            document.getElementById('fixedPlayerStatus').textContent = 'Pausado';
+            document.getElementById('fixedPlayerIcon').className = 'fas fa-play';
+            document.getElementById(`icon-${currentAudioId}`).className = 'fas fa-play';
+            document.getElementById(`text-${currentAudioId}`).textContent = 'Ouvir';
+        }
+    }
+}
+
+function stopFixedPlayer() {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        
+        const button = document.getElementById(`btn-${currentAudioId}`);
+        const icon = document.getElementById(`icon-${currentAudioId}`);
+        const text = document.getElementById(`text-${currentAudioId}`);
+        
+        if (button) button.classList.remove('playing');
+        if (icon) icon.className = 'fas fa-play';
+        if (text) text.textContent = 'Ouvir';
+        
+        document.getElementById('apitoFixedPlayer').classList.remove('show');
+        
+        currentAudio = null;
+        currentAudioName = null;
+        currentAudioId = null;
+    }
+}
+
+function changeApitoVolume(audioId, volume) {
+    const audio = document.getElementById(audioId);
+    if (audio) {
+        audio.volume = volume;
+    }
+}
+
+function searchApitosMobile() {
+    const input = document.getElementById('apitoSearchInput');
+    const searchTerm = input ? input.value : '';
+    const activeFilter = document.querySelector('.apito-filter-btn.active');
+    const category = activeFilter ? 
+        (activeFilter.textContent === 'Todos' ? 'all' : 
+         activeFilter.textContent === 'Continência' ? 'continencia' : 'rotina') : 'all';
+    
+    loadApitosGrid(category, searchTerm);
+    updateApitosCount(category, searchTerm);
+}
+
+function filterApitosMobile(category) {
+    // Atualizar botões ativos
+    document.querySelectorAll('.apito-filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
+    
+    const input = document.getElementById('apitoSearchInput');
+    const searchTerm = input ? input.value : '';
+    
+    loadApitosGrid(category, searchTerm);
+    updateApitosCount(category, searchTerm);
+}
+
+function updateApitosCount(category = 'all', searchTerm = '') {
+    const countElement = document.getElementById('apitoResultsCount');
+    if (!countElement) return;
+    
+    let apitos = [];
+    
+    if (category === 'all') {
+        apitos = [...apitosData.continencia, ...apitosData.rotina];
+    } else if (category === 'continencia') {
+        apitos = apitosData.continencia;
+    } else if (category === 'rotina') {
+        apitos = apitosData.rotina;
+    }
+    
+    if (searchTerm) {
+        searchTerm = searchTerm.toLowerCase().trim();
+        apitos = apitos.filter(apito => 
+            apito.nome.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    const total = apitosData.continencia.length + apitosData.rotina.length;
+    countElement.textContent = `${apitos.length} de ${total} apitos encontrados`;
 }
 
 // Estilos otimizados para mobile
@@ -5962,6 +7075,55 @@ function showNotification(message) {
     }, 3000);
 }
 
+function setupAudioEvents() {
+    // Eventos para quando um áudio terminar
+    document.addEventListener('play', function(e) {
+        if (e.target.tagName === 'AUDIO' && e.target.id.includes('audio-')) {
+            const audioId = e.target.id;
+            const button = document.getElementById(`btn-${audioId}`);
+            const icon = document.getElementById(`icon-${audioId}`);
+            const text = document.getElementById(`text-${audioId}`);
+            
+            if (button) button.classList.add('playing');
+            if (icon) icon.className = 'fas fa-pause';
+            if (text) text.textContent = 'Pausar';
+        }
+    }, true);
+    
+    document.addEventListener('pause', function(e) {
+        if (e.target.tagName === 'AUDIO' && e.target.id.includes('audio-')) {
+            const audioId = e.target.id;
+            const button = document.getElementById(`btn-${audioId}`);
+            const icon = document.getElementById(`icon-${audioId}`);
+            const text = document.getElementById(`text-${audioId}`);
+            
+            if (button) button.classList.remove('playing');
+            if (icon) icon.className = 'fas fa-play';
+            if (text) text.textContent = 'Ouvir';
+        }
+    }, true);
+    
+    // Evento para quando o áudio terminar
+    document.addEventListener('ended', function(e) {
+        if (e.target.tagName === 'AUDIO' && e.target.id.includes('audio-')) {
+            const audioId = e.target.id;
+            const button = document.getElementById(`btn-${audioId}`);
+            const icon = document.getElementById(`icon-${audioId}`);
+            const text = document.getElementById(`text-${audioId}`);
+            const player = document.getElementById('apitoFixedPlayer');
+            
+            if (button) button.classList.remove('playing');
+            if (icon) icon.className = 'fas fa-play';
+            if (text) text.textContent = 'Ouvir';
+            if (player) player.classList.remove('show');
+            
+            currentAudio = null;
+            currentAudioName = null;
+            currentAudioId = null;
+        }
+    }, true);
+}
+
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     // Carregar tabela de salvas
@@ -5995,7 +7157,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     
     // Carregar conteúdo inicial
     loadAllFlags();
-    
+    setupAudioEvents();
     // Animar entrada
     setTimeout(() => {
         const cards = document.querySelectorAll('.flag-card, .info-item');
@@ -6010,6 +7172,8 @@ if (honrasTable && cerimonialData.honrasPortalo) {
         showNotification('Bem-vindo ao Marujo Digital, aqui você verá os bizu sobre: •Cerimonial da Marinha');
     }, 1500);
 });
+// Adicionar eventos de áudio para atualizar o player fixo
+
     </script>
     
 </body>
