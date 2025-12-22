@@ -204,6 +204,7 @@
     }
     
     /* BOTÃO DE DOWNLOAD CRIATIVO */
+/* BOTÃO DE DOWNLOAD CÍRCULO PEQUENO */
 .download-promo-container {
     position: fixed;
     bottom: 30px;
@@ -214,25 +215,147 @@
 .download-promo-btn {
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
     background: linear-gradient(135deg, #0066cc, #004a99);
     border: 3px solid #ffcc00;
-    border-radius: 50px;
-    padding: 12px 20px 12px 15px;
+    border-radius: 50%;
     color: white;
-    font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 10px 30px rgba(0, 102, 204, 0.4),
+    box-shadow: 0 8px 25px rgba(0, 102, 204, 0.5),
                 0 0 0 3px rgba(255, 204, 0, 0.2);
     transition: all 0.3s ease;
     animation: pulse-download 2s infinite;
-    min-width: 180px;
+    position: relative;
+    overflow: hidden;
 }
 
 .download-promo-btn:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 15px 40px rgba(0, 102, 204, 0.6),
+    transform: scale(1.15);
+    box-shadow: 0 12px 35px rgba(0, 102, 204, 0.7),
                 0 0 0 4px rgba(255, 204, 0, 0.3);
     animation: none;
+}
+
+/* Efeito de brilho interno */
+.download-promo-btn::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle, rgba(255, 204, 0, 0.2) 0%, transparent 70%);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.download-promo-btn:hover::before {
+    opacity: 1;
+}
+
+.download-promo-icon {
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.download-promo-btn:hover .download-promo-icon {
+    transform: translateY(-3px);
+}
+
+/* Esconder o texto e badge - apenas ícone visível */
+.download-promo-text,
+.download-promo-badge {
+    display: none;
+}
+
+/* Efeito de tooltip flutuante */
+.download-promo-btn::after {
+    content: 'Baixar App';
+    position: absolute;
+    bottom: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 10000;
+    border: 1px solid #ffcc00;
+}
+
+.download-promo-btn:hover::after {
+    opacity: 1;
+}
+
+@keyframes pulse-download {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 8px 25px rgba(0, 102, 204, 0.5),
+                    0 0 0 3px rgba(255, 204, 0, 0.2);
+    }
+    50% { 
+        transform: scale(1.1);
+        box-shadow: 0 10px 30px rgba(0, 102, 204, 0.6),
+                    0 0 0 4px rgba(255, 204, 0, 0.25);
+    }
+}
+
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+    .download-promo-container {
+        bottom: 20px;
+        left: 20px;
+    }
+    
+    .download-promo-btn {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .download-promo-icon {
+        font-size: 1.6rem;
+    }
+    
+    .download-promo-btn::after {
+        bottom: -40px;
+        font-size: 0.75rem;
+        padding: 6px 10px;
+    }
+}
+
+/* Para telas muito pequenas */
+@media (max-width: 480px) {
+    .download-promo-container {
+        bottom: 15px;
+        left: 15px;
+    }
+    
+    .download-promo-btn {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .download-promo-icon {
+        font-size: 1.5rem;
+    }
+    
+    .download-promo-btn::after {
+        bottom: -38px;
+        font-size: 0.7rem;
+        padding: 5px 8px;
+    }
 }
 
 .download-promo-icon {
@@ -7055,272 +7178,162 @@ function openSignalModal(code, event) {
     // Fechar modal anterior se existir
     closeAllModals();
     
-    // Buscar o sinal em TODOS os arrays possíveis
-    let signal = null;
-    let source = '';
+    // Encontrar o sinal em TODOS os arrays
+    const allSignals = [
+        ...cerimonialData.sinaisCIS,
+        ...cerimonialData.sinaisATP,
+        ...cerimonialData.numeraisATP,
+        ...cerimonialData.galhardetes,
+        ...cerimonialData.cornetasSubstitutas, // ADICIONAR SUBSTITUTAS
+        ...cerimonialData.sinaisIncendio,      // ADICIONAR INCÊNDIO
+        ...cerimonialData.indicativosUnidade   // ADICIONAR INDICATIVOS
+    ];
     
-    // 1. Buscar em sinaisCIS
-    signal = cerimonialData.sinaisCIS.find(s => s.codigo === code);
-    if (signal) source = 'CIS';
-    
-    // 2. Buscar em sinaisATP
-    if (!signal) {
-        signal = cerimonialData.sinaisATP.find(s => s.codigo === code);
-        if (signal) source = 'ATP';
-    }
-    
-    // 3. Buscar em numeraisATP
-    if (!signal) {
-        signal = cerimonialData.numeraisATP.find(s => s.codigo === code);
-        if (signal) source = 'Numeral';
-    }
-    
-    // 4. Buscar em galhardetes
-    if (!signal) {
-        signal = cerimonialData.galhardetes.find(s => s.codigo === code);
-        if (signal) source = 'Galhardete';
-    }
-    
-    // 5. Buscar em cornetas substitutas
-    if (!signal) {
-        signal = cerimonialData.cornetasSubstitutas.find(s => s.codigo === code);
-        if (signal) source = 'Substituta';
-    }
-    
-    // 6. Buscar em sinais de incêndio
-    if (!signal) {
-        signal = cerimonialData.sinaisIncendio.find(s => s.codigo === code);
-        if (signal) source = 'Emergência';
-    }
-    
-    // 7. Buscar em indicativos de unidade
-    if (!signal) {
-        signal = cerimonialData.indicativosUnidade.find(s => s.codigo === code);
-        if (signal) source = 'Formação';
-    }
-    
-    // 8. Buscar em bandeiras (usando o ID)
-    if (!signal) {
-        // Tentar encontrar como bandeira pelo ID
-        if (code === 'national') {
-            signal = cerimonialData.bandeiraNacional;
-            source = 'Bandeira';
-        } else {
-            // Buscar em outros arrays de bandeiras
-            signal = cerimonialData.bandeirasDistintivas.find(f => f.id === code) ||
-                    cerimonialData.bandeirasInsignias.find(f => f.id === code) ||
-                    cerimonialData.sinaisBarroso.find(f => f.id === code);
-            if (signal) source = 'Bandeira';
-        }
-    }
-    
-    // 9. Buscar em apitos (se estiverem em um array separado)
-    if (!signal && typeof apitosData !== 'undefined') {
-        // Verificar em continência
-        signal = apitosData.continencia.find(a => a.nome === code);
-        if (signal) {
-            signal = {
-                codigo: code,
-                significado: `Toque de apito para ${code}`,
-                tipo: 'apito',
-                categoria: 'continencia',
-                audio: signal.audio,
-                download: signal.download
-            };
-            source = 'Apito';
-        }
-        
-        // Verificar em rotina
-        if (!signal) {
-            signal = apitosData.rotina.find(a => a.nome === code);
-            if (signal) {
-                signal = {
-                    codigo: code,
-                    significado: `Toque de apito para ${code}`,
-                    tipo: 'apito',
-                    categoria: 'rotina',
-                    audio: signal.audio,
-                    download: signal.download
-                };
-                source = 'Apito';
-            }
-        }
-    }
-    
+    const signal = allSignals.find(s => s.codigo === code);
     if (!signal) {
         showNotification('Sinal não encontrado: ' + code);
         return;
     }
     
-    // Cores por tipo (incluindo apito)
+    // Cores por tipo
     const tipoCores = {
         'cis': '#38a169',
         'atp': '#d69e2e',
         'galhardete': '#9f7aea',
         'numeral': '#4299e1',
-        'substituta': '#f59e0b',
-        'apito': '#e53e3e',  // Cor para apitos
-        'bandeira': '#4299e1'
+        'substituta': '#f59e0b'  // NOVA COR PARA SUBSTITUTAS
     };
     
-    const tipo = signal.tipo || (source === 'Apito' ? 'apito' : source.toLowerCase());
-    const cor = tipoCores[tipo] || '#718096';
+    const cor = tipoCores[signal.tipo] || '#718096';
     
-    // HTML do modal
-    let modalHTML = '';
-    
-    // Modal para APITOS
-    if (tipo === 'apito') {
-        modalHTML = `
-            <div class="modal-overlay active" id="signalModal" onclick="closeCurrentModal()">
-                <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 600px;">
-                    <button class="modal-close" onclick="closeCurrentModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    
-                    <div class="card-header">
-                        <div class="card-icon" style="background: ${cor};">
-                            <i class="fas fa-bullhorn"></i>
-                        </div>
-                        <div>
-                            <h2 class="card-title">${signal.codigo}</h2>
-                            <div class="card-subtitle">Toque de Apito Marinheiro</div>
-                        </div>
+    // HTML do modal com todas as informações
+    const modalHTML = `
+        <div class="modal-overlay active" id="signalModal" onclick="closeCurrentModal()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeCurrentModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <div class="card-header">
+                    <div class="card-icon" style="background: ${cor};">
+                        <i class="fas fa-signal"></i>
                     </div>
-                    
-                    <div style="margin: 25px 0;">
-                        <h3 style="color: white; margin-bottom: 15px;">Descrição:</h3>
-                        <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px;">
-                            <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
-                                ${signal.significado}
-                            </p>
-                        </div>
+                    <div>
+                        <h2 class="card-title">${signal.codigo}</h2>
+                        <div class="card-subtitle">${signal.tipo ? signal.tipo.toUpperCase() : 'GERAL'} - ${getCategoryLabel(signal.categoria)}</div>
                     </div>
-                    
-                    <!-- Player de áudio -->
-                    ${signal.audio ? `
-                    <div style="margin: 25px 0;">
-                        <h3 style="color: white; margin-bottom: 15px;">Ouvir toque:</h3>
-                        <div style="background: rgba(229, 62, 62, 0.1); padding: 20px; border-radius: 10px;">
-                            <audio id="modal-audio" controls style="width: 100%;">
-                                <source src="${signal.audio}" type="audio/mpeg">
-                                Seu navegador não suporta o elemento de áudio.
-                            </audio>
-                            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                                <a href="${signal.audio}" target="_blank" style="flex: 1;">
-                                    <button style="width: 100%; padding: 10px; background: #4299e1; color: white; border: none; border-radius: 6px;">
-                                        <i class="fas fa-external-link-alt"></i> Abrir em nova aba
-                                    </button>
-                                </a>
-                                ${signal.download ? `
-                                <a href="${signal.download}" target="_blank" style="flex: 1;">
-                                    <button style="width: 100%; padding: 10px; background: #38a169; color: white; border: none; border-radius: 6px;">
-                                        <i class="fas fa-download"></i> Download
-                                    </button>
-                                </a>
-                                ` : ''}
-                            </div>
-                        </div>
-                    </div>
-                    ` : ''}
-                    
-                    <!-- Informações -->
-                    <div class="info-grid" style="margin: 25px 0;">
-                        <div class="info-item">
-                            <div class="info-label">Tipo</div>
-                            <div class="info-value">Toque de Apito</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Categoria</div>
-                            <div class="info-value">${signal.categoria === 'continencia' ? 'Continência' : 'Rotina'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Origem</div>
-                            <div class="info-value">Marinha do Brasil</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Instruções -->
-                    <div style="background: rgba(245, 158, 11, 0.1); padding: 20px; border-radius: 8px; margin-top: 20px;">
-                        <h4 style="color: #f59e0b; margin-bottom: 10px;"><i class="fas fa-info-circle"></i> Sobre os apitos:</h4>
-                        <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">
-                            Os toques de apito são utilizados na Marinha do Brasil para ordenar os principais 
-                            eventos da rotina de bordo, transmitindo comandos e sinais de forma audível em todo o navio.
+                </div>
+                
+                <div style="margin: 25px 0;">
+                    <h3 style="color: white; margin-bottom: 15px;">Significado:</h3>
+                    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px;">
+                        <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                            ${signal.significado}
                         </p>
                     </div>
                 </div>
-            </div>
-        `;
-    }
-    // Modal para BANDEIRAS
-    else if (tipo === 'bandeira') {
-        modalHTML = `
-            <div class="modal-overlay active" id="signalModal" onclick="closeCurrentModal()">
-                <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 800px;">
-                    <button class="modal-close" onclick="closeCurrentModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    
-                    <div class="card-header">
-                        <div class="card-icon" style="background: ${cor};">
-                            <i class="fas fa-flag"></i>
-                        </div>
-                        <div>
-                            <h2 class="card-title">${signal.title || signal.codigo}</h2>
-                            <div class="card-subtitle">${signal.subtitle || 'Bandeira'}</div>
-                        </div>
+                
+                <!-- Informações específicas para substitutas -->
+                ${signal.tipo === 'substituta' ? `
+                <div style="margin: 20px 0;">
+                    <h3 style="color: white; margin-bottom: 10px;">Informações Específicas:</h3>
+                    <div style="background: rgba(245, 158, 11, 0.1); padding: 20px; border-radius: 8px; border-left: 3px solid #f59e0b;">
+                        <p style="color: var(--text-secondary); margin: 0;">
+                            <strong>Posicionamento:</strong> ${signal.posicao || 'Não especificado'}<br>
+                            <strong>Período de uso:</strong> Das 8h ao pôr do sol<br>
+                            <strong>Tempo máximo:</strong> Até 72 horas de ausência<br>
+                            <strong>Detalhes:</strong> ${signal.detalhes || 'Não disponível'}
+                        </p>
                     </div>
-                    
-                    ${signal.imagePath ? `
-                    <div style="margin: 25px 0; text-align: center;">
-                        <div style="background: rgba(255,255,255,0.05); padding: 30px; border-radius: 12px; display: inline-block;">
-                            <img src="${signal.imagePath}" alt="${signal.title}" 
-                                 style="max-width: 100%; max-height: 250px; border-radius: 8px;">
-                        </div>
+                </div>` : ''}
+                
+                <!-- Informações específicas para incêndio -->
+                ${signal.categoria === 'emergencia' && signal.descricao ? `
+                <div style="margin: 20px 0;">
+                    <h3 style="color: white; margin-bottom: 10px;">Procedimento de Emergência:</h3>
+                    <div style="background: rgba(229, 62, 62, 0.1); padding: 20px; border-radius: 8px; border-left: 3px solid #e53e3e;">
+                        <p style="color: var(--text-secondary); margin: 0;">
+                            <strong>Tipo de incêndio:</strong> ${signal.descricao}<br>
+                            <strong>Procedimento recomendado:</strong> ${signal.procedimento || 'Siga os protocolos de emergência'}
+                        </p>
                     </div>
-                    ` : ''}
-                    
-                    <div style="margin: 25px 0;">
-                        <h3 style="color: white; margin-bottom: 15px;">Descrição:</h3>
-                        <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px;">
-                            ${signal.description || signal.significado || 'Descrição não disponível.'}
-                        </div>
+                </div>` : ''}
+                
+                <div class="info-grid" style="margin: 25px 0;">
+                    <div class="info-item">
+                        <div class="info-label">Código</div>
+                        <div class="info-value">${signal.codigo}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Tipo</div>
+                        <div class="info-value">${signal.tipo ? signal.tipo.toUpperCase() : 'GERAL'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Categoria</div>
+                        <div class="info-value">${getCategoryLabel(signal.categoria)}</div>
                     </div>
                 </div>
-            </div>
-        `;
-    }
-    // Modal para OUTROS SINAIS
-    else {
-        // (Mantenha o modal existente para outros sinais)
-        modalHTML = `
-            <div class="modal-overlay active" id="signalModal" onclick="closeCurrentModal()">
-                <div class="modal-content" onclick="event.stopPropagation()">
-                    <button class="modal-close" onclick="closeCurrentModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    
-                    <div class="card-header">
-                        <div class="card-icon" style="background: ${cor};">
-                            <i class="fas fa-signal"></i>
-                        </div>
-                        <div>
-                            <h2 class="card-title">${signal.codigo}</h2>
-                            <div class="card-subtitle">${source} - ${getCategoryLabel(signal.categoria)}</div>
-                        </div>
+                
+                <!-- Imagem do sinal -->
+                ${signal.imagem ? `
+                <div style="margin: 25px 0;">
+                    <h3 style="color: white; margin-bottom: 15px;">Representação Visual:</h3>
+                    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; text-align: center;">
+                        <img src="${signal.imagem}" alt="${signal.codigo}" 
+                             style="max-width: 100%; max-height: 200px; border-radius: 8px;"
+                             onerror="this.src='https://via.placeholder.com/300x200/2d3748/ffffff?text=${signal.codigo}'">
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">
+                            Bandeira/sinal representando "${signal.codigo}"
+                        </p>
                     </div>
-                    
-                    <!-- Resto do modal para sinais... -->
-                </div>
+                </div>` : ''}
+                
+                <!-- Seção de emergência -->
+                ${signal.categoria === 'emergencia' ? `
+                <div style="
+                    background: rgba(229, 62, 62, 0.2);
+                    border-left: 4px solid #e53e3e;
+                    padding: 20px;
+                    border-radius: 8px;
+                    margin-top: 20px;
+                ">
+                    <div style="color: white; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-exclamation-triangle"></i> PROCEDIMENTO DE EMERGÊNCIA
+                    </div>
+                    <div style="color: var(--text-secondary); font-size: 0.95rem;">
+                        <strong>⚠️ Ação imediata:</strong> Este sinal deve ser içado imediatamente quando a situação ocorrer.<br>
+                        <strong>🚨 Resposta dos outros navios:</strong> Todos devem prestar assistência e manter distância segura.<br>
+                        <strong>📡 Comunicação:</strong> Informar imediatamente ao comando mais próximo.
+                    </div>
+                </div>` : ''}
+                
+                <!-- Seção de ausência -->
+                ${signal.categoria === 'ausencia' ? `
+                <div style="
+                    background: rgba(245, 158, 11, 0.2);
+                    border-left: 4px solid #f59e0b;
+                    padding: 20px;
+                    border-radius: 8px;
+                    margin-top: 20px;
+                ">
+                    <div style="color: white; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-user-slash"></i> PROCEDIMENTO DE AUSÊNCIA
+                    </div>
+                    <div style="color: var(--text-secondary); font-size: 0.95rem;">
+                        <strong>⏰ Período de uso:</strong> Das 8h ao pôr do sol<br>
+                        <strong>🕒 Duração máxima:</strong> Até 72 horas de ausência<br>
+                        <strong>📍 Posicionamento:</strong> Adriça específica conforme autoridade ausente<br>
+                        <strong>🔄 Substituição:</strong> Após 72 horas, a 3ª Substituta passa para o Imediato
+                    </div>
+                </div>` : ''}
             </div>
-        `;
-    }
+        </div>
+    `;
     
     // Adicionar ao body
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     activeModal = 'signalModal';
 }
-
 // Função para mostrar substitutas em uma seção separada
 // CORRIJA esta função - a linha do onclick está chamando openSignalModal sem o array completo
 function loadSubstitutasSection() {
@@ -7404,8 +7417,8 @@ function loadSubstitutasSection() {
                                 padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;">3ª</div>
                         </div>
                         <div style="color: var(--text-secondary); font-size: 0.9rem;">
-                            <strong>BE (Boreste)</strong> - 1ª e 4ª<br>
-                            <strong>BB (Bombordo)</strong> - 2ª e 3ª
+                            <strong>BE (Bombordo)</strong> - 1ª e 4ª<br>
+                            <strong>BB (Boreste)</strong> - 2ª e 3ª
                         </div>
                     </div>
                     
