@@ -203,6 +203,443 @@
             radial-gradient(circle at 80% 70%, rgba(255, 204, 0, 0.05) 0%, transparent 50%);
     }
     
+    /* BOTÃO DE DOWNLOAD CRIATIVO */
+.download-promo-container {
+    position: fixed;
+    bottom: 30px;
+    left: 20px;
+    z-index: 9999;
+}
+
+.download-promo-btn {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #0066cc, #004a99);
+    border: 3px solid #ffcc00;
+    border-radius: 50px;
+    padding: 12px 20px 12px 15px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 102, 204, 0.4),
+                0 0 0 3px rgba(255, 204, 0, 0.2);
+    transition: all 0.3s ease;
+    animation: pulse-download 2s infinite;
+    min-width: 180px;
+}
+
+.download-promo-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(0, 102, 204, 0.6),
+                0 0 0 4px rgba(255, 204, 0, 0.3);
+    animation: none;
+}
+
+.download-promo-icon {
+    width: 45px;
+    height: 45px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    color: #0066cc;
+    font-size: 1.4rem;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.download-promo-text {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.download-promo-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.download-promo-sub {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    margin-top: 2px;
+}
+
+.download-promo-badge {
+    width: 35px;
+    height: 35px;
+    background: #ffcc00;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #003366;
+    font-size: 0.9rem;
+    margin-left: 10px;
+    animation: bounce 1s infinite alternate;
+}
+
+@keyframes pulse-download {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes bounce {
+    from { transform: translateY(0px); }
+    to { transform: translateY(-5px); }
+}
+
+/* MODAL DE DOWNLOAD RESPONSIVO */
+.download-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.download-modal-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.download-modal {
+    background: linear-gradient(135deg, var(--bg-darker), #001a33);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    border: 2px solid #ffcc00;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+    animation: modal-slide-up 0.4s ease;
+}
+
+@keyframes modal-slide-up {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Cabeçalho do modal com botão grande de fechar */
+.download-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: rgba(0, 102, 204, 0.2);
+    border-bottom: 2px solid #ffcc00;
+}
+
+.download-modal-title {
+    color: white;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.download-modal-close {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #ffcc00;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.download-modal-close:hover {
+    background: #ff4757;
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* Corpo do modal */
+.download-modal-body {
+    padding: 25px;
+}
+
+.download-modal-hero {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.download-modal-icon-large {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #0066cc, #004a99);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    color: white;
+    font-size: 2.5rem;
+    border: 3px solid #ffcc00;
+}
+
+.download-modal-hero h4 {
+    color: white;
+    margin: 10px 0 5px;
+    font-size: 1.3rem;
+}
+
+.download-modal-hero p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* Features grid */
+.download-features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.feature-item i {
+    color: #ffcc00;
+    font-size: 1.2rem;
+}
+
+.feature-item span {
+    color: white;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+/* Informações */
+.download-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 25px 0;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Botões de ação */
+.download-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.download-btn-primary {
+    background: linear-gradient(135deg, #0066cc, #004a99);
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+}
+
+.download-btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 102, 204, 0.4);
+}
+
+.download-btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.download-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #ffcc00;
+}
+
+/* Aviso */
+.download-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px;
+    background: rgba(255, 204, 0, 0.1);
+    border-radius: 10px;
+    border-left: 4px solid #ffcc00;
+    margin-top: 20px;
+}
+
+.download-warning i {
+    color: #ffcc00;
+    font-size: 1.2rem;
+    margin-top: 2px;
+}
+
+.download-warning p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* RESPONSIVIDADE PARA MOBILE */
+@media (max-width: 768px) {
+    .download-promo-container {
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 350px;
+    }
+    
+    .download-promo-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 15px;
+    }
+    
+    .download-modal {
+        max-width: 95%;
+        border-radius: 15px;
+    }
+    
+    .download-modal-header {
+        padding: 15px;
+    }
+    
+    .download-modal-title {
+        font-size: 1.1rem;
+    }
+    
+    .download-modal-close {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+    
+    .download-modal-body {
+        padding: 20px;
+    }
+    
+    .download-features {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .feature-item {
+        padding: 12px 8px;
+    }
+    
+    .feature-item i {
+        font-size: 1rem;
+    }
+    
+    .feature-item span {
+        font-size: 0.8rem;
+    }
+    
+    .download-info {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding: 12px;
+    }
+    
+    .info-value {
+        font-size: 0.9rem;
+    }
+    
+    .download-btn-primary,
+    .download-btn-secondary {
+        padding: 16px;
+    }
+}
+
+/* Para telas muito pequenas */
+@media (max-width: 480px) {
+    .download-promo-container {
+        width: 95%;
+    }
+    
+    .download-promo-btn {
+        padding: 8px 12px;
+    }
+    
+    .download-promo-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+        margin-right: 10px;
+    }
+    
+    .download-modal {
+        border-radius: 12px;
+    }
+    
+    .download-modal-header {
+        padding: 12px;
+    }
+    
+    .download-modal-close {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+}
+    
     /* ESTILOS OTIMIZADOS PARA APITOS NO CELULAR */
 .mobile-apitos-container {
     padding: 0;
@@ -1240,290 +1677,39 @@ audio::-webkit-media-controls-mute-button {
 .flag-preview.barroso {
     background: linear-gradient(135deg, #8b0000, #b22222);
 }
-/* BOTÃO DE DOWNLOAD PREMIUM - MARUJO DIGITAL */
-.floating-download-premium {
+
+/* Botão de Download do App Android */
+.floating-download-btn {
     position: fixed;
-    bottom: 120px;
+    bottom: 100px;
     left: 20px;
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, 
-        rgba(0, 102, 204, 0.95), 
-        rgba(0, 51, 153, 0.95));
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #34d399, #10b981);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 
-        0 10px 30px rgba(0, 51, 153, 0.5),
-        0 0 0 4px rgba(255, 204, 0, 0.2),
-        0 0 0 8px rgba(0, 102, 204, 0.1),
-        inset 0 0 30px rgba(255, 255, 255, 0.1);
-    border: 2px solid var(--accent);
+        0 8px 25px rgba(16, 185, 129, 0.4),
+        0 0 0 3px rgba(52, 211, 153, 0.3);
+    border: 2px solid #d1fae5;
     cursor: pointer;
-    z-index: 9999;
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 999;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     overflow: hidden;
-    animation: floatPremium 4s ease-in-out infinite;
-    backdrop-filter: blur(10px);
+    animation: floatDownload 3s ease-in-out infinite;
 }
 
-.floating-download-premium:hover {
-    transform: scale(1.2) rotate(5deg);
+.floating-download-btn:hover {
+    transform: scale(1.15);
     box-shadow: 
-        0 15px 40px rgba(0, 51, 153, 0.7),
-        0 0 0 6px rgba(255, 204, 0, 0.3),
-        0 0 0 12px rgba(0, 102, 204, 0.15),
-        inset 0 0 40px rgba(255, 255, 255, 0.15);
+        0 12px 35px rgba(16, 185, 129, 0.6),
+        0 0 0 5px rgba(52, 211, 153, 0.4);
     animation-play-state: paused;
 }
 
-/* Ondas animadas */
-.floating-download-premium::before,
-.floating-download-premium::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    animation: pulseWaves 3s linear infinite;
-}
-
-.floating-download-premium::before {
-    width: 100%;
-    height: 100%;
-    border: 2px solid rgba(255, 204, 0, 0.3);
-    animation-delay: 0.5s;
-}
-
-.floating-download-premium::after {
-    width: 120%;
-    height: 120%;
-    border: 1px solid rgba(0, 102, 204, 0.2);
-}
-
-/* Ícone interno premium */
-.download-premium-icon {
-    position: relative;
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, #ffffff, #f0f9ff);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-    box-shadow: 
-        inset 0 4px 15px rgba(0, 0, 0, 0.15),
-        0 6px 20px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-    overflow: hidden;
-}
-
-.floating-download-premium:hover .download-premium-icon {
-    transform: scale(1.1) rotate(-10deg);
-    box-shadow: 
-        inset 0 6px 20px rgba(0, 0, 0, 0.2),
-        0 8px 25px rgba(0, 0, 0, 0.4);
-}
-
-.download-premium-icon i {
-    font-size: 1.8rem;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-    transition: all 0.3s ease;
-}
-
-.floating-download-premium:hover .download-premium-icon i {
-    transform: scale(1.2);
-    background: linear-gradient(135deg, #ffcc00, #ffaa00);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-/* Badge premium */
-.download-premium-badge {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: linear-gradient(135deg, #ff4757, #ff3838);
-    color: white;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    font-weight: 900;
-    border: 3px solid var(--bg-darker);
-    z-index: 3;
-    animation: pulsePremium 2s infinite;
-    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-/* Tooltip premium */
-.download-premium-tooltip {
-    position: absolute;
-    left: 95px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: linear-gradient(135deg, 
-        rgba(5, 18, 35, 0.98), 
-        rgba(10, 25, 41, 0.98));
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    color: white;
-    padding: 15px 20px;
-    border-radius: 12px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 1px solid rgba(255, 204, 0, 0.3);
-    box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(0, 102, 204, 0.2);
-    z-index: 10000;
-    transform-origin: left center;
-    scale: 0.9;
-    min-width: 220px;
-}
-
-.download-premium-tooltip::before {
-    content: '';
-    position: absolute;
-    left: -6px;
-    top: 50%;
-    transform: translateY(-50%);
-    border-width: 8px 8px 8px 0;
-    border-style: solid;
-    border-color: transparent rgba(5, 18, 35, 0.98) transparent transparent;
-    filter: drop-shadow(-2px 0 2px rgba(0, 0, 0, 0.2));
-}
-
-.download-premium-tooltip::after {
-    content: '';
-    position: absolute;
-    left: -5px;
-    top: 50%;
-    transform: translateY(-50%);
-    border-width: 6px 6px 6px 0;
-    border-style: solid;
-    border-color: transparent rgba(255, 204, 0, 0.3) transparent transparent;
-}
-
-.download-premium-tooltip strong {
-    color: var(--accent);
-    font-weight: 700;
-    display: block;
-    margin-bottom: 5px;
-    font-size: 1.1rem;
-}
-
-.download-premium-tooltip small {
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    display: block;
-    opacity: 0.8;
-}
-
-.floating-download-premium:hover .download-premium-tooltip {
-    opacity: 1;
-    left: 100px;
-    scale: 1;
-}
-
-/* MODAL DE DOWNLOAD PREMIUM */
-.download-premium-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.92);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.download-premium-overlay.active {
-    display: flex;
-    opacity: 1;
-    animation: fadeInPremium 0.4s ease;
-}
-
-.download-premium-modal {
-    background: linear-gradient(145deg, 
-        rgba(5, 18, 35, 0.98), 
-        rgba(10, 25, 41, 0.98));
-    border-radius: 25px;
-    width: 95%;
-    max-width: 500px;
-    position: relative;
-    border: 1px solid rgba(255, 204, 0, 0.2);
-    box-shadow: 
-        0 25px 70px rgba(0, 0, 0, 0.6),
-        0 0 0 1px rgba(0, 102, 204, 0.1),
-        inset 0 0 50px rgba(0, 102, 204, 0.05);
-    overflow: hidden;
-    transform: translateY(20px);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.download-premium-overlay.active .download-premium-modal {
-    transform: translateY(0);
-}
-
-.download-premium-modal::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, 
-        transparent, 
-        var(--accent) 20%, 
-        var(--primary) 50%, 
-        var(--accent) 80%, 
-        transparent);
-    animation: shimmer 3s infinite;
-}
-
-/* Cabeçalho do modal */
-.download-premium-header {
-    padding: 40px 40px 20px;
-    text-align: center;
-    position: relative;
-}
-
-.download-premium-logo {
-    width: 100px;
-    height: 100px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border-radius: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 25px;
-    box-shadow: 
-        0 15px 35px rgba(0, 102, 204, 0.4),
-        inset 0 0 30px rgba(255, 255, 255, 0.1);
-    border: 3px solid var(--accent);
-    position: relative;
-    overflow: hidden;
-}
-
-.download-premium-logo::before {
+.floating-download-btn::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -1531,151 +1717,250 @@ audio::-webkit-media-controls-mute-button {
     width: 200%;
     height: 200%;
     background: radial-gradient(circle, 
-        rgba(255, 204, 0, 0.2) 0%, 
+        rgba(255, 255, 255, 0.3) 0%, 
         transparent 70%);
     animation: rotate 20s linear infinite;
 }
 
-.download-premium-logo i {
-    color: white;
-    font-size: 3rem;
+.floating-download-btn::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: conic-gradient(
+        from 0deg,
+        transparent,
+        #d1fae5,
+        transparent,
+        #10b981,
+        transparent,
+        #34d399,
+        transparent
+    );
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.8;
+    animation: rotateBorder 4s linear infinite;
+}
+
+.floating-download-icon {
+    width: 55px;
+    height: 55px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
     z-index: 2;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    box-shadow: 
+        inset 0 3px 10px rgba(0, 0, 0, 0.1),
+        0 5px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
 }
 
-.download-premium-title {
+.floating-download-icon img {
+    width: 65%;
+    height: 65%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Badge de notificação */
+.download-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
     color: white;
-    font-size: 2rem;
-    font-weight: 800;
-    margin-bottom: 10px;
-    background: linear-gradient(135deg, #ffffff, #a8c7fa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border: 2px solid var(--bg-darker);
+    animation: pulseBadge 2s infinite;
+    z-index: 3;
 }
 
-.download-premium-subtitle {
+/* Tooltip */
+.floating-download-tooltip {
+    position: absolute;
+    left: 85px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(5, 18, 35, 0.95);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.floating-download-tooltip::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 6px 6px 6px 0;
+    border-style: solid;
+    border-color: transparent rgba(5, 18, 35, 0.95) transparent transparent;
+}
+
+.floating-download-tooltip strong {
+    color: #34d399;
+    font-weight: 600;
+}
+
+.floating-download-btn:hover .floating-download-tooltip {
+    opacity: 1;
+    left: 90px;
+}
+
+/* Modal de Download */
+.download-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.download-modal-overlay.active {
+    display: flex;
+    opacity: 1;
+    animation: fadeIn 0.3s;
+}
+
+.download-modal-content {
+    background: linear-gradient(145deg, #051223, #0a1929);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(52, 211, 153, 0.1);
+    overflow: hidden;
+}
+
+.download-modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        #34d399 20%, 
+        #10b981 50%, 
+        #34d399 80%, 
+        transparent);
+}
+
+.download-modal-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.download-modal-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #34d399, #10b981);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+}
+
+.download-modal-icon i {
+    color: white;
+    font-size: 2.5rem;
+}
+
+.download-modal-title {
+    color: white;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.download-modal-subtitle {
     color: var(--text-secondary);
-    font-size: 1.1rem;
-    margin-bottom: 10px;
+    font-size: 1rem;
+    margin-bottom: 20px;
 }
 
-/* Conteúdo do modal */
-.download-premium-content {
-    padding: 0 40px 40px;
-}
-
-.download-features-grid {
+.download-info-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
     margin-bottom: 30px;
 }
 
-.download-feature {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 12px;
+.download-info-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
     padding: 15px;
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.download-feature:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 204, 0, 0.2);
-    transform: translateY(-3px);
-}
-
-.download-feature-icon {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 10px;
-}
-
-.download-feature-icon i {
-    color: white;
-    font-size: 1.2rem;
-}
-
-.download-feature-name {
-    color: white;
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-.download-feature-desc {
-    color: var(--text-muted);
+.download-info-label {
+    color: var(--text-secondary);
     font-size: 0.8rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-/* Botões de ação premium */
-.download-premium-actions {
+.download-info-value {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.download-buttons {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.download-btn-premium {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+.download-btn-primary {
+    background: linear-gradient(135deg, #34d399, #10b981);
     color: white;
     border: none;
-    padding: 20px;
-    border-radius: 15px;
+    padding: 18px;
+    border-radius: 12px;
     font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 102, 204, 0.3);
-}
-
-.download-btn-premium::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.2), 
-        transparent);
-    transition: left 0.5s ease;
-}
-
-.download-btn-premium:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 102, 204, 0.5);
-}
-
-.download-btn-premium:hover::before {
-    left: 100%;
-}
-
-.download-btn-premium i {
-    font-size: 1.3rem;
-}
-
-.download-btn-secondary-premium {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 16px;
-    border-radius: 15px;
-    font-size: 0.95rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -1684,278 +1969,137 @@ audio::-webkit-media-controls-mute-button {
     gap: 10px;
 }
 
-.download-btn-secondary-premium:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border-color: rgba(255, 204, 0, 0.3);
+.download-btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
 }
 
-/* Botão de fechar premium */
-.download-premium-close {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    width: 45px;
-    height: 45px;
+.download-btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.download-btn-secondary:hover {
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
+    color: white;
+}
+
+.download-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
     border: none;
     border-radius: 50%;
     color: white;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 100;
+    transition: all 0.3s ease;
 }
 
-.download-premium-close:hover {
-    background: rgba(255, 71, 87, 0.9);
-    transform: rotate(90deg) scale(1.1);
-    box-shadow: 0 5px 20px rgba(255, 71, 87, 0.4);
+.download-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
 }
 
-/* Indicadores de progresso */
-.download-progress {
-    width: 100%;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-top: 15px;
-    display: none;
-}
-
-.download-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), #4CAF50);
-    width: 0%;
-    transition: width 0.3s ease;
-    border-radius: 2px;
-}
-
-/* Mensagem de sucesso */
-.download-success {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, 
-        rgba(76, 175, 80, 0.95), 
-        rgba(56, 142, 60, 0.95));
-    backdrop-filter: blur(10px);
-    color: white;
-    padding: 20px 25px;
-    border-radius: 15px;
-    box-shadow: 
-        0 15px 40px rgba(76, 175, 80, 0.4),
-        0 0 0 2px rgba(255, 255, 255, 0.1);
-    display: none;
-    align-items: center;
-    gap: 15px;
-    z-index: 10000;
-    transform: translateX(100%);
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    max-width: 320px;
-}
-
-.download-success.show {
-    display: flex;
-    transform: translateX(0);
-    animation: slideInSuccess 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.download-success i {
-    font-size: 2rem;
-    color: white;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.download-success-content {
-    flex: 1;
-}
-
-.download-success-title {
-    font-weight: 700;
-    font-size: 1.1rem;
-    margin-bottom: 5px;
-    color: white;
-}
-
-.download-success-text {
-    font-size: 0.9rem;
-    opacity: 0.9;
-    margin: 0;
-}
-
-.download-success-close {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    padding: 5px;
-    font-size: 1rem;
-    opacity: 0.7;
-    transition: opacity 0.3s;
-}
-
-.download-success-close:hover {
-    opacity: 1;
-}
-
-/* ANIMAÇÕES PREMIUM */
-@keyframes floatPremium {
+/* Animações */
+@keyframes floatDownload {
     0%, 100% { 
-        transform: translateY(0px) rotate(0deg); 
+        transform: translateY(0px); 
     }
-    33% { 
-        transform: translateY(-10px) rotate(2deg); 
-    }
-    66% { 
-        transform: translateY(-5px) rotate(-2deg); 
+    50% { 
+        transform: translateY(-10px); 
     }
 }
 
-@keyframes pulseWaves {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(1.5);
-        opacity: 0;
-    }
-}
-
-@keyframes pulsePremium {
+@keyframes pulseBadge {
     0%, 100% { 
         transform: scale(1); 
-        box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
     }
     50% { 
-        transform: scale(1.15); 
-        box-shadow: 0 6px 25px rgba(255, 71, 87, 0.6);
+        transform: scale(1.1); 
+    }
+    70% { 
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); 
     }
 }
 
-@keyframes fadeInPremium {
-    from { 
-        opacity: 0; 
-    }
-    to { 
-        opacity: 1; 
-    }
-}
-
-@keyframes shimmer {
-    0% { background-position: -200px 0; }
-    100% { background-position: 200px 0; }
-}
-
-@keyframes slideInSuccess {
-    0% { 
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    50% { 
-        transform: translateX(-10px);
-        opacity: 1;
-    }
-    100% { 
-        transform: translateX(0);
-    }
-}
-
-/* RESPONSIVIDADE AVANÇADA */
+/* Responsividade */
 @media (max-width: 768px) {
-    .floating-download-premium {
-        bottom: 100px;
+    .floating-download-btn {
+        bottom: 80px;
         left: 15px;
-        width: 70px;
-        height: 70px;
+        width: 60px;
+        height: 60px;
     }
     
-    .download-premium-icon {
-        width: 50px;
-        height: 50px;
+    .floating-download-icon {
+        width: 45px;
+        height: 45px;
     }
     
-    .download-premium-icon i {
-        font-size: 1.5rem;
+    .download-badge {
+        width: 20px;
+        height: 20px;
+        font-size: 0.6rem;
     }
     
-    .download-premium-badge {
-        width: 28px;
-        height: 28px;
-        font-size: 0.7rem;
-    }
-    
-    .download-premium-tooltip {
+    .floating-download-tooltip {
         display: none;
     }
     
-    .download-premium-modal {
-        width: 90%;
-        border-radius: 20px;
+    .download-modal-content {
+        padding: 30px 20px;
     }
     
-    .download-premium-header {
-        padding: 30px 25px 15px;
-    }
-    
-    .download-premium-logo {
-        width: 80px;
-        height: 80px;
-        border-radius: 20px;
-    }
-    
-    .download-premium-logo i {
-        font-size: 2.5rem;
-    }
-    
-    .download-premium-title {
-        font-size: 1.6rem;
-    }
-    
-    .download-premium-subtitle {
-        font-size: 1rem;
-    }
-    
-    .download-premium-content {
-        padding: 0 25px 30px;
-    }
-    
-    .download-features-grid {
+    .download-info-grid {
         grid-template-columns: 1fr;
-        gap: 12px;
-    }
-    
-    .download-btn-premium {
-        padding: 18px;
-        font-size: 1rem;
-    }
-    
-    .download-success {
-        left: 20px;
-        right: 20px;
-        max-width: none;
     }
 }
 
-/* Detecção de toque para mobile */
-@media (hover: none) and (pointer: coarse) {
-    .floating-download-premium:hover {
-        transform: none;
-    }
-    
-    .floating-download-premium:active {
-        transform: scale(1.1);
-    }
-    
-    .download-premium-tooltip {
-        display: none !important;
-    }
+/* Mensagem de instalação */
+.install-message {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: none;
+    align-items: center;
+    gap: 15px;
+    z-index: 1000;
+    animation: slideInRight 0.5s ease;
+    max-width: 300px;
+}
+
+.install-message.show {
+    display: flex;
+}
+
+.install-message i {
+    font-size: 1.5rem;
+    color: var(--accent);
+}
+
+.install-message p {
+    margin: 0;
+    font-size: 0.9rem;
+    flex: 1;
 }
 
 @keyframes slideInRight {
@@ -2469,215 +2613,99 @@ audio::-webkit-media-controls-mute-button {
 <body>
   
   
-<!-- BOTÃO DE DOWNLOAD PREMIUM -->
-<div class="floating-download-premium" onclick="openPremiumDownloadModal()">
-    <div class="download-premium-badge">FREE</div>
-    <div class="download-premium-icon">
-        <i class="fas fa-rocket"></i>
-    </div>
-    <div class="download-premium-tooltip">
-        <strong>🚀 APP MARUJO DIGITAL</strong>
-        <small>Versão completa para Android</small>
-        <small>Clique para baixar gratuitamente</small>
-    </div>
-</div>
-
-<!-- MODAL DE DOWNLOAD PREMIUM -->
-<div class="download-premium-overlay" id="premiumDownloadModal">
-    <div class="download-premium-modal">
-        <button class="download-premium-close" onclick="closePremiumDownloadModal()">
-            <i class="fas fa-times"></i>
-        </button>
-        
-        <div class="download-premium-header">
-            <div class="download-premium-logo">
-                <i class="fas fa-ship"></i>
-            </div>
-            <h1 class="download-premium-title">MARUJO DIGITAL</h1>
-            <p class="download-premium-subtitle">Aplicativo Oficial Android</p>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;">
-                <span style="background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;">
-                    <i class="fas fa-shield-alt"></i> Seguro
-                </span>
-                <span style="background: rgba(255, 204, 0, 0.2); color: var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;">
-                    <i class="fas fa-bolt"></i> Offline
-                </span>
-                <span style="background: rgba(76, 175, 80, 0.2); color: #4CAF50; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;">
-                    <i class="fas fa-crown"></i> Premium
-                </span>
-            </div>
+<!-- Botão de Download Aprimorado -->
+<div class="download-promo-container">
+    <div class="download-promo-btn" onclick="openDownloadModal()">
+        <div class="download-promo-icon">
+            <i class="fas fa-download"></i>
         </div>
-        
-        <div class="download-premium-content">
-            <div class="download-features-grid">
-                <div class="download-feature">
-                    <div class="download-feature-icon">
-                        <i class="fas fa-wifi-slash"></i>
-                    </div>
-                    <div class="download-feature-name">Modo Offline</div>
-                    <div class="download-feature-desc">Use sem internet</div>
-                </div>
-                <div class="download-feature">
-                    <div class="download-feature-icon">
-                        <i class="fas fa-bell"></i>
-                    </div>
-                    <div class="download-feature-name">Notificações</div>
-                    <div class="download-feature-desc">Alertas importantes</div>
-                </div>
-                <div class="download-feature">
-                    <div class="download-feature-icon">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <div class="download-feature-name">Busca Rápida</div>
-                    <div class="download-feature-desc">Encontre em segundos</div>
-                </div>
-                <div class="download-feature">
-                    <div class="download-feature-icon">
-                        <i class="fas fa-bookmark"></i>
-                    </div>
-                    <div class="download-feature-name">Favoritos</div>
-                    <div class="download-feature-desc">Salve seus itens</div>
-                </div>
-            </div>
-            
-            <div class="download-info-grid" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 15px; margin-bottom: 25px;">
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
-                    <div style="text-align: center;">
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;">Versão</div>
-                        <div style="color: white; font-weight: 600; font-size: 1.1rem;">1.2.0</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;">Tamanho</div>
-                        <div style="color: white; font-weight: 600; font-size: 1.1rem;">18.5 MB</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;">Android</div>
-                        <div style="color: white; font-weight: 600; font-size: 1.1rem;">5.0+</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;">Downloads</div>
-                        <div style="color: white; font-weight: 600; font-size: 1.1rem;">1.2K+</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="download-premium-actions">
-                <button class="download-btn-premium" onclick="downloadPremiumApp()">
-                    <i class="fas fa-download"></i>
-                    BAIXAR APK (GRATUITO)
-                </button>
-                <button class="download-btn-secondary-premium" onclick="sharePremiumApp()">
-                    <i class="fas fa-share-alt"></i>
-                    COMPARTILHAR COM COLEGAS
-                </button>
-            </div>
-            
-            <div class="download-progress" id="downloadProgress">
-                <div class="download-progress-bar" id="downloadProgressBar"></div>
-            </div>
-            
-            <div style="margin-top: 25px; padding: 15px; background: rgba(255, 204, 0, 0.1); border-radius: 12px; border-left: 4px solid var(--accent);">
-                <p style="color: var(--text-secondary); margin: 0; font-size: 0.9rem; line-height: 1.5;">
-                    <i class="fas fa-info-circle" style="color: var(--accent); margin-right: 8px;"></i>
-                    <strong>Importante:</strong> Permita "Fontes Desconhecidas" nas configurações do Android para instalar o aplicativo.
-                </p>
-            </div>
+        <div class="download-promo-text">
+            <span class="download-promo-label">Baixe o App</span>
+            <span class="download-promo-sub">Marujo Digital</span>
+        </div>
+        <div class="download-promo-badge">
+            <i class="fas fa-arrow-down"></i>
         </div>
     </div>
 </div>
 
-<!-- MENSAGEM DE SUCESSO -->
-<div class="download-success" id="downloadSuccess">
-    <i class="fas fa-check-circle"></i>
-    <div class="download-success-content">
-        <div class="download-success-title">✅ Download Iniciado!</div>
-        <p class="download-success-text">
-            MarujoDigital.apk está sendo baixado. Verifique suas notificações.
-        </p>
-    </div>
-    <button class="download-success-close" onclick="hideDownloadSuccess()">
-        <i class="fas fa-times"></i>
-    </button>
-</div>
-
-<!-- SONS DE INTERAÇÃO (opcional) -->
-<audio id="downloadClickSound" preload="auto">
-    <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
-</audio>
-<audio id="downloadSuccessSound" preload="auto">
-    <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" type="audio/mpeg">
-</audio>
-
-<!-- Modal de Download -->
-<div class="download-modal-overlay" id="downloadModal">
-    <div class="download-modal-content">
-        <button class="download-modal-close" onclick="closeDownloadModal()">
-            <i class="fas fa-times"></i>
-        </button>
-        
+<!-- Modal de Download Aprimorado -->
+<div class="download-modal-overlay" id="downloadModal" onclick="closeDownloadModal(event)">
+    <div class="download-modal" onclick="event.stopPropagation()">
+        <!-- Cabeçalho com botão de fechar GRANDE -->
         <div class="download-modal-header">
-            <div class="download-modal-icon">
+            <h3 class="download-modal-title">
                 <i class="fas fa-ship"></i>
-            </div>
-            <h2 class="download-modal-title">Marujo Digital App</h2>
-            <p class="download-modal-subtitle">
-                O Guia Completo do Cerimonial Naval no seu celular
-            </p>
-        </div>
-        
-        <div class="download-info-grid">
-            <div class="download-info-item">
-                <div class="download-info-label">Versão</div>
-                <div class="download-info-value">1.0.0</div>
-            </div>
-            <div class="download-info-item">
-                <div class="download-info-label">Tamanho</div>
-                <div class="download-info-value">15 MB</div>
-            </div>
-            <div class="download-info-item">
-                <div class="download-info-label">Android</div>
-                <div class="download-info-value">5.0+</div>
-            </div>
-            <div class="download-info-item">
-                <div class="download-info-label">Offline</div>
-                <div class="download-info-value">Sim</div>
-            </div>
-        </div>
-        
-        <div class="download-buttons">
-            <button class="download-btn-primary" onclick="downloadApp()">
-                <i class="fas fa-download"></i>
-                Baixar App (APK)
-            </button>
-            <button class="download-btn-secondary" onclick="shareApp()">
-                <i class="fas fa-share-alt"></i>
-                Compartilhar App
+                MARUJO DIGITAL APP
+            </h3>
+            <button class="download-modal-close" onclick="closeDownloadModal(event)">
+                <i class="fas fa-times"></i>
             </button>
         </div>
         
-        <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-            <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; line-height: 1.5;">
-                <i class="fas fa-info-circle"></i> 
-                Permissão de fontes desconhecidas necessária. App não disponível na Play Store.
-            </p>
+        <!-- Conteúdo do modal -->
+        <div class="download-modal-body">
+            <div class="download-modal-hero">
+                <div class="download-modal-icon-large">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h4>Versão Completa para Android</h4>
+                <p>Todo o conteúdo do cerimonial naval na palma da sua mão</p>
+            </div>
+            
+            <div class="download-features">
+                <div class="feature-item">
+                    <i class="fas fa-wifi-slash"></i>
+                    <span>Modo Offline</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Notificações</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-bolt"></i>
+                    <span>Rápido</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Seguro</span>
+                </div>
+            </div>
+            
+            <div class="download-info">
+                <div class="info-item">
+                    <span class="info-label">Versão</span>
+                    <span class="info-value">1.2.0</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Tamanho</span>
+                    <span class="info-value">18.5 MB</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Android</span>
+                    <span class="info-value">5.0+</span>
+                </div>
+            </div>
+            
+            <div class="download-actions">
+                <button class="download-btn-primary" onclick="downloadAppNow()">
+                    <i class="fas fa-download"></i>
+                    BAIXAR AGORA (APK)
+                </button>
+                <button class="download-btn-secondary" onclick="shareApp()">
+                    <i class="fas fa-share-alt"></i>
+                    COMPARTILHAR
+                </button>
+            </div>
+            
+            <div class="download-warning">
+                <i class="fas fa-info-circle"></i>
+                <p>Permita "Fontes Desconhecidas" nas configurações do Android para instalar.</p>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Mensagem de instalação -->
-<div class="install-message" id="installMessage">
-    <i class="fas fa-check-circle"></i>
-    <p>Download iniciado! Verifique suas notificações.</p>
-    <button onclick="hideInstallMessage()" style="
-        background: none;
-        border: none;
-        color: white;
-        cursor: pointer;
-        padding: 5px;
-    ">
-        <i class="fas fa-times"></i>
-    </button>
-</div>
 <!-- Botão Flutuante com Controles da Rádio Marinha -->
 <!-- Botão Flutuante com Múltiplas Rádios -->
 <!-- Botão Flutuante com Múltiplas Rádios -->
@@ -2792,135 +2820,42 @@ loadRadio(currentRadio);
 
 
 // Funções para o botão de download
-// SISTEMA DE DOWNLOAD PREMIUM
-let isDownloadModalOpen = false;
-let downloadProgressInterval = null;
+// Funções para controlar o modal de download
+let downloadModal = null;
 
-// Som de clique suave
-function playClickSound() {
-    try {
-        const sound = document.getElementById('downloadClickSound');
-        if (sound) {
-            sound.currentTime = 0;
-            sound.volume = 0.3;
-            sound.play().catch(e => console.log('Som ignorado pelo navegador'));
-        }
-    } catch (e) {
-        // Ignora erros de áudio
-    }
-}
-
-// Som de sucesso
-function playSuccessSound() {
-    try {
-        const sound = document.getElementById('downloadSuccessSound');
-        if (sound) {
-            sound.currentTime = 0;
-            sound.volume = 0.4;
-            sound.play().catch(e => console.log('Som ignorado pelo navegador'));
-        }
-    } catch (e) {
-        // Ignora erros de áudio
-    }
-}
-
-// Abrir modal premium
-function openPremiumDownloadModal() {
-    playClickSound();
-    
-    const modal = document.getElementById('premiumDownloadModal');
-    const body = document.body;
-    
-    if (!modal || isDownloadModalOpen) return;
-    
-    isDownloadModalOpen = true;
-    modal.classList.add('active');
-    body.style.overflow = 'hidden';
-    
-    // Animar entrada do botão flutuante
-    const floatingBtn = document.querySelector('.floating-download-premium');
-    if (floatingBtn) {
-        floatingBtn.style.opacity = '0.5';
-        floatingBtn.style.transform = 'scale(0.9)';
-    }
-    
-    // Registrar evento de analytics
-    console.log('📱 Modal de download aberto');
-}
-
-// Fechar modal premium
-function closePremiumDownloadModal() {
-    playClickSound();
-    
-    const modal = document.getElementById('premiumDownloadModal');
-    const body = document.body;
-    
-    if (!modal || !isDownloadModalOpen) return;
-    
-    modal.classList.remove('active');
-    body.style.overflow = 'auto';
-    isDownloadModalOpen = false;
-    
-    // Restaurar botão flutuante
-    const floatingBtn = document.querySelector('.floating-download-premium');
-    if (floatingBtn) {
-        setTimeout(() => {
-            floatingBtn.style.opacity = '1';
-            floatingBtn.style.transform = '';
-        }, 300);
-    }
-    
-    // Parar progresso se estiver rodando
-    if (downloadProgressInterval) {
-        clearInterval(downloadProgressInterval);
-        downloadProgressInterval = null;
-    }
-}
-
-// Download do app premium
-function downloadPremiumApp() {
-    playClickSound();
-    
-    const apkUrl = 'marujodigitalandroid.apk';
-    const progressBar = document.getElementById('downloadProgress');
-    const progressFill = document.getElementById('downloadProgressBar');
-    
-    // Mostrar barra de progresso
-    if (progressBar && progressFill) {
-        progressBar.style.display = 'block';
-        progressFill.style.width = '0%';
+function openDownloadModal() {
+    downloadModal = document.getElementById('downloadModal');
+    if (downloadModal) {
+        downloadModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
         
-        // Simular progresso
-        let progress = 0;
-        downloadProgressInterval = setInterval(() => {
-            progress += Math.random() * 15;
-            if (progress > 100) progress = 100;
-            progressFill.style.width = progress + '%';
-            
-            if (progress >= 100) {
-                clearInterval(downloadProgressInterval);
-                downloadProgressInterval = null;
-                
-                // Iniciar download real após simulação
-                setTimeout(startRealDownload, 500);
-            }
-        }, 100);
-    } else {
-        // Fallback: download imediato
-        startRealDownload();
+        // Efeito sonoro opcional
+        playClickSound();
     }
 }
 
-function startRealDownload() {
+function closeDownloadModal(event) {
+    if (event) event.stopPropagation();
+    
+    if (downloadModal) {
+        downloadModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        downloadModal = null;
+        
+        playClickSound();
+    }
+}
+
+function downloadAppNow() {
+    playClickSound();
+    
+    // Criar link de download
     const link = document.createElement('a');
     link.href = 'marujodigitalandroid.apk';
     link.download = 'MarujoDigital_App.apk';
     link.style.display = 'none';
     
-    // Adicionar atributos para melhor experiência
-    link.setAttribute('type', 'application/vnd.android.package-archive');
-    link.setAttribute('data-app', 'marujo-digital');
-    
+    // Adicionar ao documento e clicar
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -2928,182 +2863,97 @@ function startRealDownload() {
     // Mostrar mensagem de sucesso
     showDownloadSuccess();
     
-    // Tocar som de sucesso
-    playSuccessSound();
-    
-    // Fechar modal após 1 segundo
+    // Fechar modal após download
     setTimeout(() => {
-        closePremiumDownloadModal();
+        closeDownloadModal();
     }, 1000);
-    
-    // Registrar download
-    console.log('📥 Download do app iniciado');
-    
-    // Enviar evento para analytics (opcional)
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'download', {
-            'event_category': 'app',
-            'event_label': 'Marujo Digital Android'
-        });
-    }
 }
 
-// Compartilhar app
-function sharePremiumApp() {
+function shareApp() {
     playClickSound();
     
-    const shareData = {
-        title: 'Marujo Digital App',
-        text: 'Baixe o app oficial do Marujo Digital - Guia completo do cerimonial naval da Marinha do Brasil',
-        url: window.location.href
-    };
-    
-    if (navigator.share && navigator.canShare(shareData)) {
-        navigator.share(shareData)
-            .then(() => console.log('✅ App compartilhado com sucesso'))
-            .catch(err => console.log('❌ Erro ao compartilhar:', err));
+    if (navigator.share) {
+        navigator.share({
+            title: 'Marujo Digital App',
+            text: 'Baixe o app do Marujo Digital - Guia completo do cerimonial naval',
+            url: window.location.href
+        });
     } else {
         // Fallback para copiar link
         navigator.clipboard.writeText(window.location.href)
             .then(() => {
-                showNotification('🔗 Link copiado! Compartilhe com seus colegas.');
+                alert('🔗 Link copiado! Compartilhe com seus colegas.');
             })
             .catch(() => {
-                // Fallback mais básico
-                const tempInput = document.createElement('input');
-                tempInput.value = window.location.href;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                showNotification('🔗 Link copiado para a área de transferência!');
+                alert('Erro ao copiar link. Compartilhe manualmente: ' + window.location.href);
             });
     }
 }
 
-// Mostrar mensagem de sucesso
+function playClickSound() {
+    // Som de clique suave (opcional)
+    try {
+        const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3');
+        audio.volume = 0.3;
+        audio.play().catch(() => {});
+    } catch(e) {}
+}
+
 function showDownloadSuccess() {
-    const successMsg = document.getElementById('downloadSuccess');
-    if (successMsg) {
-        successMsg.classList.add('show');
-        
-        // Auto-fechar após 8 segundos
-        setTimeout(() => {
-            hideDownloadSuccess();
-        }, 8000);
-    }
+    const successMsg = document.createElement('div');
+    successMsg.innerHTML = `
+        <div style="
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #38a169;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(56, 161, 105, 0.4);
+            z-index: 10001;
+            animation: slideInRight 0.5s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 300px;
+        ">
+            <i class="fas fa-check-circle" style="font-size: 1.5rem;"></i>
+            <div>
+                <strong>✅ Download Iniciado!</strong>
+                <p style="margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.9;">
+                    Verifique suas notificações
+                </p>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(successMsg);
+    
+    setTimeout(() => {
+        successMsg.remove();
+    }, 5000);
 }
 
-// Esconder mensagem de sucesso
-function hideDownloadSuccess() {
-    const successMsg = document.getElementById('downloadSuccess');
-    if (successMsg) {
-        successMsg.classList.remove('show');
-    }
-}
-
-// Fechar modal ao clicar fora
-document.addEventListener('click', (event) => {
-    const modal = document.getElementById('premiumDownloadModal');
-    if (modal && event.target === modal && isDownloadModalOpen) {
-        closePremiumDownloadModal();
-    }
-});
-
-// Fechar com tecla ESC
+// Fechar modal com tecla ESC
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isDownloadModalOpen) {
-        closePremiumDownloadModal();
+    if (e.key === 'Escape' && downloadModal && downloadModal.classList.contains('active')) {
+        closeDownloadModal();
     }
 });
 
-// Detectar dispositivo e ajustar comportamento
-function detectDeviceForDownload() {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const isAndroid = /Android/.test(navigator.userAgent);
-    
-    // Adicionar classe para dispositivos touch
-    if (isMobile) {
-        document.body.classList.add('is-mobile');
-    }
-    
-    // Mostrar notificação especial para Android
-    if (isAndroid) {
-        setTimeout(() => {
-            const showNotification = window.showNotification || console.log;
-            showNotification('📱 Otimize sua experiência! Baixe nosso app Android.');
-        }, 15000);
-    }
-    
-    // Ajustar posição do botão em dispositivos móveis
-    if (window.innerWidth < 768) {
-        const btn = document.querySelector('.floating-download-premium');
-        if (btn) {
-            btn.style.bottom = '80px';
-        }
-    }
-}
-
-// Inicializar sistema de download
+// Inicializar quando o DOM carregar
 document.addEventListener('DOMContentLoaded', () => {
-    detectDeviceForDownload();
-    
-    // Adicionar efeito de partículas ao botão (opcional)
-    createDownloadButtonParticles();
-});
-
-// Efeito de partículas no botão (opcional)
-function createDownloadButtonParticles() {
-    const btn = document.querySelector('.floating-download-premium');
-    if (!btn) return;
-    
-    // Criar partículas apenas em desktop
-    if (window.innerWidth > 768) {
-        for (let i = 0; i < 5; i++) {
-            setTimeout(() => {
-                const particle = document.createElement('div');
-                particle.style.cssText = `
-                    position: absolute;
-                    width: 4px;
-                    height: 4px;
-                    background: rgba(255, 204, 0, 0.6);
-                    border-radius: 50%;
-                    pointer-events: none;
-                    z-index: 1;
-                `;
-                
-                const angle = Math.random() * Math.PI * 2;
-                const distance = 40 + Math.random() * 20;
-                const duration = 2 + Math.random() * 2;
-                
-                particle.style.left = '50%';
-                particle.style.top = '50%';
-                particle.style.transform = `translate(-50%, -50%)`;
-                
-                btn.appendChild(particle);
-                
-                // Animar partícula
-                particle.animate([
-                    { 
-                        transform: `translate(-50%, -50%) rotate(${angle}rad) translate(0px)`,
-                        opacity: 1 
-                    },
-                    { 
-                        transform: `translate(-50%, -50%) rotate(${angle}rad) translate(${distance}px)`,
-                        opacity: 0 
-                    }
-                ], {
-                    duration: duration * 1000,
-                    easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)',
-                    iterations: Infinity
-                });
-                
-                // Remover após algum tempo se necessário
-                setTimeout(() => particle.remove(), 30000);
-            }, i * 600);
+    // Adicionar estilos dinâmicos se necessário
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
-    }
-}
+    `;
+    document.head.appendChild(style);
+});
 // Função para carregar uma rádio
 function loadRadio(radioId) {
     const radio = radioStations[radioId];
