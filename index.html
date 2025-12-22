@@ -1801,74 +1801,50 @@ audio::-webkit-media-controls-mute-button {
     background: linear-gradient(135deg, #8b0000, #b22222);
 }
 
-/* Botão de Download do App Android */
-.floating-download-btn {
+/* BOTÃO DE DOWNLOAD - ESTILO IGUAL AO DA RÁDIO */
+.floating-download-container {
     position: fixed;
-    bottom: 100px;
-    left: 20px;
+    bottom: 30px;
+    left: 30px; /* Mudei para left em vez de right */
+    z-index: 1000;
+}
+
+/* Botão flutuante principal - IGUAL AO DA RÁDIO */
+.floating-download-btn {
     width: 70px;
     height: 70px;
-    background: linear-gradient(135deg, #34d399, #10b981);
+    background: linear-gradient(135deg, #004a77, #0066cc);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 
-        0 8px 25px rgba(16, 185, 129, 0.4),
-        0 0 0 3px rgba(52, 211, 153, 0.3);
-    border: 2px solid #d1fae5;
+    box-shadow: 0 5px 20px rgba(0, 51, 153, 0.5),
+                0 0 0 3px rgba(255, 204, 0, 0.3);
+    border: 2px solid var(--accent);
     cursor: pointer;
-    z-index: 999;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     overflow: hidden;
-    animation: floatDownload 3s ease-in-out infinite;
+    position: relative;
+    animation: floatBtn 3s ease-in-out infinite;
 }
 
 .floating-download-btn:hover {
     transform: scale(1.15);
-    box-shadow: 
-        0 12px 35px rgba(16, 185, 129, 0.6),
-        0 0 0 5px rgba(52, 211, 153, 0.4);
+    box-shadow: 0 8px 30px rgba(0, 51, 153, 0.7),
+                0 0 0 4px rgba(255, 204, 0, 0.5);
     animation-play-state: paused;
 }
 
-.floating-download-btn::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, 
-        rgba(255, 255, 255, 0.3) 0%, 
-        transparent 70%);
-    animation: rotate 20s linear infinite;
+.floating-download-btn.active {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, #0066cc, #004a77);
 }
 
-.floating-download-btn::after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: conic-gradient(
-        from 0deg,
-        transparent,
-        #d1fae5,
-        transparent,
-        #10b981,
-        transparent,
-        #34d399,
-        transparent
-    );
-    border-radius: 50%;
-    z-index: -1;
-    opacity: 0.8;
-    animation: rotateBorder 4s linear infinite;
+.floating-download-btn.pulse {
+    animation: pulse 1.5s infinite;
 }
 
-.floating-download-icon {
+.floating-download-image {
     width: 55px;
     height: 55px;
     background: white;
@@ -1876,19 +1852,279 @@ audio::-webkit-media-controls-mute-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    z-index: 2;
-    box-shadow: 
-        inset 0 3px 10px rgba(0, 0, 0, 0.1),
-        0 5px 15px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
+    font-size: 1.5rem;
+    color: #004a77;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.floating-download-icon img {
-    width: 65%;
-    height: 65%;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+/* Painel de controles do download - SIMILAR AO DA RÁDIO */
+.download-controls-panel {
+    position: absolute;
+    bottom: 85px;
+    left: 0; /* Alterado para left */
+    width: 320px;
+    background: linear-gradient(145deg, var(--bg-dark), var(--bg-darker));
+    border-radius: 15px;
+    padding: 0;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.download-controls-panel.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    animation: slideUp 0.3s ease;
+}
+
+/* Cabeçalho do download */
+.download-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.download-logo {
+    width: 60px;
+    height: 60px;
+    margin-right: 15px;
+    background: linear-gradient(135deg, #0066cc, #004a99);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--accent);
+}
+
+.download-logo i {
+    color: white;
+    font-size: 1.8rem;
+}
+
+.download-info {
+    flex: 1;
+}
+
+.download-info h4 {
+    color: white;
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+}
+
+.download-info p {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.download-slogan {
+    color: var(--accent) !important;
+    font-style: italic;
+    font-size: 0.8rem !important;
+    margin-top: 5px !important;
+}
+
+.download-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px;
+    transition: color 0.3s;
+    align-self: flex-start;
+}
+
+.download-close:hover {
+    color: white;
+}
+
+/* Conteúdo do download */
+.download-content {
+    padding: 20px;
+}
+
+.download-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.download-stat {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.download-stat i {
+    color: var(--accent);
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.download-stat-value {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.download-stat-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    display: block;
+}
+
+/* Botões de ação */
+.download-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.download-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.download-action-btn.primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: 2px solid var(--accent);
+}
+
+.download-action-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 102, 204, 0.4);
+}
+
+.download-action-btn.secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.download-action-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: var(--accent);
+}
+
+.download-action-btn i {
+    font-size: 1.1rem;
+}
+
+/* Informações de segurança */
+.download-security {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(56, 161, 105, 0.1);
+    border-radius: 10px;
+    border-left: 4px solid #38a169;
+}
+
+.download-security i {
+    color: #38a169;
+    margin-right: 8px;
+}
+
+.download-security p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Tooltip */
+.floating-download-btn::after {
+    content: 'Baixar App';
+    position: absolute;
+    left: 80px; /* Alterado para left */
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1001;
+}
+
+.floating-download-btn:hover::after {
+    opacity: 1;
+}
+
+/* Animações (já existem do rádio) */
+@keyframes floatBtn {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 102, 204, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0); }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .floating-download-container {
+        bottom: 20px;
+        left: 20px;
+    }
+    
+    .floating-download-btn {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .floating-download-image {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+    
+    .download-controls-panel {
+        width: 300px;
+        left: -20px;
+    }
+    
+    .download-stats {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Badge de notificação */
@@ -2752,78 +2988,76 @@ audio::-webkit-media-controls-mute-button {
     </div>
 </div>
 
-<!-- Modal de Download Aprimorado -->
-<div class="download-modal-overlay" id="downloadModal" onclick="closeDownloadModal(event)">
-    <div class="download-modal" onclick="event.stopPropagation()">
-        <!-- Cabeçalho com botão de fechar GRANDE -->
-        <div class="download-modal-header">
-            <h3 class="download-modal-title">
+<div class="floating-download-container">
+    <!-- Botão principal do download -->
+    <div class="floating-download-btn" onclick="toggleDownloadControls()">
+        <div class="floating-download-image">
+            <i class="fas fa-download"></i>
+        </div>
+    </div>
+    
+    <!-- Painel de controles do download -->
+    <div class="download-controls-panel" id="downloadControls">
+        <!-- Cabeçalho do download -->
+        <div class="download-header">
+            <div class="download-logo">
                 <i class="fas fa-ship"></i>
-                MARUJO DIGITAL APP
-            </h3>
-            <button class="download-modal-close" onclick="closeDownloadModal(event)">
+            </div>
+            <div class="download-info">
+                <h4 id="downloadAppName">Marujo Digital App</h4>
+                <p id="downloadAppVersion">Versão 1.2.0 - Android</p>
+                <p id="downloadAppSlogan" class="download-slogan">"Cerimonial naval na palma da sua mão!"</p>
+            </div>
+            <button class="download-close" onclick="toggleDownloadControls()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         
-        <!-- Conteúdo do modal -->
-        <div class="download-modal-body">
-            <div class="download-modal-hero">
-                <div class="download-modal-icon-large">
-                    <i class="fas fa-rocket"></i>
+        <!-- Conteúdo do download -->
+        <div class="download-content">
+            <!-- Estatísticas -->
+            <div class="download-stats">
+                <div class="download-stat">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span class="download-stat-value">18.5 MB</span>
+                    <span class="download-stat-label">Tamanho</span>
                 </div>
-                <h4>Versão Completa para Android</h4>
-                <p>Todo o conteúdo do cerimonial naval na palma da sua mão</p>
-            </div>
-            
-            <div class="download-features">
-                <div class="feature-item">
+                <div class="download-stat">
                     <i class="fas fa-wifi-slash"></i>
-                    <span>Modo Offline</span>
+                    <span class="download-stat-value">Offline</span>
+                    <span class="download-stat-label">Modo</span>
                 </div>
-                <div class="feature-item">
-                    <i class="fas fa-bell"></i>
-                    <span>Notificações</span>
+                <div class="download-stat">
+                    <i class="fas fa-users"></i>
+                    <span class="download-stat-value">1.2K+</span>
+                    <span class="download-stat-label">Downloads</span>
                 </div>
-                <div class="feature-item">
-                    <i class="fas fa-bolt"></i>
-                    <span>Rápido</span>
-                </div>
-                <div class="feature-item">
+                <div class="download-stat">
                     <i class="fas fa-shield-alt"></i>
-                    <span>Seguro</span>
+                    <span class="download-stat-value">Seguro</span>
+                    <span class="download-stat-label">Verificado</span>
                 </div>
             </div>
             
-            <div class="download-info">
-                <div class="info-item">
-                    <span class="info-label">Versão</span>
-                    <span class="info-value">1.2.0</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Tamanho</span>
-                    <span class="info-value">18.5 MB</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Android</span>
-                    <span class="info-value">5.0+</span>
-                </div>
-            </div>
-            
+            <!-- Botões de ação -->
             <div class="download-actions">
-                <button class="download-btn-primary" onclick="downloadAppNow()">
+                <button class="download-action-btn primary" onclick="downloadAppNow()">
                     <i class="fas fa-download"></i>
-                    BAIXAR AGORA (APK)
+                    BAIXAR APK (GRATUITO)
                 </button>
-                <button class="download-btn-secondary" onclick="shareApp()">
+                <button class="download-action-btn secondary" onclick="shareApp()">
                     <i class="fas fa-share-alt"></i>
                     COMPARTILHAR
                 </button>
             </div>
             
-            <div class="download-warning">
+            <!-- Informações de segurança -->
+            <div class="download-security">
                 <i class="fas fa-info-circle"></i>
-                <p>Permita "Fontes Desconhecidas" nas configurações do Android para instalar.</p>
+                <p>
+                    <strong>Importante:</strong> Permita "Fontes Desconhecidas" nas configurações do 
+                    Android para instalar o aplicativo.
+                </p>
             </div>
         </div>
     </div>
@@ -2969,9 +3203,21 @@ function closeDownloadModal(event) {
     }
 }
 
-function downloadAppNow() {
-    playClickSound();
+// Funções para controlar o painel de download
+function toggleDownloadControls() {
+    const controls = document.getElementById('downloadControls');
+    const btn = document.querySelector('.floating-download-btn');
     
+    if (controls.classList.contains('show')) {
+        controls.classList.remove('show');
+        btn.classList.remove('active');
+    } else {
+        controls.classList.add('show');
+        btn.classList.add('active');
+    }
+}
+
+function downloadAppNow() {
     // Criar link de download
     const link = document.createElement('a');
     link.href = 'marujodigitalandroid.apk';
@@ -2983,18 +3229,16 @@ function downloadAppNow() {
     link.click();
     document.body.removeChild(link);
     
-    // Mostrar mensagem de sucesso
-    showDownloadSuccess();
+    // Mostrar feedback visual
+    const btn = document.querySelector('.floating-download-btn');
+    btn.classList.add('pulse');
+    setTimeout(() => btn.classList.remove('pulse'), 3000);
     
-    // Fechar modal após download
-    setTimeout(() => {
-        closeDownloadModal();
-    }, 1000);
+    // Opcional: mostrar notificação
+    showNotification('✅ Download iniciado! Verifique suas notificações.');
 }
 
 function shareApp() {
-    playClickSound();
-    
     if (navigator.share) {
         navigator.share({
             title: 'Marujo Digital App',
@@ -3005,77 +3249,46 @@ function shareApp() {
         // Fallback para copiar link
         navigator.clipboard.writeText(window.location.href)
             .then(() => {
-                alert('🔗 Link copiado! Compartilhe com seus colegas.');
-            })
-            .catch(() => {
-                alert('Erro ao copiar link. Compartilhe manualmente: ' + window.location.href);
+                showNotification('🔗 Link copiado! Compartilhe com seus colegas.');
             });
     }
 }
 
-function playClickSound() {
-    // Som de clique suave (opcional)
-    try {
-        const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3');
-        audio.volume = 0.3;
-        audio.play().catch(() => {});
-    } catch(e) {}
-}
-
-function showDownloadSuccess() {
-    const successMsg = document.createElement('div');
-    successMsg.innerHTML = `
-        <div style="
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #38a169;
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(56, 161, 105, 0.4);
-            z-index: 10001;
-            animation: slideInRight 0.5s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            max-width: 300px;
-        ">
-            <i class="fas fa-check-circle" style="font-size: 1.5rem;"></i>
-            <div>
-                <strong>✅ Download Iniciado!</strong>
-                <p style="margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.9;">
-                    Verifique suas notificações
-                </p>
-            </div>
-        </div>
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--primary);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        z-index: 10000;
+        animation: slideUp 0.3s;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        border-left: 4px solid var(--accent);
+        max-width: 300px;
     `;
-    
-    document.body.appendChild(successMsg);
+    notification.textContent = message;
+    document.body.appendChild(notification);
     
     setTimeout(() => {
-        successMsg.remove();
-    }, 5000);
+        notification.remove();
+    }, 3000);
 }
 
-// Fechar modal com tecla ESC
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && downloadModal && downloadModal.classList.contains('active')) {
-        closeDownloadModal();
+// Fechar painel ao clicar fora
+document.addEventListener('click', (event) => {
+    const controls = document.getElementById('downloadControls');
+    const btn = document.querySelector('.floating-download-btn');
+    
+    if (controls.classList.contains('show') && 
+        !controls.contains(event.target) && 
+        !btn.contains(event.target)) {
+        controls.classList.remove('show');
+        btn.classList.remove('active');
     }
-});
-
-// Inicializar quando o DOM carregar
-document.addEventListener('DOMContentLoaded', () => {
-    // Adicionar estilos dinâmicos se necessário
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-    `;
-    document.head.appendChild(style);
 });
 // Função para carregar uma rádio
 function loadRadio(radioId) {
