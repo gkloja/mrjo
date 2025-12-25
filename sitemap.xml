@@ -28,11 +28,11 @@
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/sinais/cis-alfa.jpg</image:loc>
+      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
       <image:title>Códigos de Sinais Navais CIS ATP - Guia Completo</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/sinais/substituta.jpg</image:loc>
+      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
       <image:title>Cornetas Substitutas da Marinha</image:title>
     </image:image>
   </url>
@@ -44,20 +44,8 @@
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/apitos/thumb.jpg</image:loc>
+      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
       <image:title>Toques de Apito da Marinha - Áudios Completos</image:title>
-    </image:image>
-  </url>
-  
-  <!-- PÁGINA DE BANDEIRAS -->
-  <url>
-    <loc>https://marujodigital.onrender.com/bandeiras.html</loc>
-    <lastmod>2024-12-24</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-    <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/bandeiras/nacional.jpg</image:loc>
-      <image:title>Bandeiras e Insígnias da Marinha do Brasil</image:title>
     </image:image>
   </url>
   
@@ -70,7 +58,7 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/protocolos/thumb.jpg</image:loc>
+      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
       <image:title>Protocolos e Honras Navais - EMN-006</image:title>
     </image:image>
   </url>
@@ -82,7 +70,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/sobre/autor.jpg</image:loc>
+      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
       <image:title>Sobre o Marujo Digital - Especialista em Cerimonial Naval</image:title>
     </image:image>
   </url>
@@ -115,44 +103,4 @@
   
   <!-- ===== PÁGINAS DE CONTEÚDO ESPECÍFICO (para SEO de palavras-chave longas) ===== -->
   
-  <!-- PÁGINA CIS (Código Internacional de Sinais) -->
-  <url>
-    <loc>https://marujodigital.onrender.com/cis.html</loc>
-    <lastmod>2024-12-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- PÁGINA ATP (Código Tático) -->
-  <url>
-    <loc>https://marujodigital.onrender.com/atp.html</loc>
-    <lastmod>2024-12-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- PÁGINA SUBSTITUTAS -->
-  <url>
-    <loc>https://marujodigital.onrender.com/substitutas.html</loc>
-    <lastmod>2024-12-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- PÁGINA GALHARDETES -->
-  <url>
-    <loc>https://marujodigital.onrender.com/galhardetes.html</loc>
-    <lastmod>2024-12-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- PÁGINA EMERGÊNCIA -->
-  <url>
-    <loc>https://marujodigital.onrender.com/emergencia.html</loc>
-    <lastmod>2024-12-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
 </urlset>
