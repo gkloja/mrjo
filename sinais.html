@@ -812,7 +812,7 @@
             ],
             
             // Numerais ATP
-            numerais: [
+             numerais: [
                 { codigo: "BA 1", significado: "Sinal numeral 1", categoria: "numeral", imagem: "imagens/sinais/91.png" },
                 { codigo: "BA 2", significado: "Sinal numeral 2", categoria: "numeral", imagem: "imagens/sinais/92.png" },
                 { codigo: "BA 3", significado: "Sinal numeral 3", categoria: "numeral", imagem: "imagens/sinais/93.png" },
@@ -822,21 +822,21 @@
                 { codigo: "BA 7", significado: "Sinal numeral 7", categoria: "numeral", imagem: "imagens/sinais/97.png" },
                 { codigo: "BA 8", significado: "Governar afastando-se do navio", categoria: "manobra", imagem: "imagens/sinais/98.png" },
                 { codigo: "BA 9", significado: "Sinal numeral 9", categoria: "numeral", imagem: "imagens/sinais/99.png" },
-                { codigo: "BA 0", significado: "Serviço de guarda militar / Transporte de mala postal", categoria: "serviço", imagem: "imagens/sinais/100.png" }
+                { codigo: "BA 0", significado: "Serviço de guarda militar / Transporte de mala postal", categoria: "numeral", imagem: "imagens/sinais/100.png" }
             ],
             
             // Galhardetes
             galhardetes: [
-                { codigo: "NEGAT", significado: "Negativo, cessar, não fazer, exetuados", categoria: "comando", imagem: "imagens/sinais/109.png" },
-                { codigo: "INT", significado: "Interroga ou pergunta", categoria: "comunicação", imagem: "imagens/sinais/110.png" },
-                { codigo: "PREP", significado: "Preparação para manobra ou cerimonial", categoria: "operações", imagem: "imagens/sinais/111.png" },
-                { codigo: "BOMBORDO", significado: "Guinada para bombordo", categoria: "manobra", imagem: "imagens/sinais/105.png" },
-                { codigo: "RECON", significado: "Reconhecimento", categoria: "comunicação", imagem: "imagens/sinais/106.png" },
-                { codigo: "DESIG", significado: "Designação de texto em linguagem clara", categoria: "comunicação", imagem: "imagens/sinais/112.png" },
-                { codigo: "EMERG", significado: "Emergência - executar sinal imediatamente", categoria: "emergencia", imagem: "imagens/sinais/113.png" },
-                { codigo: "FORM", significado: "Solicita embarcação de lixo", categoria: "serviço", imagem: "imagens/sinais/114.png" },
-                { codigo: "VELOC", significado: "Indicação de velocidade ou partida", categoria: "manobra", imagem: "imagens/sinais/115.png" },
-                { codigo: "BORESTE", significado: "Guinada para boreste", categoria: "manobra", imagem: "imagens/sinais/116.png" }
+                { codigo: "NEGAT", significado: "Negativo, cessar, não fazer, exetuados", categoria: "galhardete", imagem: "imagens/sinais/109.png" },
+                { codigo: "INT", significado: "Interroga ou pergunta", categoria: "galhardete", imagem: "imagens/sinais/110.png" },
+                { codigo: "PREP", significado: "Preparação para manobra ou cerimonial", categoria: "galhardete", imagem: "imagens/sinais/111.png" },
+                { codigo: "BOMBORDO", significado: "Guinada para bombordo", categoria: "galhardete", imagem: "imagens/sinais/105.png" },
+                { codigo: "RECON", significado: "Reconhecimento", categoria: "galhardete", imagem: "imagens/sinais/106.png" },
+                { codigo: "DESIG", significado: "Designação de texto em linguagem clara", categoria: "galhardete", imagem: "imagens/sinais/112.png" },
+                { codigo: "EMERG", significado: "Emergência - executar sinal imediatamente", categoria: "galhardete", imagem: "imagens/sinais/113.png" },
+                { codigo: "FORM", significado: "Solicita embarcação de lixo", categoria: "galhardete", imagem: "imagens/sinais/114.png" },
+                { codigo: "VELOC", significado: "Indicação de velocidade ou partida", categoria: "galhardete", imagem: "imagens/sinais/115.png" },
+                { codigo: "BORESTE", significado: "Guinada para boreste", categoria: "galhardete", imagem: "imagens/sinais/116.png" }
             ],
             
             // Cornetas Substitutas
@@ -951,7 +951,7 @@
                 ...sinaisData.atp.map(s => ({...s, tipo: 'atp'})),
                 ...sinaisData.numerais.map(s => ({...s, tipo: 'numeral'})),
                 ...sinaisData.galhardetes.map(s => ({...s, tipo: 'galhardete'})),
-                ...sinaisData.substitutas.map(s => ({...s, tipo: 'substituta'})),
+                ...sinaisData.substitutas.map(s => ({...s, tipo: 'ausencia'})),
                 ...sinaisData.incendio.map(s => ({...s, tipo: 'emergencia'})),
                 ...sinaisData.formacao.map(s => ({...s, tipo: 'formacao'}))
             ];
