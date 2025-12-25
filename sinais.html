@@ -811,309 +811,281 @@
                 { codigo: "ZULU (ATP)", significado: "Reservado", categoria: "reservado", imagem: "imagens/sinais/90.png" }
             ],
             
-            // Numerais ATP
-             numerais: [
-                { codigo: "BA 1", significado: "Sinal numeral 1", categoria: "numeral", imagem: "imagens/sinais/91.png" },
-                { codigo: "BA 2", significado: "Sinal numeral 2", categoria: "numeral", imagem: "imagens/sinais/92.png" },
-                { codigo: "BA 3", significado: "Sinal numeral 3", categoria: "numeral", imagem: "imagens/sinais/93.png" },
-                { codigo: "BA 4", significado: "Sinal numeral 4", categoria: "numeral", imagem: "imagens/sinais/94.png" },
-                { codigo: "BA 5", significado: "Tenho avarias", categoria: "emergencia", imagem: "imagens/sinais/95.png" },
-                { codigo: "BA 6", significado: "Operações de reboque", categoria: "operações", imagem: "imagens/sinais/96.png" },
-                { codigo: "BA 7", significado: "Sinal numeral 7", categoria: "numeral", imagem: "imagens/sinais/97.png" },
-                { codigo: "BA 8", significado: "Governar afastando-se do navio", categoria: "manobra", imagem: "imagens/sinais/98.png" },
-                { codigo: "BA 9", significado: "Sinal numeral 9", categoria: "numeral", imagem: "imagens/sinais/99.png" },
-                { codigo: "BA 0", significado: "Serviço de guarda militar / Transporte de mala postal", categoria: "numeral", imagem: "imagens/sinais/100.png" }
-            ],
             
-            // Galhardetes
-            galhardetes: [
-                { codigo: "NEGAT", significado: "Negativo, cessar, não fazer, exetuados", categoria: "galhardete", imagem: "imagens/sinais/109.png" },
-                { codigo: "INT", significado: "Interroga ou pergunta", categoria: "galhardete", imagem: "imagens/sinais/110.png" },
-                { codigo: "PREP", significado: "Preparação para manobra ou cerimonial", categoria: "galhardete", imagem: "imagens/sinais/111.png" },
-                { codigo: "BOMBORDO", significado: "Guinada para bombordo", categoria: "galhardete", imagem: "imagens/sinais/105.png" },
-                { codigo: "RECON", significado: "Reconhecimento", categoria: "galhardete", imagem: "imagens/sinais/106.png" },
-                { codigo: "DESIG", significado: "Designação de texto em linguagem clara", categoria: "galhardete", imagem: "imagens/sinais/112.png" },
-                { codigo: "EMERG", significado: "Emergência - executar sinal imediatamente", categoria: "galhardete", imagem: "imagens/sinais/113.png" },
-                { codigo: "FORM", significado: "Solicita embarcação de lixo", categoria: "galhardete", imagem: "imagens/sinais/114.png" },
-                { codigo: "VELOC", significado: "Indicação de velocidade ou partida", categoria: "galhardete", imagem: "imagens/sinais/115.png" },
-                { codigo: "BORESTE", significado: "Guinada para boreste", categoria: "galhardete", imagem: "imagens/sinais/116.png" }
-            ],
-            
-            // Cornetas Substitutas
-            substitutas: [
-                { 
-                    codigo: "1ª SUBSTITUTA", 
-                    significado: "Ausência do Comandante de Força embarcado (até 72 horas)", 
-                    categoria: "ausencia", 
-                    imagem: "imagens/sinais/125.png",
-                    posicao: "Adriça mais de fora a BE (bombordo)",
-                    tempo: "Até 72 horas"
-                },
-                { 
-                    codigo: "2ª SUBSTITUTA", 
-                    significado: "Ausência do Chefe de Estado-Maior embarcado", 
-                    categoria: "ausencia", 
-                    imagem: "imagens/sinais/126.png",
-                    posicao: "Adriça de dentro a BB (boreste)"
-                },
-                { 
-                    codigo: "3ª SUBSTITUTA", 
-                    significado: "Ausência do Comandante do navio", 
-                    categoria: "ausencia", 
-                    imagem: "imagens/sinais/127.png",
-                    posicao: "Adriça mais de fora a BB (boreste)",
-                    detalhes: "Após 72 horas, passa para o Imediato"
-                },
-                { 
-                    codigo: "4ª SUBSTITUTA", 
-                    significado: "Ausência de autoridade civil ou militar cujo pavilhão está içado", 
-                    categoria: "ausencia", 
-                    imagem: "imagens/sinais/128.png",
-                    posicao: "Adriça de dentro a BE (bombordo)"
-                }
-            ],
-            
-            // Sinais de Incêndio a Bordo (ATP)
-            incendio: [
-                { 
-                    codigo: "BA 1 - Incêndio", 
-                    significado: "Tenho incêndio classe ALFA (materiais sólidos)", 
-                    categoria: "emergencia", 
-                    imagem: "imagens/sinais/129.png",
-                    procedimento: "Isolar área, usar extintores de água ou espuma"
-                },
-                { 
-                    codigo: "BA 2 - Incêndio", 
-                    significado: "Tenho incêndio classe BRAVO (líquidos inflamáveis)", 
-                    categoria: "emergencia", 
-                    imagem: "imagens/sinais/122.png",
-                    procedimento: "Usar extintores de pó químico ou CO₂, não usar água"
-                },
-                { 
-                    codigo: "BA 3 - Incêndio", 
-                    significado: "Tenho incêndio classe CHARLIE (equipamentos elétricos)", 
-                    categoria: "emergencia", 
-                    imagem: "imagens/sinais/123.png",
-                    procedimento: "Desenergizar, usar extintores de CO₂ ou pó químico"
-                },
-                { 
-                    codigo: "BA 4 - Incêndio", 
-                    significado: "Tenho incêndio classe DELTA (metais combustíveis)", 
-                    categoria: "emergencia", 
-                    imagem: "imagens/sinais/124.png",
-                    procedimento: "Usar extintores classe D específicos, isolar completamente"
-                }
-            ],
-            
-            // Indicativos de Unidade (ATP)
-            formacao: [
-                { 
-                    codigo: "DIV", 
-                    significado: "Indicativo de divisão", 
-                    categoria: "formacao", 
-                    imagem: "imagens/sinais/125.png",
-                    uso: "Identificação de divisões navais"
-                },
-                { 
-                    codigo: "FLOT", 
-                    significado: "Indicativo de flotilha", 
-                    categoria: "formacao", 
-                    imagem: "imagens/sinais/126.png",
-                    uso: "Identificação de flotilhas"
-                },
-                { 
-                    codigo: "ESQUAD", 
-                    significado: "Indicativo de esquadra", 
-                    categoria: "formacao", 
-                    imagem: "imagens/sinais/127.png",
-                    uso: "Identificação de esquadras"
-                },
-                { 
-                    codigo: "SUBDTV", 
-                    significado: "Indicativo de subdivisão", 
-                    categoria: "formacao", 
-                    imagem: "imagens/sinais/128.png",
-                    uso: "Identificação de subdivisões"
-                }
-            ]
-        };
-
-        // VARIÁVEIS GLOBAIS
-        let currentFilter = 'all';
-        let allSignals = [];
-        let filteredSignals = [];
-
-        // INICIALIZAÇÃO
-        document.addEventListener('DOMContentLoaded', function() {
-            // Combinar todos os sinais
-// NA PARTE DO JAVASCRIPT - LINHAS 730-742, CORRIJA:
-    // Combinar todos os sinais com os tipos CORRETOS
-    allSignals = [
-        ...sinaisData.cis.map(s => ({...s, tipo: 'cis'})),
-        ...sinaisData.atp.map(s => ({...s, tipo: 'atp'})),
-        // Numerais - todos devem ter tipo 'numeral'
-        ...sinaisData.numerais.map(s => ({...s, tipo: 'numeral'})),
-        // Galhardetes - todos devem ter tipo 'galhardete'
-        ...sinaisData.galhardetes.map(s => ({...s, tipo: 'galhardete'})),
-        // Substitutas - tipo deve ser 'substituta' (não 'ausencia')
-        ...sinaisData.substitutas.map(s => ({...s, tipo: 'substituta'})),
-        // Incêndio - tipo deve ser 'emergencia'
-        ...sinaisData.incendio.map(s => ({...s, tipo: 'emergencia'})),
-        // Formação - tipo deve ser 'formacao'
-        ...sinaisData.formacao.map(s => ({...s, tipo: 'formacao'}))
-    ];
-    
-    // DEPURAÇÃO: Verifique se os sinais estão sendo carregados
-    console.log("Total de sinais carregados:", allSignals.length);
-    console.log("Numerais:", allSignals.filter(s => s.tipo === 'numeral').length);
-    console.log("Galhardetes:", allSignals.filter(s => s.tipo === 'galhardete').length);
-    console.log("Substitutas:", allSignals.filter(s => s.tipo === 'substituta').length);
-    
-            
-            // Carregar todos inicialmente
-            displaySignals(allSignals);
-            
-            // Configurar busca
-            const searchInput = document.getElementById('signalSearch');
-            if (searchInput) {
-                searchInput.addEventListener('input', searchSignals);
+        
+        // Numerais ATP - CORRIGIDO: Todos com categoria "numeral"
+        numerais: [
+            { codigo: "BA 1", significado: "Sinal numeral 1", categoria: "numeral", imagem: "imagens/sinais/91.png" },
+            { codigo: "BA 2", significado: "Sinal numeral 2", categoria: "numeral", imagem: "imagens/sinais/92.png" },
+            { codigo: "BA 3", significado: "Sinal numeral 3", categoria: "numeral", imagem: "imagens/sinais/93.png" },
+            { codigo: "BA 4", significado: "Sinal numeral 4", categoria: "numeral", imagem: "imagens/sinais/94.png" },
+            { codigo: "BA 5", significado: "Tenho avarias", categoria: "numeral", imagem: "imagens/sinais/95.png" }, // MANTIDO como numeral
+            { codigo: "BA 6", significado: "Operações de reboque", categoria: "numeral", imagem: "imagens/sinais/96.png" }, // MANTIDO como numeral
+            { codigo: "BA 7", significado: "Sinal numeral 7", categoria: "numeral", imagem: "imagens/sinais/97.png" },
+            { codigo: "BA 8", significado: "Governar afastando-se do navio", categoria: "numeral", imagem: "imagens/sinais/98.png" }, // MANTIDO como numeral
+            { codigo: "BA 9", significado: "Sinal numeral 9", categoria: "numeral", imagem: "imagens/sinais/99.png" },
+            { codigo: "BA 0", significado: "Serviço de guarda militar / Transporte de mala postal", categoria: "numeral", imagem: "imagens/sinais/100.png" } // MANTIDO como numeral
+        ],
+        
+        // Galhardetes - CORRIGIDO: Categoria específica, mas será mapeado para tipo 'galhardete'
+        galhardetes: [
+            { codigo: "NEGAT", significado: "Negativo, cessar, não fazer, exetuados", categoria: "galhardete-comando", imagem: "imagens/sinais/109.png" },
+            { codigo: "INT", significado: "Interroga ou pergunta", categoria: "galhardete-comunicacao", imagem: "imagens/sinais/110.png" },
+            { codigo: "PREP", significado: "Preparação para manobra ou cerimonial", categoria: "galhardete-operacoes", imagem: "imagens/sinais/111.png" },
+            { codigo: "BOMBORDO", significado: "Guinada para bombordo", categoria: "galhardete-manobra", imagem: "imagens/sinais/105.png" },
+            { codigo: "RECON", significado: "Reconhecimento", categoria: "galhardete-comunicacao", imagem: "imagens/sinais/106.png" },
+            { codigo: "DESIG", significado: "Designação de texto em linguagem clara", categoria: "galhardete-comunicacao", imagem: "imagens/sinais/112.png" },
+            { codigo: "EMERG", significado: "Emergência - executar sinal imediatamente", categoria: "galhardete-emergencia", imagem: "imagens/sinais/113.png" },
+            { codigo: "FORM", significado: "Solicita embarcação de lixo", categoria: "galhardete-servico", imagem: "imagens/sinais/114.png" },
+            { codigo: "VELOC", significado: "Indicação de velocidade ou partida", categoria: "galhardete-manobra", imagem: "imagens/sinais/115.png" },
+            { codigo: "BORESTE", significado: "Guinada para boreste", categoria: "galhardete-manobra", imagem: "imagens/sinais/116.png" }
+        ],
+        
+        // Cornetas Substitutas
+        substitutas: [
+            { 
+                codigo: "1ª SUBSTITUTA", 
+                significado: "Ausência do Comandante de Força embarcado (até 72 horas)", 
+                categoria: "ausencia", 
+                imagem: "imagens/sinais/125.png",
+                posicao: "Adriça mais de fora a BE (bombordo)",
+                tempo: "Até 72 horas"
+            },
+            { 
+                codigo: "2ª SUBSTITUTA", 
+                significado: "Ausência do Chefe de Estado-Maior embarcado", 
+                categoria: "ausencia", 
+                imagem: "imagens/sinais/126.png",
+                posicao: "Adriça de dentro a BB (boreste)"
+            },
+            { 
+                codigo: "3ª SUBSTITUTA", 
+                significado: "Ausência do Comandante do navio", 
+                categoria: "ausencia", 
+                imagem: "imagens/sinais/127.png",
+                posicao: "Adriça mais de fora a BB (boreste)",
+                detalhes: "Após 72 horas, passa para o Imediato"
+            },
+            { 
+                codigo: "4ª SUBSTITUTA", 
+                significado: "Ausência de autoridade civil ou militar cujo pavilhão está içado", 
+                categoria: "ausencia", 
+                imagem: "imagens/sinais/128.png",
+                posicao: "Adriça de dentro a BE (bombordo)"
             }
+        ],
+        
+        // Sinais de Incêndio a Bordo (ATP)
+        incendio: [
+            { 
+                codigo: "BA 1 - Incêndio", 
+                significado: "Tenho incêndio classe ALFA (materiais sólidos)", 
+                categoria: "emergencia", 
+                imagem: "imagens/sinais/129.png",
+                procedimento: "Isolar área, usar extintores de água ou espuma"
+            },
+            { 
+                codigo: "BA 2 - Incêndio", 
+                significado: "Tenho incêndio classe BRAVO (líquidos inflamáveis)", 
+                categoria: "emergencia", 
+                imagem: "imagens/sinais/122.png",
+                procedimento: "Usar extintores de pó químico ou CO₂, não usar água"
+            },
+            { 
+                codigo: "BA 3 - Incêndio", 
+                significado: "Tenho incêndio classe CHARLIE (equipamentos elétricos)", 
+                categoria: "emergencia", 
+                imagem: "imagens/sinais/123.png",
+                procedimento: "Desenergizar, usar extintores de CO₂ ou pó químico"
+            },
+            { 
+                codigo: "BA 4 - Incêndio", 
+                significado: "Tenho incêndio classe DELTA (metais combustíveis)", 
+                categoria: "emergencia", 
+                imagem: "imagens/sinais/124.png",
+                procedimento: "Usar extintores classe D específicos, isolar completamente"
+            }
+        ],
+        
+        // Indicativos de Unidade (ATP)
+        formacao: [
+            { 
+                codigo: "DIV", 
+                significado: "Indicativo de divisão", 
+                categoria: "formacao", 
+                imagem: "imagens/sinais/125.png",
+                uso: "Identificação de divisões navais"
+            },
+            { 
+                codigo: "FLOT", 
+                significado: "Indicativo de flotilha", 
+                categoria: "formacao", 
+                imagem: "imagens/sinais/126.png",
+                uso: "Identificação de flotilhas"
+            },
+            { 
+                codigo: "ESQUAD", 
+                significado: "Indicativo de esquadra", 
+                categoria: "formacao", 
+                imagem: "imagens/sinais/127.png",
+                uso: "Identificação de esquadras"
+            },
+            { 
+                codigo: "SUBDTV", 
+                significado: "Indicativo de subdivisão", 
+                categoria: "formacao", 
+                imagem: "imagens/sinais/128.png",
+                uso: "Identificação de subdivisões"
+            }
+        ]
+  
+
+        }
+
+
+
+   // VARIÁVEIS GLOBAIS
+    let currentFilter = 'all';
+    let allSignals = [];
+    let filteredSignals = [];
+
+    // INICIALIZAÇÃO CORRIGIDA
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("Iniciando carregamento de sinais...");
+        
+        // Combinar todos os sinais com os tipos CORRETOS
+        allSignals = [
+            // CIS
+            ...sinaisData.cis.map(s => ({...s, tipo: 'cis'})),
             
-            // Configurar botões de filtro
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
+            // ATP
+            ...sinaisData.atp.map(s => ({...s, tipo: 'atp'})),
             
-            // Fechar modal com ESC
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') closeModal();
+            // NUMERAIS - tipo: 'numeral'
+            ...sinaisData.numerais.map(s => ({...s, tipo: 'numeral'})),
+            
+            // GALHARDETES - tipo: 'galhardete'
+            ...sinaisData.galhardetes.map(s => ({...s, tipo: 'galhardete'})),
+            
+            // SUBSTITUTAS - tipo: 'substituta'
+            ...sinaisData.substitutas.map(s => ({...s, tipo: 'substituta'})),
+            
+            // INCÊNDIO - tipo: 'emergencia'
+            ...sinaisData.incendio.map(s => ({...s, tipo: 'emergencia'})),
+            
+            // FORMAÇÃO - tipo: 'formacao'
+            ...sinaisData.formacao.map(s => ({...s, tipo: 'formacao'}))
+        ];
+        
+        // LOG para debug
+        console.log("Total de sinais:", allSignals.length);
+        console.log("Por tipo:");
+        console.log("- CIS:", allSignals.filter(s => s.tipo === 'cis').length);
+        console.log("- ATP:", allSignals.filter(s => s.tipo === 'atp').length);
+        console.log("- Numerais:", allSignals.filter(s => s.tipo === 'numeral').length);
+        console.log("- Galhardetes:", allSignals.filter(s => s.tipo === 'galhardete').length);
+        console.log("- Substitutas:", allSignals.filter(s => s.tipo === 'substituta').length);
+        console.log("- Emergência:", allSignals.filter(s => s.tipo === 'emergencia').length);
+        console.log("- Formação:", allSignals.filter(s => s.tipo === 'formacao').length);
+        
+        // Exibir primeiros sinais para debug
+        console.log("Primeiros 5 sinais:", allSignals.slice(0, 5));
+        
+        // Carregar todos inicialmente
+        displaySignals(allSignals);
+        
+        // Configurar busca
+        const searchInput = document.getElementById('signalSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', searchSignals);
+        }
+        
+        // Configurar botões de filtro
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tipo = this.getAttribute('onclick').match(/'([^']+)'/)[1];
+                filterSignals(tipo);
             });
         });
+        
+        // Fechar modal com ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+    });
 
-        // FUNÇÃO: Filtrar sinais
-        function filterSignals(tipo) {
-            currentFilter = tipo;
-            
-            if (tipo === 'all') {
-                filteredSignals = allSignals;
-            } else {
-                filteredSignals = allSignals.filter(sinal => sinal.tipo === tipo);
-            }
-            
-            // Aplicar busca atual se houver
-            const searchInput = document.getElementById('signalSearch');
-            if (searchInput && searchInput.value) {
-                const searchTerm = searchInput.value.toLowerCase();
-                filteredSignals = filteredSignals.filter(sinal => 
-                    sinal.codigo.toLowerCase().includes(searchTerm) ||
-                    sinal.significado.toLowerCase().includes(searchTerm) ||
-                    sinal.categoria.toLowerCase().includes(searchTerm)
-                );
-            }
-            
-            displaySignals(filteredSignals);
-        }
-
-        // FUNÇÃO: Buscar sinais
-        function searchSignals() {
-            const searchTerm = document.getElementById('signalSearch').value.toLowerCase();
-            
-            if (currentFilter === 'all') {
-                filteredSignals = allSignals;
-            } else {
-                filteredSignals = allSignals.filter(sinal => sinal.tipo === currentFilter);
-            }
-            
-            if (searchTerm) {
-                filteredSignals = filteredSignals.filter(sinal => 
-                    sinal.codigo.toLowerCase().includes(searchTerm) ||
-                    sinal.significado.toLowerCase().includes(searchTerm) ||
-                    sinal.categoria.toLowerCase().includes(searchTerm)
-                );
-            }
-            
-            displaySignals(filteredSignals);
-        }
-
-        // FUNÇÃO: Exibir sinais na grade
-        function displaySignals(signals) {
-            const grid = document.getElementById('signalsGrid');
-            const resultsCount = document.getElementById('resultsCount');
-            const noResults = document.getElementById('noResults');
-            
-            if (!grid) return;
-            
-            grid.innerHTML = '';
-            
-            if (signals.length === 0) {
-                noResults.style.display = 'block';
-                resultsCount.textContent = 'Nenhum sinal encontrado';
-                return;
-            }
-            
-            noResults.style.display = 'none';
-            resultsCount.textContent = `${signals.length} sinais encontrados`;
-            
-            signals.forEach(sinal => {
-                const card = document.createElement('div');
-                card.className = `signal-card ${sinal.tipo}`;
-                card.onclick = () => openSignalModal(sinal);
-                
-                // Cor do tipo
-                const tipoCores = {
-                    'cis': '#38a169',
-                    'atp': '#d69e2e',
-                    'numeral': '#4299e1',
-                    'galhardete': '#9f7aea',
-                    'substituta': '#f59e0b',
-                    'emergencia': '#e53e3e',
-                    'formacao': '#10b981'
-                };
-                
-                const cor = tipoCores[sinal.tipo] || '#718096';
-                
-                card.innerHTML = `
-                    <div class="signal-header">
-                        <div class="signal-image">
-                            <img src="${sinal.imagem}" 
-                                 alt="${sinal.codigo}"
-                                 onerror="this.src='https://via.placeholder.com/70x45/2d3748/ffffff?text=' + this.alt.substring(0,3)">
-                        </div>
-                        <div>
-                            <div class="signal-type">${getTipoLabel(sinal.tipo)}</div>
-                        </div>
-                    </div>
-                    
-                    <h3 class="signal-code">${sinal.codigo}</h3>
-                    
-                    <p class="signal-meaning">${sinal.significado}</p>
-                    
-                    <div class="signal-category">
-                        <i class="fas fa-tag"></i>
-                        <span>${getCategoryLabel(sinal.categoria)}</span>
-                    </div>
-                `;
-                
-                grid.appendChild(card);
+    // FUNÇÃO: Filtrar sinais - CORRIGIDA
+    function filterSignals(tipo) {
+        console.log("Filtrando por:", tipo);
+        currentFilter = tipo;
+        
+        if (tipo === 'all') {
+            filteredSignals = allSignals;
+        } else {
+            filteredSignals = allSignals.filter(sinal => {
+                console.log(`Sinal ${sinal.codigo} - tipo: ${sinal.tipo}, filtro: ${tipo}`);
+                return sinal.tipo === tipo;
             });
         }
+        
+        console.log(`Encontrados ${filteredSignals.length} sinais para filtro ${tipo}`);
+        
+        // Aplicar busca atual se houver
+        const searchInput = document.getElementById('signalSearch');
+        if (searchInput && searchInput.value) {
+            const searchTerm = searchInput.value.toLowerCase();
+            filteredSignals = filteredSignals.filter(sinal => 
+                sinal.codigo.toLowerCase().includes(searchTerm) ||
+                sinal.significado.toLowerCase().includes(searchTerm) ||
+                sinal.categoria.toLowerCase().includes(searchTerm)
+            );
+        }
+        
+        displaySignals(filteredSignals);
+    }
 
-        // FUNÇÃO: Abrir modal com detalhes
-        function openSignalModal(sinal) {
-            const modal = document.getElementById('signalModal');
-            const modalIcon = document.getElementById('modalIcon');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalSubtitle = document.getElementById('modalSubtitle');
-            const modalImage = document.getElementById('modalImage');
-            const modalMeaning = document.getElementById('modalMeaning');
-            const modalCategory = document.getElementById('modalCategory');
-            const modalType = document.getElementById('modalType');
-            const additionalInfo = document.getElementById('additionalInfo');
+    // FUNÇÃO: Exibir sinais na grade
+    function displaySignals(signals) {
+        const grid = document.getElementById('signalsGrid');
+        const resultsCount = document.getElementById('resultsCount');
+        const noResults = document.getElementById('noResults');
+        
+        if (!grid) {
+            console.error("Elemento signalsGrid não encontrado!");
+            return;
+        }
+        
+        grid.innerHTML = '';
+        
+        if (signals.length === 0) {
+            noResults.style.display = 'block';
+            resultsCount.textContent = 'Nenhum sinal encontrado';
+            console.log("Nenhum sinal para exibir");
+            return;
+        }
+        
+        noResults.style.display = 'none';
+        resultsCount.textContent = `${signals.length} sinais encontrados`;
+        
+        console.log(`Exibindo ${signals.length} sinais`);
+        
+        signals.forEach(sinal => {
+            const card = document.createElement('div');
             
-            // Configurar cores
+            // Determinar a classe CSS baseada no tipo
+            let tipoClasse = sinal.tipo;
+            if (sinal.tipo === 'cis') tipoClasse = 'cis';
+            else if (sinal.tipo === 'atp') tipoClasse = 'atp';
+            else if (sinal.tipo === 'numeral') tipoClasse = 'numeral';
+            else if (sinal.tipo === 'galhardete') tipoClasse = 'galhardete';
+            else if (sinal.tipo === 'substituta') tipoClasse = 'substituta';
+            else if (sinal.tipo === 'emergencia') tipoClasse = 'emergencia';
+            else if (sinal.tipo === 'formacao') tipoClasse = 'formacao';
+            
+            card.className = `signal-card ${tipoClasse}`;
+            card.onclick = () => openSignalModal(sinal);
+            
+            // Cor do tipo
             const tipoCores = {
                 'cis': '#38a169',
                 'atp': '#d69e2e',
@@ -1126,118 +1098,207 @@
             
             const cor = tipoCores[sinal.tipo] || '#718096';
             
-            // Atualizar conteúdo
-            modalIcon.style.background = `linear-gradient(135deg, ${cor}, ${cor}99)`;
-            modalTitle.textContent = sinal.codigo;
-            modalSubtitle.textContent = `${getTipoLabel(sinal.tipo)} • ${getCategoryLabel(sinal.categoria)}`;
-            modalImage.src = sinal.imagem;
-            modalImage.alt = sinal.codigo;
-            modalMeaning.textContent = sinal.significado;
-            modalCategory.textContent = getCategoryLabel(sinal.categoria);
-            modalType.textContent = getTipoLabel(sinal.tipo);
-            
-            // Informações adicionais
-            let additionalHTML = '';
-            
-            if (sinal.tipo === 'substituta') {
-                additionalHTML = `
-                    <div class="detail-item">
-                        <div class="detail-label">Posicionamento:</div>
-                        <div class="detail-value">${sinal.posicao || 'Não especificado'}</div>
+            card.innerHTML = `
+                <div class="signal-header">
+                    <div class="signal-image">
+                        <img src="${sinal.imagem}" 
+                             alt="${sinal.codigo}"
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/70x45/2d3748/ffffff?text=' + this.alt.substring(0,3)">
                     </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Período de uso:</div>
-                        <div class="detail-value">Das 8h ao pôr do sol</div>
+                    <div>
+                        <div class="signal-type" style="background: ${cor}">${getTipoLabel(sinal.tipo)}</div>
                     </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Tempo máximo:</div>
-                        <div class="detail-value">${sinal.tempo || 'Até 72 horas de ausência'}</div>
-                    </div>
-                    ${sinal.detalhes ? `
-                    <div class="detail-item">
-                        <div class="detail-label">Observação:</div>
-                        <div class="detail-value">${sinal.detalhes}</div>
-                    </div>` : ''}
-                `;
-            }
+                </div>
+                
+                <h3 class="signal-code">${sinal.codigo}</h3>
+                
+                <p class="signal-meaning">${sinal.significado}</p>
+                
+                <div class="signal-category">
+                    <i class="fas fa-tag"></i>
+                    <span>${getCategoryLabel(sinal.categoria)}</span>
+                </div>
+            `;
             
-            if (sinal.procedimento) {
-                additionalHTML += `
-                    <div class="detail-item">
-                        <div class="detail-label">Procedimento:</div>
-                        <div class="detail-value">${sinal.procedimento}</div>
-                    </div>
-                `;
-            }
-            
-            if (sinal.uso) {
-                additionalHTML += `
-                    <div class="detail-item">
-                        <div class="detail-label">Uso:</div>
-                        <div class="detail-value">${sinal.uso}</div>
-                    </div>
-                `;
-            }
-            
-            additionalInfo.innerHTML = additionalHTML;
-            
-            // Exibir modal
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        // FUNÇÃO: Fechar modal
-        function closeModal() {
-            const modal = document.getElementById('signalModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        // FUNÇÕES AUXILIARES
-        function getTipoLabel(tipo) {
-            const labels = {
-                'cis': 'CIS - Código Internacional',
-                'atp': 'ATP - Código Tático',
-                'numeral': 'Numeral',
-                'galhardete': 'Galhardete',
-                'substituta': 'Substituta',
-                'emergencia': 'Emergência',
-                'formacao': 'Formação Naval'
-            };
-            return labels[tipo] || tipo.toUpperCase();
-        }
-
-        function getCategoryLabel(categoria) {
-            const labels = {
-                'segurança': '🚨 Segurança',
-                'perigo': '⚠️ Perigo',
-                'emergencia': '🆘 Emergência',
-                'manobra': '⚓ Manobra',
-                'comunicação': '📡 Comunicação',
-                'navegação': '🧭 Navegação',
-                'saúde': '🏥 Saúde',
-                'mecânica': '🔧 Mecânica',
-                'ordem': '📢 Ordem',
-                'pesca': '🎣 Pesca',
-                'ancoragem': '⚓ Ancoragem',
-                'aeronaves': '✈️ Aeronaves',
-                'formação': '👥 Formação',
-                'operações': '🛠️ Operações',
-                'comando': '🎖️ Comando',
-                'numeral': '🔢 Numeral',
-                'serviço': '🏛️ Serviço',
-                'exercicio': '🎯 Exercício',
-                'reservado': '🔒 Reservado',
-                'ausencia': '👤 Ausência',
-                'formacao': '🚢 Formação Naval'
-            };
-            return labels[categoria] || categoria.charAt(0).toUpperCase() + categoria.slice(1);
-        }
-
-        // Fechar modal ao clicar fora
-        document.getElementById('signalModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
+            grid.appendChild(card);
         });
+    }
+
+    // Resto das funções permanecem iguais...
+    // FUNÇÃO: Buscar sinais
+    function searchSignals() {
+        const searchTerm = document.getElementById('signalSearch').value.toLowerCase();
+        console.log("Buscando:", searchTerm);
+        
+        if (currentFilter === 'all') {
+            filteredSignals = allSignals;
+        } else {
+            filteredSignals = allSignals.filter(sinal => sinal.tipo === currentFilter);
+        }
+        
+        if (searchTerm) {
+            filteredSignals = filteredSignals.filter(sinal => 
+                sinal.codigo.toLowerCase().includes(searchTerm) ||
+                sinal.significado.toLowerCase().includes(searchTerm) ||
+                sinal.categoria.toLowerCase().includes(searchTerm)
+            );
+        }
+        
+        console.log("Resultados da busca:", filteredSignals.length);
+        displaySignals(filteredSignals);
+    }
+
+    // FUNÇÃO: Abrir modal com detalhes
+    function openSignalModal(sinal) {
+        console.log("Abrindo modal para:", sinal.codigo);
+        const modal = document.getElementById('signalModal');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalSubtitle = document.getElementById('modalSubtitle');
+        const modalImage = document.getElementById('modalImage');
+        const modalMeaning = document.getElementById('modalMeaning');
+        const modalCategory = document.getElementById('modalCategory');
+        const modalType = document.getElementById('modalType');
+        const additionalInfo = document.getElementById('additionalInfo');
+        
+        // Configurar cores
+        const tipoCores = {
+            'cis': '#38a169',
+            'atp': '#d69e2e',
+            'numeral': '#4299e1',
+            'galhardete': '#9f7aea',
+            'substituta': '#f59e0b',
+            'emergencia': '#e53e3e',
+            'formacao': '#10b981'
+        };
+        
+        const cor = tipoCores[sinal.tipo] || '#718096';
+        
+        // Atualizar conteúdo
+        modalIcon.style.background = `linear-gradient(135deg, ${cor}, ${cor}99)`;
+        modalTitle.textContent = sinal.codigo;
+        modalSubtitle.textContent = `${getTipoLabel(sinal.tipo)} • ${getCategoryLabel(sinal.categoria)}`;
+        modalImage.src = sinal.imagem;
+        modalImage.alt = sinal.codigo;
+        modalMeaning.textContent = sinal.significado;
+        modalCategory.textContent = getCategoryLabel(sinal.categoria);
+        modalType.textContent = getTipoLabel(sinal.tipo);
+        
+        // Informações adicionais
+        let additionalHTML = '';
+        
+        if (sinal.tipo === 'substituta') {
+            additionalHTML = `
+                <div class="detail-item">
+                    <div class="detail-label">Posicionamento:</div>
+                    <div class="detail-value">${sinal.posicao || 'Não especificado'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Período de uso:</div>
+                    <div class="detail-value">Das 8h ao pôr do sol</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Tempo máximo:</div>
+                    <div class="detail-value">${sinal.tempo || 'Até 72 horas de ausência'}</div>
+                </div>
+                ${sinal.detalhes ? `
+                <div class="detail-item">
+                    <div class="detail-label">Observação:</div>
+                    <div class="detail-value">${sinal.detalhes}</div>
+                </div>` : ''}
+            `;
+        }
+        
+        if (sinal.procedimento) {
+            additionalHTML += `
+                <div class="detail-item">
+                    <div class="detail-label">Procedimento:</div>
+                    <div class="detail-value">${sinal.procedimento}</div>
+                </div>
+            `;
+        }
+        
+        if (sinal.uso) {
+            additionalHTML += `
+                <div class="detail-item">
+                    <div class="detail-label">Uso:</div>
+                    <div class="detail-value">${sinal.uso}</div>
+                </div>
+            `;
+        }
+        
+        additionalInfo.innerHTML = additionalHTML;
+        
+        // Exibir modal
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // FUNÇÃO: Fechar modal
+    function closeModal() {
+        const modal = document.getElementById('signalModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    // FUNÇÕES AUXILIARES - ATUALIZADAS
+    function getTipoLabel(tipo) {
+        const labels = {
+            'cis': 'CIS - Código Internacional',
+            'atp': 'ATP - Código Tático',
+            'numeral': 'Numeral',
+            'galhardete': 'Galhardete',
+            'substituta': 'Substituta',
+            'emergencia': 'Emergência',
+            'formacao': 'Formação Naval'
+        };
+        return labels[tipo] || tipo.toUpperCase();
+    }
+
+    function getCategoryLabel(categoria) {
+        const labels = {
+            'segurança': '🚨 Segurança',
+            'perigo': '⚠️ Perigo',
+            'emergencia': '🆘 Emergência',
+            'manobra': '⚓ Manobra',
+            'comunicação': '📡 Comunicação',
+            'navegação': '🧭 Navegação',
+            'saúde': '🏥 Saúde',
+            'mecânica': '🔧 Mecânica',
+            'ordem': '📢 Ordem',
+            'pesca': '🎣 Pesca',
+            'ancoragem': '⚓ Ancoragem',
+            'aeronaves': '✈️ Aeronaves',
+            'formação': '👥 Formação',
+            'operações': '🛠️ Operações',
+            'comando': '🎖️ Comando',
+            'numeral': '🔢 Numeral',
+            'serviço': '🏛️ Serviço',
+            'exercicio': '🎯 Exercício',
+            'reservado': '🔒 Reservado',
+            'ausencia': '👤 Ausência',
+            'formacao': '🚢 Formação Naval',
+            // Galhardetes específicos
+            'galhardete-comando': '🎖️ Galhardete de Comando',
+            'galhardete-comunicacao': '📡 Galhardete de Comunicação',
+            'galhardete-operacoes': '🛠️ Galhardete de Operações',
+            'galhardete-manobra': '⚓ Galhardete de Manobra',
+            'galhardete-emergencia': '🆘 Galhardete de Emergência',
+            'galhardete-servico': '🏛️ Galhardete de Serviço'
+        };
+        return labels[categoria] || categoria.charAt(0).toUpperCase() + categoria.slice(1);
+    }
+
+    // Fechar modal ao clicar fora
+    document.getElementById('signalModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+
+
+
+
+
     </script>
 </body>
 </html>
