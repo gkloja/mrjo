@@ -946,15 +946,29 @@
         // INICIALIZAÇÃO
         document.addEventListener('DOMContentLoaded', function() {
             // Combinar todos os sinais
-            allSignals = [
-                ...sinaisData.cis.map(s => ({...s, tipo: 'cis'})),
-                ...sinaisData.atp.map(s => ({...s, tipo: 'atp'})),
-                ...sinaisData.numerais.map(s => ({...s, tipo: 'numeral'})),
-                ...sinaisData.galhardetes.map(s => ({...s, tipo: 'galhardete'})),
-                ...sinaisData.substitutas.map(s => ({...s, tipo: 'ausencia'})),
-                ...sinaisData.incendio.map(s => ({...s, tipo: 'emergencia'})),
-                ...sinaisData.formacao.map(s => ({...s, tipo: 'formacao'}))
-            ];
+// NA PARTE DO JAVASCRIPT - LINHAS 730-742, CORRIJA:
+    // Combinar todos os sinais com os tipos CORRETOS
+    allSignals = [
+        ...sinaisData.cis.map(s => ({...s, tipo: 'cis'})),
+        ...sinaisData.atp.map(s => ({...s, tipo: 'atp'})),
+        // Numerais - todos devem ter tipo 'numeral'
+        ...sinaisData.numerais.map(s => ({...s, tipo: 'numeral'})),
+        // Galhardetes - todos devem ter tipo 'galhardete'
+        ...sinaisData.galhardetes.map(s => ({...s, tipo: 'galhardete'})),
+        // Substitutas - tipo deve ser 'substituta' (não 'ausencia')
+        ...sinaisData.substitutas.map(s => ({...s, tipo: 'substituta'})),
+        // Incêndio - tipo deve ser 'emergencia'
+        ...sinaisData.incendio.map(s => ({...s, tipo: 'emergencia'})),
+        // Formação - tipo deve ser 'formacao'
+        ...sinaisData.formacao.map(s => ({...s, tipo: 'formacao'}))
+    ];
+    
+    // DEPURAÇÃO: Verifique se os sinais estão sendo carregados
+    console.log("Total de sinais carregados:", allSignals.length);
+    console.log("Numerais:", allSignals.filter(s => s.tipo === 'numeral').length);
+    console.log("Galhardetes:", allSignals.filter(s => s.tipo === 'galhardete').length);
+    console.log("Substitutas:", allSignals.filter(s => s.tipo === 'substituta').length);
+    
             
             // Carregar todos inicialmente
             displaySignals(allSignals);
