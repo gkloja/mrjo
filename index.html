@@ -370,6 +370,37 @@
     margin-top: 2px;
 }
 
+/* Adicione ao CSS existente */
+.navy-nav {
+    transition: all 0.3s ease;
+    transform: translateY(0);
+}
+
+.navy-nav.hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.navy-nav.visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Indicador de scroll para o usuário */
+.scroll-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    z-index: 1001;
+    transform: scaleX(0);
+    transform-origin: left;
+}
+
 .download-promo-badge {
     width: 35px;
     height: 35px;
@@ -7884,6 +7915,61 @@ function setupAudioEvents() {
     }, true);
 }
 
+let lastScrollTop = 0;
+const nav = document.querySelector('.navy-nav');
+const navHeight = nav.offsetHeight;
+
+// Criar indicador de scroll
+const scrollIndicator = document.createElement('div');
+scrollIndicator.className = 'scroll-indicator';
+document.body.appendChild(scrollIndicator);
+
+// Controlar menu com scroll
+window.addEventListener('scroll', function() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // Atualizar indicador de scroll
+    const winHeight = window.innerHeight;
+    const docHeight = document.documentElement.scrollHeight;
+    const scrollPercent = (scrollTop / (docHeight - winHeight)) * 100;
+    scrollIndicator.style.transform = `scaleX(${scrollPercent / 100})`;
+    
+    // Esconder/mostrar menu baseado na direção do scroll
+    if (scrollTop > lastScrollTop && scrollTop > navHeight) {
+        // Scroll para baixo - esconder menu
+        nav.classList.add('hidden');
+        nav.classList.remove('visible');
+    } else {
+        // Scroll para cima - mostrar menu
+        nav.classList.remove('hidden');
+        nav.classList.add('visible');
+    }
+    
+    // Para scroll pequeno no topo, manter menu visível
+    if (scrollTop < 50) {
+        nav.classList.remove('hidden');
+        nav.classList.add('visible');
+    }
+    
+    lastScrollTop = scrollTop;
+});
+
+// Mostrar menu ao passar o mouse no topo da tela
+document.addEventListener('mousemove', function(e) {
+    if (e.clientY < 50) {
+        nav.classList.remove('hidden');
+        nav.classList.add('visible');
+    }
+});
+
+// Manter menu visível quando clicar em um link
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function() {
+        nav.classList.remove('hidden');
+        nav.classList.add('visible');
+    });
+});
+
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     // Carregar tabela de salvas
@@ -7933,6 +8019,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     }, 1500);
 });
 // Adicionar eventos de áudio para atualizar o player fixo
+
 
     </script>
     
