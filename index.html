@@ -1,6 +1,9 @@
 
 
 
+
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -3851,6 +3854,435 @@ setInterval(() => {
 }
 </style>
 
+    <!-- Watermark -->
+    <div class="watermark">By: ๖ۣۜCabral™</>  +5521989047220</div>
+    
+    <!-- Header -->
+<!-- Header Aprimorado -->
+<!-- Header Aprimorado -->
+<header class="navy-header">
+    <div class="logo-container-enhanced">
+        <div class="logo-title">
+            <!-- Logo Circular -->
+            <div class="logo-circle">
+                <!-- Círculos decorativos -->
+                <div class="circle-decoration"></div>
+                <div class="circle-decoration"></div>
+                
+                <!-- Estrelas flutuantes -->
+                <div class="floating-star"></div>
+                <div class="floating-star"></div>
+                <div class="floating-star"></div>
+                <div class="floating-star"></div>
+                
+                <!-- Container da imagem com ZOOM -->
+                <div class="logo-image-container">
+                    <img src="imagens/logo.png" alt="Marujo Digital" class="logo-image-zoomed">
+                </div>
+            </div>
+            
+            <!-- Texto -->
+            <div class="logo-text">
+                <h1>Marujo Digital</h1>
+                <div class="subtitle">Cerimonial da Marinha</div>
+            </div>
+        </div>
+        
+    </div>
+</header>
+    <!-- Navegação -->
+    <nav class="navy-nav">
+        <div class="nav-menu">
+            <div class="nav-item">
+                <a href="#bandeiras" class="nav-link active" onclick="showSection('bandeiras')">
+                    <i class="fas fa-flag"></i> Bandeiras
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#insignias" class="nav-link" onclick="showSection('insignias')">
+                    <i class="fas fa-chess-queen"></i> Insígnias
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="sinais.html" class="nav-link" onclick="showSection('sinais')">
+                    <i class="fas fa-signal"></i> Cód Sinais
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#protocolos" class="nav-link" onclick="showSection('protocolos')">
+                    <i class="fas fa-book-open"></i> Protocolos
+                </a>
+            </div>
+                        <!-- Na navegação principal -->
+<div class="nav-item">
+    <a href="apitos.html" class="nav-link" onclick="showSection('apitos')">
+        <i class="fas fa-bullhorn"></i> Apitos
+    </a>
+</div>
+            <a href="sobre.html" class="nav-link">
+    <i class="fas fa-info-circle"></i> Sobre
+</a>
+        </div>
+    </nav>
+    
+    <!-- Conteúdo Principal -->
+    <main class="main-content" id="mainContent">
+        
+        <!-- Seção Bandeiras (Ativa por padrão) -->
+        <section id="bandeiras" class="content-section active">
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                </div>
+                
+                
+                <!-- Filtros para tipos de bandeiras -->
+                <div class="filter-container">
+                    <button class="filter-btn active" onclick="filterFlags('all')">Todas</button>
+                    <button class="filter-btn" onclick="filterFlags('distintivos')">Distintivos</button>
+                    <button class="filter-btn" onclick="filterFlags('insignias')">Insígnias</button>
+                    <button class="filter-btn" onclick="filterFlags('sinais')">Sinais</button>
+                </div>
+                
+                <div class="flags-grid" id="flagsGrid">
+                    <!-- Bandeiras serão carregadas via JavaScript -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Outras seções (inicialmente ocultas) -->
+        <section id="insignias" class="content-section" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-chess-queen"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Bandeiras-Insígnias</h2>
+                        <div class="card-subtitle">Autoridades e Comandos</div>
+                    </div>
+                </div>
+                <div id="insigniasContent">
+                    <!-- Conteúdo carregado dinamicamente -->
+                </div>
+            </div>
+        </section>
+        
+        <section id="sinais" class="content-section" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-signal"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Códigos de Sinais</h2>
+                        <div class="card-subtitle">CIS e ATP</div>
+                    </div>
+                </div>
+                <div id="signalsContent">
+                    <!-- Conteúdo carregado dinamicamente -->
+                </div>
+            </div>
+        </section>
+        
+        <section id="cerimonial" class="content-section" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-hat-cowboy"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Cerimonial à Bandeira</h2>
+                        <div class="card-subtitle">Procedimentos e Honras</div>
+                    </div>
+                </div>
+                <div id="ceremonialContent">
+                    <!-- Conteúdo carregado dinamicamente -->
+                </div>
+            </div>
+        </section>
+        
+        <section id="protocolos" class="content-section" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Protocolos e Honras</h2>
+                        <div class="card-subtitle">Normas de Cortesia e Respeito</div>
+                    </div>
+                </div>
+                <div id="protocolsContent">
+                    <!-- Conteúdo carregado dinamicamente -->
+                </div>
+            </div>
+        </section>
+        
+<!-- Na área de conteúdo -->
+<section id="apitos" class="content-section" style="display: none;">
+    <div class="content-card mobile-card">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="fas fa-bullhorn"></i>
+            </div>
+            <div>
+                <h2 class="card-title">Apitos Marinheiros</h2>
+                <div class="card-subtitle">Toques e Sinais Sonoros</div>
+            </div>
+        </div>
+        <div id="apitosContent">
+            <!-- Conteúdo será carregado via JavaScript -->
+        </div>
+    </div>
+</section>
+        <!-- Informações Gerais do PDF -->
+        <div class="content-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div>
+                    <h2 class="card-title">Cerimonial da Marinha</h2>
+                    <div class="card-subtitle">EMN-006 • 2ª Revisão • Aprovado em 25/10/2022</div>
+                </div>
+            </div>
+     
+     
+     <!-- Na seção onde você tem a tabela de salvas (por volta da linha 1800 no HTML) -->
+<!-- Adicione APÓS a tabela de salvas ou em um local apropriado -->
+
+<div class="info-section">
+    <h3 class="section-title">Honras de Portaló</h3>
+    
+    <!-- Introdução -->
+    <div class="protocol-item" style="margin-bottom: 20px;">
+        <div class="protocol-title">Definição</div>
+        <div style="color: var(--text-secondary);">
+            As Honras de Portaló são continências de guarda, "boys" e toques de corneta e apito devidas na recepção ou despedida de autoridades a bordo de navios ou em OM de terra.
+        </div>
+    </div>
+    
+    <!-- Tabela de Honras de Portaló -->
+    <table class="navy-table" style="margin-top: 20px;">
+        <thead>
+            <tr>
+                <th>Autoridade</th>
+                <th>Número de "Boys"</th>
+                <th>Toques de Apito</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody id="honrasPortaloTable">
+            <!-- Preenchido por JavaScript abaixo -->
+        </tbody>
+    </table>
+    
+    <!-- Informações adicionais -->
+    <div class="info-grid" style="margin-top: 30px;">
+        <div class="info-item">
+            <div class="info-label">Local das Honras</div>
+            <div class="info-value">Portaló de BE (oficiais)</div>
+            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                Junto à extremidade superior da escada do portaló ou prancha
+            </div>
+        </div>
+        
+        <div class="info-item">
+            <div class="info-label">Quando NÃO prestar</div>
+            <div class="info-value">3 Situações</div>
+            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                Faina de emergência, durante cerimonial à bandeira, segurança comprometida
+            </div>
+        </div>
+        
+        <div class="info-item">
+            <div class="info-label">Horário</div>
+            <div class="info-value">8h ao pôr do sol</div>
+            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                Exceto situações especiais entre toque de silêncio e hasteamento
+            </div>
+        </div>
+    </div>
+    
+    <!-- Detalhes das honras -->
+    <div class="timeline" style="margin-top: 30px;">
+        <h4 style="color: white; margin-bottom: 20px;">Honras Específicas por Autoridade:</h4>
+        
+        <div class="timeline-item">
+            <div class="timeline-time">Presidente da República</div>
+            <div style="color: var(--text-secondary);">
+                Salva de 21 tiros + todas as honras de portaló. É a única autoridade que suspende honras de outras autoridades quando a bordo.
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-time">Almirantes (AE/VA/CA)</div>
+            <div style="color: var(--text-secondary);">
+                8 "boys" + toques específicos. Recebem honras de portaló em qualquer OM da MB.
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-time">Comandante de Força</div>
+            <div style="color: var(--text-secondary);">
+                Toques de Comandante de Força em OM não subordinadas. Honras especiais no navio capitânia.
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-time">Autoridades Civis</div>
+            <div style="color: var(--text-secondary);">
+                Honras conforme precedência equivalente na hierarquia naval. Usam vocativos por cargo.
+            </div>
+        </div>
+    </div>
+    
+    <!-- Restrições -->
+    <div style="background: rgba(229, 62, 62, 0.1); padding: 20px; border-radius: 10px; margin-top: 30px; border-left: 4px solid #e53e3e;">
+        <h4 style="color: #e53e3e; margin-bottom: 15px;">⚠️ Restrições às Honras:</h4>
+        <ul style="color: var(--text-secondary); padding-left: 20px;">
+            <li>Não prestar quando o Presidente da República estiver no mar (dentro de 3 milhas)</li>
+            <li>Não prestar na presença de autoridade de maior precedência</li>
+            <li>Limitar a continências de guarda se autoridade superior estiver nas proximidades</li>
+            <li>Não prestar durante cerimonial à bandeira</li>
+        </ul>
+    </div>
+</div>     
+            
+            <!-- Tabela de Salvas -->
+            <div class="info-section">
+                <h3 class="section-title">Salvas de Honra</h3>
+                
+                <table class="navy-table">
+                    <thead>
+                        <tr>
+                            <th>Autoridade</th>
+                            <th>Tiros</th>
+                            <th>Observação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salvasTable">
+                        <!-- Preenchido por JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Datas Festivas -->
+            <div class="info-section">
+                <h3 class="section-title">Datas Festivas</h3>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Grande Gala</div>
+                        <div class="info-value">2 Dias</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            7/Set - Independência<br>15/Nov - República
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Pequena Gala</div>
+                        <div class="info-value">8 Dias</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            Tiradentes, Trabalho, Marinheiro, etc.
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Data Magna</div>
+                        <div class="info-value">11 de Junho</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            Batalha Naval de Riachuelo
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <!-- Procedimentos Importantes -->
+            <div class="info-section">
+                <h3 class="section-title">Procedimentos Importantes</h3>
+                
+                <div class="protocol-item">
+                    <div class="protocol-title">Hasteamento/Arriamento</div>
+                    <div style="color: var(--text-secondary);">
+                        <strong>Hasteamento:</strong> 8h com cerimonial específico<br>
+                        <strong>Arriamento:</strong> Pôr do sol (com cerimonial) ou antes do expediente (sem cerimonial)
+                    </div>
+                </div>
+                
+                <div class="protocol-item">
+                    <div class="protocol-title">Bandeira a Meia Adriça</div>
+                    <div style="color: var(--text-secondary);">
+                        Usada em dias de luto, funeral e 2 de novembro (Finados)<br>
+                        Içada completamente e depois baixada à metade do mastro
+                    </div>
+                </div>
+                
+                <div class="protocol-item">
+                    <div class="protocol-title">Dia da Bandeira (19/11)</div>
+                    <div style="color: var(--text-secondary);">
+                        Cerimonial especial às 12h com cremação de bandeiras<br>
+                        Salva de 21 tiros e execução do Hino à Bandeira
+                    </div>
+                </div>
+            </div>
+            
+
+
+
+            
+                        <div class="info-section">
+                <h3 class="section-title">Capítulos da Apostila</h3>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Capítulo 1</div>
+                        <div class="info-value">Bandeira Nacional</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            História, elementos e procedimentos
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Capítulo 2</div>
+                        <div class="info-value">Bandeiras-Insígnias</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            Distintivos e regras de uso
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Capítulo 3</div>
+                        <div class="info-value">Cerimonial à Bandeira</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            Procedimentos e regras gerais
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Capítulo 4</div>
+                        <div class="info-value">Cerimonial Naval</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            Normas de cortesia e respeito
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Capítulo 5</div>
+                        <div class="info-value">Códigos de Sinais</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                            CIS e Código Tático Naval
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
 <!-- Adicione este CSS após o CSS existente -->
 <style>
 /* SEÇÃO DO CERIMONIAL DO DIA */
@@ -6628,8 +7060,108 @@ function openCerimonialDia() {
     showUserStatus();
 }
 
+// CORREÇÃO DO PROBLEMA 1: closeRewardModal não existe
+function closeRewardModal() {
+    document.getElementById('rewardModal').classList.remove('active');
+    
+    // IMPORTANTE: Marcar que terminou e mostrar resultados
+    userProgress.answeredToday = true;
+    userProgress.saveProgress();
+    
+    // Atualizar o estado para mostrar resultados finais
+    currentQuestionIndex = dailyQuestions.length;
+    showUserStatus();
+}
+
+// CORREÇÃO DO PROBLEMA 2: showResultScreen precisa ser modificada
+function showResultScreen(isCorrect, xpEarned) {
+    const question = dailyQuestions[currentQuestionIndex];
+    const isLastQuestion = currentQuestionIndex === dailyQuestions.length - 1;
+    
+    const content = document.getElementById('cerimonialContent');
+    
+    content.innerHTML = `
+        <div class="quiz-content">
+            <div class="result-screen">
+                <div class="result-icon ${isCorrect ? '' : 'fail'}">
+                    <i class="fas fa-${isCorrect ? 'trophy' : 'times'}"></i>
+                </div>
+                
+                <h2 class="result-title">
+                    ${isCorrect ? 'Correto! +' + xpEarned + ' XP' : 'Incorreto'}
+                </h2>
+                
+                <p class="result-message">
+                    ${isCorrect ? 
+                        'Excelente conhecimento naval!' : 
+                        `Resposta correta: <strong>${question.options.find(o => o.id === question.correct).text}</strong>`
+                    }
+                </p>
+                
+                <div style="background: ${isCorrect ? 'rgba(56, 161, 105, 0.1)' : 'rgba(229, 62, 62, 0.1)'}; 
+                           border-left: 4px solid ${isCorrect ? '#38a169' : '#e53e3e'};
+                           padding: 15px; border-radius: 8px; margin: 20px 0;">
+                    <p style="color: ${isCorrect ? '#9ae6b4' : '#fc8181'}; margin: 0; font-size: 0.95rem;">
+                        <i class="fas fa-lightbulb"></i> <strong>Explicação:</strong> ${question.hint}
+                    </p>
+                </div>
+                
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">${score}/${currentQuestionIndex + 1}</span>
+                        <span class="stat-label">Acertos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${totalXP}</span>
+                        <span class="stat-label">XP Ganho</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${dailyQuestions.length - currentQuestionIndex - 1}</span>
+                        <span class="stat-label">Restantes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${userProgress.level}</span>
+                        <span class="stat-label">Nível</span>
+                    </div>
+                </div>
+                
+                <div class="quiz-buttons">
+                    ${!isLastQuestion ? `
+                        <button class="quiz-btn primary" onclick="nextQuestion()">
+                            <i class="fas fa-forward"></i> Próxima Questão
+                        </button>
+                    ` : `
+                        <button class="quiz-btn primary" onclick="completeCerimonial()">
+                            <i class="fas fa-flag-checkered"></i> Finalizar Quiz
+                        </button>
+                    `}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// CORREÇÃO ADICIONAL: showUserStatus precisa de uma verificação crítica
+// Substitua a função showUserStatus atual por esta versão corrigida:
+
 function showUserStatus() {
     const content = document.getElementById('cerimonialContent');
+    
+    // VERIFICAÇÃO CRÍTICA: Se já terminou o quiz hoje, mostra resultados
+    if (userProgress.answeredToday && currentQuestionIndex >= dailyQuestions.length) {
+        content.innerHTML = showQuizResults();
+        return;
+    }
+    
+    // Verificar se não há mais questões
+    if (currentQuestionIndex >= dailyQuestions.length) {
+        // Se terminou as questões, finaliza
+        if (dailyQuestions.length > 0) {
+            completeCerimonial();
+        }
+        return;
+    }
+    
     const nextLevelXP = userProgress.getNextLevelXP();
     const progressPercent = (userProgress.xp / nextLevelXP) * 100;
     
@@ -6641,10 +7173,10 @@ function showUserStatus() {
             Math.round((catStats.correct / catStats.total) * 100) : 0;
     });
     
-    // Verificar se já respondeu tudo hoje
     const questionsLeft = dailyQuestions.length - currentQuestionIndex;
     const hasCompletedToday = userProgress.answeredToday && currentQuestionIndex >= dailyQuestions.length;
     
+    // Restante da função permanece igual...
     content.innerHTML = `
         <div class="user-status">
             <div class="status-header">
@@ -6782,6 +7314,19 @@ function showUserStatus() {
             </div>
         ` : ''}
     `;
+}
+
+// CORREÇÃO DA FUNÇÃO nextQuestion
+function nextQuestion() {
+    currentQuestionIndex++;
+    
+    // Verificar se terminou todas as questões
+    if (currentQuestionIndex >= dailyQuestions.length) {
+        completeCerimonial();
+        return;
+    }
+    
+    showUserStatus();
 }
 
 // FUNÇÕES DE CONFIGURAÇÃO
@@ -6951,83 +7496,6 @@ function checkAnswer() {
     }, 2000);
 }
 
-function showResultScreen(isCorrect, xpEarned) {
-    const question = dailyQuestions[currentQuestionIndex];
-    const isLastQuestion = currentQuestionIndex === dailyQuestions.length - 1;
-    
-    const content = document.getElementById('cerimonialContent');
-    
-    content.innerHTML = `
-        <div class="quiz-content">
-            <div class="result-screen">
-                <div class="result-icon ${isCorrect ? '' : 'fail'}">
-                    <i class="fas fa-${isCorrect ? 'trophy' : 'times'}"></i>
-                </div>
-                
-                <h2 class="result-title">
-                    ${isCorrect ? 'Correto! +' + xpEarned + ' XP' : 'Incorreto'}
-                </h2>
-                
-                <p class="result-message">
-                    ${isCorrect ? 
-                        'Excelente conhecimento naval!' : 
-                        `Resposta correta: <strong>${question.options.find(o => o.id === question.correct).text}</strong>`
-                    }
-                </p>
-                
-                <div style="background: ${isCorrect ? 'rgba(56, 161, 105, 0.1)' : 'rgba(229, 62, 62, 0.1)'}; 
-                           border-left: 4px solid ${isCorrect ? '#38a169' : '#e53e3e'};
-                           padding: 15px; border-radius: 8px; margin: 20px 0;">
-                    <p style="color: ${isCorrect ? '#9ae6b4' : '#fc8181'}; margin: 0; font-size: 0.95rem;">
-                        <i class="fas fa-lightbulb"></i> <strong>Explicação:</strong> ${question.hint}
-                    </p>
-                </div>
-                
-                <div class="result-stats">
-                    <div class="stat-item">
-                        <span class="stat-value">${score}/${currentQuestionIndex + 1}</span>
-                        <span class="stat-label">Acertos</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">${totalXP}</span>
-                        <span class="stat-label">XP Ganho</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">${dailyQuestions.length - currentQuestionIndex - 1}</span>
-                        <span class="stat-label">Restantes</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">${userProgress.level}</span>
-                        <span class="stat-label">Nível</span>
-                    </div>
-                </div>
-                
-                <div class="quiz-buttons">
-                    ${!isLastQuestion ? `
-                        <button class="quiz-btn secondary" onclick="showUserStatus()">
-                            <i class="fas fa-chart-bar"></i> Estatísticas
-                        </button>
-                        <button class="quiz-btn primary" onclick="nextQuestion()">
-                            <i class="fas fa-forward"></i> Próxima Questão
-                        </button>
-                    ` : `
-                        <button class="quiz-btn secondary" onclick="showUserStatus()">
-                            <i class="fas fa-chart-bar"></i> Ver Estatísticas
-                        </button>
-                        <button class="quiz-btn primary" onclick="completeCerimonial()">
-                            <i class="fas fa-flag-checkered"></i> Finalizar Quiz
-                        </button>
-                    `}
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-function nextQuestion() {
-    currentQuestionIndex++;
-    showUserStatus();
-}
 
 function completeCerimonial() {
     userProgress.updateStreak();
@@ -7359,434 +7827,7 @@ function getRankTitle(level) {
     return "Aspirante";
 }
 </script>
-    <!-- Watermark -->
-    <div class="watermark">By: ๖ۣۜCabral™</>  +5521989047220</div>
-    
-    <!-- Header -->
-<!-- Header Aprimorado -->
-<!-- Header Aprimorado -->
-<header class="navy-header">
-    <div class="logo-container-enhanced">
-        <div class="logo-title">
-            <!-- Logo Circular -->
-            <div class="logo-circle">
-                <!-- Círculos decorativos -->
-                <div class="circle-decoration"></div>
-                <div class="circle-decoration"></div>
-                
-                <!-- Estrelas flutuantes -->
-                <div class="floating-star"></div>
-                <div class="floating-star"></div>
-                <div class="floating-star"></div>
-                <div class="floating-star"></div>
-                
-                <!-- Container da imagem com ZOOM -->
-                <div class="logo-image-container">
-                    <img src="imagens/logo.png" alt="Marujo Digital" class="logo-image-zoomed">
-                </div>
-            </div>
-            
-            <!-- Texto -->
-            <div class="logo-text">
-                <h1>Marujo Digital</h1>
-                <div class="subtitle">Cerimonial da Marinha</div>
-            </div>
-        </div>
-        
-    </div>
-</header>
-    <!-- Navegação -->
-    <nav class="navy-nav">
-        <div class="nav-menu">
-            <div class="nav-item">
-                <a href="#bandeiras" class="nav-link active" onclick="showSection('bandeiras')">
-                    <i class="fas fa-flag"></i> Bandeiras
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="#insignias" class="nav-link" onclick="showSection('insignias')">
-                    <i class="fas fa-chess-queen"></i> Insígnias
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="sinais.html" class="nav-link" onclick="showSection('sinais')">
-                    <i class="fas fa-signal"></i> Cód Sinais
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="#protocolos" class="nav-link" onclick="showSection('protocolos')">
-                    <i class="fas fa-book-open"></i> Protocolos
-                </a>
-            </div>
-                        <!-- Na navegação principal -->
-<div class="nav-item">
-    <a href="apitos.html" class="nav-link" onclick="showSection('apitos')">
-        <i class="fas fa-bullhorn"></i> Apitos
-    </a>
-</div>
-            <a href="sobre.html" class="nav-link">
-    <i class="fas fa-info-circle"></i> Sobre
-</a>
-        </div>
-    </nav>
-    
-    <!-- Conteúdo Principal -->
-    <main class="main-content" id="mainContent">
-        
-        <!-- Seção Bandeiras (Ativa por padrão) -->
-        <section id="bandeiras" class="content-section active">
-            <div class="content-card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-flag"></i>
-                    </div>
-                </div>
-                
-                
-                <!-- Filtros para tipos de bandeiras -->
-                <div class="filter-container">
-                    <button class="filter-btn active" onclick="filterFlags('all')">Todas</button>
-                    <button class="filter-btn" onclick="filterFlags('distintivos')">Distintivos</button>
-                    <button class="filter-btn" onclick="filterFlags('insignias')">Insígnias</button>
-                    <button class="filter-btn" onclick="filterFlags('sinais')">Sinais</button>
-                </div>
-                
-                <div class="flags-grid" id="flagsGrid">
-                    <!-- Bandeiras serão carregadas via JavaScript -->
-                </div>
-            </div>
-        </section>
-        
-        <!-- Outras seções (inicialmente ocultas) -->
-        <section id="insignias" class="content-section" style="display: none;">
-            <div class="content-card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-chess-queen"></i>
-                    </div>
-                    <div>
-                        <h2 class="card-title">Bandeiras-Insígnias</h2>
-                        <div class="card-subtitle">Autoridades e Comandos</div>
-                    </div>
-                </div>
-                <div id="insigniasContent">
-                    <!-- Conteúdo carregado dinamicamente -->
-                </div>
-            </div>
-        </section>
-        
-        <section id="sinais" class="content-section" style="display: none;">
-            <div class="content-card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-signal"></i>
-                    </div>
-                    <div>
-                        <h2 class="card-title">Códigos de Sinais</h2>
-                        <div class="card-subtitle">CIS e ATP</div>
-                    </div>
-                </div>
-                <div id="signalsContent">
-                    <!-- Conteúdo carregado dinamicamente -->
-                </div>
-            </div>
-        </section>
-        
-        <section id="cerimonial" class="content-section" style="display: none;">
-            <div class="content-card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-hat-cowboy"></i>
-                    </div>
-                    <div>
-                        <h2 class="card-title">Cerimonial à Bandeira</h2>
-                        <div class="card-subtitle">Procedimentos e Honras</div>
-                    </div>
-                </div>
-                <div id="ceremonialContent">
-                    <!-- Conteúdo carregado dinamicamente -->
-                </div>
-            </div>
-        </section>
-        
-        <section id="protocolos" class="content-section" style="display: none;">
-            <div class="content-card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-book-open"></i>
-                    </div>
-                    <div>
-                        <h2 class="card-title">Protocolos e Honras</h2>
-                        <div class="card-subtitle">Normas de Cortesia e Respeito</div>
-                    </div>
-                </div>
-                <div id="protocolsContent">
-                    <!-- Conteúdo carregado dinamicamente -->
-                </div>
-            </div>
-        </section>
-        
-<!-- Na área de conteúdo -->
-<section id="apitos" class="content-section" style="display: none;">
-    <div class="content-card mobile-card">
-        <div class="card-header">
-            <div class="card-icon">
-                <i class="fas fa-bullhorn"></i>
-            </div>
-            <div>
-                <h2 class="card-title">Apitos Marinheiros</h2>
-                <div class="card-subtitle">Toques e Sinais Sonoros</div>
-            </div>
-        </div>
-        <div id="apitosContent">
-            <!-- Conteúdo será carregado via JavaScript -->
-        </div>
-    </div>
-</section>
-        <!-- Informações Gerais do PDF -->
-        <div class="content-card">
-            <div class="card-header">
-                <div class="card-icon">
-                    <i class="fas fa-file-alt"></i>
-                </div>
-                <div>
-                    <h2 class="card-title">Cerimonial da Marinha</h2>
-                    <div class="card-subtitle">EMN-006 • 2ª Revisão • Aprovado em 25/10/2022</div>
-                </div>
-            </div>
-     
-     
-     <!-- Na seção onde você tem a tabela de salvas (por volta da linha 1800 no HTML) -->
-<!-- Adicione APÓS a tabela de salvas ou em um local apropriado -->
-
-<div class="info-section">
-    <h3 class="section-title">Honras de Portaló</h3>
-    
-    <!-- Introdução -->
-    <div class="protocol-item" style="margin-bottom: 20px;">
-        <div class="protocol-title">Definição</div>
-        <div style="color: var(--text-secondary);">
-            As Honras de Portaló são continências de guarda, "boys" e toques de corneta e apito devidas na recepção ou despedida de autoridades a bordo de navios ou em OM de terra.
-        </div>
-    </div>
-    
-    <!-- Tabela de Honras de Portaló -->
-    <table class="navy-table" style="margin-top: 20px;">
-        <thead>
-            <tr>
-                <th>Autoridade</th>
-                <th>Número de "Boys"</th>
-                <th>Toques de Apito</th>
-                <th>Observações</th>
-            </tr>
-        </thead>
-        <tbody id="honrasPortaloTable">
-            <!-- Preenchido por JavaScript abaixo -->
-        </tbody>
-    </table>
-    
-    <!-- Informações adicionais -->
-    <div class="info-grid" style="margin-top: 30px;">
-        <div class="info-item">
-            <div class="info-label">Local das Honras</div>
-            <div class="info-value">Portaló de BE (oficiais)</div>
-            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                Junto à extremidade superior da escada do portaló ou prancha
-            </div>
-        </div>
-        
-        <div class="info-item">
-            <div class="info-label">Quando NÃO prestar</div>
-            <div class="info-value">3 Situações</div>
-            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                Faina de emergência, durante cerimonial à bandeira, segurança comprometida
-            </div>
-        </div>
-        
-        <div class="info-item">
-            <div class="info-label">Horário</div>
-            <div class="info-value">8h ao pôr do sol</div>
-            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                Exceto situações especiais entre toque de silêncio e hasteamento
-            </div>
-        </div>
-    </div>
-    
-    <!-- Detalhes das honras -->
-    <div class="timeline" style="margin-top: 30px;">
-        <h4 style="color: white; margin-bottom: 20px;">Honras Específicas por Autoridade:</h4>
-        
-        <div class="timeline-item">
-            <div class="timeline-time">Presidente da República</div>
-            <div style="color: var(--text-secondary);">
-                Salva de 21 tiros + todas as honras de portaló. É a única autoridade que suspende honras de outras autoridades quando a bordo.
-            </div>
-        </div>
-        
-        <div class="timeline-item">
-            <div class="timeline-time">Almirantes (AE/VA/CA)</div>
-            <div style="color: var(--text-secondary);">
-                8 "boys" + toques específicos. Recebem honras de portaló em qualquer OM da MB.
-            </div>
-        </div>
-        
-        <div class="timeline-item">
-            <div class="timeline-time">Comandante de Força</div>
-            <div style="color: var(--text-secondary);">
-                Toques de Comandante de Força em OM não subordinadas. Honras especiais no navio capitânia.
-            </div>
-        </div>
-        
-        <div class="timeline-item">
-            <div class="timeline-time">Autoridades Civis</div>
-            <div style="color: var(--text-secondary);">
-                Honras conforme precedência equivalente na hierarquia naval. Usam vocativos por cargo.
-            </div>
-        </div>
-    </div>
-    
-    <!-- Restrições -->
-    <div style="background: rgba(229, 62, 62, 0.1); padding: 20px; border-radius: 10px; margin-top: 30px; border-left: 4px solid #e53e3e;">
-        <h4 style="color: #e53e3e; margin-bottom: 15px;">⚠️ Restrições às Honras:</h4>
-        <ul style="color: var(--text-secondary); padding-left: 20px;">
-            <li>Não prestar quando o Presidente da República estiver no mar (dentro de 3 milhas)</li>
-            <li>Não prestar na presença de autoridade de maior precedência</li>
-            <li>Limitar a continências de guarda se autoridade superior estiver nas proximidades</li>
-            <li>Não prestar durante cerimonial à bandeira</li>
-        </ul>
-    </div>
-</div>     
-            
-            <!-- Tabela de Salvas -->
-            <div class="info-section">
-                <h3 class="section-title">Salvas de Honra</h3>
-                
-                <table class="navy-table">
-                    <thead>
-                        <tr>
-                            <th>Autoridade</th>
-                            <th>Tiros</th>
-                            <th>Observação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="salvasTable">
-                        <!-- Preenchido por JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Datas Festivas -->
-            <div class="info-section">
-                <h3 class="section-title">Datas Festivas</h3>
-                
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Grande Gala</div>
-                        <div class="info-value">2 Dias</div>
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                            7/Set - Independência<br>15/Nov - República
-                        </div>
-                    </div>
-                    
-                    <div class="info-item">
-                        <div class="info-label">Pequena Gala</div>
-                        <div class="info-value">8 Dias</div>
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                            Tiradentes, Trabalho, Marinheiro, etc.
-                        </div>
-                    </div>
-                    
-                    <div class="info-item">
-                        <div class="info-label">Data Magna</div>
-                        <div class="info-value">11 de Junho</div>
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                            Batalha Naval de Riachuelo
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            
-            <!-- Procedimentos Importantes -->
-            <div class="info-section">
-                <h3 class="section-title">Procedimentos Importantes</h3>
-                
-                <div class="protocol-item">
-                    <div class="protocol-title">Hasteamento/Arriamento</div>
-                    <div style="color: var(--text-secondary);">
-                        <strong>Hasteamento:</strong> 8h com cerimonial específico<br>
-                        <strong>Arriamento:</strong> Pôr do sol (com cerimonial) ou antes do expediente (sem cerimonial)
-                    </div>
-                </div>
-                
-                <div class="protocol-item">
-                    <div class="protocol-title">Bandeira a Meia Adriça</div>
-                    <div style="color: var(--text-secondary);">
-                        Usada em dias de luto, funeral e 2 de novembro (Finados)<br>
-                        Içada completamente e depois baixada à metade do mastro
-                    </div>
-                </div>
-                
-                <div class="protocol-item">
-                    <div class="protocol-title">Dia da Bandeira (19/11)</div>
-                    <div style="color: var(--text-secondary);">
-                        Cerimonial especial às 12h com cremação de bandeiras<br>
-                        Salva de 21 tiros e execução do Hino à Bandeira
-                    </div>
-                </div>
-            </div>
-            
-
-
-
-            
-                        <div class="info-section">
-                <h3 class="section-title">Capítulos da Apostila</h3>
-                
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Capítulo 1</div>
-                        <div class="info-value">Bandeira Nacional</div>
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                            História, elementos e procedimentos
-                        </div>
-                    </div>
-                    
-                    <div class="info-item">
-                        <div class="info-label">Capítulo 2</div>
-                        <div class="info-value">Bandeiras-Insígnias</div>
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                            Distintivos e regras de uso
-                        </div>
-                    </div>
-                    
-                    <div class="info-item">
-                        <div class="info-label">Capítulo 3</div>
-                        <div class="info-value">Cerimonial à Bandeira</div>
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                            Procedimentos e regras gerais
-                        </div>
-                    </div>
-                    
-                    <div class="info-item">
-                        <div class="info-label">Capítulo 4</div>
-                        <div class="info-value">Cerimonial Naval</div>
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                            Normas de cortesia e respeito
-                        </div>
-                    </div>
-                    
-                    <div class="info-item">
-                        <div class="info-label">Capítulo 5</div>
-                        <div class="info-value">Códigos de Sinais</div>
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                            CIS e Código Tático Naval
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+    jjjj
     
     <!-- Footer -->
     <footer class="navy-footer">
@@ -11521,6 +11562,12 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     
 </body>
 </html>
+
+
+
+
+
+
 
 
 
