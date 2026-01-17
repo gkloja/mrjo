@@ -7144,6 +7144,157 @@ function showResultScreen(isCorrect, xpEarned) {
 // CORREÇÃO ADICIONAL: showUserStatus precisa de uma verificação crítica
 // Substitua a função showUserStatus atual por esta versão corrigida:
 
+
+// CORREÇÃO DA FUNÇÃO nextQuestion
+function nextQuestion() {
+    currentQuestionIndex++;
+    
+    // Verificar se terminou todas as questões
+    if (currentQuestionIndex >= dailyQuestions.length) {
+        completeCerimonial();
+        return;
+    }
+    
+    showUserStatus();
+}
+
+
+
+
+
+// CORREÇÃO DAS FUNÇÕES DE CONFIGURAÇÃO
+function updateQuestionsValue(value) {
+    document.getElementById('questionsValue').textContent = value;
+}
+
+function toggleCategory(category) {
+    const categories = userProgress.settings.categories;
+    const index = categories.indexOf(category);
+    
+    if (index > -1) {
+        // Remover categoria
+        categories.splice(index, 1);
+    } else {
+        // Adicionar categoria
+        categories.push(category);
+    }
+    
+    // Atualizar botão visualmente
+    const button = document.querySelector(`button[onclick*="${category}"]`);
+    if (button) {
+        button.classList.toggle('active');
+    }
+    
+    // Verificar se há pelo menos uma categoria selecionada
+    if (categories.length === 0) {
+        showNotification('Selecione pelo menos uma categoria!');
+        categories.push(category); // Re-adicionar a categoria
+        if (button) button.classList.add('active');
+    }
+}
+
+function toggleDifficulty(difficulty) {
+    const difficulties = userProgress.settings.difficulty;
+    const index = difficulties.indexOf(difficulty);
+    
+    if (index > -1) {
+        // Remover dificuldade
+        difficulties.splice(index, 1);
+    } else {
+        // Adicionar dificuldade
+        difficulties.push(difficulty);
+    }
+    
+    // Atualizar botão visualmente
+    const button = document.querySelector(`button[onclick*="${difficulty}"]`);
+    if (button) {
+        button.classList.toggle('active');
+    }
+    
+    // Verificar se há pelo menos uma dificuldade selecionada
+    if (difficulties.length === 0) {
+        showNotification('Selecione pelo menos uma dificuldade!');
+        difficulties.push(difficulty); // Re-adicionar a dificuldade
+        if (button) button.classList.add('active');
+    }
+}
+
+function saveSettings() {
+    // Obter valor do slider
+    const questionsPerDay = parseInt(document.getElementById('questionsSlider').value);
+    
+    // Validar valor
+    if (questionsPerDay < 1 || questionsPerDay > 20) {
+        showNotification('Escolha entre 1 e 20 questões por dia!');
+        return;
+    }
+    
+    // Validar categorias selecionadas
+    if (userProgress.settings.categories.length === 0) {
+        showNotification('Selecione pelo menos uma categoria!');
+        return;
+    }
+    
+    // Validar dificuldades selecionadas
+    if (userProgress.settings.difficulty.length === 0) {
+        showNotification('Selecione pelo menos uma dificuldade!');
+        return;
+    }
+    
+    // Atualizar configurações
+    userProgress.settings.questionsPerDay = questionsPerDay;
+    
+    // Salvar progresso
+    userProgress.saveProgress();
+    
+    // Se ainda não respondeu hoje, recarregar questões
+    if (!userProgress.answeredToday || userProgress.hasNewQuiz()) {
+        dailyQuestions = userProgress.getDailyQuestions();
+        currentQuestionIndex = 0;
+        score = 0;
+        totalXP = 0;
+    }
+    
+    // Atualizar badge
+    updateCerimonialBadge();
+    
+    // Mostrar confirmação
+    showNotification('Configurações salvas com sucesso!');
+    
+    // Atualizar interface
+    showUserStatus();
+}
+
+// ADICIONE ESTA FUNÇÃO PARA RESETAR CONFIGURAÇÕES
+function resetSettings() {
+    if (confirm('Deseja redefinir todas as configurações para os valores padrão?')) {
+        userProgress.settings = {
+            questionsPerDay: 5,
+            categories: ['bandeiras', 'sinais', 'protocolos', 'datas', 'apitos'],
+            difficulty: ['fácil', 'médio', 'difícil'],
+            timerEnabled: false,
+            challengeMode: false
+        };
+        
+        userProgress.saveProgress();
+        
+        // Se ainda não respondeu hoje, recarregar questões
+        if (!userProgress.answeredToday || userProgress.hasNewQuiz()) {
+            dailyQuestions = userProgress.getDailyQuestions();
+            currentQuestionIndex = 0;
+            score = 0;
+            totalXP = 0;
+        }
+        
+        updateCerimonialBadge();
+        showNotification('Configurações redefinidas para padrão!');
+        showUserStatus();
+    }
+}
+
+// MODIFIQUE A SEÇÃO DE CONFIGURAÇÕES NA FUNÇÃO showUserStatus
+// Substitua a parte das configurações por esta versão melhorada:
+
 function showUserStatus() {
     const content = document.getElementById('cerimonialContent');
     
@@ -7176,7 +7327,6 @@ function showUserStatus() {
     const questionsLeft = dailyQuestions.length - currentQuestionIndex;
     const hasCompletedToday = userProgress.answeredToday && currentQuestionIndex >= dailyQuestions.length;
     
-    // Restante da função permanece igual...
     content.innerHTML = `
         <div class="user-status">
             <div class="status-header">
@@ -7212,30 +7362,47 @@ function showUserStatus() {
         
         ${hasCompletedToday ? showQuizResults() : showWelcomeScreen()}
         
-        <!-- Configurações do Quiz -->
+        <!-- Configurações do Quiz - VERSÃO MELHORADA -->
         <div class="quiz-settings">
-            <h4 class="settings-title">
-                <i class="fas fa-cog"></i> Configurações do Quiz
-            </h4>
+            <div class="settings-header">
+                <h4 class="settings-title">
+                    <i class="fas fa-cog"></i> Configurações do Quiz
+                </h4>
+                <button class="reset-settings-btn" onclick="resetSettings()" title="Redefinir para padrão">
+                    <i class="fas fa-undo"></i>
+                </button>
+            </div>
             
             <div class="settings-grid">
                 <div class="setting-item">
-                    <label class="setting-label">Questões por dia</label>
+                    <label class="setting-label">
+                        <i class="fas fa-question-circle"></i> Questões por dia
+                        <span class="setting-info">(${userProgress.settings.questionsPerDay} selecionadas)</span>
+                    </label>
                     <div class="setting-control">
                         <input type="range" min="1" max="20" value="${userProgress.settings.questionsPerDay}" 
                                class="questions-slider" id="questionsSlider"
                                oninput="updateQuestionsValue(this.value)">
                         <span class="questions-value" id="questionsValue">${userProgress.settings.questionsPerDay}</span>
                     </div>
+                    <div class="slider-labels">
+                        <span>1</span>
+                        <span>10</span>
+                        <span>20</span>
+                    </div>
                 </div>
                 
                 <div class="setting-item">
-                    <label class="setting-label">Dificuldade</label>
+                    <label class="setting-label">
+                        <i class="fas fa-chart-line"></i> Dificuldade
+                        <span class="setting-info">(${userProgress.settings.difficulty.length} selecionadas)</span>
+                    </label>
                     <div class="category-buttons">
                         ${['fácil', 'médio', 'difícil'].map(diff => `
                             <button class="category-btn ${userProgress.settings.difficulty.includes(diff) ? 'active' : ''}" 
-                                    onclick="toggleDifficulty('${diff}')">
-                                ${diff}
+                                    onclick="toggleDifficulty('${diff}')"
+                                    data-tooltip="${getDifficultyTooltip(diff)}">
+                                ${getDifficultyIcon(diff)} ${diff}
                             </button>
                         `).join('')}
                     </div>
@@ -7243,26 +7410,44 @@ function showUserStatus() {
             </div>
             
             <div class="setting-item">
-                <label class="setting-label">Categorias</label>
+                <label class="setting-label">
+                    <i class="fas fa-tags"></i> Categorias
+                    <span class="setting-info">(${userProgress.settings.categories.length} selecionadas)</span>
+                </label>
                 <div class="category-buttons">
                     ${[
-                        { id: 'bandeiras', label: '🚩 Bandeiras' },
-                        { id: 'sinais', label: '📡 Sinais' },
-                        { id: 'protocolos', label: '⚓ Protocolos' },
-                        { id: 'datas', label: '📅 Datas' },
-                        { id: 'apitos', label: '🎺 Apitos' }
+                        { id: 'bandeiras', label: '🚩 Bandeiras', color: '#38a169' },
+                        { id: 'sinais', label: '📡 Sinais', color: '#4299e1' },
+                        { id: 'protocolos', label: '⚓ Protocolos', color: '#d69e2e' },
+                        { id: 'datas', label: '📅 Datas', color: '#9f7aea' },
+                        { id: 'apitos', label: '🎺 Apitos', color: '#e53e3e' }
                     ].map(cat => `
                         <button class="category-btn ${userProgress.settings.categories.includes(cat.id) ? 'active' : ''}" 
-                                onclick="toggleCategory('${cat.id}')">
+                                onclick="toggleCategory('${cat.id}')"
+                                style="${userProgress.settings.categories.includes(cat.id) ? `border-color: ${cat.color}; background: ${cat.color}20;` : ''}"
+                                data-tooltip="${getCategoryDescription(cat.id)}">
                             ${cat.label}
                         </button>
                     `).join('')}
                 </div>
             </div>
             
-            <button class="quiz-btn secondary" onclick="saveSettings()" style="width: 100%; margin-top: 15px;">
-                <i class="fas fa-save"></i> Salvar Configurações
-            </button>
+            <div class="settings-actions">
+                <button class="quiz-btn primary" onclick="saveSettings()" style="flex: 2;">
+                    <i class="fas fa-save"></i> Salvar Configurações
+                </button>
+                <button class="quiz-btn secondary" onclick="showPreviewQuestions()" style="flex: 1;">
+                    <i class="fas fa-eye"></i> Pré-visualizar
+                </button>
+            </div>
+            
+            <div class="settings-info">
+                <p><i class="fas fa-info-circle"></i> As novas configurações serão aplicadas no próximo quiz.</p>
+                ${userProgress.answeredToday ? 
+                    '<p><i class="fas fa-calendar-day"></i> Você já completou o quiz de hoje. As mudanças afetarão o quiz de amanhã.</p>' : 
+                    '<p><i class="fas fa-sync-alt"></i> As mudanças serão aplicadas imediatamente ao seu quiz atual.</p>'
+                }
+            </div>
         </div>
         
         <!-- Estatísticas Avançadas -->
@@ -7288,7 +7473,9 @@ function showUserStatus() {
         
         <!-- Progresso por Categoria -->
         <div class="category-progress">
-            <h4 style="color: white; margin-bottom: 15px;">Seu Progresso por Categoria</h4>
+            <h4 style="color: white; margin-bottom: 15px;">
+                <i class="fas fa-chart-pie"></i> Seu Progresso por Categoria
+            </h4>
             ${Object.keys(categoryStats).map(cat => `
                 <div class="category-item">
                     <div class="category-header">
@@ -7298,6 +7485,11 @@ function showUserStatus() {
                     <div class="category-bar">
                         <div class="category-fill" style="width: ${categoryStats[cat]}%; background: ${getCategoryColor(cat)};"></div>
                     </div>
+                    <div class="category-details">
+                        <span>${userProgress.stats.byCategory[cat].correct}/${userProgress.stats.byCategory[cat].total} acertos</span>
+                        <span>${userProgress.stats.byCategory[cat].total > 0 ? 
+                            Math.round((userProgress.stats.byCategory[cat].correct / userProgress.stats.byCategory[cat].total) * 100) : 0}%</span>
+                    </div>
                 </div>
             `).join('')}
         </div>
@@ -7305,7 +7497,12 @@ function showUserStatus() {
         <!-- Questões Extras (opcional) -->
         ${questionsLeft === 0 && !hasCompletedToday ? `
             <div class="extra-questions">
-                <h4 class="extra-title">Deseja mais questões hoje?</h4>
+                <h4 class="extra-title">
+                    <i class="fas fa-plus-circle"></i> Deseja mais questões hoje?
+                </h4>
+                <p class="extra-description">
+                    Continue praticando com questões extras! Cada questão extra vale +5 XP.
+                </p>
                 <div class="quiz-buttons">
                     <button class="quiz-btn secondary" onclick="showExtraQuestions()">
                         <i class="fas fa-plus-circle"></i> Questões Extras (+5 XP cada)
@@ -7316,57 +7513,252 @@ function showUserStatus() {
     `;
 }
 
-// CORREÇÃO DA FUNÇÃO nextQuestion
-function nextQuestion() {
-    currentQuestionIndex++;
-    
-    // Verificar se terminou todas as questões
-    if (currentQuestionIndex >= dailyQuestions.length) {
-        completeCerimonial();
-        return;
+// ADICIONE ESTAS FUNÇÕES AUXILIARES
+function getDifficultyIcon(difficulty) {
+    switch(difficulty) {
+        case 'fácil': return '🟢';
+        case 'médio': return '🟡';
+        case 'difícil': return '🔴';
+        default: return '⚪';
     }
-    
-    showUserStatus();
 }
 
-// FUNÇÕES DE CONFIGURAÇÃO
-function updateQuestionsValue(value) {
-    document.getElementById('questionsValue').textContent = value;
-}
-
-function toggleCategory(category) {
-    const index = userProgress.settings.categories.indexOf(category);
-    if (index > -1) {
-        userProgress.settings.categories.splice(index, 1);
-    } else {
-        userProgress.settings.categories.push(category);
+function getDifficultyTooltip(difficulty) {
+    switch(difficulty) {
+        case 'fácil': return 'Questões básicas - 8-10 XP';
+        case 'médio': return 'Questões intermediárias - 12 XP';
+        case 'difícil': return 'Questões avançadas - 15 XP';
+        default: return '';
     }
-    showUserStatus();
 }
 
-function toggleDifficulty(difficulty) {
-    const index = userProgress.settings.difficulty.indexOf(difficulty);
-    if (index > -1) {
-        userProgress.settings.difficulty.splice(index, 1);
-    } else {
-        userProgress.settings.difficulty.push(difficulty);
-    }
-    showUserStatus();
+function getCategoryDescription(category) {
+    const descriptions = {
+        'bandeiras': 'Bandeiras, pavilhões e insígnias navais',
+        'sinais': 'Sinais, códigos e comunicações navais',
+        'protocolos': 'Protocolos, honras e cerimonial',
+        'datas': 'Datas históricas e efemérides navais',
+        'apitos': 'Toques de apito e comandos vocais'
+    };
+    return descriptions[category] || '';
 }
 
-function saveSettings() {
-    userProgress.settings.questionsPerDay = parseInt(document.getElementById('questionsSlider').value);
-    userProgress.saveProgress();
+function showPreviewQuestions() {
+    // Gerar pré-visualização das questões com as configurações atuais
+    const previewQuestions = userProgress.getDailyQuestions();
     
-    // Recarregar questões com novas configurações
-    if (!userProgress.answeredToday) {
-        dailyQuestions = userProgress.getDailyQuestions();
-        currentQuestionIndex = 0;
-        showUserStatus();
-    }
+    let previewHTML = '<div class="quiz-content">';
+    previewHTML += '<h3 style="color: white; margin-bottom: 20px;">';
+    previewHTML += '<i class="fas fa-eye"></i> Pré-visualização do Quiz';
+    previewHTML += '</h3>';
     
-    showNotification('Configurações salvas com sucesso!');
+    previewHTML += '<div class="preview-info">';
+    previewHTML += `<p><strong>Configurações aplicadas:</strong></p>`;
+    previewHTML += `<ul>`;
+    previewHTML += `<li>${userProgress.settings.questionsPerDay} questões por dia</li>`;
+    previewHTML += `<li>Categorias: ${userProgress.settings.categories.map(c => getCategoryLabel(c)).join(', ')}</li>`;
+    previewHTML += `<li>Dificuldades: ${userProgress.settings.difficulty.join(', ')}</li>`;
+    previewHTML += `</ul>`;
+    previewHTML += '</div>';
+    
+    previewHTML += '<div class="preview-questions">';
+    previewQuestions.forEach((q, index) => {
+        previewHTML += `
+            <div class="preview-card">
+                <div class="preview-header">
+                    <span class="preview-category">${getCategoryLabel(q.category)}</span>
+                    <span class="preview-xp">${q.xp} XP</span>
+                    <span class="preview-difficulty ${q.difficulty}">${q.difficulty}</span>
+                </div>
+                <p class="preview-question">${index + 1}. ${q.question}</p>
+            </div>
+        `;
+    });
+    previewHTML += '</div>';
+    
+    previewHTML += `
+        <button class="quiz-btn primary" onclick="showUserStatus()" style="margin-top: 20px; width: 100%;">
+            <i class="fas fa-arrow-left"></i> Voltar às Configurações
+        </button>
+    </div>`;
+    
+    document.getElementById('cerimonialContent').innerHTML = previewHTML;
 }
+
+// ADICIONE ESTE CSS PARA MELHORAR AS CONFIGURAÇÕES
+const settingsCSS = `
+<style>
+/* Estilos para Configurações Melhoradas */
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.reset-settings-btn {
+    background: rgba(229, 62, 62, 0.1);
+    border: 1px solid rgba(229, 62, 62, 0.3);
+    color: #e53e3e;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.reset-settings-btn:hover {
+    background: rgba(229, 62, 62, 0.2);
+    transform: rotate(180deg);
+}
+
+.setting-info {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: normal;
+    margin-left: 8px;
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.category-btn[data-tooltip] {
+    position: relative;
+}
+
+.category-btn[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: 5px;
+    pointer-events: none;
+}
+
+.settings-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.preview-info {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-left: 3px solid #4299e1;
+}
+
+.preview-info ul {
+    margin: 10px 0 0 0;
+    padding-left: 20px;
+}
+
+.preview-info li {
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.preview-questions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.preview-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.preview-header {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.preview-category {
+    background: rgba(66, 153, 225, 0.2);
+    color: #4299e1;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.preview-xp {
+    color: #ffcc00;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.preview-difficulty {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.preview-difficulty.fácil {
+    background: rgba(56, 161, 105, 0.2);
+    color: #38a169;
+}
+
+.preview-difficulty.médio {
+    background: rgba(214, 158, 46, 0.2);
+    color: #d69e2e;
+}
+
+.preview-difficulty.difícil {
+    background: rgba(229, 62, 62, 0.2);
+    color: #e53e3e;
+}
+
+.preview-question {
+    color: white;
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.category-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.setting-label i {
+    margin-right: 8px;
+    color: #4299e1;
+}
+</style>
+`;
+
+// Adicione o CSS ao documento
+document.head.insertAdjacentHTML('beforeend', settingsCSS);
 
 function getCategoryColor(category) {
     const colors = {
@@ -7532,10 +7924,7 @@ function showRewardModal() {
     playSound('levelup');
 }
 
-function closeRewardModal() {
-    document.getElementById('rewardModal').classList.remove('active');
-    showUserStatus();
-}
+
 
 function showQuizResults() {
     const accuracy = dailyQuestions.length > 0 ? Math.round((score / dailyQuestions.length) * 100) : 0;
@@ -7827,7 +8216,7 @@ function getRankTitle(level) {
     return "Aspirante";
 }
 </script>
-    jjjj
+  
     
     <!-- Footer -->
     <footer class="navy-footer">
