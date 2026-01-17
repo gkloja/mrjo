@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -182,700 +184,6 @@
             radial-gradient(circle at 20% 30%, rgba(0, 102, 204, 0.1) 0%, transparent 50%),
             radial-gradient(circle at 80% 70%, rgba(255, 204, 0, 0.05) 0%, transparent 50%);
     }
-    
-/* ============================================
-   CERIMONIAL DO DIA - SISTEMA DE EVOLUÇÃO
-   ============================================ */
-
-/* Seção do Cerimonial do Dia */
-.daily-ceremonial-section {
-    margin: 40px 0;
-    animation: fadeIn 0.5s ease;
-}
-
-.daily-ceremonial-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding: 20px;
-    background: linear-gradient(135deg, rgba(0, 102, 204, 0.2), rgba(5, 18, 35, 0.8));
-    border-radius: 15px;
-    border-left: 4px solid var(--accent);
-}
-
-.daily-title-container {
-    flex: 1;
-}
-
-.daily-title {
-    color: white;
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 5px;
-    background: linear-gradient(135deg, #ffffff, var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.daily-subtitle {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    font-weight: 500;
-}
-
-.daily-stats {
-    display: flex;
-    gap: 20px;
-    text-align: center;
-}
-
-.daily-stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.daily-stat-value {
-    color: var(--accent);
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1;
-}
-
-.daily-stat-label {
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    margin-top: 5px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Sistema de Progresso */
-.progress-system {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 30px;
-    margin-bottom: 30px;
-}
-
-.user-profile-card {
-    background: linear-gradient(145deg, rgba(10, 25, 41, 0.9), rgba(5, 18, 35, 0.9));
-    border-radius: 15px;
-    padding: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
-}
-
-.user-profile-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-}
-
-.user-rank-badge {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 20px;
-    position: relative;
-}
-
-.rank-circle {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 4px solid var(--accent);
-    box-shadow: 0 0 20px rgba(0, 102, 204, 0.5);
-    animation: pulse 2s infinite;
-}
-
-.rank-icon {
-    font-size: 2.5rem;
-    color: white;
-}
-
-.rank-info {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.rank-title {
-    color: white;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 5px;
-}
-
-.rank-subtitle {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-}
-
-.xp-progress {
-    margin: 20px 0;
-}
-
-.xp-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-}
-
-.xp-current {
-    color: white;
-    font-weight: 600;
-}
-
-.xp-target {
-    color: var(--text-secondary);
-}
-
-.xp-bar {
-    height: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-.xp-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    border-radius: 5px;
-    transition: width 1s ease;
-}
-
-.streak-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 15px;
-    background: rgba(255, 204, 0, 0.1);
-    border-radius: 10px;
-    margin-top: 20px;
-}
-
-.streak-icon {
-    color: var(--accent);
-    font-size: 1.5rem;
-}
-
-.streak-info h4 {
-    color: white;
-    margin: 0 0 5px 0;
-    font-size: 1.1rem;
-}
-
-.streak-info p {
-    color: var(--text-secondary);
-    margin: 0;
-    font-size: 0.9rem;
-}
-
-/* Questionário do Dia */
-.daily-quiz-container {
-    background: linear-gradient(145deg, rgba(10, 25, 41, 0.9), rgba(5, 18, 35, 0.9));
-    border-radius: 15px;
-    padding: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.quiz-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.quiz-title {
-    color: white;
-    font-size: 1.5rem;
-    font-weight: 700;
-}
-
-.quiz-timer {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 15px;
-    background: rgba(255, 204, 0, 0.1);
-    border-radius: 20px;
-    color: var(--accent);
-    font-weight: 600;
-}
-
-.quiz-description {
-    color: var(--text-secondary);
-    margin-bottom: 25px;
-    line-height: 1.6;
-}
-
-/* Opções do Questionário */
-.quiz-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.quiz-option {
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: flex-start;
-    gap: 15px;
-}
-
-.quiz-option:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-3px);
-    border-color: rgba(0, 102, 204, 0.3);
-}
-
-.option-letter {
-    width: 40px;
-    height: 40px;
-    background: rgba(0, 102, 204, 0.2);
-    border: 2px solid var(--primary);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 700;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-}
-
-.option-content {
-    flex: 1;
-}
-
-.option-content p {
-    color: white;
-    margin: 0;
-    font-size: 1rem;
-    line-height: 1.5;
-}
-
-.quiz-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 25px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.hint-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-secondary);
-    padding: 12px 25px;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-}
-
-.hint-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-}
-
-.submit-btn {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border: 2px solid var(--accent);
-    color: white;
-    padding: 12px 35px;
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-}
-
-.submit-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0, 102, 204, 0.4);
-}
-
-.submit-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
-
-/* Sistema de Patentes */
-.rank-system {
-    margin-top: 40px;
-}
-
-.rank-system-title {
-    color: white;
-    font-size: 1.5rem;
-    margin-bottom: 25px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.ranks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-.rank-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.rank-card.current {
-    border-color: var(--accent);
-    box-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
-    transform: scale(1.05);
-}
-
-.rank-card.achieved {
-    border-color: var(--primary);
-}
-
-.rank-card.locked {
-    opacity: 0.6;
-}
-
-.rank-badge-small {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 15px;
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 3px solid var(--accent);
-}
-
-.rank-badge-small.locked {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--text-muted);
-}
-
-.rank-badge-small i {
-    font-size: 1.5rem;
-    color: white;
-}
-
-.rank-name {
-    color: white;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-.rank-requirement {
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    margin-bottom: 10px;
-}
-
-.rank-xp {
-    color: var(--accent);
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-/* Resultados do Questionário */
-.quiz-result {
-    display: none;
-    animation: fadeIn 0.5s ease;
-}
-
-.result-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.result-icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 20px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 4px solid var(--accent);
-}
-
-.result-icon i {
-    font-size: 2.5rem;
-    color: white;
-}
-
-.result-title {
-    color: white;
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-}
-
-.result-message {
-    color: var(--text-secondary);
-    font-size: 1.1rem;
-    margin-bottom: 30px;
-}
-
-.result-details {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 30px;
-}
-
-.result-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.result-row:last-child {
-    border-bottom: none;
-}
-
-.result-label {
-    color: var(--text-secondary);
-}
-
-.result-value {
-    color: white;
-    font-weight: 600;
-}
-
-.result-value.xp-earned {
-    color: var(--accent);
-}
-
-.result-value.correct {
-    color: #38a169;
-}
-
-.result-value.incorrect {
-    color: #e53e3e;
-}
-
-.result-actions {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-}
-
-.share-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-secondary);
-    padding: 12px 25px;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-}
-
-.share-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-}
-
-.next-quiz-btn {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border: 2px solid var(--accent);
-    color: white;
-    padding: 12px 35px;
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-}
-
-.next-quiz-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0, 102, 204, 0.4);
-}
-
-/* Animações */
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-    20%, 40%, 60%, 80% { transform: translateX(5px); }
-}
-
-@keyframes celebration {
-    0% { transform: scale(0.5); opacity: 0; }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-.celebration {
-    animation: celebration 0.5s ease;
-}
-
-.shake {
-    animation: shake 0.5s ease;
-}
-
-/* Responsividade */
-@media (max-width: 992px) {
-    .progress-system {
-        grid-template-columns: 1fr;
-    }
-    
-    .quiz-options {
-        grid-template-columns: 1fr;
-    }
-    
-    .ranks-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-}
-
-@media (max-width: 768px) {
-    .daily-ceremonial-header {
-        flex-direction: column;
-        gap: 20px;
-        text-align: center;
-    }
-    
-    .daily-stats {
-        width: 100%;
-        justify-content: space-around;
-    }
-    
-    .quiz-actions {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .result-actions {
-        flex-direction: column;
-    }
-}
-
-/* Estatísticas de Conquistas */
-.achievements-section {
-    margin-top: 40px;
-    padding-top: 40px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.achievements-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.achievement-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    transition: all 0.3s ease;
-}
-
-.achievement-card.unlocked {
-    border-left: 4px solid var(--accent);
-}
-
-.achievement-card.locked {
-    opacity: 0.5;
-}
-
-.achievement-icon {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.achievement-icon i {
-    color: white;
-    font-size: 1.5rem;
-}
-
-.achievement-info {
-    flex: 1;
-}
-
-.achievement-name {
-    color: white;
-    font-size: 1rem;
-    margin-bottom: 5px;
-}
-
-.achievement-desc {
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    margin-bottom: 8px;
-}
-
-.achievement-progress {
-    width: 100%;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.achievement-progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    border-radius: 3px;
-    transition: width 0.5s ease;
-}
     
     /* BOTÃO DE DOWNLOAD CRIATIVO */
 /* BOTÃO DE DOWNLOAD CÍRCULO PEQUENO */
@@ -1064,23 +372,8 @@
     margin-top: 2px;
 }
 
-/* Adicione ao CSS existente */
-.navy-nav {
-    transition: all 0.3s ease;
-    transform: translateY(0);
-}
 
-.navy-nav.hidden {
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
-}
 
-.navy-nav.visible {
-    transform: translateY(0);
-    opacity: 1;
-    pointer-events: all;
-}
 
 /* Indicador de scroll para o usuário */
 .scroll-indicator {
@@ -2358,61 +1651,61 @@ audio::-webkit-media-controls-mute-button {
         background: var(--primary-dark);
     }
     
-    /* Menu de Navegação */
-    .navy-nav {
-        background: rgba(5, 18, 35, 0.95);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
-    
-    .nav-menu {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        gap: 1px;
-        padding: 0;
-    }
-    
-    .nav-item {
-        flex: 1;
-        text-align: center;
-    }
-    
-    .nav-link {
-        display: block;
-        padding: 15px 20px;
-        color: var(--text-secondary);
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s;
-        border-bottom: 3px solid transparent;
-        background: rgba(255, 255, 255, 0.05);
-    }
-    
-    .nav-link:hover {
-        color: white;
-        background: rgba(255, 255, 255, 0.1);
-        border-bottom-color: var(--accent);
-    }
-    
-    .nav-link.active {
-        color: white;
-        background: rgba(0, 102, 204, 0.2);
-        border-bottom-color: var(--primary);
-    }
-    
-    /* Conteúdo Principal */
-    .main-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 30px 20px;
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
+/* Menu de Navegação - FIXO APENAS NO TOPO */
+.navy-nav {
+    background: rgba(5, 18, 35, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative; /* MUDEI de sticky para relative */
+    /* REMOVA: top: 0; */
+    z-index: 1000;
+}
+
+.nav-menu {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 1px;
+    padding: 0;
+}
+
+.nav-item {
+    flex: 1;
+    text-align: center;
+}
+
+.nav-link {
+    display: block;
+    padding: 15px 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+    border-bottom: 3px solid transparent;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom-color: var(--accent);
+}
+
+.nav-link.active {
+    color: white;
+    background: rgba(0, 102, 204, 0.2);
+    border-bottom-color: var(--primary);
+}
+
+/* Conteúdo Principal */
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
     
     /* Cards de Conteúdo */
     .content-card {
@@ -4557,6 +3850,3515 @@ setInterval(() => {
     opacity: 1;
 }
 </style>
+
+<!-- Adicione este CSS após o CSS existente -->
+<style>
+/* SEÇÃO DO CERIMONIAL DO DIA */
+.cerimonial-dia-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    max-width: 500px;
+    background: linear-gradient(145deg, #051223, #0a1929);
+    border-radius: 20px;
+    border: 2px solid #ffcc00;
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 204, 0, 0.2);
+    z-index: 1000;
+    padding: 0;
+    overflow: hidden;
+    display: none;
+}
+
+.cerimonial-dia-container.active {
+    display: block;
+    animation: slideUpCerimonial 0.5s ease;
+}
+
+@keyframes slideUpCerimonial {
+    from {
+        transform: translate(-50%, 100%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
+/* Cabeçalho do Cerimonial */
+.cerimonial-header {
+    background: linear-gradient(135deg, #004a77, #0066cc);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #ffcc00;
+    position: relative;
+    overflow: hidden;
+}
+
+.cerimonial-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.1) 50%, transparent 55%),
+        linear-gradient(135deg, transparent 45%, rgba(255, 255, 255, 0.1) 50%, transparent 55%);
+    background-size: 15px 15px;
+}
+
+.cerimonial-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 1;
+}
+
+.cerimonial-icon {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0066cc;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.cerimonial-text h3 {
+    color: white;
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.cerimonial-text p {
+    color: #a8c7fa;
+    margin: 5px 0 0 0;
+    font-size: 0.9rem;
+}
+
+.cerimonial-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.cerimonial-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+/* Conteúdo do Cerimonial */
+.cerimonial-content {
+    padding: 25px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* Status do Usuário */
+.user-status {
+    background: rgba(255, 204, 0, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255, 204, 0, 0.2);
+}
+
+.status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.user-rank {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rank-icon {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, #0066cc, #004a99);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    border: 2px solid #ffcc00;
+}
+
+.rank-info h4 {
+    color: white;
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+}
+
+.rank-info p {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+.status-streak {
+    text-align: center;
+}
+
+.streak-count {
+    display: inline-block;
+    background: #ff6b6b;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    animation: pulseStreak 2s infinite;
+}
+
+@keyframes pulseStreak {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.streak-count span {
+    font-size: 0.8rem;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+/* Barra de Experiência */
+.xp-container {
+    margin-top: 15px;
+}
+
+.xp-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.xp-bar {
+    height: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+.xp-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #ffcc00, #ffaa00);
+    border-radius: 6px;
+    transition: width 1s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.xp-progress::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.3) 50%, 
+        transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.xp-label {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.xp-bar:hover .xp-label {
+    opacity: 1;
+}
+
+/* Conteúdo do Quiz */
+.quiz-content {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.quiz-section {
+    display: none;
+}
+
+.quiz-section.active {
+    display: block;
+    animation: fadeInQuiz 0.5s ease;
+}
+
+@keyframes fadeInQuiz {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Pergunta */
+.quiz-question {
+    margin-bottom: 25px;
+}
+
+.question-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.question-number {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #0066cc, #004a99);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.question-text {
+    color: white;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.question-hint {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 10px;
+    padding-left: 52px;
+}
+
+/* Opções de Resposta */
+.quiz-options {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.quiz-option {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px 20px;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.quiz-option:hover:not(.selected) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.quiz-option.selected {
+    border-color: #0066cc;
+    background: rgba(0, 102, 204, 0.1);
+    color: white;
+}
+
+.quiz-option.correct {
+    border-color: #38a169;
+    background: rgba(56, 161, 105, 0.1);
+    color: white;
+}
+
+.quiz-option.incorrect {
+    border-color: #e53e3e;
+    background: rgba(229, 62, 62, 0.1);
+    color: white;
+}
+
+.option-letter {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.quiz-option.selected .option-letter {
+    background: #0066cc;
+    color: white;
+}
+
+.quiz-option.correct .option-letter {
+    background: #38a169;
+    color: white;
+}
+
+.quiz-option.incorrect .option-letter {
+    background: #e53e3e;
+    color: white;
+}
+
+.option-text {
+    flex: 1;
+}
+
+/* Botões de Navegação */
+.quiz-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.quiz-btn {
+    flex: 1;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.quiz-btn.primary {
+    background: linear-gradient(135deg, #0066cc, #004a99);
+    color: white;
+}
+
+.quiz-btn.primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 102, 204, 0.4);
+}
+
+.quiz-btn.secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.quiz-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ffcc00;
+    color: white;
+}
+
+.quiz-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Tela de Resultado */
+.result-screen {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.result-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #38a169, #2f855a);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: white;
+    font-size: 2.5rem;
+    animation: bounceIn 0.5s ease;
+}
+
+.result-icon.fail {
+    background: linear-gradient(135deg, #e53e3e, #c53030);
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.result-title {
+    color: white;
+    font-size: 1.8rem;
+    margin: 0 0 10px 0;
+    font-weight: 700;
+}
+
+.result-message {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+.xp-earned {
+    background: rgba(56, 161, 105, 0.2);
+    border: 2px solid #38a169;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 30px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.xp-earned::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(45deg, transparent 45%, rgba(56, 161, 105, 0.1) 50%, transparent 55%),
+        linear-gradient(135deg, transparent 45%, rgba(56, 161, 105, 0.1) 50%, transparent 55%);
+    background-size: 10px 10px;
+}
+
+.xp-earned-label {
+    color: #9ae6b4;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.xp-earned-value {
+    color: white;
+    font-size: 2rem;
+    font-weight: 700;
+    display: block;
+    animation: countUp 1s ease;
+}
+
+@keyframes countUp {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.result-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.stat-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+}
+
+.stat-value {
+    color: #ffcc00;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: block;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Botão Flutuante do Cerimonial */
+.cerimonial-floating-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    background: linear-gradient(135deg, #0066cc, #004a99);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 
+        0 5px 20px rgba(0, 102, 204, 0.5),
+        0 0 0 2px rgba(255, 204, 0, 0.3);
+    transition: all 0.3s ease;
+    animation: floatCerimonialBtn 3s ease-in-out infinite;
+}
+
+.cerimonial-floating-btn:hover {
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 
+        0 8px 25px rgba(0, 102, 204, 0.7),
+        0 0 0 3px rgba(255, 204, 0, 0.5);
+    animation-play-state: paused;
+}
+
+@keyframes floatCerimonialBtn {
+    0%, 100% { transform: translateX(-50%) translateY(0px); }
+    50% { transform: translateX(-50%) translateY(-5px); }
+}
+
+.cerimonial-floating-btn i {
+    font-size: 1.2rem;
+}
+
+/* Notificação de Recompensa */
+.reward-notification {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    background: linear-gradient(135deg, #38a169, #2f855a);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    z-index: 1001;
+    display: none;
+    align-items: center;
+    gap: 15px;
+    animation: slideInRight 0.5s ease;
+    max-width: 350px;
+    border-left: 5px solid #ffcc00;
+}
+
+.reward-notification.show {
+    display: flex;
+}
+
+.reward-notification i {
+    font-size: 2rem;
+    color: #ffcc00;
+}
+
+.reward-content h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+}
+
+.reward-content p {
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Progresso da Jornada */
+.journey-progress {
+    margin: 30px 0;
+    padding: 20px;
+    background: rgba(255, 204, 0, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 204, 0, 0.2);
+}
+
+.journey-title {
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+}
+
+.journey-steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 0 20px;
+}
+
+.journey-steps::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 30px;
+    right: 30px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 1;
+}
+
+.journey-step {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.step-circle {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    color: var(--text-secondary);
+    font-weight: 700;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.step-circle.completed {
+    background: linear-gradient(135deg, #0066cc, #004a99);
+    color: white;
+    border-color: #ffcc00;
+}
+
+.step-circle.current {
+    background: linear-gradient(135deg, #ffcc00, #ffaa00);
+    color: #003366;
+    border-color: #ffcc00;
+    animation: pulseCurrent 2s infinite;
+}
+
+@keyframes pulseCurrent {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 204, 0, 0); }
+}
+
+.step-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    max-width: 80px;
+    margin: 0 auto;
+}
+
+.step-circle.completed + .step-label,
+.step-circle.current + .step-label {
+    color: white;
+    font-weight: 600;
+}
+
+/* Badges de Conquista */
+.achievement-badges {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.badge-item {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.badge-item:hover {
+    transform: scale(1.1);
+}
+
+.badge-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    color: white;
+    font-size: 1.5rem;
+    border: 2px solid var(--accent);
+    position: relative;
+}
+
+.badge-icon.locked {
+    background: linear-gradient(135deg, #718096, #4a5568);
+    border-color: #a0aec0;
+    color: #a0aec0;
+}
+
+.badge-icon.achieved::after {
+    content: '✓';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    background: #38a169;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.badge-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.badge-item:hover .badge-label {
+    color: white;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .cerimonial-dia-container {
+        width: 90%;
+        bottom: 10px;
+    }
+    
+    .cerimonial-content {
+        padding: 20px;
+        max-height: 70vh;
+    }
+    
+    .cerimonial-floating-btn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .quiz-options {
+        gap: 10px;
+    }
+    
+    .quiz-option {
+        padding: 12px 15px;
+        font-size: 0.95rem;
+    }
+    
+    .result-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .journey-steps {
+        margin: 0 10px;
+    }
+    
+    .step-circle {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .cerimonial-dia-container {
+        width: 95%;
+        border-radius: 15px;
+    }
+    
+    .cerimonial-header {
+        padding: 15px;
+    }
+    
+    .cerimonial-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .quiz-buttons {
+        flex-direction: column;
+    }
+    
+    .cerimonial-floating-btn {
+        width: 90%;
+        justify-content: center;
+    }
+    
+    .achievement-badges {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+</style>
+<!-- Adicione este CSS após o CSS existente -->
+<style>
+/* Notificação de Recompensa - CSS Faltante */
+.reward-notification {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    background: linear-gradient(135deg, #38a169, #2f855a);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    z-index: 1001;
+    display: none;
+    align-items: center;
+    gap: 15px;
+    animation: slideInRight 0.5s ease;
+    max-width: 350px;
+    border-left: 5px solid #ffcc00;
+}
+
+.reward-notification.show {
+    display: flex;
+}
+
+.reward-notification i {
+    font-size: 2rem;
+    color: #ffcc00;
+}
+
+.reward-content h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+}
+
+.reward-content p {
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+/* Configurações do Quiz */
+.quiz-settings {
+    background: rgba(255, 204, 0, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid rgba(255, 204, 0, 0.2);
+}
+
+.settings-title {
+    color: #ffcc00;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.setting-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.setting-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.setting-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.questions-slider {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.questions-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #0066cc;
+    cursor: pointer;
+    border: 2px solid white;
+}
+
+.questions-value {
+    color: white;
+    font-weight: 600;
+    min-width: 40px;
+    text-align: center;
+}
+
+/* Botões de categoria */
+.category-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.category-btn {
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.category-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.category-btn.active {
+    background: #0066cc;
+    color: white;
+    border-color: #0066cc;
+}
+
+/* Estatísticas Avançadas */
+.advanced-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(0, 102, 204, 0.3);
+}
+
+.stat-value {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    display: block;
+}
+
+/* Progresso por categoria */
+.category-progress {
+    margin: 25px 0;
+}
+
+.category-item {
+    margin-bottom: 15px;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.category-name {
+    color: white;
+    font-size: 0.95rem;
+}
+
+.category-percent {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.category-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.category-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+}
+
+/* Modo desafio */
+.challenge-mode {
+    background: linear-gradient(135deg, rgba(159, 122, 234, 0.1), rgba(159, 122, 234, 0.05));
+    border: 2px solid #9f7aea;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.challenge-icon {
+    width: 50px;
+    height: 50px;
+    background: #9f7aea;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    margin: 0 auto 15px;
+}
+
+.challenge-title {
+    color: white;
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+}
+
+.challenge-desc {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+/* Tempo por questão (opcional) */
+.timer-container {
+    background: rgba(229, 62, 62, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    border: 1px solid rgba(229, 62, 62, 0.3);
+    display: none;
+}
+
+.timer-container.active {
+    display: block;
+}
+
+.timer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.timer-label {
+    color: #e53e3e;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.timer-display {
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 700;
+    font-family: monospace;
+}
+
+.timer-bar {
+    height: 6px;
+    background: rgba(229, 62, 62, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.timer-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #e53e3e, #fc8181);
+    border-radius: 3px;
+    transition: width 1s linear;
+}
+
+/* Questões extras */
+.extra-questions {
+    margin-top: 30px;
+}
+
+.extra-title {
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.extra-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.extra-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.extra-card:hover {
+    border-color: rgba(0, 102, 204, 0.3);
+    transform: translateY(-3px);
+}
+
+.extra-card.completed {
+    border-color: #38a169;
+    background: rgba(56, 161, 105, 0.05);
+}
+
+.extra-card.completed .extra-status {
+    color: #38a169;
+}
+
+.extra-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.extra-category {
+    background: rgba(0, 102, 204, 0.2);
+    color: #4299e1;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.extra-xp {
+    color: #ffcc00;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.extra-question {
+    color: white;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.extra-status {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Botão de mais questões */
+.more-questions-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, rgba(0, 102, 204, 0.1), rgba(0, 102, 204, 0.05));
+    border: 2px dashed #0066cc;
+    border-radius: 10px;
+    color: #4299e1;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.more-questions-btn:hover {
+    background: linear-gradient(135deg, rgba(0, 102, 204, 0.2), rgba(0, 102, 204, 0.1));
+    border-color: #4299e1;
+}
+
+/* Modal de recompensa expandida */
+.reward-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.reward-modal.active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.reward-modal-content {
+    background: linear-gradient(145deg, #051223, #0a1929);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 500px;
+    width: 100%;
+    border: 3px solid #ffcc00;
+    text-align: center;
+    position: relative;
+    animation: scaleUp 0.5s ease;
+}
+
+@keyframes scaleUp {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.reward-modal-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #ffcc00, #ffaa00);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: #003366;
+    font-size: 3rem;
+    animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.reward-modal-title {
+    color: white;
+    font-size: 2rem;
+    margin: 0 0 15px 0;
+    font-weight: 800;
+}
+
+.reward-modal-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+.reward-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.reward-stat {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.reward-stat-value {
+    color: #ffcc00;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: block;
+}
+
+.reward-stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    display: block;
+    margin-top: 5px;
+}
+
+.reward-xp-total {
+    background: linear-gradient(135deg, rgba(56, 161, 105, 0.2), rgba(56, 161, 105, 0.1));
+    border: 2px solid #38a169;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 25px 0;
+}
+
+.reward-xp-total-label {
+    color: #9ae6b4;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.reward-xp-total-value {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 800;
+    display: block;
+}
+
+/* Ranking de amigos (simulado) */
+.friends-ranking {
+    margin: 25px 0;
+}
+
+.ranking-title {
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ranking-item.you {
+    background: rgba(0, 102, 204, 0.1);
+    border-color: #0066cc;
+}
+
+.rank-position {
+    width: 30px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.rank-position.top-1 {
+    background: linear-gradient(135deg, #ffcc00, #ffaa00);
+    color: #003366;
+}
+
+.rank-position.top-2 {
+    background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+}
+
+.rank-position.top-3 {
+    background: linear-gradient(135deg, #cd7f32, #b5691d);
+}
+
+.rank-user {
+    flex: 1;
+    color: white;
+    font-weight: 500;
+}
+
+.rank-xp {
+    color: #ffcc00;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+/* Modo revisão */
+.review-mode {
+    background: rgba(66, 153, 225, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid rgba(66, 153, 225, 0.3);
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.review-icon {
+    width: 50px;
+    height: 50px;
+    background: #4299e1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.review-title {
+    color: white;
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.review-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.review-btn {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.review-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.review-btn.active {
+    background: #4299e1;
+    color: white;
+    border-color: #4299e1;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .extra-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .advanced-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .reward-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .ranking-item {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .cerimonial-floating-btn {
+        width: 90%;
+        font-size: 0.9rem;
+        padding: 12px 20px;
+    }
+    
+    .category-buttons {
+        justify-content: center;
+    }
+    
+    .category-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+}
+</style>
+
+<!-- Botão Flutuante Atualizado -->
+<button class="cerimonial-floating-btn" id="openCerimonialBtn">
+    <i class="fas fa-star"></i>
+    Cerimonial do Dia
+    <span id="cerimonialBadge" style="
+        background: #ff6b6b;
+        color: white;
+        min-width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 5px;
+        padding: 0 6px;
+        animation: pulseBadge 2s infinite;
+    ">!</span>
+</button>
+
+<!-- Container do Cerimonial do Dia (já existe) -->
+<div class="cerimonial-dia-container" id="cerimonialDiaContainer">
+    <div class="cerimonial-header">
+        <div class="cerimonial-title">
+            <div class="cerimonial-icon">
+                <i class="fas fa-anchor"></i>
+            </div>
+            <div class="cerimonial-text">
+                <h3>Cerimonial do Dia</h3>
+                <p>Treine seu conhecimento naval</p>
+            </div>
+        </div>
+        <button class="cerimonial-close" id="closeCerimonialBtn">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="cerimonial-content" id="cerimonialContent">
+        <!-- Conteúdo será carregado via JavaScript -->
+    </div>
+</div>
+
+<!-- Modal de Recompensa Expandida -->
+<div class="reward-modal" id="rewardModal">
+    <div class="reward-modal-content">
+        <div class="reward-modal-icon">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <h2 class="reward-modal-title" id="rewardModalTitle">Parabéns!</h2>
+        <p class="reward-modal-subtitle" id="rewardModalSubtitle">Você completou o desafio de hoje</p>
+        
+        <div class="reward-xp-total">
+            <span class="reward-xp-total-label">Total de XP Ganho</span>
+            <span class="reward-xp-total-value" id="rewardModalXP">+150 XP</span>
+        </div>
+        
+        <div class="reward-stats">
+            <div class="reward-stat">
+                <span class="reward-stat-value" id="rewardModalCorrect">10</span>
+                <span class="reward-stat-label">Acertos</span>
+            </div>
+            <div class="reward-stat">
+                <span class="reward-stat-value" id="rewardModalStreak">7</span>
+                <span class="reward-stat-label">Dias</span>
+            </div>
+            <div class="reward-stat">
+                <span class="reward-stat-value" id="rewardModalLevel">12</span>
+                <span class="reward-stat-label">Nível</span>
+            </div>
+        </div>
+        
+        <button class="quiz-btn primary" onclick="closeRewardModal()" style="width: 100%; padding: 15px; font-size: 1.1rem;">
+            <i class="fas fa-check"></i> Continuar
+        </button>
+    </div>
+</div>
+
+<script>
+// BANCO DE DADOS EXPANDIDO - 50 QUESTÕES
+const quizDatabase = [
+    // CATEGORIA: BANDEIRAS (15 questões)
+    {
+        id: 1,
+        question: "Quantos tiros são disparados em honra ao Presidente da República?",
+        options: [
+            { id: 'A', text: "19 tiros" },
+            { id: 'B', text: "21 tiros" },
+            { id: 'C', text: "17 tiros" },
+            { id: 'D', text: "15 tiros" }
+        ],
+        correct: 'B',
+        hint: "É a máxima honra no cerimonial naval",
+        category: "bandeiras",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 2,
+        question: "Qual é a Bandeira Distintiva da Marinha do Brasil?",
+        options: [
+            { id: 'A', text: "Bandeira Nacional" },
+            { id: 'B', text: "Bandeira do Cruzeiro" },
+            { id: 'C', text: "Estandarte Presidencial" },
+            { id: 'D', text: "Pavilhão do Almirantado" }
+        ],
+        correct: 'B',
+        hint: "Azul-marinho com 21 estrelas brancas",
+        category: "bandeiras",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 3,
+        question: "Quantas estrelas tem a Bandeira Nacional?",
+        options: [
+            { id: 'A', text: "26 estrelas" },
+            { id: 'B', text: "27 estrelas" },
+            { id: 'C', text: "28 estrelas" },
+            { id: 'D', text: "29 estrelas" }
+        ],
+        correct: 'B',
+        hint: "Uma para cada estado + DF",
+        category: "bandeiras",
+        difficulty: "fácil",
+        xp: 8
+    },
+    {
+        id: 4,
+        question: "Qual bandeira pode ficar içada junto com o Estandarte Presidencial?",
+        options: [
+            { id: 'A', text: "Pavilhão do Comandante da Marinha" },
+            { id: 'B', text: "Bandeira do Cruzeiro" },
+            { id: 'C', text: "Pavilhão do Patrono da Marinha" },
+            { id: 'D', text: "Flâmula de Comando" }
+        ],
+        correct: 'C',
+        hint: "Exceção única no cerimonial",
+        category: "bandeiras",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 5,
+        question: "Qual é a proporção oficial da Bandeira Nacional?",
+        options: [
+            { id: 'A', text: "20:14 (Módulo)" },
+            { id: 'B', text: "3:2" },
+            { id: 'C', text: "16:9" },
+            { id: 'D', text: "4:3" }
+        ],
+        correct: 'A',
+        hint: "Medida em módulos",
+        category: "bandeiras",
+        difficulty: "difícil",
+        xp: 15
+    },
+    {
+        id: 6,
+        question: "Quantas corneta substitutas existem?",
+        options: [
+            { id: 'A', text: "2 substitutas" },
+            { id: 'B', text: "3 substitutas" },
+            { id: 'C', text: "4 substitutas" },
+            { id: 'D', text: "5 substitutas" }
+        ],
+        correct: 'C',
+        hint: "Indicam ausência de autoridades",
+        category: "bandeiras",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 7,
+        question: "Qual a salva de tiros para um Contra-Almirante?",
+        options: [
+            { id: 'A', text: "13 tiros" },
+            { id: 'B', text: "15 tiros" },
+            { id: 'C', text: "17 tiros" },
+            { id: 'D', text: "19 tiros" }
+        ],
+        correct: 'A',
+        hint: "Posto inicial de Almirante",
+        category: "bandeiras",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 8,
+        question: "O que representa a cor verde na Bandeira Nacional?",
+        options: [
+            { id: 'A', text: "Riquezas minerais" },
+            { id: 'B', text: "Pujança das matas" },
+            { id: 'C', text: "O céu do Brasil" },
+            { id: 'D', text: "A paz" }
+        ],
+        correct: 'B',
+        hint: "Relacionado à natureza",
+        category: "bandeiras",
+        difficulty: "fácil",
+        xp: 8
+    },
+    {
+        id: 9,
+        question: "Quando é hasteada a Bandeira Nacional?",
+        options: [
+            { id: 'A', text: "7:00 horas" },
+            { id: 'B', text: "8:00 horas" },
+            { id: 'C', text: "9:00 horas" },
+            { id: 'D', text: "10:00 horas" }
+        ],
+        correct: 'B',
+        hint: "Horário oficial com cerimonial",
+        category: "bandeiras",
+        difficulty: "fácil",
+        xp: 8
+    },
+    {
+        id: 10,
+        question: "Qual destes NÃO é um tipo de bandeira naval?",
+        options: [
+            { id: 'A', text: "Bandeira-insígnia" },
+            { id: 'B', text: "Flâmula de Comando" },
+            { id: 'C', text: "Pavilhão Distintivo" },
+            { id: 'D', text: "Estandarte Real" }
+        ],
+        correct: 'D',
+        hint: "Brasil é uma república",
+        category: "bandeiras",
+        difficulty: "médio",
+        xp: 12
+    },
+
+    // CATEGORIA: SINAIS E CÓDIGOS (15 questões)
+    {
+        id: 11,
+        question: "O que significa o sinal 'ALFA' no código CIS?",
+        options: [
+            { id: 'A', text: "Estou carregando carga perigosa" },
+            { id: 'B', text: "Tenho mergulhador n'água" },
+            { id: 'C', text: "Estou guinando para boreste" },
+            { id: 'D', text: "Solicito auxílio" }
+        ],
+        correct: 'B',
+        hint: "É um sinal de segurança",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 12,
+        question: "O que significa o sinal 'BRAVO' no código CIS?",
+        options: [
+            { id: 'A', text: "Tenho incêndio a bordo" },
+            { id: 'B', text: "Estou carregando carga perigosa" },
+            { id: 'C', text: "Homem ao mar" },
+            { id: 'D', text: "Solicito prático" }
+        ],
+        correct: 'B',
+        hint: "Sinal de perigo",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 13,
+        question: "Qual sinal indica 'Homem ao mar'?",
+        options: [
+            { id: 'A', text: "OSCAR" },
+            { id: 'B', text: "PAPA" },
+            { id: 'C', text: "SIERRA" },
+            { id: 'D', text: "VICTOR" }
+        ],
+        correct: 'A',
+        hint: "Letra 'O' do alfabeto fonético",
+        category: "sinais",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 14,
+        question: "O que significa o sinal 'JULIET' no código CIS?",
+        options: [
+            { id: 'A', text: "Tenho incêndio a bordo" },
+            { id: 'B', text: "Solicito prático" },
+            { id: 'C', text: "Estou carregando carga perigosa" },
+            { id: 'D', text: "Tenho avaria no leme" }
+        ],
+        correct: 'A',
+        hint: "Sinal de emergência",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 15,
+        question: "Qual é o significado do sinal 'QUEBEC' no código CIS?",
+        options: [
+            { id: 'A', text: "Solicito livre prática" },
+            { id: 'B', text: "Tenho médico a bordo" },
+            { id: 'C', text: "Estou fundeado" },
+            { id: 'D', text: "Solicito rebocador" }
+        ],
+        correct: 'A',
+        hint: "Relacionado à saúde sanitária",
+        category: "sinais",
+        difficulty: "difícil",
+        xp: 15
+    },
+
+    // CATEGORIA: PROTOCOLOS E HONRAS (10 questões)
+    {
+        id: 16,
+        question: "Quantos 'boys' prestam continência a um Almirante?",
+        options: [
+            { id: 'A', text: "4 boys" },
+            { id: 'B', text: "6 boys" },
+            { id: 'C', text: "8 boys" },
+            { id: 'D', text: "10 boys" }
+        ],
+        correct: 'C',
+        hint: "Honras de portaló",
+        category: "protocolos",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 17,
+        question: "Qual toque de apito é usado para o Presidente da República?",
+        options: [
+            { id: 'A', text: "Toque de Comandante da Marinha" },
+            { id: 'B', text: "Toque de Almirante" },
+            { id: 'C', text: "Toque específico do Presidente" },
+            { id: 'D', text: "Toque de Oficial General" }
+        ],
+        correct: 'C',
+        hint: "Toque exclusivo para o Chefe de Estado",
+        category: "protocolos",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 18,
+        question: "Em qual situação NÃO se prestam honras de portaló?",
+        options: [
+            { id: 'A', text: "Durante cerimonial à bandeira" },
+            { id: 'B', text: "À noite" },
+            { id: 'C', text: "Ambas as alternativas" },
+            { id: 'D', text: "Nenhuma das alternativas" }
+        ],
+        correct: 'C',
+        hint: "Restrições do cerimonial",
+        category: "protocolos",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 19,
+        question: "Quantos 'boys' para um Oficial Superior?",
+        options: [
+            { id: 'A', text: "2 boys" },
+            { id: 'B', text: "4 boys" },
+            { id: 'C', text: "6 boys" },
+            { id: 'D', text: "8 boys" }
+        ],
+        correct: 'B',
+        hint: "CMG, CF, CC",
+        category: "protocolos",
+        difficulty: "fácil",
+        xp: 10
+    },
+
+    // CATEGORIA: DATAS E EFEMÉRIDES (5 questões)
+    {
+        id: 20,
+        question: "Qual é a Data Magna da Marinha?",
+        options: [
+            { id: 'A', text: "15 de novembro - Proclamação da República" },
+            { id: 'B', text: "7 de setembro - Independência" },
+            { id: 'C', text: "11 de junho - Batalha Naval de Riachuelo" },
+            { id: 'D', text: "25 de dezembro - Natal" }
+        ],
+        correct: 'C',
+        hint: "Batalha histórica importante",
+        category: "datas",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 21,
+        question: "Quando é comemorado o Dia do Marinheiro?",
+        options: [
+            { id: 'A', text: "13 de dezembro" },
+            { id: 'B', text: "10 de junho" },
+            { id: 'C', text: "25 de março" },
+            { id: 'D', text: "7 de setembro" }
+        ],
+        correct: 'A',
+        hint: "Data de nascimento de Tamandaré",
+        category: "datas",
+        difficulty: "médio",
+        xp: 12
+    },
+
+    // CATEGORIA: APITOS E TOQUES (5 questões)
+    {
+        id: 22,
+        question: "Quantos tipos de toques de apito existem para continências?",
+        options: [
+            { id: 'A', text: "5 toques" },
+            { id: 'B', text: "10 toques" },
+            { id: 'C', text: "15 toques" },
+            { id: 'D', text: "20 toques" }
+        ],
+        correct: 'C',
+        hint: "Variam conforme a autoridade",
+        category: "apitos",
+        difficulty: "difícil",
+        xp: 15
+    },
+
+    // ADICIONANDO MAIS 28 QUESTÕES PARA COMPLETAR 50
+    {
+        id: 23,
+        question: "Qual o significado da sigla 'CIS'?",
+        options: [
+            { id: 'A', text: "Código Internacional de Sinais" },
+            { id: 'B', text: "Comunicação Internacional Simplificada" },
+            { id: 'C', text: "Código de Informações Seguras" },
+            { id: 'D', text: "Comando Internacional de Sinais" }
+        ],
+        correct: 'A',
+        hint: "Sigla em português",
+        category: "sinais",
+        difficulty: "fácil",
+        xp: 8
+    },
+    {
+        id: 24,
+        question: "O que é o 'ATP' na Marinha?",
+        options: [
+            { id: 'A', text: "Código Tático Naval" },
+            { id: 'B', text: "Assistência Técnica Portuária" },
+            { id: 'C', text: "Arquivo Técnico de Procedimentos" },
+            { id: 'D', text: "Anuário Tático de Patrulha" }
+        ],
+        correct: 'A',
+        hint: "Usado para comunicações táticas",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 25,
+        question: "Qual destes NÃO é um galhardete do código ATP?",
+        options: [
+            { id: 'A', text: "NEGAT" },
+            { id: 'B', text: "PREP" },
+            { id: 'C', text: "EMERG" },
+            { id: 'D', text: "SOS" }
+        ],
+        correct: 'D',
+        hint: "SOS é código internacional de socorro",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 26,
+        question: "O que significa o galhardete 'NEGAT'?",
+        options: [
+            { id: 'A', text: "Negativo / cessar / não fazer" },
+            { id: 'B', text: "Necessário aguardar tempo" },
+            { id: 'C', text: "Negociação em andamento" },
+            { id: 'D', text: "Nenhuma das alternativas" }
+        ],
+        correct: 'A',
+        hint: "Sinal de comando",
+        category: "sinais",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 27,
+        question: "Quantos tiros para um Ministro de Estado?",
+        options: [
+            { id: 'A', text: "17 tiros" },
+            { id: 'B', text: "19 tiros" },
+            { id: 'C', text: "21 tiros" },
+            { id: 'D', text: "15 tiros" }
+        ],
+        correct: 'B',
+        hint: "Mesma honra que Almirante",
+        category: "protocolos",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 28,
+        question: "O que é 'Grande Gala'?",
+        options: [
+            { id: 'A', text: "Uniforme de cerimônia" },
+            { id: 'B', text: "Decoração máxima dos navios" },
+            { id: 'C', text: "Festividade naval" },
+            { id: 'D', text: "Todas as alternativas" }
+        ],
+        correct: 'B',
+        hint: "Adorno completo com bandeiras",
+        category: "protocolos",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 29,
+        question: "Quantos dias de 'Pequena Gala' por ano?",
+        options: [
+            { id: 'A', text: "5 dias" },
+            { id: 'B', text: "8 dias" },
+            { id: 'C', text: "12 dias" },
+            { id: 'D', text: "15 dias" }
+        ],
+        correct: 'B',
+        hint: "Inclui feriados nacionais",
+        category: "protocolos",
+        difficulty: "difícil",
+        xp: 15
+    },
+    {
+        id: 30,
+        question: "Qual a cor do Pavilhão do Comandante da Marinha?",
+        options: [
+            { id: 'A', text: "Azul-marinho" },
+            { id: 'B', text: "Verde" },
+            { id: 'C', text: "Amarelo" },
+            { id: 'D', text: "Branco" }
+        ],
+        correct: 'A',
+        hint: "Mesma cor da Bandeira do Cruzeiro",
+        category: "bandeiras",
+        difficulty: "fácil",
+        xp: 8
+    },
+    {
+        id: 31,
+        question: "O que diferencia o pavilhão do Comandante da Marinha?",
+        options: [
+            { id: 'A', text: "É farpado" },
+            { id: 'B', text: "Tem âncora singela" },
+            { id: 'C', text: "Ambas as alternativas" },
+            { id: 'D', text: "Nenhuma das alternativas" }
+        ],
+        correct: 'C',
+        hint: "Características específicas",
+        category: "bandeiras",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 32,
+        question: "Qual destes é um Sinal de Barroso?",
+        options: [
+            { id: 'A', text: "'O Brasil espera que cada um cumpra o seu dever'" },
+            { id: 'B', text: "'Sustentar o fogo que a vitória é nossa'" },
+            { id: 'C', text: "Ambas as alternativas" },
+            { id: 'D', text: "Nenhuma das alternativas" }
+        ],
+        correct: 'C',
+        hint: "Sinais históricos famosos",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 33,
+        question: "Quantas bandeiras compõem o Sinal de Barroso 'O Brasil espera...'?",
+        options: [
+            { id: 'A', text: "2 bandeiras" },
+            { id: 'B', text: "3 bandeiras" },
+            { id: 'C', text: "4 bandeiras" },
+            { id: 'D', text: "5 bandeiras" }
+        ],
+        correct: 'B',
+        hint: "Içadas numa só adriça",
+        category: "sinais",
+        difficulty: "difícil",
+        xp: 15
+    },
+    {
+        id: 34,
+        question: "O que é a Flâmula de Comando?",
+        options: [
+            { id: 'A', text: "Insígnia de oficiais no comando" },
+            { id: 'B', text: "Sinal de emergência" },
+            { id: 'C', text: "Bandeira de formatura" },
+            { id: 'D', text: "Galhardete de comunicação" }
+        ],
+        correct: 'A',
+        hint: "Triangular e alongada",
+        category: "bandeiras",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 35,
+        question: "Qual o horário para hasteamento da Bandeira Nacional?",
+        options: [
+            { id: 'A', text: "Do nascer ao pôr do sol" },
+            { id: 'B', text: "Das 8h ao pôr do sol" },
+            { id: 'C', text: "Das 6h às 18h" },
+            { id: 'D', text: "24 horas por dia" }
+        ],
+        correct: 'B',
+        hint: "Horário oficial com cerimonial",
+        category: "protocolos",
+        difficulty: "fácil",
+        xp: 8
+    },
+    {
+        id: 36,
+        question: "Quando se usa Bandeira a Meia Adriça?",
+        options: [
+            { id: 'A', text: "Dias de luto" },
+            { id: 'B', text: "Finados (2 de novembro)" },
+            { id: 'C', text: "Ambas as alternativas" },
+            { id: 'D', text: "Nenhuma das alternativas" }
+        ],
+        correct: 'C',
+        hint: "Situações específicas",
+        category: "protocolos",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 37,
+        question: "Quantos 'boys' para o Presidente da República?",
+        options: [
+            { id: 'A', text: "Especiais (máximos)" },
+            { id: 'B', text: "8 boys" },
+            { id: 'C', text: "6 boys" },
+            { id: 'D', text: "4 boys" }
+        ],
+        correct: 'A',
+        hint: "Honras especiais",
+        category: "protocolos",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 38,
+        question: "O que significa o sinal 'XRAY' no código ATP?",
+        options: [
+            { id: 'A', text: "Evolução concluída" },
+            { id: 'B', text: "Suspenda e observe meus sinais" },
+            { id: 'C', text: "Exercício de bandeiras" },
+            { id: 'D', text: "Indicador de hora" }
+        ],
+        correct: 'B',
+        hint: "Sinal de comando",
+        category: "sinais",
+        difficulty: "difícil",
+        xp: 15
+    },
+    {
+        id: 39,
+        question: "Qual o numeral 'BA 5' no código ATP?",
+        options: [
+            { id: 'A', text: "Tenho avarias" },
+            { id: 'B', text: "Sou o guia da formatura" },
+            { id: 'C', text: "Operações de reboque" },
+            { id: 'D', text: "Governar afastando-se" }
+        ],
+        correct: 'A',
+        hint: "Sinal de emergência",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 40,
+        question: "O que é o 'COMAPEM'?",
+        options: [
+            { id: 'A', text: "Comandante mais antigo presente embarcado" },
+            { id: 'B', text: "Comando de Apoio de Emergência" },
+            { id: 'C', text: "Comissão de Aperfeiçoamento de Pessoal" },
+            { id: 'D', text: "Nenhuma das alternativas" }
+        ],
+        correct: 'A',
+        hint: "Termo de comando naval",
+        category: "protocolos",
+        difficulty: "difícil",
+        xp: 15
+    },
+    {
+        id: 41,
+        question: "Qual destes NÃO recebe salva de 19 tiros?",
+        options: [
+            { id: 'A', text: "Almirante" },
+            { id: 'B', text: "Vice-Almirante" },
+            { id: 'C', text: "Ministro de Estado" },
+            { id: 'D', text: "Governador" }
+        ],
+        correct: 'B',
+        hint: "Vice-Almirante recebe 15 tiros",
+        category: "protocolos",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 42,
+        question: "Quantas estrelas no Pavilhão de Almirante?",
+        options: [
+            { id: 'A', text: "3 estrelas" },
+            { id: 'B', text: "4 estrelas" },
+            { id: 'C', text: "5 estrelas" },
+            { id: 'D', text: "6 estrelas" }
+        ],
+        correct: 'C',
+        hint: "Dispostas como vértices de pentágono",
+        category: "bandeiras",
+        difficulty: "difícil",
+        xp: 15
+    },
+    {
+        id: 43,
+        question: "Qual a diferença entre Bandeira-insígnia e Pavilhão?",
+        options: [
+            { id: 'A', text: "Pavilhão é para militares, Bandeira-insígnia para civis" },
+            { id: 'B', text: "Formato e uso" },
+            { id: 'C', text: "Ambas as alternativas" },
+            { id: 'D', text: "Nenhuma das alternativas" }
+        ],
+        correct: 'C',
+        hint: "Diferenças conforme o manual",
+        category: "bandeiras",
+        difficulty: "difícil",
+        xp: 15
+    },
+    {
+        id: 44,
+        question: "O que significa 'continência entre navios'?",
+        options: [
+            { id: 'A', text: "Cerimônia de passagem" },
+            { id: 'B', text: "Saudação naval mútua" },
+            { id: 'C', text: "Exercício de formação" },
+            { id: 'D', text: "Todos os anteriores" }
+        ],
+        correct: 'B',
+        hint: "Cortesia naval",
+        category: "protocolos",
+        difficulty: "fácil",
+        xp: 8
+    },
+    {
+        id: 45,
+        question: "Qual toque para 'Silêncio' no navio?",
+        options: [
+            { id: 'A', text: "Toque curto único" },
+            { id: 'B', text: "Dois toques longos" },
+            { id: 'C', text: "Toque específico do apito" },
+            { id: 'D', text: "Nenhum toque" }
+        ],
+        correct: 'C',
+        hint: "Toque de rotina",
+        category: "apitos",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 46,
+        question: "Quando é o Dia da Bandeira?",
+        options: [
+            { id: 'A', text: "7 de setembro" },
+            { id: 'B', text: "15 de novembro" },
+            { id: 'C', text: "19 de novembro" },
+            { id: 'D', text: "1º de dezembro" }
+        ],
+        correct: 'C',
+        hint: "Data de criação da bandeira republicana",
+        category: "datas",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 47,
+        question: "Quantos tipos de uniforme há na Marinha?",
+        options: [
+            { id: 'A', text: "3 tipos" },
+            { id: 'B', text: "5 tipos" },
+            { id: 'C', text: "7 tipos" },
+            { id: 'D', text: "10 tipos" }
+        ],
+        correct: 'B',
+        hint: "Inclui gala, passeio, serviço, etc.",
+        category: "protocolos",
+        difficulty: "difícil",
+        xp: 15
+    },
+    {
+        id: 48,
+        question: "O que é 'Postos de Combate'?",
+        options: [
+            { id: 'A', text: "Estação de combate" },
+            { id: 'B', text: "Toque de apito" },
+            { id: 'C', text: "Ambas as alternativas" },
+            { id: 'D', text: "Nenhuma das alternativas" }
+        ],
+        correct: 'C',
+        hint: "Situação operacional",
+        category: "apitos",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 49,
+        question: "Qual a origem do lema 'Ordem e Progresso'?",
+        options: [
+            { id: 'A', text: "Filosofia positivista" },
+            { id: 'B', text: "Revolução Francesa" },
+            { id: 'C', text: "Independência do Brasil" },
+            { id: 'D', text: "Todas as anteriores" }
+        ],
+        correct: 'A',
+        hint: "Influência de Auguste Comte",
+        category: "bandeiras",
+        difficulty: "difícil",
+        xp: 15
+    },
+    {
+        id: 50,
+        question: "Quantas constelações estão representadas na Bandeira Nacional?",
+        options: [
+            { id: 'A', text: "5 constelações" },
+            { id: 'B', text: "9 constelações" },
+            { id: 'C', text: "12 constelações" },
+            { id: 'D', text: "15 constelações" }
+        ],
+        correct: 'B',
+        hint: "Céu do Rio de Janeiro em 15/11/1889",
+        category: "bandeiras",
+        difficulty: "difícil",
+        xp: 15
+    }
+];
+
+// SISTEMA DE PROGRESSO ATUALIZADO
+const userProgress = {
+    xp: localStorage.getItem('marujo_xp') ? parseInt(localStorage.getItem('marujo_xp')) : 0,
+    level: localStorage.getItem('marujo_level') ? parseInt(localStorage.getItem('marujo_level')) : 1,
+    streak: localStorage.getItem('marujo_streak') ? parseInt(localStorage.getItem('marujo_streak')) : 0,
+    lastPlay: localStorage.getItem('marujo_lastPlay') ? new Date(localStorage.getItem('marujo_lastPlay')) : null,
+    answeredToday: localStorage.getItem('marujo_answeredToday') === 'true',
+    achievements: localStorage.getItem('marujo_achievements') ? JSON.parse(localStorage.getItem('marujo_achievements')) : {},
+    
+    // CONFIGURAÇÕES DO USUÁRIO
+    settings: localStorage.getItem('marujo_settings') ? JSON.parse(localStorage.getItem('marujo_settings')) : {
+        questionsPerDay: 5,
+        categories: ['bandeiras', 'sinais', 'protocolos', 'datas', 'apitos'],
+        difficulty: ['fácil', 'médio', 'difícil'],
+        timerEnabled: false,
+        challengeMode: false
+    },
+    
+    // ESTATÍSTICAS DETALHADAS
+    stats: localStorage.getItem('marujo_stats') ? JSON.parse(localStorage.getItem('marujo_stats')) : {
+        totalQuestions: 0,
+        correctAnswers: 0,
+        totalXP: 0,
+        byCategory: {
+            bandeiras: { total: 0, correct: 0 },
+            sinais: { total: 0, correct: 0 },
+            protocolos: { total: 0, correct: 0 },
+            datas: { total: 0, correct: 0 },
+            apitos: { total: 0, correct: 0 }
+        },
+        byDifficulty: {
+            fácil: { total: 0, correct: 0 },
+            médio: { total: 0, correct: 0 },
+            difícil: { total: 0, correct: 0 }
+        }
+    },
+    
+    // QUESTÕES RESPONDIDAS HOJE
+    todayQuestions: localStorage.getItem('marujo_todayQuestions') ? 
+        JSON.parse(localStorage.getItem('marujo_todayQuestions')) : [],
+    
+    getNextLevelXP() {
+        return Math.floor(100 * Math.pow(1.5, this.level - 1));
+    },
+    
+    addXP(amount) {
+        this.xp += amount;
+        this.stats.totalXP += amount;
+        
+        while (this.xp >= this.getNextLevelXP()) {
+            this.xp -= this.getNextLevelXP();
+            this.level++;
+            this.showLevelUp();
+        }
+        
+        this.saveProgress();
+    },
+    
+    updateStreak() {
+        const today = new Date().toDateString();
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+        
+        if (!this.lastPlay) {
+            this.streak = 1;
+        } else {
+            const lastPlayDate = new Date(this.lastPlay).toDateString();
+            
+            if (lastPlayDate === today) {
+                return;
+            } else if (lastPlayDate === yesterday) {
+                this.streak++;
+            } else {
+                this.streak = 1;
+            }
+        }
+        
+        this.lastPlay = new Date();
+        this.answeredToday = true;
+        this.saveProgress();
+    },
+    
+    updateStats(category, difficulty, isCorrect) {
+        this.stats.totalQuestions++;
+        if (isCorrect) this.stats.correctAnswers++;
+        
+        this.stats.byCategory[category].total++;
+        if (isCorrect) this.stats.byCategory[category].correct++;
+        
+        this.stats.byDifficulty[difficulty].total++;
+        if (isCorrect) this.stats.byDifficulty[difficulty].correct++;
+        
+        this.saveProgress();
+    },
+    
+    saveProgress() {
+        localStorage.setItem('marujo_xp', this.xp);
+        localStorage.setItem('marujo_level', this.level);
+        localStorage.setItem('marujo_streak', this.streak);
+        localStorage.setItem('marujo_lastPlay', this.lastPlay);
+        localStorage.setItem('marujo_answeredToday', this.answeredToday);
+        localStorage.setItem('marujo_achievements', JSON.stringify(this.achievements));
+        localStorage.setItem('marujo_settings', JSON.stringify(this.settings));
+        localStorage.setItem('marujo_stats', JSON.stringify(this.stats));
+        localStorage.setItem('marujo_todayQuestions', JSON.stringify(this.todayQuestions));
+    },
+    
+    hasNewQuiz() {
+        if (!this.lastPlay) return true;
+        
+        const lastPlayDate = new Date(this.lastPlay);
+        const today = new Date();
+        
+        return lastPlayDate.getDate() !== today.getDate() || 
+               lastPlayDate.getMonth() !== today.getMonth() || 
+               lastPlayDate.getFullYear() !== today.getFullYear();
+    },
+    
+    getDailyQuestions() {
+        // Se já tem questões de hoje, retorna elas
+        if (this.todayQuestions.length > 0 && !this.hasNewQuiz()) {
+            return this.todayQuestions;
+        }
+        
+        // Limpar questões do dia anterior
+        this.todayQuestions = [];
+        
+        // Filtrar questões pelas categorias selecionadas
+        let availableQuestions = quizDatabase.filter(q => 
+            this.settings.categories.includes(q.category) &&
+            this.settings.difficulty.includes(q.difficulty)
+        );
+        
+        // Embaralhar questões
+        availableQuestions = this.shuffleArray([...availableQuestions]);
+        
+        // Selecionar quantidade configurada
+        this.todayQuestions = availableQuestions.slice(0, this.settings.questionsPerDay);
+        
+        this.saveProgress();
+        return this.todayQuestions;
+    },
+    
+    shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    },
+    
+    showLevelUp() {
+        const notification = document.getElementById('rewardNotification');
+        const title = document.getElementById('rewardTitle');
+        const message = document.getElementById('rewardMessage');
+        
+        title.textContent = "🎉 Parabéns!";
+        message.textContent = `Você subiu para o Nível ${this.level}!`;
+        
+        notification.classList.add('show');
+        playSound('levelup');
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+};
+
+// VARIÁVEIS DO QUIZ
+let currentQuestionIndex = 0;
+let selectedAnswer = null;
+let score = 0;
+let totalXP = 0;
+let dailyQuestions = [];
+let startTime = null;
+let timerInterval = null;
+
+// FUNÇÕES PRINCIPAIS ATUALIZADAS
+// FUNÇÕES AUSENTES QUE ESTÃO FALTANDO
+
+function closeCerimonialDia() {
+    const container = document.getElementById('cerimonialDiaContainer');
+    container.classList.remove('active');
+}
+
+function showNotification(message) {
+    // Criar notificação se não existir
+    let notification = document.getElementById('rewardNotification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.className = 'reward-notification';
+        notification.id = 'rewardNotification';
+        notification.innerHTML = `
+            <i class="fas fa-trophy"></i>
+            <div class="reward-content">
+                <h4 id="rewardTitle"></h4>
+                <p id="rewardMessage"></p>
+            </div>
+        `;
+        document.body.appendChild(notification);
+    }
+    
+    const titleEl = document.getElementById('rewardTitle');
+    const messageEl = document.getElementById('rewardMessage');
+    
+    titleEl.textContent = "Aviso";
+    messageEl.textContent = message;
+    
+    notification.classList.add('show');
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
+
+function playSound(type) {
+    // Implementação básica de som
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let frequency = 440;
+        let duration = 0.2;
+        
+        switch(type) {
+            case 'correct':
+                frequency = 523.25; // C5
+                break;
+            case 'wrong':
+                frequency = 349.23; // F4
+                break;
+            case 'levelup':
+                frequency = 659.25; // E5
+                duration = 0.5;
+                break;
+            default:
+                frequency = 440; // A4
+        }
+        
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = frequency;
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+        
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + duration);
+    } catch(e) {
+        console.log('Áudio não suportado');
+    }
+}
+
+function showHintModal() {
+    const question = dailyQuestions[currentQuestionIndex];
+    if (!question) return;
+    
+    alert(`💡 **Dica Detalhada**\n\n${question.hint}\n\n📊 **Categoria:** ${getCategoryLabel(question.category)}\n🎯 **Dificuldade:** ${question.difficulty}\n⭐ **XP:** ${question.xp}`);
+}
+
+function showQuestionsByCategory(category) {
+    const categoryQuestions = quizDatabase.filter(q => q.category === category);
+    
+    let html = '<div class="quiz-content">';
+    html += `<h3 style="color: white; margin-bottom: 20px;">Questões sobre ${getCategoryLabel(category)}</h3>`;
+    
+    categoryQuestions.forEach((q, index) => {
+        const isAnsweredToday = userProgress.todayQuestions.some(tq => tq.id === q.id);
+        html += `
+            <div class="extra-card" onclick="startExtraQuestion(${q.id})">
+                <div class="extra-header">
+                    <span class="extra-category">${getCategoryLabel(q.category)}</span>
+                    <span class="extra-xp">+${q.xp} XP</span>
+                    ${isAnsweredToday ? '<span style="color: #38a169; font-size: 0.8rem;"><i class="fas fa-check"></i> Respondida</span>' : ''}
+                </div>
+                <p class="extra-question">${q.question}</p>
+                <div class="extra-status">
+                    <i class="fas fa-clock"></i> ${q.difficulty}
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `
+        <button class="quiz-btn secondary" onclick="showUserStatus()" style="margin-top: 20px; width: 100%;">
+            <i class="fas fa-arrow-left"></i> Voltar ao Progresso
+        </button>
+    </div>`;
+    
+    document.getElementById('cerimonialContent').innerHTML = html;
+}
+
+function showAllQuestions() {
+    let html = '<div class="quiz-content">';
+    html += '<h3 style="color: white; margin-bottom: 20px;">Todas as Questões (50)</h3>';
+    
+    const categories = ['bandeiras', 'sinais', 'protocolos', 'datas', 'apitos'];
+    
+    categories.forEach(category => {
+        const catQuestions = quizDatabase.filter(q => q.category === category);
+        if (catQuestions.length > 0) {
+            html += `<h4 style="color: #0066cc; margin: 20px 0 10px 0; border-bottom: 2px solid #0066cc; padding-bottom: 5px;">${getCategoryLabel(category)}</h4>`;
+            
+            catQuestions.forEach((q, index) => {
+                const isAnsweredToday = userProgress.todayQuestions.some(tq => tq.id === q.id);
+                html += `
+                    <div class="extra-card" onclick="startExtraQuestion(${q.id})">
+                        <div class="extra-header">
+                            <span class="extra-category">${getCategoryLabel(q.category)}</span>
+                            <span class="extra-xp">+${q.xp} XP</span>
+                            ${isAnsweredToday ? '<span style="color: #38a169; font-size: 0.8rem;"><i class="fas fa-check"></i></span>' : ''}
+                        </div>
+                        <p class="extra-question">${q.question}</p>
+                        <div class="extra-status">
+                            <i class="fas fa-clock"></i> ${q.difficulty}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    });
+    
+    html += `
+        <button class="quiz-btn secondary" onclick="showUserStatus()" style="margin-top: 20px; width: 100%;">
+            <i class="fas fa-arrow-left"></i> Voltar ao Progresso
+        </button>
+    </div>`;
+    
+    document.getElementById('cerimonialContent').innerHTML = html;
+}
+function openCerimonialDia() {
+    const container = document.getElementById('cerimonialDiaContainer');
+    container.classList.add('active');
+    
+    // Resetar quiz se for um novo dia
+    if (userProgress.hasNewQuiz()) {
+        currentQuestionIndex = 0;
+        score = 0;
+        totalXP = 0;
+        userProgress.answeredToday = false;
+        userProgress.todayQuestions = [];
+        startTime = new Date();
+    }
+    
+    // Obter questões do dia
+    dailyQuestions = userProgress.getDailyQuestions();
+    
+    showUserStatus();
+}
+
+function showUserStatus() {
+    const content = document.getElementById('cerimonialContent');
+    const nextLevelXP = userProgress.getNextLevelXP();
+    const progressPercent = (userProgress.xp / nextLevelXP) * 100;
+    
+    // Calcular estatísticas por categoria
+    const categoryStats = {};
+    Object.keys(userProgress.stats.byCategory).forEach(cat => {
+        const catStats = userProgress.stats.byCategory[cat];
+        categoryStats[cat] = catStats.total > 0 ? 
+            Math.round((catStats.correct / catStats.total) * 100) : 0;
+    });
+    
+    // Verificar se já respondeu tudo hoje
+    const questionsLeft = dailyQuestions.length - currentQuestionIndex;
+    const hasCompletedToday = userProgress.answeredToday && currentQuestionIndex >= dailyQuestions.length;
+    
+    content.innerHTML = `
+        <div class="user-status">
+            <div class="status-header">
+                <div class="user-rank">
+                    <div class="rank-icon">
+                        <i class="fas fa-anchor"></i>
+                    </div>
+                    <div class="rank-info">
+                        <h4>${getRankTitle(userProgress.level)}</h4>
+                        <p>Nível ${userProgress.level} • ${questionsLeft} questões restantes</p>
+                    </div>
+                </div>
+                <div class="status-streak">
+                    <div class="streak-count">
+                        ${userProgress.streak} <span>dias</span>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-top: 5px; font-size: 0.8rem;">Sequência</p>
+                </div>
+            </div>
+            
+            <div class="xp-container">
+                <div class="xp-header">
+                    <span>${userProgress.xp} XP</span>
+                    <span>${nextLevelXP} XP</span>
+                </div>
+                <div class="xp-bar">
+                    <div class="xp-progress" style="width: ${progressPercent}%">
+                        <span class="xp-label">${progressPercent.toFixed(1)}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        ${hasCompletedToday ? showQuizResults() : showWelcomeScreen()}
+        
+        <!-- Configurações do Quiz -->
+        <div class="quiz-settings">
+            <h4 class="settings-title">
+                <i class="fas fa-cog"></i> Configurações do Quiz
+            </h4>
+            
+            <div class="settings-grid">
+                <div class="setting-item">
+                    <label class="setting-label">Questões por dia</label>
+                    <div class="setting-control">
+                        <input type="range" min="1" max="20" value="${userProgress.settings.questionsPerDay}" 
+                               class="questions-slider" id="questionsSlider"
+                               oninput="updateQuestionsValue(this.value)">
+                        <span class="questions-value" id="questionsValue">${userProgress.settings.questionsPerDay}</span>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <label class="setting-label">Dificuldade</label>
+                    <div class="category-buttons">
+                        ${['fácil', 'médio', 'difícil'].map(diff => `
+                            <button class="category-btn ${userProgress.settings.difficulty.includes(diff) ? 'active' : ''}" 
+                                    onclick="toggleDifficulty('${diff}')">
+                                ${diff}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <label class="setting-label">Categorias</label>
+                <div class="category-buttons">
+                    ${[
+                        { id: 'bandeiras', label: '🚩 Bandeiras' },
+                        { id: 'sinais', label: '📡 Sinais' },
+                        { id: 'protocolos', label: '⚓ Protocolos' },
+                        { id: 'datas', label: '📅 Datas' },
+                        { id: 'apitos', label: '🎺 Apitos' }
+                    ].map(cat => `
+                        <button class="category-btn ${userProgress.settings.categories.includes(cat.id) ? 'active' : ''}" 
+                                onclick="toggleCategory('${cat.id}')">
+                            ${cat.label}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <button class="quiz-btn secondary" onclick="saveSettings()" style="width: 100%; margin-top: 15px;">
+                <i class="fas fa-save"></i> Salvar Configurações
+            </button>
+        </div>
+        
+        <!-- Estatísticas Avançadas -->
+        <div class="advanced-stats">
+            <div class="stat-card">
+                <span class="stat-value">${userProgress.stats.totalQuestions}</span>
+                <span class="stat-label">Total de Questões</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">${userProgress.stats.correctAnswers}</span>
+                <span class="stat-label">Acertos Totais</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">${userProgress.stats.totalQuestions > 0 ? 
+                    Math.round((userProgress.stats.correctAnswers / userProgress.stats.totalQuestions) * 100) : 0}%</span>
+                <span class="stat-label">Taxa de Acerto</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">${userProgress.streak}</span>
+                <span class="stat-label">Dias Consecutivos</span>
+            </div>
+        </div>
+        
+        <!-- Progresso por Categoria -->
+        <div class="category-progress">
+            <h4 style="color: white; margin-bottom: 15px;">Seu Progresso por Categoria</h4>
+            ${Object.keys(categoryStats).map(cat => `
+                <div class="category-item">
+                    <div class="category-header">
+                        <span class="category-name">${getCategoryLabel(cat)}</span>
+                        <span class="category-percent">${categoryStats[cat]}%</span>
+                    </div>
+                    <div class="category-bar">
+                        <div class="category-fill" style="width: ${categoryStats[cat]}%; background: ${getCategoryColor(cat)};"></div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        
+        <!-- Questões Extras (opcional) -->
+        ${questionsLeft === 0 && !hasCompletedToday ? `
+            <div class="extra-questions">
+                <h4 class="extra-title">Deseja mais questões hoje?</h4>
+                <div class="quiz-buttons">
+                    <button class="quiz-btn secondary" onclick="showExtraQuestions()">
+                        <i class="fas fa-plus-circle"></i> Questões Extras (+5 XP cada)
+                    </button>
+                </div>
+            </div>
+        ` : ''}
+    `;
+}
+
+// FUNÇÕES DE CONFIGURAÇÃO
+function updateQuestionsValue(value) {
+    document.getElementById('questionsValue').textContent = value;
+}
+
+function toggleCategory(category) {
+    const index = userProgress.settings.categories.indexOf(category);
+    if (index > -1) {
+        userProgress.settings.categories.splice(index, 1);
+    } else {
+        userProgress.settings.categories.push(category);
+    }
+    showUserStatus();
+}
+
+function toggleDifficulty(difficulty) {
+    const index = userProgress.settings.difficulty.indexOf(difficulty);
+    if (index > -1) {
+        userProgress.settings.difficulty.splice(index, 1);
+    } else {
+        userProgress.settings.difficulty.push(difficulty);
+    }
+    showUserStatus();
+}
+
+function saveSettings() {
+    userProgress.settings.questionsPerDay = parseInt(document.getElementById('questionsSlider').value);
+    userProgress.saveProgress();
+    
+    // Recarregar questões com novas configurações
+    if (!userProgress.answeredToday) {
+        dailyQuestions = userProgress.getDailyQuestions();
+        currentQuestionIndex = 0;
+        showUserStatus();
+    }
+    
+    showNotification('Configurações salvas com sucesso!');
+}
+
+function getCategoryColor(category) {
+    const colors = {
+        'bandeiras': '#38a169',
+        'sinais': '#4299e1',
+        'protocolos': '#d69e2e',
+        'datas': '#9f7aea',
+        'apitos': '#e53e3e'
+    };
+    return colors[category] || '#718096';
+}
+
+function getCategoryLabel(category) {
+    const labels = {
+        'bandeiras': 'Bandeiras',
+        'sinais': 'Sinais e Códigos',
+        'protocolos': 'Protocolos',
+        'datas': 'Datas',
+        'apitos': 'Apitos e Toques'
+    };
+    return labels[category] || category;
+}
+
+// FUNÇÕES DO QUIZ
+function showWelcomeScreen() {
+    if (currentQuestionIndex >= dailyQuestions.length) {
+        return showQuizResults();
+    }
+    
+    const question = dailyQuestions[currentQuestionIndex];
+    
+    return `
+        <div class="quiz-content">
+            <div class="quiz-section active" id="questionSection">
+                <div class="quiz-question">
+                    <div class="question-header">
+                        <div class="question-number">${currentQuestionIndex + 1}/${dailyQuestions.length}</div>
+                        <p class="question-text">${question.question}</p>
+                    </div>
+                    <p class="question-hint">
+                        <i class="fas fa-tag"></i> ${getCategoryLabel(question.category)} • 
+                        <i class="fas fa-chart-line"></i> ${question.difficulty} • 
+                        <i class="fas fa-star"></i> ${question.xp} XP
+                    </p>
+                </div>
+                
+                <div class="quiz-options" id="quizOptions">
+                    ${question.options.map(option => `
+                        <div class="quiz-option" data-option="${option.id}" onclick="selectAnswer('${option.id}')">
+                            <div class="option-letter">${option.id}</div>
+                            <div class="option-text">${option.text}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="quiz-buttons">
+                    <button class="quiz-btn secondary" onclick="showHintModal()">
+                        <i class="fas fa-question-circle"></i> Dica Detalhada
+                    </button>
+                    <button class="quiz-btn primary" id="submitBtn" onclick="checkAnswer()" disabled>
+                        <i class="fas fa-paper-plane"></i> Responder (${question.xp} XP)
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Progresso da Sessão -->
+        <div class="journey-progress">
+            <h4 class="journey-title">Progresso da Sessão</h4>
+            <div class="journey-steps">
+                ${dailyQuestions.map((q, index) => `
+                    <div class="journey-step">
+                        <div class="step-circle ${index < currentQuestionIndex ? 'completed' : index === currentQuestionIndex ? 'current' : ''}">
+                            ${index < currentQuestionIndex ? '✓' : index + 1}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function selectAnswer(optionId) {
+    document.querySelectorAll('.quiz-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    
+    const selectedOption = document.querySelector(`[data-option="${optionId}"]`);
+    if (selectedOption) {
+        selectedOption.classList.add('selected');
+        selectedAnswer = optionId;
+        document.getElementById('submitBtn').disabled = false;
+    }
+}
+
+function checkAnswer() {
+    const question = dailyQuestions[currentQuestionIndex];
+    const isCorrect = selectedAnswer === question.correct;
+    
+    // Marcar respostas
+    document.querySelectorAll('.quiz-option').forEach(opt => {
+        const optionId = opt.getAttribute('data-option');
+        
+        if (optionId === question.correct) {
+            opt.classList.add('correct');
+        } else if (optionId === selectedAnswer && !isCorrect) {
+            opt.classList.add('incorrect');
+        }
+        
+        opt.style.pointerEvents = 'none';
+    });
+    
+    document.getElementById('submitBtn').disabled = true;
+    playSound(isCorrect ? 'correct' : 'wrong');
+    
+    // Atualizar estatísticas
+    userProgress.updateStats(question.category, question.difficulty, isCorrect);
+    
+    if (isCorrect) {
+        score++;
+        totalXP += question.xp;
+        userProgress.addXP(question.xp);
+    }
+    
+    setTimeout(() => {
+        showResultScreen(isCorrect, isCorrect ? question.xp : 0);
+    }, 2000);
+}
+
+function showResultScreen(isCorrect, xpEarned) {
+    const question = dailyQuestions[currentQuestionIndex];
+    const isLastQuestion = currentQuestionIndex === dailyQuestions.length - 1;
+    
+    const content = document.getElementById('cerimonialContent');
+    
+    content.innerHTML = `
+        <div class="quiz-content">
+            <div class="result-screen">
+                <div class="result-icon ${isCorrect ? '' : 'fail'}">
+                    <i class="fas fa-${isCorrect ? 'trophy' : 'times'}"></i>
+                </div>
+                
+                <h2 class="result-title">
+                    ${isCorrect ? 'Correto! +' + xpEarned + ' XP' : 'Incorreto'}
+                </h2>
+                
+                <p class="result-message">
+                    ${isCorrect ? 
+                        'Excelente conhecimento naval!' : 
+                        `Resposta correta: <strong>${question.options.find(o => o.id === question.correct).text}</strong>`
+                    }
+                </p>
+                
+                <div style="background: ${isCorrect ? 'rgba(56, 161, 105, 0.1)' : 'rgba(229, 62, 62, 0.1)'}; 
+                           border-left: 4px solid ${isCorrect ? '#38a169' : '#e53e3e'};
+                           padding: 15px; border-radius: 8px; margin: 20px 0;">
+                    <p style="color: ${isCorrect ? '#9ae6b4' : '#fc8181'}; margin: 0; font-size: 0.95rem;">
+                        <i class="fas fa-lightbulb"></i> <strong>Explicação:</strong> ${question.hint}
+                    </p>
+                </div>
+                
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">${score}/${currentQuestionIndex + 1}</span>
+                        <span class="stat-label">Acertos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${totalXP}</span>
+                        <span class="stat-label">XP Ganho</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${dailyQuestions.length - currentQuestionIndex - 1}</span>
+                        <span class="stat-label">Restantes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${userProgress.level}</span>
+                        <span class="stat-label">Nível</span>
+                    </div>
+                </div>
+                
+                <div class="quiz-buttons">
+                    ${!isLastQuestion ? `
+                        <button class="quiz-btn secondary" onclick="showUserStatus()">
+                            <i class="fas fa-chart-bar"></i> Estatísticas
+                        </button>
+                        <button class="quiz-btn primary" onclick="nextQuestion()">
+                            <i class="fas fa-forward"></i> Próxima Questão
+                        </button>
+                    ` : `
+                        <button class="quiz-btn secondary" onclick="showUserStatus()">
+                            <i class="fas fa-chart-bar"></i> Ver Estatísticas
+                        </button>
+                        <button class="quiz-btn primary" onclick="completeCerimonial()">
+                            <i class="fas fa-flag-checkered"></i> Finalizar Quiz
+                        </button>
+                    `}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    showUserStatus();
+}
+
+function completeCerimonial() {
+    userProgress.updateStreak();
+    userProgress.answeredToday = true;
+    
+    // Mostrar modal de recompensa
+    showRewardModal();
+}
+
+function showRewardModal() {
+    const timeSpent = startTime ? Math.round((new Date() - startTime) / 1000) : 0;
+    const minutes = Math.floor(timeSpent / 60);
+    const seconds = timeSpent % 60;
+    const timeFormatted = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    // Atualizar conquistas
+    checkAchievements();
+    
+    document.getElementById('rewardModalTitle').textContent = 
+        score === dailyQuestions.length ? "🎖️ PERFEIÇÃO NAVAL!" : "🏆 CERIMONIAL CONCLUÍDO!";
+    
+    document.getElementById('rewardModalSubtitle').textContent = 
+        score === dailyQuestions.length ? 
+        "Você acertou todas as questões!" : 
+        `Você completou ${dailyQuestions.length} questões`;
+    
+    document.getElementById('rewardModalXP').textContent = `+${totalXP} XP`;
+    document.getElementById('rewardModalCorrect').textContent = `${score}/${dailyQuestions.length}`;
+    document.getElementById('rewardModalTime').textContent = timeFormatted;
+    document.getElementById('rewardModalStreak').textContent = userProgress.streak;
+    document.getElementById('rewardModalLevel').textContent = userProgress.level;
+    
+    document.getElementById('rewardModal').classList.add('active');
+    playSound('levelup');
+}
+
+function closeRewardModal() {
+    document.getElementById('rewardModal').classList.remove('active');
+    showUserStatus();
+}
+
+function showQuizResults() {
+    const accuracy = dailyQuestions.length > 0 ? Math.round((score / dailyQuestions.length) * 100) : 0;
+    
+    return `
+        <div class="quiz-content">
+            <div class="result-screen">
+                <div class="result-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                
+                <h2 class="result-title">Quiz de Hoje Concluído!</h2>
+                
+                <p class="result-message">
+                    Você completou ${dailyQuestions.length} questões com ${accuracy}% de acerto.
+                    Volte amanhã para novos desafios!
+                </p>
+                
+                <div class="xp-earned" style="background: rgba(0, 102, 204, 0.2); border-color: #0066cc;">
+                    <span class="xp-earned-label">XP Ganho Hoje</span>
+                    <span class="xp-earned-value">+${totalXP} XP</span>
+                </div>
+                
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">${score}/${dailyQuestions.length}</span>
+                        <span class="stat-label">Acertos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${accuracy}%</span>
+                        <span class="stat-label">Precisão</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${userProgress.streak}</span>
+                        <span class="stat-label">Dias</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${userProgress.level}</span>
+                        <span class="stat-label">Nível</span>
+                    </div>
+                </div>
+                
+                <div class="quiz-buttons">
+                    <button class="quiz-btn secondary" onclick="reviewTodayQuestions()">
+                        <i class="fas fa-book"></i> Revisar Questões
+                    </button>
+                    <button class="quiz-btn primary" onclick="showExtraQuestions()">
+                        <i class="fas fa-plus-circle"></i> Questões Extras
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modo Revisão -->
+        <div class="review-mode">
+            <div class="review-header">
+                <div class="review-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3 class="review-title">Continue Aprendendo</h3>
+            </div>
+            
+            <div class="review-controls">
+                <button class="review-btn" onclick="showQuestionsByCategory('bandeiras')">
+                    <i class="fas fa-flag"></i> Bandeiras
+                </button>
+                <button class="review-btn" onclick="showQuestionsByCategory('sinais')">
+                    <i class="fas fa-signal"></i> Sinais
+                </button>
+                <button class="review-btn" onclick="showQuestionsByCategory('protocolos')">
+                    <i class="fas fa-book"></i> Protocolos
+                </button>
+                <button class="review-btn" onclick="showAllQuestions()">
+                    <i class="fas fa-list"></i> Todas as Questões
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function reviewTodayQuestions() {
+    let reviewHTML = '<div style="padding: 20px;">';
+    reviewHTML += '<h3 style="color: white; margin-bottom: 20px;">Revisão das Questões de Hoje</h3>';
+    
+    dailyQuestions.forEach((q, index) => {
+        reviewHTML += `
+            <div style="
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 10px;
+                padding: 20px;
+                margin-bottom: 15px;
+                border-left: 4px solid ${getCategoryColor(q.category)};
+            ">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <p style="color: white; font-weight: 600; margin: 0; flex: 1;">
+                        ${index + 1}. ${q.question}
+                    </p>
+                    <span style="
+                        background: ${getCategoryColor(q.category)}20;
+                        color: ${getCategoryColor(q.category)};
+                        padding: 3px 10px;
+                        border-radius: 12px;
+                        font-size: 0.8rem;
+                        font-weight: 600;
+                        margin-left: 10px;
+                    ">
+                        ${q.xp} XP
+                    </span>
+                </div>
+                
+                <div style="
+                    background: rgba(56, 161, 105, 0.1);
+                    border-radius: 8px;
+                    padding: 15px;
+                    border-left: 3px solid #38a169;
+                    margin-top: 10px;
+                ">
+                    <p style="color: #9ae6b4; margin: 0; font-size: 0.95rem;">
+                        <strong>Resposta correta:</strong> 
+                        ${q.options.find(o => o.id === q.correct).text}
+                    </p>
+                    <p style="color: var(--text-secondary); margin: 10px 0 0 0; font-size: 0.9rem;">
+                        <i class="fas fa-lightbulb"></i> ${q.hint}
+                    </p>
+                </div>
+            </div>
+        `;
+    });
+    
+    reviewHTML += `
+        <button class="quiz-btn primary" onclick="showUserStatus()" style="margin-top: 20px; width: 100%;">
+            <i class="fas fa-arrow-left"></i> Voltar ao Progresso
+        </button>
+    </div>`;
+    
+    document.getElementById('cerimonialContent').innerHTML = reviewHTML;
+}
+
+function showExtraQuestions() {
+    // Questões não respondidas hoje
+    const unansweredQuestions = quizDatabase.filter(q => 
+        !dailyQuestions.some(dq => dq.id === q.id)
+    ).slice(0, 5);
+    
+    let extraHTML = '<div style="padding: 20px;">';
+    extraHTML += '<h3 style="color: white; margin-bottom: 20px;">Questões Extras (+5 XP cada)</h3>';
+    extraHTML += '<p style="color: var(--text-secondary); margin-bottom: 20px;">Responda questões adicionais para ganhar mais XP!</p>';
+    
+    unansweredQuestions.forEach((q, index) => {
+        extraHTML += `
+            <div class="extra-card" onclick="startExtraQuestion(${q.id})">
+                <div class="extra-header">
+                    <span class="extra-category">${getCategoryLabel(q.category)}</span>
+                    <span class="extra-xp">+5 XP</span>
+                </div>
+                <p class="extra-question">${q.question}</p>
+                <div class="extra-status">
+                    <i class="fas fa-clock"></i> ${q.difficulty} • ${q.xp - 5} XP bônus
+                </div>
+            </div>
+        `;
+    });
+    
+    extraHTML += `
+        <button class="quiz-btn secondary" onclick="showUserStatus()" style="margin-top: 20px; width: 100%;">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+    </div>`;
+    
+    document.getElementById('cerimonialContent').innerHTML = extraHTML;
+}
+
+function startExtraQuestion(questionId) {
+    const question = quizDatabase.find(q => q.id === questionId);
+    if (!question) return;
+    
+    // Adicionar questão extra à sessão atual
+    dailyQuestions.push(question);
+    currentQuestionIndex = dailyQuestions.length - 1;
+    showUserStatus();
+}
+
+function checkAchievements() {
+    const achievements = userProgress.achievements;
+    
+    // Streak de 7 dias
+    if (userProgress.streak >= 7 && !achievements.streak_7) {
+        achievements.streak_7 = true;
+        showAchievementUnlocked('streak_7', '7 Dias de Sequência', 'Você completou 7 dias consecutivos!', 50);
+    }
+    
+    // Streak de 30 dias
+    if (userProgress.streak >= 30 && !achievements.streak_30) {
+        achievements.streak_30 = true;
+        showAchievementUnlocked('streak_30', 'Marujo Dedicado', '30 dias consecutivos!', 150);
+    }
+    
+    // Nível 10
+    if (userProgress.level >= 10 && !achievements.level_10) {
+        achievements.level_10 = true;
+        showAchievementUnlocked('level_10', 'Veterano Naval', 'Você atingiu o nível 10!', 100);
+    }
+    
+    // Acertou todas as questões do dia
+    if (score === dailyQuestions.length && dailyQuestions.length >= 5 && !achievements.perfect_day) {
+        achievements.perfect_day = true;
+        showAchievementUnlocked('perfect_day', 'Dia Perfeito', 'Acertou todas as questões do dia!', 75);
+    }
+    
+    // 100 questões respondidas
+    if (userProgress.stats.totalQuestions >= 100 && !achievements.centurion) {
+        achievements.centurion = true;
+        showAchievementUnlocked('centurion', 'Centurião Naval', '100 questões respondidas!', 100);
+    }
+    
+    // Especialista em categoria (90% de acerto)
+    Object.keys(userProgress.stats.byCategory).forEach(cat => {
+        const catStats = userProgress.stats.byCategory[cat];
+        if (catStats.total >= 20 && (catStats.correct / catStats.total) >= 0.9) {
+            const achievementId = `expert_${cat}`;
+            if (!achievements[achievementId]) {
+                achievements[achievementId] = true;
+                showAchievementUnlocked(
+                    achievementId, 
+                    `Especialista em ${getCategoryLabel(cat)}`, 
+                    `90% de acerto em ${catStats.total} questões!`, 
+                    80
+                );
+            }
+        }
+    });
+}
+
+function showAchievementUnlocked(id, title, description, xp) {
+    userProgress.addXP(xp);
+    
+    const notification = document.getElementById('rewardNotification');
+    const titleEl = document.getElementById('rewardTitle');
+    const message = document.getElementById('rewardMessage');
+    
+    titleEl.textContent = "🏆 " + title;
+    message.textContent = `${description} +${xp} XP`;
+    
+    notification.classList.add('show');
+    playSound('levelup');
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 4000);
+}
+
+// INICIALIZAÇÃO
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('openCerimonialBtn').addEventListener('click', openCerimonialDia);
+    document.getElementById('closeCerimonialBtn').addEventListener('click', closeCerimonialDia);
+    updateCerimonialBadge();
+    setInterval(updateCerimonialBadge, 3600000);
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeCerimonialDia();
+            document.getElementById('rewardModal').classList.remove('active');
+        }
+    });
+});
+
+function updateCerimonialBadge() {
+    const badge = document.getElementById('cerimonialBadge');
+    
+    if (userProgress.hasNewQuiz() && !userProgress.answeredToday) {
+        badge.textContent = userProgress.settings.questionsPerDay;
+        badge.style.display = 'flex';
+        badge.style.animation = 'pulseBadge 2s infinite';
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+function getRankTitle(level) {
+    if (level >= 30) return "Almirante-do-Mar";
+    if (level >= 25) return "Almirante-de-Esquadra";
+    if (level >= 20) return "Vice-Almirante";
+    if (level >= 15) return "Contra-Almirante";
+    if (level >= 10) return "Capitão-de-Mar-e-Guerra";
+    if (level >= 7) return "Capitão-de-Fragata";
+    if (level >= 5) return "Capitão-Tenente";
+    if (level >= 3) return "Primeiro-Tenente";
+    if (level >= 2) return "Segundo-Tenente";
+    return "Aspirante";
+}
+</script>
     <!-- Watermark -->
     <div class="watermark">By: ๖ۣۜCabral™</>  +5521989047220</div>
     
@@ -4738,25 +7540,6 @@ setInterval(() => {
         </div>
         <div id="apitosContent">
             <!-- Conteúdo será carregado via JavaScript -->
-        </div>
-    </div>
-</section>
-
-<!-- Seção Cerimonial do Dia -->
-<section id="cerimonial-do-dia" class="content-section" style="display: none;">
-    <div class="content-card">
-        <div class="card-header">
-            <div class="card-icon">
-                <i class="fas fa-calendar-day"></i>
-            </div>
-            <div>
-                <h2 class="card-title">Cerimonial do Dia</h2>
-                <div class="card-subtitle">Desafie seus conhecimentos navais e evolua nas patentes!</div>
-            </div>
-        </div>
-        
-        <div class="daily-ceremonial-section" id="dailyCeremonial">
-            <!-- Conteúdo será carregado dinamicamente pelo JavaScript -->
         </div>
     </div>
 </section>
@@ -8628,1057 +11411,6 @@ function setupAudioEvents() {
     }, true);
 }
 
-// ============================================
-// SISTEMA CERIMONIAL DO DIA
-// ============================================
-
-// Dados do usuário (salvar no localStorage)
-let userData = {
-    xp: 0,
-    rank: 1,
-    streak: 0,
-    lastPlayed: null,
-    answersCorrect: 0,
-    totalAnswers: 0,
-    achievements: {}
-};
-
-// Sistema de patentes navais
-const navalRanks = [
-    { id: 1, name: "Marujo Recruta", xpRequired: 0, icon: "fas fa-anchor", color: "#718096" },
-    { id: 2, name: "Marujo 3ª Classe", xpRequired: 100, icon: "fas fa-ship", color: "#4299e1" },
-    { id: 3, name: "Marujo 2ª Classe", xpRequired: 250, icon: "fas fa-compass", color: "#38a169" },
-    { id: 4, name: "Marinheiro", xpRequired: 500, icon: "fas fa-water", color: "#d69e2e" },
-    { id: 5, name: "Cabo", xpRequired: 800, icon: "fas fa-star", color: "#9f7aea" },
-    { id: 6, name: "3º Sargento", xpRequired: 1200, icon: "fas fa-chess-rook", color: "#ed8936" },
-    { id: 7, name: "2º Sargento", xpRequired: 1700, icon: "fas fa-chess-knight", color: "#f56565" },
-    { id: 8, name: "1º Sargento", xpRequired: 2300, icon: "fas fa-chess-queen", color: "#00b5d8" },
-    { id: 9, name: "Suboficial", xpRequired: 3000, icon: "fas fa-crown", color: "#d53f8c" },
-    { id: 10, name: "Guarda-Marinha", xpRequired: 4000, icon: "fas fa-gem", color: "#68d391" },
-    { id: 11, name: "Segundo-Tenente", xpRequired: 5500, icon: "fas fa-medal", color: "#f6e05e" },
-    { id: 12, name: "Primeiro-Tenente", xpRequired: 7500, icon: "fas fa-trophy", color: "#b794f4" },
-    { id: 13, name: "Capitão-Tenente", xpRequired: 10000, icon: "fas fa-award", color: "#f687b3" },
-    { id: 14, name: "Capitão de Corveta", xpRequired: 13000, icon: "fas fa-shield-alt", color: "#4fd1c7" },
-    { id: 15, name: "Capitão de Fragata", xpRequired: 17000, icon: "fas fa-star-of-life", color: "#fbb6ce" },
-    { id: 16, name: "Capitão de Mar e Guerra", xpRequired: 22000, icon: "fas fa-crown", color: "#fed7d7" },
-    { id: 17, name: "Contra-Almirante", xpRequired: 30000, icon: "fas fa-flag", color: "#ecc94b" },
-    { id: 18, name: "Vice-Almirante", xpRequired: 40000, icon: "fas fa-flag-checkered", color: "#0bc5ea" },
-    { id: 19, name: "Almirante de Esquadra", xpRequired: 55000, icon: "fas fa-globe-americas", color: "#9f7aea" },
-    { id: 20, name: "Almirante", xpRequired: 75000, icon: "fas fa-university", color: "#ed64a6" }
-];
-
-// Conquistas
-const achievements = [
-    { id: "streak_3", name: "Marinheiro Dedicado", description: "Complete 3 dias consecutivos", icon: "fas fa-fire", requirement: 3, type: "streak" },
-    { id: "streak_7", name: "Marujo Exemplar", description: "Complete 7 dias consecutivos", icon: "fas fa-fire", requirement: 7, type: "streak" },
-    { id: "streak_30", name: "Veterano Naval", description: "Complete 30 dias consecutivos", icon: "fas fa-fire", requirement: 30, type: "streak" },
-    { id: "correct_10", name: "Conhecimento Naval", description: "Acertar 10 questões", icon: "fas fa-brain", requirement: 10, type: "correct" },
-    { id: "correct_50", name: "Sábio dos Mares", description: "Acertar 50 questões", icon: "fas fa-graduation-cap", requirement: 50, type: "correct" },
-    { id: "rank_5", name: "Subindo na Carreira", description: "Alcançar Cabo", icon: "fas fa-arrow-up", requirement: 5, type: "rank" },
-    { id: "rank_10", name: "Oficial em Formação", description: "Alcançar Guarda-Marinha", icon: "fas fa-user-tie", requirement: 10, type: "rank" },
-    { id: "rank_15", name: "Comandante Naval", description: "Alcançar Capitão de Fragata", icon: "fas fa-ship", requirement: 15, type: "rank" }
-];
-
-// Banco de questões (pode ser expandido)
-const questionBank = [
-    {
-        id: 1,
-        question: "Quantos tiros são disparados nas salvas de honra para o Presidente da República?",
-        options: ["15 tiros", "17 tiros", "19 tiros", "21 tiros"],
-        correct: 3,
-        explanation: "O Presidente da República recebe 21 tiros, que é a salva máxima de honra.",
-        category: "Salvas de Honra",
-        difficulty: 1
-    },
-    {
-        id: 2,
-        question: "Qual é o significado do sinal de bandeira 'ALFA' no Código Internacional de Sinais (CIS)?",
-        options: [
-            "Estou carregando carga perigosa",
-            "Tenho mergulhador n'água; mantenha-se afastado",
-            "Estou guinando para boreste",
-            "Solicito prático"
-        ],
-        correct: 1,
-        explanation: "ALFA significa 'Tenho mergulhador n'água; mantenha-se bem afastado e a baixa velocidade'.",
-        category: "Sinais Navais",
-        difficulty: 2
-    },
-    {
-        id: 3,
-        question: "A que horas ocorre o hasteamento da Bandeira Nacional em unidades da Marinha?",
-        options: ["06:00", "08:00", "10:00", "12:00"],
-        correct: 1,
-        explanation: "O hasteamento ocorre às 08:00 horas, com cerimonial específico.",
-        category: "Cerimonial",
-        difficulty: 1
-    },
-    {
-        id: 4,
-        question: "Quantos 'boys' são formados para um Almirante nas honras de portaló?",
-        options: ["4 boys", "6 boys", "8 boys", "10 boys"],
-        correct: 2,
-        explanation: "Um Almirante recebe 8 'boys' nas honras de portaló.",
-        category: "Honras de Portaló",
-        difficulty: 2
-    },
-    {
-        id: 5,
-        question: "Qual destas NÃO é uma das cores da Bandeira Nacional?",
-        options: ["Verde", "Amarelo", "Azul", "Vermelho"],
-        correct: 3,
-        explanation: "As cores são verde, amarelo, azul e branco. Vermelho não faz parte.",
-        category: "Bandeiras",
-        difficulty: 1
-    },
-    {
-        id: 6,
-        question: "O que significa a bandeira 'QUEBEC' no CIS?",
-        options: [
-            "Estado sanitário do meu navio é bom, solicito livre prática",
-            "Homem ao mar",
-            "Tenho incêndio a bordo",
-            "Estou carregando carga perigosa"
-        ],
-        correct: 0,
-        explanation: "QUEBEC significa 'Estado sanitário do meu navio é bom, solicito livre prática'.",
-        category: "Sinais Navais",
-        difficulty: 3
-    },
-    {
-        id: 7,
-        question: "Em que data é comemorada a Batalha Naval de Riachuelo?",
-        options: ["7 de setembro", "11 de junho", "15 de novembro", "19 de novembro"],
-        correct: 1,
-        explanation: "A Batalha Naval de Riachuelo é comemorada em 11 de junho, Data Magna da Marinha.",
-        category: "Datas Festivas",
-        difficulty: 2
-    },
-    {
-        id: 8,
-        question: "Quantas estrelas há na Bandeira do Cruzeiro?",
-        options: ["13 estrelas", "18 estrelas", "21 estrelas", "27 estrelas"],
-        correct: 2,
-        explanation: "A Bandeira do Cruzeiro possui 21 estrelas brancas dispostas em cruz.",
-        category: "Bandeiras",
-        difficulty: 3
-    },
-    {
-        id: 9,
-        question: "Qual é o toque de apito para o Presidente da República?",
-        options: [
-            "Toque de Comandante da Marinha",
-            "Toque de Almirante",
-            "Toque especial de Presidente",
-            "Toque de Autoridade com salvas de 19 tiros"
-        ],
-        correct: 2,
-        explanation: "O Presidente da República tem toque especial específico.",
-        category: "Apitos",
-        difficulty: 3
-    },
-    {
-        id: 10,
-        question: "Quando a bandeira deve ser hasteada a meia adriça?",
-        options: [
-            "Dias de sol",
-            "Dias de chuva",
-            "Dias de luto ou funeral",
-            "Durante a noite"
-        ],
-        correct: 2,
-        explanation: "A bandeira a meia adriça é usada em dias de luto, funeral e 2 de novembro (Finados).",
-        category: "Cerimonial",
-        difficulty: 2
-    }
-];
-
-// Variáveis do questionário atual
-let currentQuestion = null;
-let selectedOption = null;
-let quizTimer = null;
-let timeLeft = 30;
-
-// Inicializar sistema
-function initDailyCeremonial() {
-    loadUserData();
-    updateStreak();
-    renderDailyCeremonial();
-}
-
-// Carregar dados do usuário
-function loadUserData() {
-    const saved = localStorage.getItem('marujoDigitalUserData');
-    if (saved) {
-        userData = JSON.parse(saved);
-        
-        // Verificar se já jogou hoje
-        const today = new Date().toDateString();
-        if (userData.lastPlayed === today) {
-            // Já jogou hoje, mostrar resultados
-            showAlreadyPlayedMessage();
-        }
-    }
-}
-
-// Salvar dados do usuário
-function saveUserData() {
-    localStorage.setItem('marujoDigitalUserData', JSON.stringify(userData));
-}
-
-// Atualizar streak
-function updateStreak() {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    const lastPlayed = userData.lastPlayed ? new Date(userData.lastPlayed) : null;
-    
-    if (!lastPlayed) {
-        return; // Primeira vez jogando
-    }
-    
-    const lastPlayedDate = lastPlayed.toDateString();
-    const todayDate = today.toDateString();
-    const yesterdayDate = yesterday.toDateString();
-    
-    if (lastPlayedDate === todayDate) {
-        // Já jogou hoje
-        return;
-    } else if (lastPlayedDate === yesterdayDate) {
-        // Jogou ontem, incrementar streak
-        userData.streak++;
-    } else {
-        // Quebrou a sequência
-        userData.streak = 1;
-    }
-    
-    saveUserData();
-}
-
-// Renderizar seção do Cerimonial do Dia
-function renderDailyCeremonial() {
-    const container = document.getElementById('dailyCeremonial');
-    if (!container) return;
-    
-    const today = new Date();
-    const formattedDate = today.toLocaleDateString('pt-BR', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    });
-    
-    // Verificar se já jogou hoje
-    const hasPlayedToday = userData.lastPlayed === today.toDateString();
-    
-    container.innerHTML = `
-        <div class="daily-ceremonial-header">
-            <div class="daily-title-container">
-                <h1 class="daily-title">
-                    <i class="fas fa-calendar-day"></i>
-                    Cerimonial do Dia
-                </h1>
-                <div class="daily-subtitle">${formattedDate}</div>
-            </div>
-            
-            <div class="daily-stats">
-                <div class="daily-stat">
-                    <div class="daily-stat-value">${userData.streak}</div>
-                    <div class="daily-stat-label">Dias Consecutivos</div>
-                </div>
-                <div class="daily-stat">
-                    <div class="daily-stat-value">${userData.answersCorrect}</div>
-                    <div class="daily-stat-label">Questões Certas</div>
-                </div>
-                <div class="daily-stat">
-                    <div class="daily-stat-value">${Math.floor(userData.answersCorrect / Math.max(userData.totalAnswers, 1) * 100)}%</div>
-                    <div class="daily-stat-label">Taxa de Acerto</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="progress-system">
-            <!-- Perfil do usuário -->
-            <div class="user-profile-card">
-                <div class="user-rank-badge">
-                    <div class="rank-circle">
-                        <i class="${getCurrentRank().icon} rank-icon"></i>
-                    </div>
-                </div>
-                
-                <div class="rank-info">
-                    <h3 class="rank-title">${getCurrentRank().name}</h3>
-                    <div class="rank-subtitle">Próximo: ${getNextRank().name}</div>
-                </div>
-                
-                <div class="xp-progress">
-                    <div class="xp-info">
-                        <span class="xp-current">${userData.xp} XP</span>
-                        <span class="xp-target">${getNextRank().xpRequired} XP</span>
-                    </div>
-                    <div class="xp-bar">
-                        <div class="xp-fill" style="width: ${calculateXpProgress()}%"></div>
-                    </div>
-                </div>
-                
-                <div class="streak-container">
-                    <i class="fas fa-fire streak-icon"></i>
-                    <div class="streak-info">
-                        <h4>Sequência Atual: ${userData.streak} dias</h4>
-                        <p>${hasPlayedToday ? 'Você já completou o desafio de hoje!' : 'Complete o desafio diário para manter sua sequência!'}</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Questionário do Dia -->
-            <div class="daily-quiz-container" id="quizContainer">
-                ${hasPlayedToday ? renderAlreadyPlayed() : renderDailyQuiz()}
-            </div>
-        </div>
-        
-        <!-- Sistema de Patentes -->
-        <div class="rank-system">
-            <h3 class="rank-system-title">
-                <i class="fas fa-chevron-up"></i>
-                Progressão de Patentes
-            </h3>
-            
-            <div class="ranks-grid" id="ranksGrid">
-                ${renderRankCards()}
-            </div>
-        </div>
-        
-        <!-- Conquistas -->
-        <div class="achievements-section">
-            <h3 class="rank-system-title">
-                <i class="fas fa-trophy"></i>
-                Conquistas Navais
-            </h3>
-            
-            <div class="achievements-grid" id="achievementsGrid">
-                ${renderAchievements()}
-            </div>
-        </div>
-    `;
-    
-    if (!hasPlayedToday) {
-        setupQuiz();
-        startTimer();
-    }
-}
-
-// Renderizar mensagem de já jogado
-function renderAlreadyPlayed() {
-    return `
-        <div class="quiz-result" id="quizResult">
-            <div class="result-header">
-                <div class="result-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <h2 class="result-title">Missão Diária Concluída!</h2>
-                <p class="result-message">Você já completou o desafio de hoje. Volte amanhã para uma nova questão!</p>
-            </div>
-            
-            <div class="result-details">
-                <div class="result-row">
-                    <span class="result-label">Sequência atual:</span>
-                    <span class="result-value">${userData.streak} dias</span>
-                </div>
-                <div class="result-row">
-                    <span class="result-label">Patente atual:</span>
-                    <span class="result-value">${getCurrentRank().name}</span>
-                </div>
-                <div class="result-row">
-                    <span class="result-label">XP Total:</span>
-                    <span class="result-value">${userData.xp} XP</span>
-                </div>
-            </div>
-            
-            <div class="result-actions">
-                <button class="share-btn" onclick="shareProgress()">
-                    <i class="fas fa-share-alt"></i>
-                    Compartilhar Progresso
-                </button>
-                <button class="next-quiz-btn" onclick="practiceMode()">
-                    <i class="fas fa-redo"></i>
-                    Modo Prática
-                </button>
-            </div>
-        </div>
-    `;
-}
-
-// Renderizar questionário diário
-function renderDailyQuiz() {
-    // Selecionar questão aleatória
-    const availableQuestions = questionBank.filter(q => !userData.answeredQuestions || !userData.answeredQuestions.includes(q.id));
-    const randomQuestion = availableQuestions.length > 0 
-        ? availableQuestions[Math.floor(Math.random() * availableQuestions.length)]
-        : questionBank[Math.floor(Math.random() * questionBank.length)];
-    
-    currentQuestion = randomQuestion;
-    
-    return `
-        <div class="quiz-header">
-            <h3 class="quiz-title">Desafio do Dia</h3>
-            <div class="quiz-timer">
-                <i class="fas fa-clock"></i>
-                <span id="timer">30s</span>
-            </div>
-        </div>
-        
-        <p class="quiz-description">
-            <strong>Categoria:</strong> ${currentQuestion.category} | 
-            <strong>Dificuldade:</strong> ${'★'.repeat(currentQuestion.difficulty)}
-        </p>
-        
-        <h4 style="color: white; margin-bottom: 20px; font-size: 1.2rem;">
-            ${currentQuestion.question}
-        </h4>
-        
-        <div class="quiz-options" id="quizOptions">
-            ${currentQuestion.options.map((option, index) => `
-                <div class="quiz-option" onclick="selectOption(${index})" id="option-${index}">
-                    <div class="option-letter">${String.fromCharCode(65 + index)}</div>
-                    <div class="option-content">
-                        <p>${option}</p>
-                    </div>
-                </div>
-            `).join('')}
-        </div>
-        
-        <div class="quiz-actions">
-            <button class="hint-btn" onclick="showHint()" id="hintBtn">
-                <i class="fas fa-lightbulb"></i>
-                Dica (50 XP)
-            </button>
-            
-            <button class="submit-btn" onclick="submitAnswer()" id="submitBtn" disabled>
-                <i class="fas fa-paper-plane"></i>
-                Enviar Resposta
-            </button>
-        </div>
-        
-        <div id="hintContainer" style="display: none; margin-top: 20px; padding: 15px; 
-            background: rgba(255, 204, 0, 0.1); border-radius: 10px; color: var(--text-secondary);">
-            <!-- Dica será mostrada aqui -->
-        </div>
-    `;
-}
-
-// Renderizar cartões de patente
-function renderRankCards() {
-    return navalRanks.map(rank => {
-        const isCurrent = rank.id === getCurrentRank().id;
-        const isAchieved = rank.id <= getCurrentRank().id;
-        const isLocked = rank.id > getCurrentRank().id;
-        
-        return `
-            <div class="rank-card ${isCurrent ? 'current' : ''} ${isAchieved ? 'achieved' : ''} ${isLocked ? 'locked' : ''}">
-                <div class="rank-badge-small ${isLocked ? 'locked' : ''}" style="border-color: ${rank.color};">
-                    <i class="${rank.icon}" style="color: ${isLocked ? '#718096' : 'white'};"></i>
-                </div>
-                <h4 class="rank-name">${rank.name}</h4>
-                <p class="rank-requirement">${rank.xpRequired} XP</p>
-                <div class="rank-xp">
-                    ${isCurrent ? 'ATUAL' : isAchieved ? 'CONQUISTADO' : 'BLOQUEADO'}
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-// Renderizar conquistas
-function renderAchievements() {
-    return achievements.map(achievement => {
-        const progress = getAchievementProgress(achievement);
-        const isUnlocked = progress >= achievement.requirement;
-        const progressPercent = Math.min((progress / achievement.requirement) * 100, 100);
-        
-        return `
-            <div class="achievement-card ${isUnlocked ? 'unlocked' : 'locked'}">
-                <div class="achievement-icon" style="background: ${isUnlocked ? 'linear-gradient(135deg, var(--primary), var(--primary-dark))' : 'rgba(255,255,255,0.1)'};">
-                    <i class="${achievement.icon}" style="color: ${isUnlocked ? 'white' : '#718096'};"></i>
-                </div>
-                <div class="achievement-info">
-                    <h4 class="achievement-name">${achievement.name}</h4>
-                    <p class="achievement-desc">${achievement.description}</p>
-                    <div class="achievement-progress">
-                        <div class="achievement-progress-fill" style="width: ${progressPercent}%"></div>
-                    </div>
-                    <small style="color: var(--text-muted);">${progress}/${achievement.requirement}</small>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-// Funções auxiliares
-function getCurrentRank() {
-    for (let i = navalRanks.length - 1; i >= 0; i--) {
-        if (userData.xp >= navalRanks[i].xpRequired) {
-            return navalRanks[i];
-        }
-    }
-    return navalRanks[0];
-}
-
-function getNextRank() {
-    const currentRank = getCurrentRank();
-    const nextIndex = navalRanks.findIndex(r => r.id === currentRank.id) + 1;
-    return navalRanks[nextIndex] || navalRanks[navalRanks.length - 1];
-}
-
-function calculateXpProgress() {
-    const currentRank = getCurrentRank();
-    const nextRank = getNextRank();
-    
-    if (!nextRank || nextRank.id === currentRank.id) {
-        return 100;
-    }
-    
-    const xpInCurrentRank = userData.xp - currentRank.xpRequired;
-    const xpNeededForNextRank = nextRank.xpRequired - currentRank.xpRequired;
-    
-    return (xpInCurrentRank / xpNeededForNextRank) * 100;
-}
-
-function getAchievementProgress(achievement) {
-    switch(achievement.type) {
-        case 'streak':
-            return userData.streak;
-        case 'correct':
-            return userData.answersCorrect;
-        case 'rank':
-            return getCurrentRank().id;
-        default:
-            return 0;
-    }
-}
-
-// Funções do questionário
-function setupQuiz() {
-    // Limpar seleção anterior
-    selectedOption = null;
-    timeLeft = 30;
-    updateTimerDisplay();
-}
-
-function startTimer() {
-    clearInterval(quizTimer);
-    quizTimer = setInterval(() => {
-        timeLeft--;
-        updateTimerDisplay();
-        
-        if (timeLeft <= 0) {
-            clearInterval(quizTimer);
-            timeUp();
-        }
-    }, 1000);
-}
-
-function updateTimerDisplay() {
-    const timerElement = document.getElementById('timer');
-    if (timerElement) {
-        timerElement.textContent = `${timeLeft}s`;
-        
-        // Mudar cor quando o tempo estiver acabando
-        if (timeLeft <= 10) {
-            timerElement.style.color = '#e53e3e';
-        } else if (timeLeft <= 20) {
-            timerElement.style.color = '#d69e2e';
-        } else {
-            timerElement.style.color = 'var(--accent)';
-        }
-    }
-}
-
-function timeUp() {
-    if (selectedOption === null) {
-        // Tempo esgotou sem resposta
-        submitAnswer(false);
-    }
-}
-
-function selectOption(optionIndex) {
-    // Desmarcar opção anterior
-    if (selectedOption !== null) {
-        const prevOption = document.getElementById(`option-${selectedOption}`);
-        if (prevOption) {
-            prevOption.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-            prevOption.style.background = 'rgba(255, 255, 255, 0.05)';
-        }
-    }
-    
-    // Marcar nova opção
-    selectedOption = optionIndex;
-    const currentOption = document.getElementById(`option-${optionIndex}`);
-    if (currentOption) {
-        currentOption.style.borderColor = 'var(--primary)';
-        currentOption.style.background = 'rgba(0, 102, 204, 0.1)';
-    }
-    
-    // Habilitar botão de enviar
-    const submitBtn = document.getElementById('submitBtn');
-    if (submitBtn) {
-        submitBtn.disabled = false;
-    }
-}
-
-function showHint() {
-    if (!currentQuestion) return;
-    
-    // Custo da dica: 50 XP
-    if (userData.xp < 50) {
-        showNotification('XP insuficiente para dica! Ganhe mais XP respondendo questões.', 'error');
-        return;
-    }
-    
-    // Deduzir XP
-    userData.xp -= 50;
-    saveUserData();
-    
-    // Mostrar dica
-    const hintContainer = document.getElementById('hintContainer');
-    if (hintContainer) {
-        hintContainer.style.display = 'block';
-        
-        // Dica baseada na categoria
-        let hint = '';
-        switch(currentQuestion.category) {
-            case 'Salvas de Honra':
-                hint = '💡 Dica: Salvas variam de 11 a 21 tiros, dependendo da autoridade.';
-                break;
-            case 'Sinais Navais':
-                hint = '💡 Dica: Sinais do CIS usam o alfabeto fonético (Alfa, Bravo, Charlie...).';
-                break;
-            case 'Bandeiras':
-                hint = '💡 Dica: Bandeiras têm significados específicos e protocolos de uso.';
-                break;
-            default:
-                hint = '💡 Dica: Revise o manual EMN-006 para mais informações sobre este tópico.';
-        }
-        
-        hintContainer.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                <i class="fas fa-lightbulb" style="color: var(--accent);"></i>
-                <strong style="color: white;">Dica (-50 XP)</strong>
-            </div>
-            <p style="margin: 0;">${hint}</p>
-        `;
-        
-        // Desabilitar botão de dica
-        const hintBtn = document.getElementById('hintBtn');
-        if (hintBtn) {
-            hintBtn.disabled = true;
-            hintBtn.innerHTML = '<i class="fas fa-lightbulb"></i> Dica Usada';
-        }
-    }
-}
-
-function submitAnswer(wasAnswered = true) {
-    clearInterval(quizTimer);
-    
-    if (!wasAnswered) {
-        // Tempo esgotou sem resposta
-        processAnswer(null, false);
-        return;
-    }
-    
-    if (selectedOption === null) {
-        showNotification('Selecione uma opção antes de enviar!', 'error');
-        return;
-    }
-    
-    const isCorrect = selectedOption === currentQuestion.correct;
-    processAnswer(selectedOption, isCorrect);
-}
-
-function processAnswer(selectedIndex, isCorrect) {
-    // Atualizar estatísticas
-    userData.totalAnswers++;
-    if (isCorrect) {
-        userData.answersCorrect++;
-    }
-    
-    // Calcular XP ganho
-    let xpEarned = 0;
-    if (isCorrect) {
-        // Base: 100 XP
-        // Bônus por dificuldade: 50 XP por nível
-        // Bônus por tempo: 1 XP por segundo restante
-        xpEarned = 100 + (currentQuestion.difficulty * 50) + timeLeft;
-        
-        // Bônus de streak: 10% por dia de streak
-        const streakBonus = Math.floor(xpEarned * (userData.streak * 0.1));
-        xpEarned += streakBonus;
-    } else {
-        // XP por tentativa (mesmo errando)
-        xpEarned = 25;
-    }
-    
-    // Atualizar XP
-    userData.xp += xpEarned;
-    
-    // Atualizar data do último jogo
-    userData.lastPlayed = new Date().toDateString();
-    
-    // Salvar dados
-    saveUserData();
-    
-    // Mostrar resultados
-    showQuizResult(selectedIndex, isCorrect, xpEarned);
-}
-
-function showQuizResult(selectedIndex, isCorrect, xpEarned) {
-    const quizContainer = document.getElementById('quizContainer');
-    if (!quizContainer) return;
-    
-    // Animar opções corretas/incorretas
-    if (selectedIndex !== null) {
-        const selectedOption = document.getElementById(`option-${selectedIndex}`);
-        const correctOption = document.getElementById(`option-${currentQuestion.correct}`);
-        
-        if (selectedOption) {
-            selectedOption.classList.add(isCorrect ? 'celebration' : 'shake');
-            selectedOption.style.borderColor = isCorrect ? '#38a169' : '#e53e3e';
-            selectedOption.style.background = isCorrect ? 'rgba(56, 161, 105, 0.2)' : 'rgba(229, 62, 62, 0.2)';
-        }
-        
-        if (correctOption && !isCorrect) {
-            correctOption.classList.add('celebration');
-            correctOption.style.borderColor = '#38a169';
-            correctOption.style.background = 'rgba(56, 161, 105, 0.2)';
-        }
-    }
-    
-    // Mostrar resultado após breve pausa
-    setTimeout(() => {
-        quizContainer.innerHTML = `
-            <div class="quiz-result" id="quizResult">
-                <div class="result-header">
-                    <div class="result-icon" style="background: ${isCorrect ? 'linear-gradient(135deg, #38a169, #2f855a)' : 'linear-gradient(135deg, #e53e3e, #c53030)'};">
-                        <i class="fas fa-${isCorrect ? 'check-circle' : 'times-circle'}"></i>
-                    </div>
-                    <h2 class="result-title">${isCorrect ? 'Resposta Correta!' : 'Resposta Incorreta'}</h2>
-                    <p class="result-message">${isCorrect ? 'Excelente conhecimento naval!' : 'Continue estudando para melhorar!'}</p>
-                </div>
-                
-                <div class="result-details">
-                    <div class="result-row">
-                        <span class="result-label">Sua resposta:</span>
-                        <span class="result-value ${isCorrect ? 'correct' : 'incorrect'}">
-                            ${selectedIndex !== null ? currentQuestion.options[selectedIndex] : 'Nenhuma'}
-                        </span>
-                    </div>
-                    ${!isCorrect ? `
-                    <div class="result-row">
-                        <span class="result-label">Resposta correta:</span>
-                        <span class="result-value correct">${currentQuestion.options[currentQuestion.correct]}</span>
-                    </div>
-                    ` : ''}
-                    <div class="result-row">
-                        <span class="result-label">Explicação:</span>
-                        <span class="result-value">${currentQuestion.explanation}</span>
-                    </div>
-                    <div class="result-row">
-                        <span class="result-label">XP Ganho:</span>
-                        <span class="result-value xp-earned">+${xpEarned} XP</span>
-                    </div>
-                    <div class="result-row">
-                        <span class="result-label">Patente atual:</span>
-                        <span class="result-value">${getCurrentRank().name}</span>
-                    </div>
-                </div>
-                
-                <div class="result-actions">
-                    <button class="share-btn" onclick="shareResult(${isCorrect}, ${xpEarned})">
-                        <i class="fas fa-share-alt"></i>
-                        Compartilhar Resultado
-                    </button>
-                    <button class="next-quiz-btn" onclick="renderDailyCeremonial()">
-                        <i class="fas fa-redo"></i>
-                        Próximo Desafio
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        // Verificar conquistas desbloqueadas
-        checkNewAchievements();
-        
-        // Verificar promoção de patente
-        const oldRank = getCurrentRank();
-        const newRank = getCurrentRank(); // Recalcular após ganhar XP
-        if (oldRank.id !== newRank.id) {
-            showRankUpNotification(oldRank, newRank);
-        }
-        
-    }, 1500);
-}
-
-function checkNewAchievements() {
-    const newAchievements = achievements.filter(achievement => {
-        const progress = getAchievementProgress(achievement);
-        const wasUnlocked = userData.achievements[achievement.id];
-        const isNowUnlocked = progress >= achievement.requirement;
-        
-        if (isNowUnlocked && !wasUnlocked) {
-            userData.achievements[achievement.id] = true;
-            return true;
-        }
-        return false;
-    });
-    
-    if (newAchievements.length > 0) {
-        saveUserData();
-        showAchievementNotification(newAchievements);
-    }
-}
-
-function showRankUpNotification(oldRank, newRank) {
-    showNotification(`🎉 Promoção! Você avançou para ${newRank.name}!`, 'success');
-    
-    // Criar modal de promoção
-    const modalHTML = `
-        <div class="modal-overlay active" id="rankUpModal" onclick="closeCurrentModal()">
-            <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 500px; text-align: center;">
-                <button class="modal-close" onclick="closeCurrentModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-                
-                <div style="margin: 20px 0;">
-                    <div style="width: 100px; height: 100px; margin: 0 auto 20px; 
-                        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-                        border-radius: 50%; border: 4px solid var(--accent);
-                        display: flex; align-items: center; justify-content: center;">
-                        <i class="${newRank.icon}" style="font-size: 2.5rem; color: white;"></i>
-                    </div>
-                    
-                    <h2 style="color: white; margin-bottom: 10px;">🎉 Promoção de Patente!</h2>
-                    <p style="color: var(--text-secondary); margin-bottom: 30px;">
-                        Parabéns! Você foi promovido de <strong>${oldRank.name}</strong> para <strong>${newRank.name}</strong>!
-                    </p>
-                    
-                    <button onclick="closeCurrentModal()" style="
-                        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-                        color: white; border: none; padding: 12px 30px;
-                        border-radius: 8px; font-weight: 600; cursor: pointer;">
-                        Continuar
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-}
-
-function showAchievementNotification(achievements) {
-    achievements.forEach(achievement => {
-        showNotification(`🏆 Conquista desbloqueada: ${achievement.name}`, 'success');
-    });
-}
-
-// Funções de compartilhamento
-function shareProgress() {
-    const rank = getCurrentRank();
-    const streak = userData.streak;
-    const xp = userData.xp;
-    
-    const text = `🏅 Minha patente no Marujo Digital: ${rank.name} | ${xp} XP | Sequência: ${streak} dias\n`;
-    const url = window.location.href;
-    
-    shareContent(text + url);
-}
-
-function shareResult(isCorrect, xpEarned) {
-    const resultText = isCorrect ? '✅ Acertei' : '❌ Errei';
-    const text = `${resultText} o desafio naval de hoje no Marujo Digital e ganhei ${xpEarned} XP!`;
-    const url = window.location.href;
-    
-    shareContent(text + '\n' + url);
-}
-
-function shareContent(text) {
-    if (navigator.share) {
-        navigator.share({
-            title: 'Marujo Digital - Cerimonial do Dia',
-            text: text,
-            url: window.location.href
-        });
-    } else {
-        // Fallback para copiar
-        navigator.clipboard.writeText(text)
-            .then(() => showNotification('📋 Conteúdo copiado para a área de transferência!'))
-            .catch(() => showNotification('Erro ao compartilhar', 'error'));
-    }
-}
-
-// Modo prática
-function practiceMode() {
-    // Selecionar questão aleatória
-    const randomQuestion = questionBank[Math.floor(Math.random() * questionBank.length)];
-    currentQuestion = randomQuestion;
-    
-    const quizContainer = document.getElementById('quizContainer');
-    if (quizContainer) {
-        quizContainer.innerHTML = renderDailyQuiz();
-        setupQuiz();
-        
-        // Modificar para modo prática (sem timer)
-        const timerElement = document.getElementById('timer');
-        if (timerElement) {
-            timerElement.parentElement.style.display = 'none';
-        }
-        
-        // Modificar botão de enviar
-        const submitBtn = document.getElementById('submitBtn');
-        if (submitBtn) {
-            submitBtn.innerHTML = '<i class="fas fa-check"></i> Verificar Resposta';
-            submitBtn.onclick = function() { practiceCheckAnswer(); };
-        }
-    }
-}
-
-function practiceCheckAnswer() {
-    if (selectedOption === null) {
-        showNotification('Selecione uma opção primeiro!', 'error');
-        return;
-    }
-    
-    const isCorrect = selectedOption === currentQuestion.correct;
-    
-    // Mostrar feedback imediato
-    const selectedOptionElement = document.getElementById(`option-${selectedOption}`);
-    const correctOptionElement = document.getElementById(`option-${currentQuestion.correct}`);
-    
-    if (selectedOptionElement) {
-        selectedOptionElement.style.borderColor = isCorrect ? '#38a169' : '#e53e3e';
-        selectedOptionElement.style.background = isCorrect ? 'rgba(56, 161, 105, 0.2)' : 'rgba(229, 62, 62, 0.2)';
-    }
-    
-    if (correctOptionElement && !isCorrect) {
-        correctOptionElement.style.borderColor = '#38a169';
-        correctOptionElement.style.background = 'rgba(56, 161, 105, 0.2)';
-    }
-    
-    // Mostrar explicação
-    const hintContainer = document.getElementById('hintContainer');
-    if (hintContainer) {
-        hintContainer.style.display = 'block';
-        hintContainer.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                <i class="fas fa-info-circle" style="color: ${isCorrect ? '#38a169' : '#e53e3e};"></i>
-                <strong style="color: white;">${isCorrect ? 'Correto!' : 'Incorreto'}</strong>
-            </div>
-            <p style="margin: 0 0 10px 0; color: var(--text-secondary);">
-                ${currentQuestion.explanation}
-            </p>
-            <button onclick="practiceMode()" style="
-                background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-                color: var(--text-secondary); padding: 8px 15px; border-radius: 6px;
-                cursor: pointer; font-size: 0.9rem;">
-                <i class="fas fa-redo"></i> Nova Questão
-            </button>
-        `;
-    }
-}
-
-// Adicionar link de navegação
-function addCerimonialDoDiaToNav() {
-    const navMenu = document.querySelector('.nav-menu');
-    if (navMenu) {
-        const navItem = document.createElement('div');
-        navItem.className = 'nav-item';
-        navItem.innerHTML = `
-            <a href="#cerimonial-do-dia" class="nav-link" onclick="showSection('cerimonial-do-dia')">
-                <i class="fas fa-calendar-day"></i> Cerimonial do Dia
-            </a>
-        `;
-        navMenu.appendChild(navItem);
-    }
-}
-
-// Inicializar quando a página carregar
-document.addEventListener('DOMContentLoaded', function() {
-    // Adicionar ao menu de navegação
-    addCerimonialDoDiaToNav();
-    
-    // Inicializar quando a seção for mostrada
-    const originalShowSection = window.showSection;
-    window.showSection = function(sectionId, event) {
-        originalShowSection(sectionId, event);
-        
-        if (sectionId === 'cerimonial-do-dia') {
-            setTimeout(initDailyCeremonial, 100);
-        }
-    };
-});
-
-// Adicionar estilos de notificação
-const notificationStyles = `
-    .notification {
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        padding: 15px 25px;
-        border-radius: 10px;
-        color: white;
-        font-weight: 500;
-        z-index: 10000;
-        animation: slideInRight 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        max-width: 300px;
-    }
-    
-    .notification.success {
-        background: linear-gradient(135deg, #38a169, #2f855a);
-        border-left: 4px solid #68d391;
-    }
-    
-    .notification.error {
-        background: linear-gradient(135deg, #e53e3e, #c53030);
-        border-left: 4px solid #fc8181;
-    }
-    
-    .notification.info {
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        border-left: 4px solid var(--accent);
-    }
-    
-    @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-`;
-
-// Adicionar estilos ao documento
-const styleSheet = document.createElement("style");
-styleSheet.textContent = notificationStyles;
-document.head.appendChild(styleSheet);
-
-// Função de notificação melhorada
-window.showNotification = function(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
-        ${message}
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.style.animation = 'slideInRight 0.3s ease reverse';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-};
-
 let lastScrollTop = 0;
 const nav = document.querySelector('.navy-nav');
 const navHeight = nav.offsetHeight;
@@ -9789,5 +11521,9 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     
 </body>
 </html>
+
+
+
+
 
 
