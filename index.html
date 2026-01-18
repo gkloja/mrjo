@@ -5863,6 +5863,34 @@ setInterval(() => {
         font-size: 0.8rem;
     }
 }
+/* Adicione ao seu CSS existente */
+.quiz-restart-btn {
+    background: rgba(229, 62, 62, 0.1) !important;
+    color: #e53e3e !important;
+    border: 1px solid rgba(229, 62, 62, 0.3) !important;
+}
+
+.quiz-restart-btn:hover {
+    background: rgba(229, 62, 62, 0.2) !important;
+}
+
+.question-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    margin-left: 8px;
+}
+
+.question-status.answered {
+    background: rgba(56, 161, 105, 0.2);
+    color: #38a169;
+}
+
+.question-status.pending {
+    background: rgba(214, 158, 46, 0.2);
+    color: #d69e2e;
+}
 </style>
 
 <!-- Botão Flutuante Atualizado -->
@@ -6825,30 +6853,56 @@ const userProgress = {
                lastPlayDate.getFullYear() !== today.getFullYear();
     },
     
-    getDailyQuestions() {
-        // Se já tem questões de hoje, retorna elas
-        if (this.todayQuestions.length > 0 && !this.hasNewQuiz()) {
-            return this.todayQuestions;
-        }
-        
-        // Limpar questões do dia anterior
+getDailyQuestions() {
+    // Se já tem questões de hoje e não é um novo dia, retorna elas
+    if (this.todayQuestions.length > 0 && this.todayQuestions.every(q => q.id) && !this.hasNewQuiz()) {
+        // Mapear IDs das questões já respondidas para objetos completos
+        return this.todayQuestions
+            .filter(q => q.id)
+            .map(q => quizDatabase.find(qdb => qdb.id === q.id))
+            .filter(q => q); // Remover undefined
+    }
+    
+    // Limpar questões do dia anterior se for um novo dia
+    if (this.hasNewQuiz()) {
         this.todayQuestions = [];
-        
-        // Filtrar questões pelas categorias selecionadas
-        let availableQuestions = quizDatabase.filter(q => 
-            this.settings.categories.includes(q.category) &&
-            this.settings.difficulty.includes(q.difficulty)
-        );
-        
-        // Embaralhar questões
-        availableQuestions = this.shuffleArray([...availableQuestions]);
-        
-        // Selecionar quantidade configurada
-        this.todayQuestions = availableQuestions.slice(0, this.settings.questionsPerDay);
-        
-        this.saveProgress();
-        return this.todayQuestions;
-    },
+        this.answeredToday = false;
+    }
+    
+    // Filtrar questões pelas categorias selecionadas
+    let availableQuestions = quizDatabase.filter(q => 
+        this.settings.categories.includes(q.category) &&
+        this.settings.difficulty.includes(q.difficulty)
+    );
+    
+    // Remover questões já respondidas hoje
+    const answeredIds = this.todayQuestions.map(q => q.id);
+    availableQuestions = availableQuestions.filter(q => !answeredIds.includes(q.id));
+    
+    // Embaralhar questões
+    availableQuestions = this.shuffleArray([...availableQuestions]);
+    
+    // Selecionar quantidade configurada
+    const selectedQuestions = availableQuestions.slice(0, this.settings.questionsPerDay - this.todayQuestions.length);
+    
+    // Adicionar às questões de hoje (com status não respondidas)
+    selectedQuestions.forEach(q => {
+        this.todayQuestions.push({
+            id: q.id,
+            answered: false,
+            correct: false,
+            selected: null
+        });
+    });
+    
+    this.saveProgress();
+    
+    // Retornar todas as questões de hoje (incluindo as já respondidas)
+    return this.todayQuestions
+        .filter(q => q.id)
+        .map(q => quizDatabase.find(qdb => qdb.id === q.id))
+        .filter(q => q);
+},
     
     shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
@@ -7051,13 +7105,57 @@ function openCerimonialDia() {
         totalXP = 0;
         userProgress.answeredToday = false;
         userProgress.todayQuestions = [];
+        userProgress.saveProgress();
         startTime = new Date();
     }
     
     // Obter questões do dia
     dailyQuestions = userProgress.getDailyQuestions();
     
+    // Se já respondeu algumas questões hoje, restaurar o progresso
+    if (userProgress.todayQuestions.length > 0 && !userProgress.hasNewQuiz()) {
+        // Encontrar última questão respondida
+        const lastAnsweredIndex = userProgress.todayQuestions.findIndex(q => q.answered);
+        if (lastAnsweredIndex >= 0) {
+            currentQuestionIndex = lastAnsweredIndex + 1;
+            
+            // Calcular score e XP acumulados
+            userProgress.todayQuestions.forEach((q, index) => {
+                if (q.answered && q.correct && index < dailyQuestions.length) {
+                    const question = dailyQuestions[index];
+                    if (question) {
+                        score++;
+                        totalXP += question.xp;
+                    }
+                }
+            });
+            
+            // Se já respondeu todas, mostrar resultados
+            if (currentQuestionIndex >= dailyQuestions.length) {
+                showUserStatus();
+                return;
+            }
+        }
+    }
+    
     showUserStatus();
+}
+
+function restartQuiz() {
+    if (confirm('Deseja reiniciar o quiz de hoje? Seu progresso atual será perdido.')) {
+        currentQuestionIndex = 0;
+        score = 0;
+        totalXP = 0;
+        userProgress.todayQuestions = [];
+        userProgress.answeredToday = false;
+        userProgress.saveProgress();
+        
+        // Gerar novas questões
+        dailyQuestions = userProgress.getDailyQuestions();
+        
+        showUserStatus();
+        updateCerimonialBadge();
+    }
 }
 
 // CORREÇÃO DO PROBLEMA 1: closeRewardModal não existe
@@ -7077,6 +7175,20 @@ function closeRewardModal() {
 function showResultScreen(isCorrect, xpEarned) {
     const question = dailyQuestions[currentQuestionIndex];
     const isLastQuestion = currentQuestionIndex === dailyQuestions.length - 1;
+    
+    // Salvar o resultado da questão atual
+    if (!userProgress.todayQuestions[currentQuestionIndex]) {
+        userProgress.todayQuestions[currentQuestionIndex] = {
+            id: question.id,
+            answered: true,
+            correct: isCorrect,
+            selected: selectedAnswer
+        };
+    } else {
+        userProgress.todayQuestions[currentQuestionIndex].correct = isCorrect;
+        userProgress.todayQuestions[currentQuestionIndex].selected = selectedAnswer;
+    }
+    userProgress.saveProgress();
     
     const content = document.getElementById('cerimonialContent');
     
@@ -7789,13 +7901,17 @@ function showWelcomeScreen() {
     }
     
     const question = dailyQuestions[currentQuestionIndex];
+    const isAnswered = userProgress.todayQuestions[currentQuestionIndex]?.answered;
     
     return `
         <div class="quiz-content">
             <div class="quiz-section active" id="questionSection">
                 <div class="quiz-question">
                     <div class="question-header">
-                        <div class="question-number">${currentQuestionIndex + 1}/${dailyQuestions.length}</div>
+                        <div class="question-number">
+                            ${currentQuestionIndex + 1}/${dailyQuestions.length}
+                            ${isAnswered ? '<span class="question-status answered">✓ Respondida</span>' : '<span class="question-status pending">Pendente</span>'}
+                        </div>
                         <p class="question-text">${question.question}</p>
                     </div>
                     <p class="question-hint">
@@ -7806,36 +7922,47 @@ function showWelcomeScreen() {
                 </div>
                 
                 <div class="quiz-options" id="quizOptions">
-                    ${question.options.map(option => `
-                        <div class="quiz-option" data-option="${option.id}" onclick="selectAnswer('${option.id}')">
-                            <div class="option-letter">${option.id}</div>
-                            <div class="option-text">${option.text}</div>
-                        </div>
-                    `).join('')}
+                    ${question.options.map(option => {
+                        // Verificar se esta opção foi selecionada anteriormente
+                        const wasSelected = isAnswered && 
+                                           userProgress.todayQuestions[currentQuestionIndex]?.selected === option.id;
+                        const isCorrectOption = option.id === question.correct;
+                        
+                        return `
+                            <div class="quiz-option ${wasSelected ? 'selected' : ''}" 
+                                 data-option="${option.id}" 
+                                 onclick="${!isAnswered ? `selectAnswer('${option.id}')` : ''}">
+                                <div class="option-letter">${option.id}</div>
+                                <div class="option-text">${option.text}</div>
+                                ${wasSelected && isAnswered ? 
+                                    `<div class="option-status ${isCorrectOption ? 'correct' : 'incorrect'}">
+                                        ${isCorrectOption ? '✓' : '✗'}
+                                    </div>` : ''
+                                }
+                            </div>
+                        `;
+                    }).join('')}
                 </div>
                 
-                <div class="quiz-buttons">
-                    <button class="quiz-btn secondary" onclick="showHintModal()">
-                        <i class="fas fa-question-circle"></i> Dica Detalhada
-                    </button>
-                    <button class="quiz-btn primary" id="submitBtn" onclick="checkAnswer()" disabled>
-                        <i class="fas fa-paper-plane"></i> Responder (${question.xp} XP)
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Progresso da Sessão -->
-        <div class="journey-progress">
-            <h4 class="journey-title">Progresso da Sessão</h4>
-            <div class="journey-steps">
-                ${dailyQuestions.map((q, index) => `
-                    <div class="journey-step">
-                        <div class="step-circle ${index < currentQuestionIndex ? 'completed' : index === currentQuestionIndex ? 'current' : ''}">
-                            ${index < currentQuestionIndex ? '✓' : index + 1}
-                        </div>
+                ${!isAnswered ? `
+                    <div class="quiz-buttons">
+                        <button class="quiz-btn secondary" onclick="showHintModal()">
+                            <i class="fas fa-question-circle"></i> Dica Detalhada
+                        </button>
+                        <button class="quiz-btn primary" id="submitBtn" onclick="checkAnswer()" disabled>
+                            <i class="fas fa-paper-plane"></i> Responder (${question.xp} XP)
+                        </button>
                     </div>
-                `).join('')}
+                ` : `
+                    <div class="quiz-buttons">
+                        <button class="quiz-btn secondary" onclick="showHintModal()">
+                            <i class="fas fa-question-circle"></i> Ver Explicação
+                        </button>
+                        <button class="quiz-btn primary" onclick="nextQuestion()">
+                            <i class="fas fa-forward"></i> Próxima Questão
+                        </button>
+                    </div>
+                `}
             </div>
         </div>
     `;
@@ -7891,10 +8018,21 @@ function checkAnswer() {
 
 function completeCerimonial() {
     userProgress.updateStreak();
+    
+    // Marcar questões como respondidas
+    userProgress.todayQuestions = dailyQuestions.map(q => ({
+        id: q.id,
+        answered: true,
+        correct: q.correct
+    }));
     userProgress.answeredToday = true;
+    userProgress.saveProgress();
     
     // Mostrar modal de recompensa
     showRewardModal();
+    
+    // Atualizar badge
+    updateCerimonialBadge();
 }
 
 function showRewardModal() {
@@ -7906,6 +8044,14 @@ function showRewardModal() {
     // Atualizar conquistas
     checkAchievements();
     
+    // Salvar as questões respondidas hoje
+    userProgress.todayQuestions = dailyQuestions.map(q => ({
+        id: q.id,
+        answered: true
+    }));
+    userProgress.answeredToday = true;
+    userProgress.saveProgress();
+    
     document.getElementById('rewardModalTitle').textContent = 
         score === dailyQuestions.length ? "🎖️ PERFEIÇÃO NAVAL!" : "🏆 CERIMONIAL CONCLUÍDO!";
     
@@ -7916,7 +8062,6 @@ function showRewardModal() {
     
     document.getElementById('rewardModalXP').textContent = `+${totalXP} XP`;
     document.getElementById('rewardModalCorrect').textContent = `${score}/${dailyQuestions.length}`;
-    document.getElementById('rewardModalTime').textContent = timeFormatted;
     document.getElementById('rewardModalStreak').textContent = userProgress.streak;
     document.getElementById('rewardModalLevel').textContent = userProgress.level;
     
