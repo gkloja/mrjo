@@ -13253,53 +13253,57 @@ honrasPortalo: [
     
     // Bandeiras-Insígnias (exemplos)
             bandeirasInsignias: [
-                  {
+    {
         id: 'pavilhao-patrono',
         title: "Pavilhão do Patrono da Marinha",
-        subtitle: "Patrono da Marinha",
+        subtitle: "Marquês de Tamandaré • Patrono da Marinha",
         type: "insignia",
+        category: "honraria",
+        historicalContext: "Instituído em homenagem a Joaquim Marques Lisboa, o Marquês de Tamandaré, cujas vitórias navais no século XIX consolidaram a defesa do Império do Brasil. Única insígnia com status de 'imortal' ao lado do Presidente.",
         description: `
-            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
-            
-            <p><strong>Símbolos:</strong><br>
-            - Quadrilátero superior esquerdo: brasão d'armas do Marquês de Tamandaré<br>
-            - Quadrilátero inferior esquerdo: cinco estrelas brancas dispostas como vértices de pentágono regular</p>
-            
-            <p><strong>Precedência:</strong> Única bandeira que pode permanecer içada junto com o Estandarte Presidencial.</p>
-            
+            <div class="flag-visual-hint">
+                <p><span class="badge">⚓ Visual</span> Um retângulo azul-celeste com o Cruzeiro do Sul em branco, mas com dois elementos únicos no canto superior esquerdo:</p>
+            </div>
+            <ul class="flag-symbols">
+                <li><strong>👤 Superior esquerdo:</strong> Brasão d'armas do Marquês de Tamandaré (uma homenagem pessoal permanente)</li>
+                <li><strong>⭐ Inferior esquerdo:</strong> Cinco estrelas brancas em pentágono — representando as principais vitórias navais de Tamandaré</li>
+            </ul>
+            <div class="flag-trivia">
+                <p><em>✨ Curiosidade:</em> É a única bandeira que pode permanecer hasteada junto ao Estandarte Presidencial — uma honra reservada apenas a "imortais" da Marinha.</p>
+            </div>
             <div class="info-grid" style="margin: 20px 0;">
                 <div class="info-item">
                     <div class="info-label">Salva</div>
                     <div class="info-value">19 tiros</div>
                 </div>
+                <div class="info-item">
+                    <div class="info-label">Status</div>
+                    <div class="info-value">Honraria perpétua</div>
+                </div>
             </div>
         `,
-        imagePath: "imagens/sinais/30.png" // Imagem não especificada no PDF
+        imagePath: "imagens/sinais/30.png",
+        precedencia: 2 // Apenas abaixo do Presidencial
     },
     {
         id: 'estandarte-presidencial',
         title: "Estandarte Presidencial",
-        subtitle: "Presidente da República",
+        subtitle: "Presidente da República • Comandante Supremo",
         type: "insignia",
+        category: "autoridade-civil",
+        historicalContext: "Adotado desde os primórdios da República, simboliza que o Presidente está a bordo — e com ele, a Nação. O verde exclusivo remete à esperança e à Casa de Bragança.",
         description: `
-            <p><strong>Formato:</strong> Retangular<br>
-            <strong>Cor:</strong> Verde da Bandeira Nacional<br>
-            <strong>Símbolo:</strong> Armas Nacionais no centro</p>
-            
-            <p><strong>Precedência:</strong> Estando içado o Estandarte Presidencial, nenhuma bandeira 
-            representativa de qualquer outra autoridade pode permanecer içada, com exceção do pavilhão 
-            do Patrono da Marinha.</p>
-            
-            <p><strong>Salva:</strong> 21 tiros (máxima honra)</p>
-            
+            <div class="flag-visual-hint">
+                <p><span class="badge">🇧🇷 Visual</span> Um retângulo verde-sólido (único na Marinha), com as Armas Nacionais ao centro em ouro e cores.</p>
+            </div>
+            <p><strong>Quando içado:</strong> O navio torna-se território da Presidência. Nenhuma outra autoridade hasteia sua bandeira — exceto o Patrono da Marinha, por decreto especial.</p>
+            <div class="flag-trivia">
+                <p><em>🔍 Detalhe:</em> A salva de 21 tiros é a máxima honra naval, reservada apenas ao Presidente e Chefes de Estado estrangeiros em visita.</p>
+            </div>
             <div class="info-grid" style="margin: 20px 0;">
                 <div class="info-item">
                     <div class="info-label">Salva</div>
                     <div class="info-value">21 tiros</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Precedência</div>
-                    <div class="info-value">Máxima</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">Exceção</div>
@@ -13307,105 +13311,120 @@ honrasPortalo: [
                 </div>
             </div>
         `,
-        imagePath: "imagens/sinais/26.png"
+        imagePath: "imagens/sinais/26.png",
+        precedencia: 1
     },
     {
         id: 'pavilhao-comandante',
         title: "Pavilhão do Comandante da Marinha",
-        subtitle: "Comandante da Marinha",
+        subtitle: "Comandante da Marinha • Almirante de Esquadra",
         type: "insignia",
+        category: "alta-autoridade-naval",
         description: `
-            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro, porém farpado.</p>
-            
-            <p><strong>Símbolos:</strong><br>
-            - Quadrilátero superior esquerdo: escudo redondo do Cruzeiro do Sul<br>
-            - Quadrilátero inferior esquerdo: âncora singela branca</p>
-            
-            <p><strong>Uso:</strong> Quando o Comandante da Marinha estiver a bordo de OM da MB, seu pavilhão:<br>
-            1. Permanece hasteado, sendo somente substituído pelo Estandarte Presidencial<br>
-            2. Permanece içado no mastro do pátio do Comando da Marinha, do Distrito Naval ou do COMAP 
-            enquanto o Comandante estiver presente</p>
-            
+            <div class="flag-visual-hint">
+                <p><span class="badge">⚓ Visual</span> Igual à Bandeira do Cruzeiro, mas <strong>farpado</strong> (recortado) — distintivo de autoridade máxima da Armada.</p>
+            </div>
+            <ul class="flag-symbols">
+                <li><strong>🛡️ Superior esquerdo:</strong> Escudo redondo do Cruzeiro do Sul (diferente das estrelas comuns)</li>
+                <li><strong>⚓ Inferior esquerdo:</strong> Âncora singela branca — o símbolo universal do poder naval</li>
+            </ul>
+            <p><strong>Protocolo:</strong> Quando o Comandante está a bordo, este pavilhão só se curva ao Estandarte Presidencial. Nenhum outro o substitui.</p>
             <div class="info-grid" style="margin: 20px 0;">
                 <div class="info-item">
                     <div class="info-label">Salva</div>
                     <div class="info-value">19 tiros</div>
                 </div>
                 <div class="info-item">
-                    <div class="info-label">Substituição</div>
-                    <div class="info-value">Apenas por Estandarte Presidencial</div>
+                    <div class="info-label">Formato</div>
+                    <div class="info-value">Farpado</div>
                 </div>
             </div>
         `,
-        imagePath: "imagens/sinais/31.png"
+        imagePath: "imagens/sinais/31.png",
+        precedencia: 3
     },
     {
         id: 'pavilhao-almirantado',
         title: "Pavilhão do Almirantado",
-        subtitle: "Almirantado",
+        subtitle: "Almirantado • Órgão Colegiado",
         type: "insignia",
+        category: "colegiada",
         description: `
-            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
-            
-            <p><strong>Símbolos:</strong><br>
-            - Quadrilátero superior esquerdo: estrela das Armas Nacionais<br>
-            - Quadrilátero inferior esquerdo: duas âncoras cruzadas</p>
-            
-            <p><strong>Uso:</strong> Quando o Almirantado estiver a bordo de OM, seu pavilhão permanecerá hasteado 
-            simultaneamente com o pavilhão da autoridade presente de maior antiguidade da cadeia de comando.</p>
+            <div class="flag-visual-hint">
+                <p><span class="badge">⚓ Visual</span> Padrão da Bandeira do Cruzeiro, com símbolos de autoridade máxima.</p>
+            </div>
+            <ul class="flag-symbols">
+                <li><strong>⭐ Superior esquerdo:</strong> Estrela das Armas Nacionais (representando a União)</li>
+                <li><strong>⚓⚓ Inferior esquerdo:</strong> Duas âncoras cruzadas — símbolo do mais alto conselho da Marinha</li>
+            </ul>
+            <p><strong>Uso:</strong> Representa o Almirantado como instituição. Quando um membro do conselho está presente, esta bandeira hasteia-se <em>junto</em> à da autoridade local, não a substituindo.</p>
         `,
         imagePath: "imagens/sinais/32.png"
     },
     {
         id: 'pavilhao-cema',
         title: "Pavilhão do Chefe do Estado-Maior da Armada",
-        subtitle: "Chefe do Estado-Maior da Armada (CEMA)",
+        subtitle: "CEMA • 2º na hierarquia naval",
         type: "insignia",
+        category: "alta-autoridade-naval",
         description: `
-            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
-            
-            <p><strong>Símbolo:</strong> Quadrilátero inferior esquerdo: duas âncoras cruzadas</p>
-            
-            <p><strong>Uso:</strong> Quando o CEMA estiver a bordo de OM que não lhe seja subordinada, seu pavilhão:<br>
-            1. Permanece içado simultaneamente com o pavilhão da autoridade presente de maior antiguidade na cadeia de comando<br>
-            2. Somente é substituído pelo pavilhão do Comandante da Marinha ou do Almirantado</p>
+            <div class="flag-visual-hint">
+                <p><span class="badge">⚓ Visual</span> Bandeira do Cruzeiro com um único elemento distintivo.</p>
+            </div>
+            <ul class="flag-symbols">
+                <li><strong>⚓⚓ Inferior esquerdo:</strong> Duas âncoras cruzadas (as mesmas do Almirantado, mas sem a estrela nacional)</li>
+            </ul>
+            <p><strong>Hierarquia visual:</strong> O CEMA é o único, além do Comandante, cujo pavilhão pode ser içado simultaneamente com outra autoridade, sem substituí-la — sinal de seu papel de coordenação.</p>
         `,
         imagePath: "imagens/sinais/33.png"
     },
     {
         id: 'pavilhao-con',
         title: "Pavilhão do Comandante de Operações Navais",
-        subtitle: "Comandante de Operações Navais (CON)",
+        subtitle: "CON • O 'braço operativo' da Marinha",
         type: "insignia",
+        category: "comando-operativo",
         description: `
-            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro, porém farpado.</p>
-            
-            <p><strong>Símbolo:</strong> Quadrilátero inferior esquerdo: uma âncora</p>
+            <div class="flag-visual-hint">
+                <p><span class="badge">⚓ Visual</span> Bandeira do Cruzeiro, farpada, com uma âncora solitária.</p>
+            </div>
+            <ul class="flag-symbols">
+                <li><strong>⚓ Inferior esquerdo:</strong> Uma âncora singela — simbolizando que o CON comanda todos os meios operativos, mas não a instituição como um todo</li>
+            </ul>
+            <p><strong>Missão:</strong> É o "comandante de combate" da Marinha, responsável por esquadras, forças e operações em curso.</p>
         `,
         imagePath: "imagens/sinais/34.png"
     },
     {
         id: 'pavilhao-comandante-fn',
         title: "Pavilhão do Comandante-Geral do Corpo de Fuzileiros Navais",
-        subtitle: "Comandante-Geral do Corpo de Fuzileiros Navais",
+        subtitle: "Comandante-Geral CFN • 'Os Anfíbios'",
         type: "insignia",
+        category: "comando-operativo",
         description: `
-            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro, porém farpado.</p>
-            
-            <p><strong>Símbolo:</strong> Quadrilátero inferior esquerdo: dois fuzis superpostos a uma âncora</p>
+            <div class="flag-visual-hint">
+                <p><span class="badge">⚓🔫 Visual</span> Bandeira do Cruzeiro, farpada, com o símbolo dos Fuzileiros.</p>
+            </div>
+            <ul class="flag-symbols">
+                <li><strong>⚓🔫 Inferior esquerdo:</strong> Dois fuzis cruzados superpostos a uma âncora — a âncora (Marinha) empunhando fuzis (combate terrestre)</li>
+            </ul>
+            <p><strong>Significado:</strong> Representa a tropa de elite anfíbia: soldados do mar, prontos para desembarcar onde necessário.</p>
         `,
         imagePath: "imagens/sinais/35.png"
     },
     {
         id: 'pavilhao-almirante',
         title: "Pavilhão de Almirante",
-        subtitle: "Almirante",
+        subtitle: "Almirante • Mais alto posto",
         type: "insignia",
+        category: "posto",
         description: `
-            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
-            
-            <p><strong>Símbolo:</strong> Quadrilátero superior esquerdo: cinco estrelas brancas dispostas como vértices de pentágono regular</p>
-            
+            <div class="flag-visual-hint">
+                <p><span class="badge">⭐⭐⭐⭐⭐ Visual</span> Bandeira do Cruzeiro com cinco estrelas.</p>
+            </div>
+            <ul class="flag-symbols">
+                <li><strong>⭐⭐⭐⭐⭐ Superior esquerdo:</strong> Cinco estrelas brancas em pentágono — cada estrela representando um dos 5 poderes do Almirante: comando, estratégia, tática, administração e representação</li>
+            </ul>
             <div class="info-grid" style="margin: 20px 0;">
                 <div class="info-item">
                     <div class="info-label">Salva</div>
@@ -13418,13 +13437,16 @@ honrasPortalo: [
     {
         id: 'pavilhao-almirante-esquadra',
         title: "Pavilhão de Almirante de Esquadra",
-        subtitle: "Almirante de Esquadra",
+        subtitle: "Almirante de Esquadra • 4 estrelas",
         type: "insignia",
+        category: "posto",
         description: `
-            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
-            
-            <p><strong>Símbolo:</strong> Quadrilátero superior esquerdo: quatro estrelas brancas dispostas como vértices de losango retangular</p>
-            
+            <div class="flag-visual-hint">
+                <p><span class="badge">⭐⭐⭐⭐ Visual</span> Quatro estrelas em losango retangular.</p>
+            </div>
+            <ul class="flag-symbols">
+                <li><strong>⭐⭐⭐⭐ Superior esquerdo:</strong> Quatro estrelas — simbolizando os quatro pontos cardeais do comando naval: Norte (poder), Sul (presença), Leste (vigília), Oeste (projeção)</li>
+            </ul>
             <div class="info-grid" style="margin: 20px 0;">
                 <div class="info-item">
                     <div class="info-label">Salva</div>
@@ -13437,13 +13459,16 @@ honrasPortalo: [
     {
         id: 'pavilhao-vice-almirante',
         title: "Pavilhão de Vice-Almirante",
-        subtitle: "Vice-Almirante",
+        subtitle: "Vice-Almirante • 3 estrelas",
         type: "insignia",
+        category: "posto",
         description: `
-            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
-            
-            <p><strong>Símbolo:</strong> Quadrilátero superior esquerdo: três estrelas brancas dispostas como pontas de triângulo equilátero</p>
-            
+            <div class="flag-visual-hint">
+                <p><span class="badge">⭐⭐⭐ Visual</span> Três estrelas em triângulo equilátero.</p>
+            </div>
+            <ul class="flag-symbols">
+                <li><strong>⭐⭐⭐ Superior esquerdo:</strong> Três estrelas — a tríade do poder naval: Marinha (força), Fuzileiros (projeção), Aviação Naval (asas)</li>
+            </ul>
             <div class="info-grid" style="margin: 20px 0;">
                 <div class="info-item">
                     <div class="info-label">Salva</div>
@@ -13456,13 +13481,16 @@ honrasPortalo: [
     {
         id: 'pavilhao-contra-almirante',
         title: "Pavilhão de Contra-Almirante",
-        subtitle: "Contra-Almirante",
+        subtitle: "Contra-Almirante • 2 estrelas",
         type: "insignia",
+        category: "posto",
         description: `
-            <p><strong>Características:</strong> Mesma cor, feitio e heráldica da Bandeira do Cruzeiro.</p>
-            
-            <p><strong>Símbolo:</strong> Duas estrelas brancas dispostas horizontal e simetricamente em relação ao centro do quadrilátero esquerdo</p>
-            
+            <div class="flag-visual-hint">
+                <p><span class="badge">⭐⭐ Visual</span> Duas estrelas horizontais.</p>
+            </div>
+            <ul class="flag-symbols">
+                <li><strong>⭐⭐ Superior esquerdo:</strong> Duas estrelas lado a lado — representando a dualidade do Contra-Almirante: comandar e coordenar, estar no mar e em terra</li>
+            </ul>
             <div class="info-grid" style="margin: 20px 0;">
                 <div class="info-item">
                     <div class="info-label">Salva</div>
@@ -13477,54 +13505,75 @@ honrasPortalo: [
         title: "Pavilhão de Comandante em Chefe da Esquadra",
         subtitle: "Comandante em Chefe da Esquadra",
         type: "insignia",
+        category: "comando-operativo",
         description: `
-            <p><strong>Aspecto:</strong> Igual ao do pavilhão do posto do oficial que exerce essa função.</p>
-            
-            <p><strong>Símbolos adicionais:</strong><br>
-            - Quadrilátero inferior esquerdo: âncora singela<br>
-            - Quadrilátero inferior direito: estrela branca</p>
+            <div class="flag-visual-hint">
+                <p><span class="badge">⚓+⭐ Visual</span> Pavilhão do posto do oficial, mas com dois acréscimos.</p>
+            </div>
+            <ul class="flag-symbols">
+                <li><strong>⚓ Inferior esquerdo:</strong> Âncora singela (comando de força)</li>
+                <li><strong>⭐ Inferior direito:</strong> Uma estrela branca — indicando que este oficial comanda <em>todas</em> as forças navais presentes, não apenas as suas</li>
+            </ul>
+            <p><strong>Função:</strong> É o "almirante dos almirantes" quando múltiplas esquadras se reúnem.</p>
         `,
         imagePath: "imagens/sinais/40.png"
     },
     {
         id: 'pavilhao-almirante-comandante-forca',
         title: "Pavilhão de Almirante Comandante de Força",
-        subtitle: "Almirante Comandante de Força",
+        subtitle: "Almirante Comandante de Força • Ex: ComForS, Com9ºDN",
         type: "insignia",
+        category: "comando-operativo",
         description: `
-            <p><strong>Aspecto:</strong> Igual ao do pavilhão do posto do oficial que exerce esse Comando.</p>
-            
-            <p><strong>Símbolo:</strong> Quadrilátero inferior esquerdo: âncora singela<br>
-            <strong>Observação:</strong> Substituída por dois fuzis cruzados superpostos a uma âncora quando o comando for de oficial fuzileiro naval.</p>
+            <div class="flag-visual-hint">
+                <p><span class="badge">⚓ Visual</span> Pavilhão do posto do almirante, com âncora no canto inferior esquerdo.</p>
+            </div>
+            <ul class="flag-symbols">
+                <li><strong>⚓ Inferior esquerdo:</strong> Âncora singela — distintivo universal de "comando de força"</li>
+            </ul>
+            <p><strong>Exemplos práticos:</strong></p>
+            <ul>
+                <li><strong>ComForS (Força de Submarinos):</strong> Pavilhão de Contra-Almirante + âncora</li>
+                <li><strong>Com9ºDN (9º Distrito Naval):</strong> Pavilhão de Contra ou Vice-Almirante + âncora</li>
+                <li><strong>ComFFE (Força de Fuzileiros):</strong> Pavilhão de Almirante de Esquadra + dois fuzis + âncora</li>
+            </ul>
+            <p><em>Observação:</em> Para fuzileiros navais, a âncora é substituída por dois fuzis cruzados sobre âncora.</p>
         `,
-        imagePath: "imagens/sinais/41.png"
+        imagePath: "imagens/sinais/41.png",
+        examples: ["ComForS", "Com9ºDN", "ComForFn", "ComForAerNav"]
     },
     {
         id: 'pavilhao-cmg-comandante-forca',
         title: "Pavilhão de CMG Comandante de Força",
-        subtitle: "Capitão de Mar e Guerra (CMG) Comandante de Força",
+        subtitle: "Capitão de Mar e Guerra Comandante de Força",
         type: "insignia",
+        category: "comando-operativo",
         description: `
-            <p><strong>Formato:</strong> Triangular<br>
-            <strong>Cor:</strong> Azul-marinho</p>
-            
-            <p><strong>Características:</strong> Dividido em dois quadriláteros e dois triângulos iguais por vinte e uma estrelas brancas dispostas em cruz.</p>
-            
-            <p><strong>Símbolo:</strong> Centro do quadrilátero inferior esquerdo: âncora singela<br>
-            <strong>Observação:</strong> Substituída por dois fuzis cruzados superpostos a uma âncora quando o comando for de oficial fuzileiro naval.</p>
+            <div class="flag-visual-hint">
+                <p><span class="badge">🔺 Visual</span> Triangular, azul-marinho, com 21 estrelas em cruz.</p>
+            </div>
+            <ul class="flag-symbols">
+                <li><strong>⚓ Centro inferior esquerdo:</strong> Âncora singela — indicando que este CMG comanda uma força (ex: Flotilha, Esquadrilha)</li>
+                <li><strong>⭐ 21 estrelas:</strong> Dispostas em cruz, representando os 21 tiros de saudade e a cruz do Cruzeiro do Sul</li>
+            </ul>
+            <p><strong>Exemplo:</strong> Um Capitão de Mar e Guerra comandando a Flotilha do Amazonas (Conflotam) hastearia este pavilhão.</p>
+            <p><em>Observação:</em> Se for fuzileiro, âncora vira dois fuzis + âncora.</p>
         `,
-        imagePath: "imagens/sinais/43.png"
+        imagePath: "imagens/sinais/43.png",
+        examples: ["Conflotam", "ComForSUP", "ComForEsp"]
     },
     {
         id: 'pavilhao-cf-cc-comandante-forca',
         title: "Pavilhão de CF ou CC Comandante de Força",
-        subtitle: "Capitão de Fragata (CF) ou Capitão de Corveta (CC) Comandante de Força",
+        subtitle: "Capitão de Fragata/Corveta Comandante de Força",
         type: "insignia",
+        category: "comando-operativo",
         description: `
-            <p><strong>Formato:</strong> Trapezoidal<br>
-            <strong>Características:</strong> Similar ao de CMG Comandante de Força, exceto pelo formato.</p>
-            
-            <p><strong>Uso:</strong> Mantido hasteado permanentemente no navio capitânia, salvo se a autoridade estiver em outro navio sob seu comando.</p>
+            <div class="flag-visual-hint">
+                <p><span class="badge">🔶 Visual</span> Trapezoidal (formato único na Marinha).</p>
+            </div>
+            <p><strong>Significado do formato:</strong> O trapézio simboliza uma "força em movimento" — base larga (poder) que se afunila para o topo (objetivo).</p>
+            <p><strong>Uso:</strong> Hasteado permanentemente no navio capitânia da força. Se o comandante muda de navio, o pavilhão o acompanha.</p>
         `,
         imagePath: "imagens/sinais/45.png"
     },
@@ -13533,160 +13582,91 @@ honrasPortalo: [
         title: "Pavilhão de COMAPEM",
         subtitle: "Comandante mais antigo presente embarcado",
         type: "insignia",
+        category: "protocolo",
         description: `
-            <p><strong>Para Almirante:</strong> Aspecto igual ao do pavilhão do oficial, com inclusão de uma estrela branca no quadrilátero superior direito.</p>
-            
-            <p><strong>Para Oficial Superior:</strong> Similar ao pavilhão de CMG Comandante de Força, exceto por não possuir a âncora e por ter uma estrela branca ao meio do triângulo superior direito.</p>
-            
-            <p><strong>Regra:</strong> Quando forças ou navios estiverem próximos entre si, dentro do alcance visual de bandeiras, somente o navio onde se encontrar o oficial mais antigo hasteia o pavilhão do COMAPEM.</p>
+            <div class="flag-visual-hint">
+                <p><span class="badge">👑 Visual</span> Pavilhão do oficial + uma estrela extra no canto superior direito.</p>
+            </div>
+            <p><strong>Regra de ouro:</strong> Quando vários navios estão juntos, apenas um hasteia o COMAPEM — o do oficial mais antigo. Os outros arriam suas insígnias individuais.</p>
+            <p><em>Curiosidade:</em> É a única insígnia que "sobrescreve" hierarquicamente o posto individual. Um CMG com COMAPEM tem precedência visual sobre um Contra-Almirante sem COMAPEM na área.</p>
         `,
         imagePath: "imagens/sinais/47.png"
     },
     {
         id: 'pavilhao-capitao-portos',
         title: "Pavilhão de Capitão dos Portos",
-        subtitle: "Capitão dos Portos",
+        subtitle: "Capitão dos Portos • Autoridade Marítima",
         type: "insignia",
+        category: "autoridade-maritima",
         description: `
-            <p><strong>Características:</strong> Similar ao pavilhão de CMG Comandante de Força, exceto por não possuir a âncora.</p>
+            <div class="flag-visual-hint">
+                <p><span class="badge">⚓ Visual</span> Similar ao CMG Comandante de Força, mas <strong>sem âncora</strong>.</p>
+            </div>
+            <p><strong>Por que sem âncora?</strong> O Capitão dos Portos não comanda forças navais em combate — exerce autoridade sobre a navegação, portos e segurança marítima. A ausência da âncora indica função administrativa/judicante, não operativa.</p>
         `,
         imagePath: "imagens/sinais/48.png"
     },
     {
-        id: 'bandeira-insignia-vice-presidente',
-        title: "Bandeira-insígnia de Vice-Presidente da República",
-        subtitle: "Vice-Presidente da República",
-        type: "insignia",
-        description: `
-            <p><strong>Formato:</strong> Retangular<br>
-            <strong>Cor:</strong> Amarela da Bandeira Nacional</p>
-            
-            <p><strong>Símbolos:</strong><br>
-            - 21 estrelas azuis dispostas como na Bandeira do Cruzeiro<br>
-            - Armas Nacionais ao meio do quadrilátero superior esquerdo</p>
-            
-            <div class="info-grid" style="margin: 20px 0;">
-                <div class="info-item">
-                    <div class="info-label">Salva</div>
-                    <div class="info-value">19 tiros</div>
-                </div>
-            </div>
-        `,
-        imagePath: "imagens/sinais/49.png"
-    },
-    {
-        id: 'bandeira-insignia-ministro',
-        title: "Bandeira-insígnia de Ministro de Estado",
-        subtitle: "Ministro de Estado",
-        type: "insignia",
-        description: `
-            <p><strong>Formato:</strong> Retangular, farpada<br>
-            <strong>Cor:</strong> Amarela da Bandeira Nacional</p>
-            
-            <p><strong>Símbolos:</strong><br>
-            - 21 estrelas azuis dispostas em cruz como na Bandeira do Cruzeiro (5 em cada ramo e uma ao centro)<br>
-            - Centro do quadrilátero superior esquerdo: estrela das Armas Nacionais</p>
-            
-            <p><strong>Uso:</strong> Quando o Ministro da Defesa estiver a bordo de OM da MB, a bandeira-insígnia permanece hasteada simultaneamente com o pavilhão da autoridade presente de maior antiguidade da cadeia de comando.</p>
-            
-            <div class="info-grid" style="margin: 20px 0;">
-                <div class="info-item">
-                    <div class="info-label">Salva</div>
-                    <div class="info-value">19 tiros</div>
-                </div>
-            </div>
-        `,
-        imagePath: "imagens/sinais/50.png"
-    },
-    {
-        id: 'bandeira-insignia-embaixador',
-        title: "Bandeira-Insígnia de Embaixador do Brasil",
-        subtitle: "Embaixador do Brasil",
-        type: "insignia",
-        description: `
-            <p><strong>Formato:</strong> Retangular<br>
-            <strong>Cor:</strong> Amarela da Bandeira Nacional<br>
-            <strong>Uso:</strong> No país em que é acreditado</p>
-            
-            <p><strong>Símbolo:</strong> Diagonais ocupadas por estrelas azuis, sendo uma ao centro e cinco igualmente espaçadas entre si, em cada quadrilátero</p>
-            
-            <div class="info-grid" style="margin: 20px 0;">
-                <div class="info-item">
-                    <div class="info-label">Salva</div>
-                    <div class="info-value">19 tiros</div>
-                </div>
-            </div>
-        `,
-        imagePath: "imagens/sinais/51.png"
-    },
-    {
-        id: 'bandeira-insignia-encarregado-negocios',
-        title: "Bandeira-Insígnia de Encarregado de Negócios do Brasil",
-        subtitle: "Encarregado de Negócios do Brasil",
-        type: "insignia",
-        description: `
-            <p><strong>Formato:</strong> Retangular<br>
-            <strong>Cor:</strong> Amarela da Bandeira Nacional<br>
-            <strong>Uso:</strong> No país em que é acreditado</p>
-            
-            <p><strong>Símbolo:</strong> Quatro estrelas azuis, cada uma distante do centro da bandeira em um quarto da sua largura, dispostas simetricamente segundo os eixos vertical e horizontal</p>
-            
-            <div class="info-grid" style="margin: 20px 0;">
-                <div class="info-item">
-                    <div class="info-label">Salva</div>
-                    <div class="info-value">13 tiros</div>
-                </div>
-            </div>
-        `,
-        imagePath: "imagens/sinais/52.png"
-    },
-    {
-        id: 'bandeira-insignia-consul-geral',
-        title: "Bandeira-Insígnia de Cônsul Geral do Brasil",
-        subtitle: "Cônsul Geral do Brasil",
-        type: "insignia",
-        description: `
-            <p><strong>Formato:</strong> Retangular<br>
-            <strong>Cor:</strong> Amarela da Bandeira Nacional<br>
-            <strong>Uso:</strong> Na jurisdição do respectivo distrito consular</p>
-            
-            <p><strong>Símbolo:</strong> Vertical que passa pelo centro da bandeira ocupada por três estrelas azuis, sendo uma no centro e as demais dispostas simetricamente a uma distância de um quarto da largura da bandeira</p>
-            
-            <div class="info-grid" style="margin: 20px 0;">
-                <div class="info-item">
-                    <div class="info-label">Salva</div>
-                    <div class="info-value">11 tiros</div>
-                </div>
-            </div>
-        `,
-        imagePath: "imagens/sinais/53.png"
-    },
-    {
         id: 'flamula-comando',
         title: "Flâmula de Comando",
-        subtitle: "Oficiais de Marinha no exercício do comando",
+        subtitle: "Oficial no comando de navio",
         type: "insignia",
+        category: "comando-navio",
         description: `
-            <p><strong>Formato:</strong> Triangular, alongada<br>
-            <strong>Cor:</strong> Azul-marinho</p>
-            
-            <p><strong>Características:</strong> Base coincide com a tralha; altura ocupada por vinte e uma estrelas brancas igualmente espaçadas entre si.</p>
-            
-            <p><strong>Observação:</strong> É a insígnia privativa dos oficiais de marinha quando no exercício do cargo de comando. É vedado seu uso em navio não incorporado à Armada.</p>
+            <div class="flag-visual-hint">
+                <p><span class="badge">🔺⚓ Visual</span> Triangular azul-marinho com 21 estrelas.</p>
+            </div>
+            <p><strong>Quem hasteia:</strong> Todo oficial (Capitão de Corveta, Fragata, Mar e Guerra) no comando de um navio incorporado à Armada.</p>
+            <p><strong>As 21 estrelas:</strong> Representam a totalidade da marinha — o comandante é responsável por tudo e todos a bordo.</p>
+            <p><em>Proibido:</em> Em navios mercantes ou embarcações civis, mesmo que haja oficial a bordo.</p>
         `,
         imagePath: "imagens/sinais/54.png"
     },
     {
         id: 'flamula-oficial-superior',
         title: "Flâmula de Oficial Superior",
-        subtitle: "Oficial Superior",
+        subtitle: "Oficial Superior em embarcação miúda",
         type: "insignia",
+        category: "protocolo",
         description: `
-            <p><strong>Características:</strong> Similar à Flâmula de Comando, exceto por ser branca e ter uma única estrela azul ao meio da altura do triângulo.</p>
-            
-            <p><strong>Uso:</strong> É hasteada nas embarcações miúdas que conduzam oficial superior uniformizado, sendo arriada tão logo o oficial desembarque.</p>
+            <div class="flag-visual-hint">
+                <p><span class="badge">🔺⚪ Visual</span> Triangular branca com uma estrela azul.</p>
+            </div>
+            <p><strong>Cenário:</strong> Um Capitão de Fragata atravessa de lancha para outro navio. Enquanto ele estiver na lancha, esta flâmula é hasteada.</p>
+            <p><strong>Significado:</strong> "Há um oficial superior aqui, mas ele não está no comando deste meio — respeitem sua patente, mas ele não dá ordens operacionais."</p>
+            <p><em>Arriada imediatamente</em> quando o oficial desembarca.</p>
         `,
         imagePath: "imagens/sinais/55.png"
+    },
+    {
+        id: 'bandeira-insignia-vice-presidente',
+        title: "Bandeira-Insígnia do Vice-Presidente",
+        subtitle: "Vice-Presidente da República",
+        type: "insignia",
+        category: "autoridade-civil",
+        description: `
+            <div class="flag-visual-hint">
+                <p><span class="badge">🟡 Visual</span> Amarela com 21 estrelas azuis e Armas Nacionais.</p>
+            </div>
+            <p><strong>O amarelo:</strong> Cor da riqueza nacional e do segundo ramo do governo (Executivo).</p>
+            <p><strong>21 estrelas azuis:</strong> Dispostas como o Cruzeiro do Sul, ligando o Vice à tradição naval.</p>
+        `,
+        imagePath: "imagens/sinais/49.png"
+    },
+    {
+        id: 'bandeira-insignia-ministro',
+        title: "Bandeira-Insígnia de Ministro de Estado",
+        subtitle: "Ministro de Estado (ex: Defesa)",
+        type: "insignia",
+        category: "autoridade-civil",
+        description: `
+            <div class="flag-visual-hint">
+                <p><span class="badge">🟡⚔️ Visual</span> Amarela farpada, com 21 estrelas em cruz e uma estrela central.</p>
+            </div>
+            <p><strong>Formato farpado:</strong> Herdado da tradição naval, indica que o Ministro tem autoridade sobre a Marinha, mas não é militar.</p>
+            <p><strong>Estrela central:</strong> As Armas Nacionais em miniatura, mostrando que o Ministro fala em nome da União.</p>
+        `,
+        imagePath: "imagens/sinais/50.png"
     }
 ],
         
