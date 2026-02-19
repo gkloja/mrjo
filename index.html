@@ -3675,18 +3675,40 @@ audio::-webkit-media-controls-mute-button {
     display: none !important;
 }
 </style>
-<script> 
-// ===== CHATBOT MARUJO DIGITAL - VERSÃO CORRIGIDA =====
-// Usando o mesmo padrão que já funciona em /teste-ia
+<!-- ===== CHATBOT TULHO - VERSÃO RENDER.COM ===== -->
+<script>
+// ===== CONFIGURAÇÕES PARA PRODUÇÃO =====
+const CONFIG = {
+    // API principal - tenta primeiro
+    API_BASE: 'http://br2.bronxyshost.com:4009',
+    
+    // Fallbacks caso a principal falhe
+    FALLBACK_APIS: [
+        'https://cors-anywhere.herokuapp.com/http://br2.bronxyshost.com:4009',
+        'https://api.allorigins.win/raw?url=http://br2.bronxyshost.com:4009'
+    ],
+    
+    // Timeout em milissegundos
+    TIMEOUT: 60000,
+    
+    // Modo debug (false em produção)
+    DEBUG: false
+};
 
 class AssistenteNavalChat {
     constructor() {
-        // USANDO EXATAMENTE A MESMA URL QUE FUNCIONA
-        this.API_BASE = 'http://br2.bronxyshost.com:4009';
+        this.API_BASE = CONFIG.API_BASE;
         this.userId = this.getOrCreateUserId();
         this.userName = localStorage.getItem('marujo_user') || 'Marinheiro';
         this.isTyping = false;
         this.messages = [];
+        this.isProduction = window.location.protocol === 'https:';
+        
+        // Mostrar status no console se debug
+        if (CONFIG.DEBUG) {
+            console.log('🚀 Ambiente:', this.isProduction ? 'Produção (HTTPS)' : 'Local (HTTP)');
+            console.log('📡 API Base:', this.API_BASE);
+        }
         
         this.initialize();
     }
@@ -3701,17 +3723,28 @@ class AssistenteNavalChat {
     }
     
     async initialize() {
-        await this.testConnection();
         this.setupEventListeners();
         this.loadWelcomeMessage();
         this.loadChatHistory();
+        
+        // Testar conexão sem travar inicialização
+        this.testConnection().catch(() => {});
     }
     
     async testConnection() {
-        const statusElement = document.getElementById('chatStatus');
-        const statusIndicator = document.querySelector('.status-indicator');
-        
-        
+        try {
+            const response = await fetch(`${this.API_BASE}/teste-ia?pergunta=teste`, {
+                method: 'GET',
+                mode: 'cors',
+                headers: { 'Accept': 'application/json' }
+            });
+            
+            if (response.ok) {
+                console.log('✅ API conectada com sucesso');
+            }
+        } catch (e) {
+            console.log('⚠️ API offline - usando modo fallback');
+        }
     }
     
     setupEventListeners() {
@@ -3728,14 +3761,9 @@ class AssistenteNavalChat {
         }
     }
     
-    // ===== MENSAGEM DE BOAS-VINDAS =====
     loadWelcomeMessage() {
         const hora = new Date().getHours();
-        let saudacao = '';
-        
-        if (hora < 12) saudacao = 'Bom dia';
-        else if (hora < 18) saudacao = 'Boa tarde';
-        else saudacao = 'Boa noite';
+        let saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
         
         const welcomeMessage = `
             <p>⚓ ${saudacao}, <strong>${this.userName}</strong>!</p>
@@ -3745,18 +3773,14 @@ class AssistenteNavalChat {
                 <li>🇧🇷 <strong>Bandeira Nacional</strong> - hasteamento, arriamento</li>
                 <li>🎯 <strong>Salvas de Artilharia</strong> - 21 tiros para o Presidente</li>
                 <li>🎖️ <strong>Honras Navais</strong> - protocolos e saudações</li>
-                <li>📶 <strong>Código Internacional de Sinais</strong> (CIS)</li>
                 <li>⚓ <strong>Procedimentos Navais</strong> - cerimonial a bordo</li>
-                <li>📢 <strong>Fonoclama</strong> - falas padronizadas</li>
             </ul>
-            <p><em>Baseado no Manual de Cerimonial da Marinha (2022)</em></p>
-            <p>Como posso servi-lo hoje? 😊</p>
+            <p><em>Baseado no Manual de Cerimonial da Marinha</em></p>
         `;
         
         this.addMessage(welcomeMessage, 'bot', null, true);
     }
     
-    // ===== FUNÇÃO PRINCIPAL DE ENVIO =====
     async sendMessage() {
         const input = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -3764,54 +3788,38 @@ class AssistenteNavalChat {
         
         if (!pergunta || this.isTyping) return;
         
-        // Validações
         if (pergunta.length < 2) {
-            this.showToast('Digite uma pergunta com pelo menos 2 caracteres', 'error');
+            this.showToast('Digite uma pergunta válida');
             return;
         }
         
-        if (pergunta.length > 500) {
-            this.showToast('Mensagem muito longa (máx 500 caracteres)', 'error');
-            return;
-        }
-        
-        // Limpar input
         input.value = '';
         sendBtn.disabled = true;
         this.updateCharCount();
         
-        // Adicionar mensagem do usuário
         this.addMessage(pergunta, 'user');
-        
-        // Mostrar indicador de digitação
         this.showTypingIndicator();
         this.isTyping = true;
         
         try {
-            // USAR EXATAMENTE O MESMO PADRÃO DO /teste-ia
-            const resposta = await this.getRespostaIA(pergunta);
-            
-            // Remover indicador
+            // Tenta API principal
+            const resposta = await this.tentarAPIs(pergunta);
             this.removeTypingIndicator();
             
             if (resposta.sucesso) {
-                this.addMessage(resposta.texto, 'bot', 'IA Online');
-                this.showToast('✅ Resposta recebida', 'success');
+                this.addMessage(resposta.texto, 'bot', resposta.fonte || 'IA');
+                this.showToast('✅ Resposta recebida');
             } else {
-                // Fallback local
                 const fallback = this.getFallbackResponse(pergunta);
                 this.addMessage(fallback, 'bot', 'Modo Local');
-                this.showToast('⚠️ Usando respostas locais', 'info');
+                this.showToast('⚠️ Usando respostas locais');
             }
             
         } catch (error) {
-            console.error('Erro:', error);
             this.removeTypingIndicator();
-            
-            // Fallback de emergência
             const fallback = this.getFallbackResponse(pergunta);
             this.addMessage(fallback, 'bot', 'Modo Local');
-            this.showToast('🔴 IA offline - Usando modo local', 'error');
+            this.showToast('🔴 Modo offline');
             
         } finally {
             this.isTyping = false;
@@ -3820,49 +3828,57 @@ class AssistenteNavalChat {
         }
     }
     
-    // ===== FUNÇÃO QUE CHAMA A API (MESMO PADRÃO DO /teste-ia) =====
-    async getRespostaIA(pergunta) {
+    // ===== FUNÇÃO PRINCIPAL - TENTA MÚLTIPLAS APIs =====
+    async tentarAPIs(pergunta) {
+        // 1. Tenta API principal direto
         try {
-            // CONSTRUIR URL IGUAL AO /teste-ia
-            // Mas agora enviando a pergunta como parâmetro
-            const url = `${this.API_BASE}/teste-ia?pergunta=${encodeURIComponent(pergunta)}&userId=${encodeURIComponent(this.userId)}&user=${encodeURIComponent(this.userName)}`;
-            
-            console.log('📡 Chamando API:', url);
-            
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
+            const resposta = await this.chamarComTimeout(
+                `${this.API_BASE}/teste-ia?pergunta=${encodeURIComponent(pergunta)}&userId=${this.userId}`
+            );
+            if (resposta) return { sucesso: true, texto: resposta, fonte: 'IA Online' };
+        } catch (e) {
+            if (CONFIG.DEBUG) console.log('API principal falhou:', e);
+        }
+        
+        // 2. Se estiver em HTTPS, tenta proxies CORS
+        if (this.isProduction) {
+            for (const proxy of CONFIG.FALLBACK_APIS) {
+                try {
+                    const url = `${proxy}/teste-ia?pergunta=${encodeURIComponent(pergunta)}&userId=${this.userId}`;
+                    const resposta = await this.chamarComTimeout(url);
+                    if (resposta) return { sucesso: true, texto: resposta, fonte: 'Proxy' };
+                } catch (e) {
+                    if (CONFIG.DEBUG) console.log('Proxy falhou:', proxy);
                 }
+            }
+        }
+        
+        return { sucesso: false };
+    }
+    
+    // Função auxiliar para chamadas com timeout
+    async chamarComTimeout(url) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
+        
+        try {
+            const response = await fetch(url, {
+                signal: controller.signal,
+                mode: 'cors',
+                headers: { 'Accept': 'application/json' }
             });
             
-            const data = await response.json();
-            console.log('📥 Resposta da API:', data);
+            clearTimeout(timeoutId);
             
-            // Verificar formato da resposta (igual ao /teste-ia)
-            if (data.sucesso && data.resposta) {
-                return {
-                    sucesso: true,
-                    texto: data.resposta
-                };
-            } else if (data.resposta) {
-                return {
-                    sucesso: true,
-                    texto: data.resposta
-                };
+            if (response.ok) {
+                const data = await response.json();
+                return data.resposta || data.texto || null;
             }
-            
-            return {
-                sucesso: false,
-                texto: null
-            };
+            return null;
             
         } catch (error) {
-            console.error('❌ Erro na API:', error);
-            return {
-                sucesso: false,
-                texto: null
-            };
+            clearTimeout(timeoutId);
+            throw error;
         }
     }
     
@@ -3870,47 +3886,34 @@ class AssistenteNavalChat {
     getFallbackResponse(mensagem) {
         const msgLower = mensagem.toLowerCase();
         
-        // Respostas baseadas no conteúdo do site
-        if (msgLower.includes('hastear') || msgLower.includes('bandeira') || msgLower.includes('8h')) {
-            return `🚩 **Hasteamento da Bandeira Nacional:**\n\nSegundo o Manual da Marinha (EMN-006):\n\n• **Horário**: Diariamente às 08h (oito horas)\n• **Procedimento**:\n  - Toque de "Alvorada"\n  - Bandeira hasteada até o topo\n  - Todos em sentido, voltados para a bandeira\n• **Arriamento**: Ao pôr do sol\n\n⚓ *Fonte: Cerimonial da Marinha*`;
+        const respostas = {
+            'hastear|bandeira|8h': `🚩 **Hasteamento da Bandeira:**\n• Horário: 08h diariamente\n• Procedimento: Toque de alvorada, todos em sentido\n• Arriamento: Ao pôr do sol`,
+            
+            'salva|tiro|21': `🎯 **Salvas de Artilharia:**\n• 21 tiros: Presidente da República\n• 19 tiros: Chefes de Estado\n• 17 tiros: Ministros\n• Intervalo: 5 segundos`,
+            
+            'fonoclama|pedro teixeira|homem ao mar': `📢 **Homem ao Mar:**\n"PEDRO TEIXEIRA, HOMEM AO MAR POR (BOMBORDO/ESTIBORDO)"\n\nAções: Guarnição de resgate, homem de vigilância`,
+            
+            'abandono|afundamento': `🚨 **Postos de Abandono:**\n1. Afundamento Possível\n2. Afundamento Provável\n3. Afundamento Iminente\n\n"SIGA PARA SEUS POSTOS DE ABANDONO"`
+        };
+        
+        for (let [chaves, resposta] of Object.entries(respostas)) {
+            if (chaves.split('|').some(key => msgLower.includes(key))) {
+                return resposta;
+            }
         }
         
-        if (msgLower.includes('salva') || msgLower.includes('tiro') || msgLower.includes('21')) {
-            return `🎯 **Salvas de Artilharia:**\n\nProtocolo oficial:\n\n• **21 tiros**: Presidente da República\n• **19 tiros**: Chefes de Estado estrangeiros\n• **17 tiros**: Ministros de Estado\n• **15 tiros**: Oficiais-generais\n\n⏱️ *Intervalo de 5 segundos entre tiros*`;
-        }
-        
-        if (msgLower.includes('portaló') || msgLower.includes('honra')) {
-            return `🎖️ **Honras de Portaló:**\n\nCerimonial de recepção a bordo:\n\n• **Presidente**: Honras totais + 21 tiros\n• **Almirantes**: 8 "boys" + toques específicos\n• **Oficiais superiores**: 4 "boys"\n• **Oficiais**: 2 "boys"\n\n⚓ *Manual de Cerimonial Naval*`;
-        }
-        
-        if (msgLower.includes('fonoclama') || msgLower.includes('pedro teixeira')) {
-            return `📢 **Fonoclama - Falas Padronizadas:**\n\nPrincipais procedimentos:\n\n• **Postos de Emergência**: "PEDRO TEIXEIRA, GUARNECER POSTOS DE EMERGÊNCIA..."\n• **Homem ao Mar**: "PEDRO TEIXEIRA, HOMEM AO MAR POR (BE/BB)"\n• **Abandono**: "PEDRO TEIXEIRA, AFUNDAMENTO IMINENTE..."\n• **Mergulhadores**: "PEDRO TEIXEIRA, MERGULHADORES NA ÁGUA..."\n\n🔍 *Qual procedimento você precisa?*`;
-        }
-        
-        if (msgLower.includes('sinal') || msgLower.includes('cis')) {
-            return `📶 **Código Internacional de Sinais (CIS):**\n\nBandeiras importantes:\n\n• **A**: Mergulhador submerso\n• **B**: Carregando/descarregando\n• **H**: Piloto a bordo\n• **O**: Homem ao mar\n• **P**: Partindo (azul e branca)\n• **Q**: Saúde a bordo\n\n🚩 *Bandeiras alfabéticas, numéricas e substitutas*`;
-        }
-        
-        if (msgLower.includes('abandono') || msgLower.includes('afundamento')) {
-            return `🚨 **Postos de Abandono:**\n\n3 níveis de gravidade:\n\n1️⃣ **Afundamento Possível**:\n   "Preparar para abandonar o navio"\n\n2️⃣ **Afundamento Provável**:\n   "Estabelecer condição X-RAY"\n\n3️⃣ **Afundamento Iminente**:\n   "ABANDONAR O NAVIO"\n\n⚓ *Procedimentos de segurança*`;
-        }
-        
-        // Resposta padrão
-        return `⚓ **Olá, ${this.userName}!**\n\nNo momento estou operando em **modo local**. Posso ajudá-lo com:\n\n• 🇧🇷 Hasteamento da bandeira (8h)\n• 🎯 Salvas de artilharia (21 tiros)\n• 🎖️ Honras de portaló\n• 📢 Fonoclama e procedimentos\n• 📶 Código Internacional de Sinais\n• 🚨 Postos de abandono\n\n**Digite sua pergunta sobre um desses temas!**`;
+        return `⚓ **Olá!**\n\nPosso ajudar com:\n• 🇧🇷 Hasteamento da bandeira (8h)\n• 🎯 Salvas (21 tiros)\n• 📢 Homem ao mar\n• 🚨 Abandono\n\n**Digite sua pergunta!**`;
     }
     
     // ===== FUNÇÕES DE MENSAGENS =====
-    addMessage(texto, tipo, badge = null, isWelcome = false) {
+    addMessage(texto, tipo, badge = null) {
         const messages = document.getElementById('chatMessages');
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${tipo}-message`;
         
         const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
         
-        let badgeHtml = '';
-        if (badge) {
-            badgeHtml = `<div class="api-badge"><i class="fas fa-${badge === 'IA Online' ? 'bolt' : 'server'}"></i> ${badge}</div>`;
-        }
+        let badgeHtml = badge ? `<div class="api-badge"><i class="fas fa-${badge === 'IA' ? 'bolt' : 'server'}"></i> ${badge}</div>` : '';
         
         messageDiv.innerHTML = `
             <div class="message-avatar">
@@ -3926,26 +3929,16 @@ class AssistenteNavalChat {
         messages.appendChild(messageDiv);
         messages.scrollTop = messages.scrollHeight;
         
-        // Salvar histórico
-        this.messages.push({
-            tipo,
-            texto,
-            badge,
-            timestamp: new Date().toISOString()
-        });
-        
-        this.saveChatHistory();
+        this.messages.push({ tipo, texto, badge });
     }
     
     formatMessage(texto) {
         return texto
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/\n/g, '<br>')
-            .replace(/•/g, '•');
+            .replace(/\n/g, '<br>');
     }
     
-    // ===== INDICADOR DE DIGITAÇÃO =====
     showTypingIndicator() {
         const messages = document.getElementById('chatMessages');
         const typingDiv = document.createElement('div');
@@ -3956,9 +3949,7 @@ class AssistenteNavalChat {
                 <i class="fas fa-robot"></i>
             </div>
             <div class="typing-indicator">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </div>
         `;
         messages.appendChild(typingDiv);
@@ -3970,7 +3961,6 @@ class AssistenteNavalChat {
         if (indicator) indicator.remove();
     }
     
-    // ===== FUNÇÕES UTILITÁRIAS =====
     updateCharCount() {
         const input = document.getElementById('chatInput');
         const count = document.getElementById('charCount');
@@ -3979,77 +3969,34 @@ class AssistenteNavalChat {
         }
     }
     
-    showToast(message, type) {
-        // Usar sua função de toast existente
-        if (typeof window.showToast === 'function') {
-            window.showToast(message, type);
-        } else {
-            console.log('Toast:', message, type);
-        }
+    showToast(message) {
+        // Toast simples
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed; bottom: 100px; right: 20px; 
+            background: #0a2a44; color: #ffd700; padding: 10px 20px;
+            border-radius: 25px; border: 2px solid #ffd700; z-index: 10001;
+            animation: fadeOut 2s forwards;
+        `;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
     }
     
-    // ===== HISTÓRICO =====
-    saveChatHistory() {
-        try {
-            const history = this.messages.slice(-30).map(m => ({
-                tipo: m.tipo,
-                texto: m.texto.length > 100 ? m.texto.substring(0, 100) + '...' : m.texto,
-                badge: m.badge
-            }));
-            localStorage.setItem('marujo_chat_history', JSON.stringify(history));
-        } catch (e) {
-            console.warn('Erro ao salvar histórico');
-        }
-    }
-    
-    loadChatHistory() {
-        try {
-            const saved = localStorage.getItem('marujo_chat_history');
-            if (saved) {
-                const history = JSON.parse(saved);
-                history.forEach(msg => {
-                    if (msg.tipo === 'bot' && !msg.texto.includes('Bom dia') && !msg.texto.includes('Boa tarde')) {
-                        this.addMessage(msg.texto, msg.tipo, msg.badge, true);
-                    }
-                });
-            }
-        } catch (e) {
-            console.warn('Erro ao carregar histórico');
-        }
-    }
-    
-    // ===== AÇÕES =====
     copyLastResponse() {
         const lastBot = this.messages.filter(m => m.tipo === 'bot').pop();
         if (lastBot) {
             const text = lastBot.texto.replace(/<[^>]*>/g, '');
-            navigator.clipboard.writeText(text);
-            this.showToast('📋 Resposta copiada!', 'success');
-        }
-    }
-    
-    shareChat() {
-        const lastMsgs = this.messages.slice(-4);
-        let text = `⚓ Marujo Digital - Chat\n\n`;
-        lastMsgs.forEach(m => {
-            text += `${m.tipo === 'bot' ? '🤖' : '👤'}: ${m.texto.replace(/<[^>]*>/g, '').substring(0, 100)}...\n`;
-        });
-        
-        if (navigator.share) {
-            navigator.share({ title: 'Chat Marujo Digital', text });
-        } else {
-            navigator.clipboard.writeText(text);
-            this.showToast('📋 Conversa copiada!', 'success');
+            navigator.clipboard?.writeText(text);
+            this.showToast('📋 Copiado!');
         }
     }
     
     clearChat() {
-        if (confirm('Limpar histórico do chat?')) {
+        if (confirm('Limpar conversa?')) {
             document.getElementById('chatMessages').innerHTML = '';
             this.messages = [];
             this.loadWelcomeMessage();
-            localStorage.removeItem('marujo_chat_history');
-            this.showToast('🧹 Chat limpo!', 'info');
         }
     }
 }
@@ -4058,41 +4005,54 @@ class AssistenteNavalChat {
 let assistente;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Verificar se elementos existem
+    if (!document.getElementById('chatPanel')) return;
+    
     assistente = new AssistenteNavalChat();
     
-    // Conectar funções globais
+    // Funções globais
     window.toggleChat = function() {
         const panel = document.getElementById('chatPanel');
         const btn = document.querySelector('.floating-chat-btn');
-        panel.classList.toggle('show');
-        btn.classList.toggle('active');
-        if (panel.classList.contains('show')) {
-            document.getElementById('chatInput').focus();
+        if (panel) {
+            panel.classList.toggle('show');
+            btn?.classList.toggle('active');
+            if (panel.classList.contains('show')) {
+                document.getElementById('chatInput')?.focus();
+            }
         }
     };
     
-    window.sendMessage = () => assistente.sendMessage();
+    window.sendMessage = () => assistente?.sendMessage();
     window.sendQuickQuestion = (q) => {
-        document.getElementById('chatInput').value = q;
-        assistente.sendMessage();
+        const input = document.getElementById('chatInput');
+        if (input) {
+            input.value = q;
+            assistente?.sendMessage();
+        }
     };
     window.handleKeyPress = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            assistente.sendMessage();
+            assistente?.sendMessage();
         }
     };
-    window.updateCharCount = () => assistente.updateCharCount();
-    window.copyLastResponse = () => assistente.copyLastResponse();
-    window.shareChat = () => assistente.shareChat();
-    window.rateChat = () => assistente.showToast('⭐ Obrigado!', 'success');
-    window.clearChat = () => assistente.clearChat();
-    window.showApiStatus = () => {
-        alert('Status: ' + (assistente.iaOnline ? '🟢 Online' : '🔴 Offline'));
-    };
-    window.closeApiStatus = () => {};
-    window.testAllApis = () => assistente.testConnection();
+    window.updateCharCount = () => assistente?.updateCharCount();
+    window.copyLastResponse = () => assistente?.copyLastResponse();
+    window.clearChat = () => assistente?.clearChat();
+    window.showApiStatus = () => alert('Status da API: Verificando...');
 });
+
+// CSS para o toast
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeOut {
+        0% { opacity: 1; transform: translateY(0); }
+        70% { opacity: 1; transform: translateY(0); }
+        100% { opacity: 0; transform: translateY(-20px); }
+    }
+`;
+document.head.appendChild(style);
 </script>
 <!-- Script para o Player de Múltiplas Rádios -->
 <script>
