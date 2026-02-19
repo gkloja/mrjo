@@ -3680,16 +3680,16 @@ audio::-webkit-media-controls-mute-button {
 // ===== CONFIGURAÇÕES PARA PRODUÇÃO =====
 const CONFIG = {
     // API principal - tenta primeiro
-    API_BASE: 'http://br2.bronxyshost.com:4009',
+    API_BASE: 'https://cors.eu.org/br2.bronxyshost.com:4009',
     
     // Fallbacks caso a principal falhe
     FALLBACK_APIS: [
-        'https://cors-anywhere.herokuapp.com/http://br2.bronxyshost.com:4009',
-        'https://api.allorigins.win/raw?url=http://br2.bronxyshost.com:4009'
+        'https://cors.eu.org/br2.bronxyshost.com:4009',
+        'https://api.codetabs.com/v1/proxy?quest=http://br2.bronxyshost.com:4009'
     ],
     
     // Timeout em milissegundos
-    TIMEOUT: 60000,
+    TIMEOUT: 120000,
     
     // Modo debug (false em produção)
     DEBUG: false
