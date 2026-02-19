@@ -3028,80 +3028,1072 @@ audio::-webkit-media-controls-mute-button {
     </div>
 </div>
 
-<!-- Botão Flutuante com Controles da Rádio Marinha -->
-<!-- Botão Flutuante com Múltiplas Rádios -->
-<!-- Botão Flutuante com Múltiplas Rádios -->
-<div class="floating-radio-container">
-    <!-- Botão principal da rádio -->
-    <div class="floating-radio-btn" onclick="toggleRadioControls()">
-        <div class="floating-btn-image">
-            <i class="fas fa-radio"></i>
+<div class="floating-chat-container">
+    <!-- Botão principal simplificado -->
+    <div class="floating-chat-btn" onclick="toggleChat()" id="floatingChatBtn">
+        <div class="floating-chat-image">
+            <i class="fas fa-comment-dots"></i>
         </div>
+        <span class="chat-notification" id="chatNotification">💬</span>
+        <span class="status-dot online"></span>
     </div>
     
-    <!-- Painel de controles -->
-    <div class="radio-controls-panel" id="radioControls">
-        <!-- Seletor de Rádio -->
-        <div class="radio-selector">
-            <button class="radio-option active" onclick="selectRadio('marinha')">
-                <img src="https://img.radios.com.br/radio/lg/radio32483_1629287563.jpg" alt="Rádio Marinha">
-                <span>Rádio Marinha</span>
-            </button>
-            <button class="radio-option" onclick="selectRadio('riofm')">
-                <img src="https://img.radios.com.br/radio/lg/radio13416_1745327959.png" alt="Rádio Rio FM">
-                <span>Rádio Rio FM</span>
-            </button>
-        </div>
-        
-        <!-- Cabeçalho da rádio -->
-        <div class="radio-header" id="radioHeader">
-            <div class="radio-logo">
-                <img src="https://img.radios.com.br/radio/lg/radio32483_1629287563.jpg" alt="Rádio Marinha" id="radioLogo">
+    <!-- Painel do Chat - OTIMIZADO -->
+    <div class="chat-panel glass-effect" id="chatPanel">
+        <!-- Cabeçalho compacto -->
+        <div class="chat-header">
+            <div class="chat-header-title">
+                <div class="chat-avatar">
+                    <img src="imagens/logo.png" alt="Tulho">
+                </div>
+                <div>
+                    <h4>Tulho <span>Assistente</span></h4>
+                    <div class="chat-status">
+                        <span class="status-indicator online"></span>
+                        <span>Online</span>
+                    </div>
+                </div>
             </div>
-            <div class="radio-info">
-                <h4 id="radioName">Rádio Marinha 99.9 FM</h4>
-                <p id="radioLocation">Manaus / AM - Brasil</p>
-                <p id="radioSlogan" class="radio-slogan">"Marinha do Brasil, irrigadora de recursos na economia do País!"</p>
-            </div>
-            <button class="radio-close" onclick="toggleRadioControls()">
+            <button class="chat-close" onclick="toggleChat()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         
-        <!-- Controles de áudio -->
-        <div class="radio-player">
-            <!-- Player oculto -->
-            <audio id="floating-radio-player" style="display: none;"></audio>
-            
-            <div class="radio-buttons">
-                <button class="radio-control-btn play-btn" onclick="toggleRadioPlay()">
-                    <i class="fas fa-play"></i>
-                </button>
-                <button class="radio-control-btn stop-btn" onclick="stopRadio()">
-                    <i class="fas fa-stop"></i>
-                </button>
-                <button class="radio-control-btn volume-btn" onclick="toggleRadioMute()">
-                    <i class="fas fa-volume-up"></i>
-                </button>
-            </div>
-            
-            <!-- Controle de volume -->
-            <div class="volume-control">
-                <input type="range" min="0" max="1" step="0.1" value="0.7" 
-                       onchange="changeRadioVolume(this.value)" 
-                       class="volume-slider">
-            </div>
-            
-            <!-- Status -->
-            <div class="radio-status" id="radioStatus">
-                <i class="fas fa-circle"></i>
-                <span>Pronto</span>
+        <!-- Área de mensagens - ESPAÇO MAXIMIZADO -->
+        <div class="chat-messages" id="chatMessages"></div>
+        
+        <!-- Sugestões rápidas - scroll horizontal -->
+        <div class="chat-suggestions" id="chatSuggestions">
+            <button class="suggestion-chip" onclick="sendQuickQuestion('horário hasteamento bandeira')">
+                <i class="fas fa-flag"></i> Hasteamento
+            </button>
+            <button class="suggestion-chip" onclick="sendQuickQuestion('salvas presidente 21 tiros')">
+                <i class="fas fa-cannon"></i> Salvas
+            </button>
+            <button class="suggestion-chip" onclick="sendQuickQuestion('postos abandono')">
+                <i class="fas fa-life-ring"></i> Abandono
+            </button>
+            <button class="suggestion-chip" onclick="sendQuickQuestion('homem ao mar')">
+                <i class="fas fa-bullhorn"></i> Homem ao Mar
+            </button>
+        </div>
+        
+        <!-- Área de input simplificada -->
+        <div class="chat-input-area">
+            <div class="input-wrapper">
+                <textarea 
+                    id="chatInput" 
+                    class="chat-input" 
+                    placeholder="Pergunte ao Tulho..." 
+                    onkeypress="handleKeyPress(event)"
+                    oninput="updateCharCount()"
+                    rows="1"
+                    maxlength="500"
+                ></textarea>
+                <div class="input-actions">
+                    <span class="char-count" id="charCount">0/500</span>
+                    <button class="chat-send-btn" onclick="sendMessage()" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
             </div>
         </div>
         
+        <!-- Rodapé simplificado -->
+        <div class="chat-footer">
+            <button class="chat-footer-btn" onclick="copyLastResponse()" title="Copiar">
+                <i class="fas fa-copy"></i>
+            </button>
+            <button class="chat-footer-btn" onclick="clearChat()" title="Limpar">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
     </div>
 </div>
 
+<!-- Modal de Status das APIs simplificado -->
+<div class="api-status-modal" id="apiStatusModal">
+    <div class="api-status-content">
+        <div class="api-status-header">
+            <h3><i class="fas fa-network-wired"></i> Status das APIs</h3>
+            <button onclick="closeApiStatus()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="api-status-list" id="apiStatusList"></div>
+        <button class="api-status-btn" onclick="testAllApis()">
+            <i class="fas fa-sync-alt"></i> Testar Todas
+        </button>
+    </div>
+</div>
+
+<style>
+/* ===== CHATBOT TULHO - OTIMIZADO MOBILE ===== */
+
+/* Reset e variáveis */
+:root {
+    --navy: #0a2a44;
+    --navy-light: #1a3f5c;
+    --gold: #ffd700;
+    --gold-dark: #ffaa00;
+    --text: #ffffff;
+    --text-dim: #94a3b8;
+    --success: #4ade80;
+    --glass: rgba(10, 42, 68, 0.98);
+}
+
+/* Container */
+.floating-chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+/* ===== BOTÃO FLUTUANTE COMPACTO ===== */
+.floating-chat-btn {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(145deg, var(--navy), var(--navy-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5),
+                0 0 0 2px var(--gold);
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.3s;
+}
+
+.floating-chat-btn:active {
+    transform: scale(0.95);
+}
+
+.floating-chat-image {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: var(--navy);
+}
+
+.status-dot {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    background: var(--success);
+    border-radius: 50%;
+    border: 2px solid white;
+    animation: pulse 2s infinite;
+}
+
+.chat-notification {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(145deg, var(--gold), var(--gold-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--navy);
+    font-size: 0.9rem;
+    border: 2px solid white;
+}
+
+/* ===== PAINEL DO CHAT - MOBILE FIRST ===== */
+.chat-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    display: none;
+    flex-direction: column;
+    z-index: 10000;
+}
+
+.chat-panel.show {
+    display: flex;
+    animation: slideUp 0.3s ease;
+}
+
+/* Cabeçalho compacto */
+.chat-header {
+    padding: 15px;
+    background: linear-gradient(135deg, var(--navy), var(--navy-light));
+    border-bottom: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chat-header-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.chat-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 15px rgba(255,215,0,0.3);
+}
+
+.chat-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.chat-header h4 {
+    color: white;
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.chat-header h4 span {
+    font-size: 0.7rem;
+    color: var(--gold);
+    margin-left: 5px;
+}
+
+.chat-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 3px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--success);
+    animation: pulse 1.5s infinite;
+}
+
+.chat-close {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid var(--gold);
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+/* ===== ÁREA DE MENSAGENS - MAXIMIZADA ===== */
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: rgba(0,0,0,0.2);
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Mensagens */
+.message {
+    display: flex;
+    gap: 8px;
+    max-width: 85%;
+    animation: fadeIn 0.3s;
+}
+
+.message.bot-message {
+    align-self: flex-start;
+}
+
+.message.user-message {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.message-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--navy-light), var(--navy));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 1rem;
+    flex-shrink: 0;
+    border: 2px solid rgba(255,215,0,0.3);
+}
+
+.user-message .message-avatar {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: var(--navy);
+}
+
+.message-content {
+    background: rgba(255,255,255,0.05);
+    padding: 12px;
+    border-radius: 16px;
+    border-top-left-radius: 4px;
+    color: white;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.user-message .message-content {
+    background: linear-gradient(135deg, var(--navy), var(--navy-light));
+    border-top-left-radius: 16px;
+    border-top-right-radius: 4px;
+    border: 1px solid rgba(255,215,0,0.3);
+}
+
+.message-time {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    margin-top: 4px;
+    text-align: right;
+}
+
+.api-badge {
+    display: inline-block;
+    background: rgba(255,215,0,0.1);
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 0.6rem;
+    color: var(--gold);
+    margin-top: 5px;
+}
+
+/* Indicador de digitação */
+.typing-indicator {
+    background: rgba(255,255,255,0.05);
+    padding: 12px 16px;
+    border-radius: 16px;
+    display: flex;
+    gap: 4px;
+}
+
+.typing-indicator span {
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: typing 1.4s infinite;
+}
+
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+/* ===== SUGESTÕES ===== */
+.chat-suggestions {
+    padding: 12px;
+    background: rgba(0,0,0,0.3);
+    border-top: 1px solid rgba(255,215,0,0.2);
+    border-bottom: 1px solid rgba(255,215,0,0.2);
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+.suggestion-chip {
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 20px;
+    color: var(--gold);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.suggestion-chip:active {
+    background: var(--gold);
+    color: var(--navy);
+    transform: scale(0.95);
+}
+
+/* ===== ÁREA DE INPUT ===== */
+.chat-input-area {
+    padding: 12px;
+    background: rgba(0,0,0,0.3);
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,215,0,0.2);
+    border-radius: 25px;
+    padding: 5px 5px 5px 15px;
+}
+
+.input-wrapper:focus-within {
+    border-color: var(--gold);
+    box-shadow: 0 0 15px rgba(255,215,0,0.3);
+}
+
+.chat-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 0.9rem;
+    outline: none;
+    resize: none;
+    font-family: inherit;
+    padding: 8px 0;
+    max-height: 80px;
+    line-height: 1.4;
+}
+
+.chat-input::placeholder {
+    color: rgba(255,255,255,0.3);
+}
+
+.input-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.char-count {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.65rem;
+}
+
+.chat-send-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    color: var(--navy);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.chat-send-btn:active {
+    transform: scale(0.9);
+}
+
+.chat-send-btn:disabled {
+    opacity: 0.5;
+}
+
+/* ===== RODAPÉ COMPACTO ===== */
+.chat-footer {
+    display: flex;
+    border-top: 1px solid rgba(255,215,0,0.2);
+    background: rgba(0,0,0,0.3);
+}
+
+.chat-footer-btn {
+    flex: 1;
+    padding: 10px 0;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.chat-footer-btn:active {
+    color: var(--gold);
+    background: rgba(255,215,0,0.1);
+}
+
+/* ===== MODAL DE STATUS ===== */
+.api-status-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 11000;
+}
+
+.api-status-modal.show {
+    display: flex;
+}
+
+.api-status-content {
+    background: linear-gradient(145deg, var(--navy), #051523);
+    border-radius: 20px;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border: 2px solid var(--gold);
+}
+
+.api-status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.api-status-header button {
+    background: none;
+    border: none;
+    color: var(--gold);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.api-status-list {
+    margin-bottom: 20px;
+}
+
+.api-status-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(255,215,0,0.2);
+}
+
+.api-status-item.online { border-left: 4px solid var(--success); }
+.api-status-item.offline { border-left: 4px solid #f87171; }
+
+.api-status-name {
+    color: white;
+    font-weight: 500;
+}
+
+.api-status-badge {
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+}
+
+.status-online {
+    background: rgba(74,222,128,0.2);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+
+.status-offline {
+    background: rgba(248,113,113,0.2);
+    color: #f87171;
+    border: 1px solid #f87171;
+}
+
+.api-status-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border: none;
+    border-radius: 10px;
+    color: var(--navy);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.api-status-btn:active {
+    transform: scale(0.98);
+}
+
+/* ===== ANIMAÇÕES ===== */
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes typing {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1); }
+}
+
+/* ===== SCROLL PERSONALIZADO ===== */
+.chat-messages::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 4px;
+}
+
+.chat-suggestions::-webkit-scrollbar {
+    height: 3px;
+}
+
+.chat-suggestions::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 3px;
+}
+
+/* ===== UTILITÁRIOS ===== */
+.hidden {
+    display: none !important;
+}
+</style>
+<script> 
+// ===== CHATBOT MARUJO DIGITAL - VERSÃO CORRIGIDA =====
+// Usando o mesmo padrão que já funciona em /teste-ia
+
+class AssistenteNavalChat {
+    constructor() {
+        // USANDO EXATAMENTE A MESMA URL QUE FUNCIONA
+        this.API_BASE = 'http://br2.bronxyshost.com:4009';
+        this.userId = this.getOrCreateUserId();
+        this.userName = localStorage.getItem('marujo_user') || 'Marinheiro';
+        this.isTyping = false;
+        this.messages = [];
+        
+        this.initialize();
+    }
+    
+    getOrCreateUserId() {
+        let userId = localStorage.getItem('marinhaUserId');
+        if (!userId) {
+            userId = `site_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+            localStorage.setItem('marinhaUserId', userId);
+        }
+        return userId;
+    }
+    
+    async initialize() {
+        await this.testConnection();
+        this.setupEventListeners();
+        this.loadWelcomeMessage();
+        this.loadChatHistory();
+    }
+    
+    async testConnection() {
+        const statusElement = document.getElementById('chatStatus');
+        const statusIndicator = document.querySelector('.status-indicator');
+        
+        
+    }
+    
+    setupEventListeners() {
+        const input = document.getElementById('chatInput');
+        if (input) {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.sendMessage();
+                }
+            });
+            
+            input.addEventListener('input', () => this.updateCharCount());
+        }
+    }
+    
+    // ===== MENSAGEM DE BOAS-VINDAS =====
+    loadWelcomeMessage() {
+        const hora = new Date().getHours();
+        let saudacao = '';
+        
+        if (hora < 12) saudacao = 'Bom dia';
+        else if (hora < 18) saudacao = 'Boa tarde';
+        else saudacao = 'Boa noite';
+        
+        const welcomeMessage = `
+            <p>⚓ ${saudacao}, <strong>${this.userName}</strong>!</p>
+            <p>Sou seu assistente especializado em <strong>Cerimonial da Marinha do Brasil</strong>.</p>
+            <p>Posso ajudá-lo com:</p>
+            <ul style="margin:5px 0 0 20px; color:#94a3b8;">
+                <li>🇧🇷 <strong>Bandeira Nacional</strong> - hasteamento, arriamento</li>
+                <li>🎯 <strong>Salvas de Artilharia</strong> - 21 tiros para o Presidente</li>
+                <li>🎖️ <strong>Honras Navais</strong> - protocolos e saudações</li>
+                <li>📶 <strong>Código Internacional de Sinais</strong> (CIS)</li>
+                <li>⚓ <strong>Procedimentos Navais</strong> - cerimonial a bordo</li>
+                <li>📢 <strong>Fonoclama</strong> - falas padronizadas</li>
+            </ul>
+            <p><em>Baseado no Manual de Cerimonial da Marinha (2022)</em></p>
+            <p>Como posso servi-lo hoje? 😊</p>
+        `;
+        
+        this.addMessage(welcomeMessage, 'bot', null, true);
+    }
+    
+    // ===== FUNÇÃO PRINCIPAL DE ENVIO =====
+    async sendMessage() {
+        const input = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const pergunta = input.value.trim();
+        
+        if (!pergunta || this.isTyping) return;
+        
+        // Validações
+        if (pergunta.length < 2) {
+            this.showToast('Digite uma pergunta com pelo menos 2 caracteres', 'error');
+            return;
+        }
+        
+        if (pergunta.length > 500) {
+            this.showToast('Mensagem muito longa (máx 500 caracteres)', 'error');
+            return;
+        }
+        
+        // Limpar input
+        input.value = '';
+        sendBtn.disabled = true;
+        this.updateCharCount();
+        
+        // Adicionar mensagem do usuário
+        this.addMessage(pergunta, 'user');
+        
+        // Mostrar indicador de digitação
+        this.showTypingIndicator();
+        this.isTyping = true;
+        
+        try {
+            // USAR EXATAMENTE O MESMO PADRÃO DO /teste-ia
+            const resposta = await this.getRespostaIA(pergunta);
+            
+            // Remover indicador
+            this.removeTypingIndicator();
+            
+            if (resposta.sucesso) {
+                this.addMessage(resposta.texto, 'bot', 'IA Online');
+                this.showToast('✅ Resposta recebida', 'success');
+            } else {
+                // Fallback local
+                const fallback = this.getFallbackResponse(pergunta);
+                this.addMessage(fallback, 'bot', 'Modo Local');
+                this.showToast('⚠️ Usando respostas locais', 'info');
+            }
+            
+        } catch (error) {
+            console.error('Erro:', error);
+            this.removeTypingIndicator();
+            
+            // Fallback de emergência
+            const fallback = this.getFallbackResponse(pergunta);
+            this.addMessage(fallback, 'bot', 'Modo Local');
+            this.showToast('🔴 IA offline - Usando modo local', 'error');
+            
+        } finally {
+            this.isTyping = false;
+            sendBtn.disabled = false;
+            document.getElementById('chatInput').focus();
+        }
+    }
+    
+    // ===== FUNÇÃO QUE CHAMA A API (MESMO PADRÃO DO /teste-ia) =====
+    async getRespostaIA(pergunta) {
+        try {
+            // CONSTRUIR URL IGUAL AO /teste-ia
+            // Mas agora enviando a pergunta como parâmetro
+            const url = `${this.API_BASE}/teste-ia?pergunta=${encodeURIComponent(pergunta)}&userId=${encodeURIComponent(this.userId)}&user=${encodeURIComponent(this.userName)}`;
+            
+            console.log('📡 Chamando API:', url);
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            console.log('📥 Resposta da API:', data);
+            
+            // Verificar formato da resposta (igual ao /teste-ia)
+            if (data.sucesso && data.resposta) {
+                return {
+                    sucesso: true,
+                    texto: data.resposta
+                };
+            } else if (data.resposta) {
+                return {
+                    sucesso: true,
+                    texto: data.resposta
+                };
+            }
+            
+            return {
+                sucesso: false,
+                texto: null
+            };
+            
+        } catch (error) {
+            console.error('❌ Erro na API:', error);
+            return {
+                sucesso: false,
+                texto: null
+            };
+        }
+    }
+    
+    // ===== RESPOSTAS FALLBACK LOCAIS =====
+    getFallbackResponse(mensagem) {
+        const msgLower = mensagem.toLowerCase();
+        
+        // Respostas baseadas no conteúdo do site
+        if (msgLower.includes('hastear') || msgLower.includes('bandeira') || msgLower.includes('8h')) {
+            return `🚩 **Hasteamento da Bandeira Nacional:**\n\nSegundo o Manual da Marinha (EMN-006):\n\n• **Horário**: Diariamente às 08h (oito horas)\n• **Procedimento**:\n  - Toque de "Alvorada"\n  - Bandeira hasteada até o topo\n  - Todos em sentido, voltados para a bandeira\n• **Arriamento**: Ao pôr do sol\n\n⚓ *Fonte: Cerimonial da Marinha*`;
+        }
+        
+        if (msgLower.includes('salva') || msgLower.includes('tiro') || msgLower.includes('21')) {
+            return `🎯 **Salvas de Artilharia:**\n\nProtocolo oficial:\n\n• **21 tiros**: Presidente da República\n• **19 tiros**: Chefes de Estado estrangeiros\n• **17 tiros**: Ministros de Estado\n• **15 tiros**: Oficiais-generais\n\n⏱️ *Intervalo de 5 segundos entre tiros*`;
+        }
+        
+        if (msgLower.includes('portaló') || msgLower.includes('honra')) {
+            return `🎖️ **Honras de Portaló:**\n\nCerimonial de recepção a bordo:\n\n• **Presidente**: Honras totais + 21 tiros\n• **Almirantes**: 8 "boys" + toques específicos\n• **Oficiais superiores**: 4 "boys"\n• **Oficiais**: 2 "boys"\n\n⚓ *Manual de Cerimonial Naval*`;
+        }
+        
+        if (msgLower.includes('fonoclama') || msgLower.includes('pedro teixeira')) {
+            return `📢 **Fonoclama - Falas Padronizadas:**\n\nPrincipais procedimentos:\n\n• **Postos de Emergência**: "PEDRO TEIXEIRA, GUARNECER POSTOS DE EMERGÊNCIA..."\n• **Homem ao Mar**: "PEDRO TEIXEIRA, HOMEM AO MAR POR (BE/BB)"\n• **Abandono**: "PEDRO TEIXEIRA, AFUNDAMENTO IMINENTE..."\n• **Mergulhadores**: "PEDRO TEIXEIRA, MERGULHADORES NA ÁGUA..."\n\n🔍 *Qual procedimento você precisa?*`;
+        }
+        
+        if (msgLower.includes('sinal') || msgLower.includes('cis')) {
+            return `📶 **Código Internacional de Sinais (CIS):**\n\nBandeiras importantes:\n\n• **A**: Mergulhador submerso\n• **B**: Carregando/descarregando\n• **H**: Piloto a bordo\n• **O**: Homem ao mar\n• **P**: Partindo (azul e branca)\n• **Q**: Saúde a bordo\n\n🚩 *Bandeiras alfabéticas, numéricas e substitutas*`;
+        }
+        
+        if (msgLower.includes('abandono') || msgLower.includes('afundamento')) {
+            return `🚨 **Postos de Abandono:**\n\n3 níveis de gravidade:\n\n1️⃣ **Afundamento Possível**:\n   "Preparar para abandonar o navio"\n\n2️⃣ **Afundamento Provável**:\n   "Estabelecer condição X-RAY"\n\n3️⃣ **Afundamento Iminente**:\n   "ABANDONAR O NAVIO"\n\n⚓ *Procedimentos de segurança*`;
+        }
+        
+        // Resposta padrão
+        return `⚓ **Olá, ${this.userName}!**\n\nNo momento estou operando em **modo local**. Posso ajudá-lo com:\n\n• 🇧🇷 Hasteamento da bandeira (8h)\n• 🎯 Salvas de artilharia (21 tiros)\n• 🎖️ Honras de portaló\n• 📢 Fonoclama e procedimentos\n• 📶 Código Internacional de Sinais\n• 🚨 Postos de abandono\n\n**Digite sua pergunta sobre um desses temas!**`;
+    }
+    
+    // ===== FUNÇÕES DE MENSAGENS =====
+    addMessage(texto, tipo, badge = null, isWelcome = false) {
+        const messages = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${tipo}-message`;
+        
+        const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        
+        let badgeHtml = '';
+        if (badge) {
+            badgeHtml = `<div class="api-badge"><i class="fas fa-${badge === 'IA Online' ? 'bolt' : 'server'}"></i> ${badge}</div>`;
+        }
+        
+        messageDiv.innerHTML = `
+            <div class="message-avatar">
+                <i class="fas ${tipo === 'bot' ? 'fa-robot' : 'fa-user'}"></i>
+            </div>
+            <div class="message-content">
+                ${this.formatMessage(texto)}
+                ${badgeHtml}
+                <div class="message-time">${hora}</div>
+            </div>
+        `;
+        
+        messages.appendChild(messageDiv);
+        messages.scrollTop = messages.scrollHeight;
+        
+        // Salvar histórico
+        this.messages.push({
+            tipo,
+            texto,
+            badge,
+            timestamp: new Date().toISOString()
+        });
+        
+        this.saveChatHistory();
+    }
+    
+    formatMessage(texto) {
+        return texto
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/\n/g, '<br>')
+            .replace(/•/g, '•');
+    }
+    
+    // ===== INDICADOR DE DIGITAÇÃO =====
+    showTypingIndicator() {
+        const messages = document.getElementById('chatMessages');
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot-message';
+        typingDiv.id = 'typingIndicator';
+        typingDiv.innerHTML = `
+            <div class="message-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        `;
+        messages.appendChild(typingDiv);
+        messages.scrollTop = messages.scrollHeight;
+    }
+    
+    removeTypingIndicator() {
+        const indicator = document.getElementById('typingIndicator');
+        if (indicator) indicator.remove();
+    }
+    
+    // ===== FUNÇÕES UTILITÁRIAS =====
+    updateCharCount() {
+        const input = document.getElementById('chatInput');
+        const count = document.getElementById('charCount');
+        if (input && count) {
+            count.textContent = `${input.value.length}/500`;
+        }
+    }
+    
+    showToast(message, type) {
+        // Usar sua função de toast existente
+        if (typeof window.showToast === 'function') {
+            window.showToast(message, type);
+        } else {
+            console.log('Toast:', message, type);
+        }
+    }
+    
+    // ===== HISTÓRICO =====
+    saveChatHistory() {
+        try {
+            const history = this.messages.slice(-30).map(m => ({
+                tipo: m.tipo,
+                texto: m.texto.length > 100 ? m.texto.substring(0, 100) + '...' : m.texto,
+                badge: m.badge
+            }));
+            localStorage.setItem('marujo_chat_history', JSON.stringify(history));
+        } catch (e) {
+            console.warn('Erro ao salvar histórico');
+        }
+    }
+    
+    loadChatHistory() {
+        try {
+            const saved = localStorage.getItem('marujo_chat_history');
+            if (saved) {
+                const history = JSON.parse(saved);
+                history.forEach(msg => {
+                    if (msg.tipo === 'bot' && !msg.texto.includes('Bom dia') && !msg.texto.includes('Boa tarde')) {
+                        this.addMessage(msg.texto, msg.tipo, msg.badge, true);
+                    }
+                });
+            }
+        } catch (e) {
+            console.warn('Erro ao carregar histórico');
+        }
+    }
+    
+    // ===== AÇÕES =====
+    copyLastResponse() {
+        const lastBot = this.messages.filter(m => m.tipo === 'bot').pop();
+        if (lastBot) {
+            const text = lastBot.texto.replace(/<[^>]*>/g, '');
+            navigator.clipboard.writeText(text);
+            this.showToast('📋 Resposta copiada!', 'success');
+        }
+    }
+    
+    shareChat() {
+        const lastMsgs = this.messages.slice(-4);
+        let text = `⚓ Marujo Digital - Chat\n\n`;
+        lastMsgs.forEach(m => {
+            text += `${m.tipo === 'bot' ? '🤖' : '👤'}: ${m.texto.replace(/<[^>]*>/g, '').substring(0, 100)}...\n`;
+        });
+        
+        if (navigator.share) {
+            navigator.share({ title: 'Chat Marujo Digital', text });
+        } else {
+            navigator.clipboard.writeText(text);
+            this.showToast('📋 Conversa copiada!', 'success');
+        }
+    }
+    
+    clearChat() {
+        if (confirm('Limpar histórico do chat?')) {
+            document.getElementById('chatMessages').innerHTML = '';
+            this.messages = [];
+            this.loadWelcomeMessage();
+            localStorage.removeItem('marujo_chat_history');
+            this.showToast('🧹 Chat limpo!', 'info');
+        }
+    }
+}
+
+// ===== INICIALIZAÇÃO =====
+let assistente;
+
+document.addEventListener('DOMContentLoaded', () => {
+    assistente = new AssistenteNavalChat();
+    
+    // Conectar funções globais
+    window.toggleChat = function() {
+        const panel = document.getElementById('chatPanel');
+        const btn = document.querySelector('.floating-chat-btn');
+        panel.classList.toggle('show');
+        btn.classList.toggle('active');
+        if (panel.classList.contains('show')) {
+            document.getElementById('chatInput').focus();
+        }
+    };
+    
+    window.sendMessage = () => assistente.sendMessage();
+    window.sendQuickQuestion = (q) => {
+        document.getElementById('chatInput').value = q;
+        assistente.sendMessage();
+    };
+    window.handleKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            assistente.sendMessage();
+        }
+    };
+    window.updateCharCount = () => assistente.updateCharCount();
+    window.copyLastResponse = () => assistente.copyLastResponse();
+    window.shareChat = () => assistente.shareChat();
+    window.rateChat = () => assistente.showToast('⭐ Obrigado!', 'success');
+    window.clearChat = () => assistente.clearChat();
+    window.showApiStatus = () => {
+        alert('Status: ' + (assistente.iaOnline ? '🟢 Online' : '🔴 Offline'));
+    };
+    window.closeApiStatus = () => {};
+    window.testAllApis = () => assistente.testConnection();
+});
+</script>
 <!-- Script para o Player de Múltiplas Rádios -->
 <script>
 // Configuração das rádios
@@ -13545,7 +14537,7 @@ honrasPortalo: [
     {
         id: 'pavilhao-cmg-comandante-forca',
         title: "Pavilhão de CMG Comandante de Força",
-        subtitle: "Capitão de Mar e Guerra Comandante de Força",
+        subtitle: "Capitão de Mar e Guerra Comandante de Força • Ex: ComFlotAM",
         type: "insignia",
         category: "comando-operativo",
         description: `
@@ -13556,11 +14548,11 @@ honrasPortalo: [
                 <li><strong>⚓ Centro inferior esquerdo:</strong> Âncora singela — indicando que este CMG comanda uma força (ex: Flotilha, Esquadrilha)</li>
                 <li><strong>⭐ 21 estrelas:</strong> Dispostas em cruz, representando os 21 tiros de saudade e a cruz do Cruzeiro do Sul</li>
             </ul>
-            <p><strong>Exemplo:</strong> Um Capitão de Mar e Guerra comandando a Flotilha do Amazonas (Conflotam) hastearia este pavilhão.</p>
+            <p><strong>Exemplo:</strong> Um Capitão de Mar e Guerra comandando a Flotilha do Amazonas (ComFlotAM) hastearia este pavilhão.</p>
             <p><em>Observação:</em> Se for fuzileiro, âncora vira dois fuzis + âncora.</p>
         `,
         imagePath: "imagens/sinais/43.png",
-        examples: ["Conflotam", "ComForSUP", "ComForEsp"]
+        examples: ["ComFlotAM", "ComForSUP", "ComForEsp"]
     },
     {
         id: 'pavilhao-cf-cc-comandante-forca',
