@@ -2975,6 +2975,1587 @@ audio::-webkit-media-controls-mute-button {
 </head>
 <body>
   
+      <!-- Header -->
+<!-- Header Aprimorado -->
+<!-- Header Aprimorado -->
+<header class="navy-header">
+    <div class="logo-container-enhanced">
+        <div class="logo-title">
+            <!-- Logo Circular -->
+            <div class="logo-circle">
+                <!-- Círculos decorativos -->
+                <div class="circle-decoration"></div>
+                <div class="circle-decoration"></div>
+                
+                <!-- Estrelas flutuantes -->
+                <div class="floating-star"></div>
+                <div class="floating-star"></div>
+                <div class="floating-star"></div>
+                <div class="floating-star"></div>
+                
+                <!-- Container da imagem com ZOOM -->
+                <div class="logo-image-container">
+                    <img src="imagens/logo.png" alt="Marujo Digital" class="logo-image-zoomed">
+                </div>
+            </div>
+            
+            <!-- Texto -->
+            <div class="logo-text">
+                <h1>Marujo Digital</h1>
+                <div class="subtitle">Cerimonial da Marinha</div>
+            </div>
+        </div>
+        
+    </div>
+</header>
+      <!-- Navegação -->
+    <nav class="navy-nav">
+        <div class="nav-menu">
+            <div class="nav-item">
+                <a href="#bandeiras" class="nav-link active" onclick="showSection('bandeiras')">
+                    <i class="fas fa-flag"></i> Bandeiras
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#insignias" class="nav-link" onclick="showSection('insignias')">
+                    <i class="fas fa-chess-queen"></i> Insígnias
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#sinais" class="nav-link" onclick="showSection('sinais')">
+                    <i class="fas fa-signal"></i> Cód Sinais
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#protocolos" class="nav-link" onclick="showSection('protocolos')">
+                    <i class="fas fa-book-open"></i> Protocolos
+                </a>
+            </div>
+                        <!-- Na navegação principal -->
+<div class="nav-item">
+    <a href="apitos.html" class="nav-link" onclick="showSection('apitos')">
+        <i class="fas fa-bullhorn"></i> Apitos
+    </a>
+</div>
+<!-- Na navegação principal, adicione: -->
+<div class="nav-item">
+    <a href="#fonoclama" class="nav-link" onclick="showSection('fonoclama')">
+        <i class="fas fa-bullhorn"></i> Fonoclama
+    </a>
+</div>
+            <a href="sobre.html" class="nav-link">
+    <i class="fas fa-info-circle"></i> Sobre
+</a>
+        </div>
+    </nav>
+<!-- ===== SEÇÃO DE NOTÍCIAS MILITARES COM MINIMIZAR TOTAL E COMPARTILHAMENTO ===== -->
+<section class="military-news-section" id="militaryNewsSection">
+    <!-- Cabeçalho da Seção com Controles -->
+    <div class="news-section-header">
+        <div class="news-title-container">
+            <div class="news-icon">
+                <i class="fas fa-newspaper"></i>
+            </div>
+            <div>
+                <h2>RADAR DE NOTÍCIAS <span>MILITARES</span></h2>
+                <div class="news-update-status">
+                    <span class="live-indicator"></span>
+                    <span>Atualização em tempo real</span>
+                    <span class="update-time" id="updateTime">20/02/2026 07:00</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CONTROLES: EXPANDIR/MINIMIZAR E FILTROS -->
+        <div class="news-controls">
+            <!-- Botões de Expandir/Minimizar -->
+            <div class="view-controls">
+                <button class="view-btn active" onclick="toggleAllNews('expand')" id="expandAllBtn" title="Expandir todas">
+                    <i class="fas fa-expand-alt"></i>
+                    <span>Expandir</span>
+                </button>
+                <button class="view-btn" onclick="toggleAllNews('minimize')" id="minimizeAllBtn" title="Minimizar todas">
+                    <i class="fas fa-compress-alt"></i>
+                    <span>Minimizar</span>
+                </button>
+                <button class="view-btn" onclick="toggleAllNews('image-only')" id="imageOnlyBtn" title="Apenas imagens">
+                    <i class="fas fa-image"></i>
+                    <span>Só Imagens</span>
+                </button>
+            </div>
+            
+            <!-- Filtros Rápidos -->
+            <div class="news-filters">
+                <button class="filter-btn active" onclick="filterNews('all')">
+                    <i class="fas fa-globe-americas"></i> Todas
+                </button>
+                <button class="filter-btn" onclick="filterNews('Forças Armadas')">
+                    <i class="fas fa-shield-alt"></i> Forças Armadas
+                </button>
+                <button class="filter-btn" onclick="filterNews('Marinha')">
+                    <i class="fas fa-ship"></i> Marinha
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid de Notícias -->
+    <div class="news-grid" id="newsGrid">
+        <!-- Cards serão inseridos dinamicamente -->
+    </div>
+
+    <!-- Botão "Ver Mais" (opcional) -->
+    <div class="news-load-more" id="loadMoreContainer" style="display: none;">
+        <button class="load-more-btn" onclick="loadMoreNews()">
+            <i class="fas fa-chevron-down"></i> Carregar mais notícias
+        </button>
+    </div>
+
+    <!-- Barra de Estatísticas -->
+    <div class="news-stats-bar">
+        <div class="stat-item">
+            <i class="fas fa-newspaper"></i>
+            <span id="totalNoticias">2</span> notícias
+        </div>
+        <div class="stat-item">
+            <i class="fas fa-clock"></i>
+            <span id="ultimaHora">1</span> nas últimas 6h
+        </div>
+        <div class="stat-item">
+            <i class="fas fa-tags"></i>
+            <span id="categoriasAtivas">2</span> categorias
+        </div>
+        <div class="stat-item">
+            <button class="refresh-btn" onclick="carregarNoticias()">
+                <i class="fas fa-sync-alt"></i> Atualizar
+            </button>
+        </div>
+    </div>
+</section>
+
+<style>
+/* ===== SEÇÃO DE NOTÍCIAS MILITARES ===== */
+:root {
+    --navy: #0a2a44;
+    --navy-light: #1a3f5c;
+    --navy-dark: #051523;
+    --gold: #ffd700;
+    --gold-dark: #ffaa00;
+    --text: #ffffff;
+    --text-dim: #94a3b8;
+    --success: #4ade80;
+    --warning: #fbbf24;
+    --danger: #f87171;
+    --whatsapp: #25D366;
+    --facebook: #1877F2;
+    --twitter: #1DA1F2;
+    --telegram: #0088cc;
+    --glass: rgba(10, 42, 68, 0.98);
+}
+
+.military-news-section {
+    background: linear-gradient(145deg, var(--navy-dark), var(--navy));
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    padding: 25px;
+    margin: 20px 0;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efeito de radar sutil */
+.military-news-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,215,0,0.03) 0%, transparent 70%);
+    animation: radar-sweep 10s linear infinite;
+    pointer-events: none;
+}
+
+/* Cabeçalho da Seção */
+.news-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.news-title-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.news-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: var(--navy);
+    border: 3px solid white;
+    box-shadow: 0 0 20px rgba(255,215,0,0.5);
+}
+
+.news-title-container h2 {
+    color: white;
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.news-title-container h2 span {
+    color: var(--gold);
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+.news-update-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+}
+
+.live-indicator {
+    width: 10px;
+    height: 10px;
+    background: var(--success);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+.update-time {
+    background: rgba(255,255,255,0.1);
+    padding: 3px 8px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    border: 1px solid rgba(255,215,0,0.3);
+}
+
+/* Controles - Expandir/Minimizar e Filtros */
+.news-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.view-controls {
+    display: flex;
+    gap: 8px;
+    background: rgba(0,0,0,0.3);
+    padding: 5px;
+    border-radius: 30px;
+    border: 1px solid rgba(255,215,0,0.2);
+}
+
+.view-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 25px;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.view-btn i {
+    font-size: 1rem;
+}
+
+.view-btn:hover {
+    background: rgba(255,215,0,0.1);
+    color: var(--gold);
+}
+
+.view-btn.active {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: var(--navy);
+}
+
+.view-btn.active i {
+    color: var(--navy);
+}
+
+/* Filtros */
+.news-filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.filter-btn {
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,215,0,0.2);
+    border-radius: 25px;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-btn i {
+    color: var(--gold);
+}
+
+.filter-btn:hover {
+    background: rgba(255,215,0,0.1);
+    border-color: var(--gold);
+    color: white;
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border-color: white;
+    color: var(--navy);
+}
+
+.filter-btn.active i {
+    color: var(--navy);
+}
+
+/* Grid de Notícias */
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
+}
+
+/* ESTADOS DE VISUALIZAÇÃO */
+
+/* Estado Minimizado (esconde conteúdo mas mantém título) */
+.news-grid.minimized .news-card .news-content {
+    max-height: 0;
+    padding: 0 20px;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.news-grid.minimized .news-card .news-image {
+    height: 200px;
+}
+
+.news-grid.minimized .news-card .news-footer {
+    display: none;
+}
+
+.news-grid.minimized .news-card .news-tags {
+    display: none;
+}
+
+.news-grid.minimized .news-card {
+    cursor: pointer;
+}
+
+/* Estado Apenas Imagem (esconde tudo exceto imagem e badge) */
+.news-grid.image-only .news-card .news-content,
+.news-grid.image-only .news-card .news-footer,
+.news-grid.image-only .news-card .news-tags,
+.news-grid.image-only .news-card .news-time {
+    display: none;
+}
+
+.news-grid.image-only .news-card .news-image {
+    height: 250px;
+}
+
+.news-grid.image-only .news-card {
+    cursor: pointer;
+}
+
+.news-grid.image-only .news-card:hover {
+    transform: scale(1.02);
+}
+
+/* Card de Notícia */
+.news-card {
+    background: rgba(255,255,255,0.02);
+    border: 2px solid rgba(255,215,0,0.1);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    backdrop-filter: blur(5px);
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--gold);
+    box-shadow: 0 15px 30px rgba(255,215,0,0.2);
+}
+
+/* Selo de Categoria */
+.news-category-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 12px;
+    background: rgba(255,215,0,0.2);
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    color: var(--gold);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    backdrop-filter: blur(5px);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.news-category-badge i {
+    font-size: 0.8rem;
+}
+
+/* Botões de Compartilhamento */
+.news-share-buttons {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    gap: 8px;
+    z-index: 3;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.news-card:hover .news-share-buttons {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.share-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: white;
+    transition: all 0.3s;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.share-btn:hover {
+    transform: scale(1.1);
+}
+
+.share-btn.whatsapp {
+    background: var(--whatsapp);
+}
+
+.share-btn.facebook {
+    background: var(--facebook);
+}
+
+.share-btn.twitter {
+    background: var(--twitter);
+}
+
+.share-btn.telegram {
+    background: var(--telegram);
+}
+
+.share-btn.copy {
+    background: var(--navy-light);
+    border: 1px solid var(--gold);
+}
+
+/* Imagem do Card */
+.news-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    transition: height 0.3s ease;
+}
+
+.news-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.news-card:hover .news-image img {
+    transform: scale(1.05);
+}
+
+/* Overlay militar na imagem */
+.news-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(10,42,68,0.8) 100%);
+    pointer-events: none;
+}
+
+/* Tempo de publicação */
+.news-time {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid var(--gold);
+    border-radius: 15px;
+    padding: 4px 10px;
+    color: white;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    z-index: 2;
+}
+
+.news-time i {
+    color: var(--gold);
+}
+
+/* Conteúdo do Card */
+.news-content {
+    padding: 20px;
+    transition: all 0.3s ease;
+    max-height: 500px;
+    opacity: 1;
+    overflow: hidden;
+}
+
+.news-title {
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+    line-height: 1.4;
+}
+
+.news-title a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.news-title a:hover {
+    color: var(--gold);
+}
+
+.news-description {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+/* Tags de palavras-chave */
+.news-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.news-tag {
+    padding: 3px 8px;
+    background: rgba(255,215,0,0.1);
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 12px;
+    color: var(--gold);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Rodapé do Card */
+.news-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,215,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.news-source {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+}
+
+.news-source i {
+    color: var(--gold);
+}
+
+.news-read-more {
+    padding: 6px 12px;
+    background: transparent;
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.news-read-more:hover {
+    background: var(--gold);
+    color: var(--navy);
+}
+
+/* Botão "Ver Mais" */
+.news-load-more {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.load-more-btn {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, var(--navy-light), var(--navy));
+    border: 2px solid var(--gold);
+    border-radius: 30px;
+    color: var(--gold);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.load-more-btn:hover {
+    background: var(--gold);
+    color: var(--navy);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255,215,0,0.3);
+}
+
+/* Barra de Estatísticas */
+.news-stats-bar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px 0 0 0;
+    margin-top: 20px;
+    border-top: 2px solid rgba(255,215,0,0.2);
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+}
+
+.stat-item i {
+    color: var(--gold);
+    font-size: 1.1rem;
+}
+
+.stat-item span {
+    color: white;
+    font-weight: 600;
+    margin-right: 3px;
+}
+
+.refresh-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    color: var(--gold);
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+}
+
+.refresh-btn:hover {
+    background: var(--gold);
+    color: var(--navy);
+}
+
+/* Loading Skeleton */
+.news-skeleton {
+    background: rgba(255,255,255,0.02);
+    border: 2px solid rgba(255,215,0,0.1);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.skeleton-image {
+    height: 200px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,215,0,0.05) 50%, rgba(255,255,255,0.02) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.skeleton-line {
+    height: 20px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,215,0,0.05) 50%, rgba(255,255,255,0.02) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.skeleton-line.short {
+    width: 60%;
+}
+
+/* Mensagem de erro */
+.news-error {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px;
+    color: var(--danger);
+    background: rgba(248,113,113,0.1);
+    border: 2px solid var(--danger);
+    border-radius: 15px;
+}
+
+.news-error i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.news-error button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: transparent;
+    border: 2px solid var(--danger);
+    border-radius: 25px;
+    color: var(--danger);
+    cursor: pointer;
+}
+
+/* Toast de notificação */
+.news-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--navy);
+    color: var(--gold);
+    padding: 12px 24px;
+    border-radius: 25px;
+    border: 2px solid var(--gold);
+    z-index: 10001;
+    animation: slideIn 0.3s, fadeOut 0.3s 2.7s forwards;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.news-toast i {
+    font-size: 1.2rem;
+}
+
+/* Animações */
+@keyframes radar-sweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(100%); }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .news-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .news-controls {
+        width: 100%;
+        align-items: flex-start;
+    }
+    
+    .view-controls {
+        width: 100%;
+        justify-content: stretch;
+    }
+    
+    .view-btn {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .news-filters {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .news-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .news-title-container h2 {
+        font-size: 1.4rem;
+    }
+    
+    .news-stats-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .news-share-buttons {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal de Notícia Completa */
+.news-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.news-modal.show {
+    display: flex;
+}
+
+.news-modal-content {
+    background: linear-gradient(145deg, var(--navy-dark), var(--navy));
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.news-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--navy);
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    cursor: pointer;
+    z-index: 2;
+}
+
+.news-modal-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+}
+
+.news-modal-body {
+    padding: 25px;
+}
+
+.news-modal-share {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    justify-content: center;
+}
+</style>
+
+<script>
+// ===== SISTEMA DE NOTÍCIAS MILITARES COM COMPARTILHAMENTO =====
+const NewsSystem = {
+    // Configurações
+    config: {
+        apiUrl: 'https://cors.eu.org/br2.bronxyshost.com:4009/noticiasMilitares.json',
+        fallbackUrl: 'https://api.codetabs.com/v1/proxy?quest=http://br2.bronxyshost.com:4009/noticiasMilitares.json',
+        refreshInterval: 60000, // 1 minuto
+        debug: false,
+        newsPerPage: 6,
+        siteUrl: window.location.origin + window.location.pathname // URL base do site
+    },
+    
+    // Estado
+    noticias: [],
+    filteredNoticias: [],
+    activeFilter: 'all',
+    currentPage: 1,
+    viewState: 'expanded', // 'expanded', 'minimized', 'image-only'
+    
+    // Inicialização
+    init: function() {
+        this.carregarNoticias();
+        this.setupAutoRefresh();
+        this.setupEventListeners();
+        this.loadUserPreference();
+    },
+    
+    // Carregar preferência do usuário
+    loadUserPreference: function() {
+        const savedState = localStorage.getItem('newsViewState');
+        if (savedState && ['expanded', 'minimized', 'image-only'].includes(savedState)) {
+            this.viewState = savedState;
+            this.applyViewState();
+        }
+    },
+    
+    // Carregar notícias da API
+    carregarNoticias: async function() {
+        this.showLoading();
+        
+        try {
+            // Tentar API principal
+            let data = await this.fetchWithTimeout(this.config.apiUrl);
+            
+            // Se falhar, tentar fallback
+            if (!data) {
+                if (this.config.debug) console.log('Tentando fallback...');
+                data = await this.fetchWithTimeout(this.config.fallbackUrl);
+            }
+            
+            if (data && data.noticias) {
+                this.noticias = data.noticias;
+                this.filteredNoticias = this.noticias;
+                this.updateStats(data);
+                this.renderNews();
+                this.showToast('Notícias atualizadas!', 'success');
+                
+                // Mostrar botão "Ver Mais" se houver mais notícias
+                this.toggleLoadMoreButton();
+            } else {
+                throw new Error('Formato de dados inválido');
+            }
+            
+        } catch (error) {
+            console.error('Erro ao carregar notícias:', error);
+            this.showError('Falha ao carregar notícias');
+            this.renderMockNews(); // Dados mock para fallback
+        }
+    },
+    
+    // Fetch com timeout
+    fetchWithTimeout: async function(url, timeout = 5000) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+        
+        try {
+            const response = await fetch(url, {
+                signal: controller.signal,
+                headers: { 'Accept': 'application/json' }
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (response.ok) {
+                return await response.json();
+            }
+            return null;
+            
+        } catch (error) {
+            clearTimeout(timeoutId);
+            return null;
+        }
+    },
+    
+    // Renderizar notícias
+    renderNews: function() {
+        const grid = document.getElementById('newsGrid');
+        if (!grid) return;
+        
+        if (this.filteredNoticias.length === 0) {
+            grid.innerHTML = '<div class="news-error">Nenhuma notícia encontrada</div>';
+            return;
+        }
+        
+        // Paginação
+        const start = 0;
+        const end = this.currentPage * this.config.newsPerPage;
+        const noticiasToShow = this.filteredNoticias.slice(0, end);
+        
+        grid.innerHTML = noticiasToShow.map(noticia => this.renderNewsCard(noticia)).join('');
+        
+        // Aplicar estado de visualização
+        this.applyViewState();
+        
+        // Adicionar evento de clique nos cards quando minimizados
+        this.setupCardClickListeners();
+    },
+    
+    // Configurar listeners de clique nos cards
+    setupCardClickListeners: function() {
+        if (this.viewState !== 'expanded') {
+            document.querySelectorAll('.news-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Não abrir se clicou nos botões de compartilhar ou no link "Detalhes"
+                    if (!e.target.closest('.share-btn') && !e.target.closest('.news-read-more')) {
+                        const modalId = this.dataset.id;
+                        if (modalId) {
+                            NewsSystem.openNewsModal(modalId);
+                        }
+                    }
+                });
+            });
+        }
+    },
+    
+    // Renderizar card de notícia
+    renderNewsCard: function(noticia) {
+        const categoriaIcon = this.getCategoriaIcon(noticia.categoria);
+        const tempoRelativo = this.calcularTempoRelativo(noticia.dataPublicacao);
+        const shareUrl = encodeURIComponent(`${this.config.siteUrl}#noticia=${noticia.id}`);
+        const shareTitle = encodeURIComponent(noticia.title);
+        const shareText = encodeURIComponent(`📰 ${noticia.title} - Radar Militar`);
+        
+        return `
+            <div class="news-card" data-category="${noticia.categoria}" data-id="${noticia.id}">
+                <!-- Botões de Compartilhamento -->
+                <div class="news-share-buttons">
+                    <button class="share-btn whatsapp" onclick="event.stopPropagation(); NewsSystem.shareNews('whatsapp', '${shareUrl}', '${shareText}')" title="Compartilhar no WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </button>
+                    <button class="share-btn facebook" onclick="event.stopPropagation(); NewsSystem.shareNews('facebook', '${shareUrl}', '${shareText}')" title="Compartilhar no Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                    <button class="share-btn twitter" onclick="event.stopPropagation(); NewsSystem.shareNews('twitter', '${shareUrl}', '${shareText}')" title="Compartilhar no Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="share-btn telegram" onclick="event.stopPropagation(); NewsSystem.shareNews('telegram', '${shareUrl}', '${shareText}')" title="Compartilhar no Telegram">
+                        <i class="fab fa-telegram-plane"></i>
+                    </button>
+                    <button class="share-btn copy" onclick="event.stopPropagation(); NewsSystem.copyLink('${this.config.siteUrl}#noticia=${noticia.id}')" title="Copiar link">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+                
+                <div class="news-category-badge">
+                    <i class="fas ${categoriaIcon}"></i> ${noticia.categoria}
+                </div>
+                
+                <div class="news-image">
+                    <img src="${noticia.imagemPreview || 'https://via.placeholder.com/400x200?text=Notícia+Militar'}" 
+                         alt="${noticia.title}"
+                         onerror="this.src='https://via.placeholder.com/400x200?text=Imagem+Indisponível'">
+                    <div class="news-time">
+                        <i class="far fa-clock"></i> ${tempoRelativo}
+                    </div>
+                </div>
+                
+                <div class="news-content">
+                    <h3 class="news-title">
+                        <a href="#" onclick="NewsSystem.openNewsModal('${noticia.id}'); return false;">
+                            ${noticia.title}
+                        </a>
+                    </h3>
+                    
+                    <p class="news-description">
+                        ${noticia.descricaoCompleta || noticia.description || 'Clique para ler a notícia completa...'}
+                    </p>
+                    
+                    ${this.renderTags(noticia.palavrasChaveEncontradas)}
+                    
+                    <div class="news-footer">
+                        <div class="news-source">
+                            <i class="fas fa-building"></i> ${noticia.source || 'G1'}
+                        </div>
+                        <a href="#" class="news-read-more" onclick="NewsSystem.openNewsModal('${noticia.id}'); return false;">
+                            <i class="fas fa-eye"></i> Detalhes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+    
+    // Renderizar tags
+    renderTags: function(tags) {
+        if (!tags || tags.length === 0) return '';
+        
+        return `
+            <div class="news-tags">
+                ${tags.map(tag => `<span class="news-tag"><i class="fas fa-tag"></i> ${tag}</span>`).join('')}
+            </div>
+        `;
+    },
+    
+    // FUNÇÃO PARA COMPARTILHAR NOTÍCIAS
+    shareNews: function(platform, url, text) {
+        const decodedUrl = decodeURIComponent(url);
+        const decodedText = decodeURIComponent(text);
+        
+        let shareUrl = '';
+        
+        switch(platform) {
+            case 'whatsapp':
+                shareUrl = `https://wa.me/?text=${text}%20${url}`;
+                break;
+            case 'facebook':
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+                break;
+            case 'twitter':
+                shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+                break;
+            case 'telegram':
+                shareUrl = `https://t.me/share/url?url=${url}&text=${text}`;
+                break;
+        }
+        
+        window.open(shareUrl, '_blank', 'width=600,height=400');
+        this.showToast('Compartilhando...', 'info');
+    },
+    
+    // Copiar link
+    copyLink: function(url) {
+        navigator.clipboard.writeText(url).then(() => {
+            this.showToast('Link copiado! 📋', 'success');
+        }).catch(() => {
+            this.showToast('Erro ao copiar link', 'error');
+        });
+    },
+    
+    // FUNÇÃO PARA CONTROLAR ESTADOS DE VISUALIZAÇÃO
+    toggleAllNews: function(action) {
+        const grid = document.getElementById('newsGrid');
+        const expandBtn = document.getElementById('expandAllBtn');
+        const minimizeBtn = document.getElementById('minimizeAllBtn');
+        const imageOnlyBtn = document.getElementById('imageOnlyBtn');
+        
+        // Remover todas as classes
+        grid.classList.remove('minimized', 'image-only');
+        
+        // Remover active de todos os botões
+        [expandBtn, minimizeBtn, imageOnlyBtn].forEach(btn => btn.classList.remove('active'));
+        
+        // Aplicar novo estado
+        switch(action) {
+            case 'expand':
+                this.viewState = 'expanded';
+                expandBtn.classList.add('active');
+                this.showToast('Todas as notícias expandidas');
+                break;
+                
+            case 'minimize':
+                grid.classList.add('minimized');
+                this.viewState = 'minimized';
+                minimizeBtn.classList.add('active');
+                this.showToast('Notícias minimizadas (clique na imagem para abrir)');
+                break;
+                
+            case 'image-only':
+                grid.classList.add('image-only');
+                this.viewState = 'image-only';
+                imageOnlyBtn.classList.add('active');
+                this.showToast('Modo apenas imagens (clique na imagem para abrir)');
+                break;
+        }
+        
+        // Salvar preferência
+        localStorage.setItem('newsViewState', this.viewState);
+        
+        // Reconfigurar listeners de clique
+        this.setupCardClickListeners();
+    },
+    
+    // Aplicar estado de visualização
+    applyViewState: function() {
+        const grid = document.getElementById('newsGrid');
+        const expandBtn = document.getElementById('expandAllBtn');
+        const minimizeBtn = document.getElementById('minimizeAllBtn');
+        const imageOnlyBtn = document.getElementById('imageOnlyBtn');
+        
+        // Remover todas as classes
+        grid.classList.remove('minimized', 'image-only');
+        
+        // Remover active de todos os botões
+        [expandBtn, minimizeBtn, imageOnlyBtn].forEach(btn => btn.classList.remove('active'));
+        
+        // Aplicar estado salvo
+        switch(this.viewState) {
+            case 'minimized':
+                grid.classList.add('minimized');
+                minimizeBtn.classList.add('active');
+                break;
+            case 'image-only':
+                grid.classList.add('image-only');
+                imageOnlyBtn.classList.add('active');
+                break;
+            default:
+                expandBtn.classList.add('active');
+        }
+    },
+    
+    // Carregar mais notícias
+    loadMoreNews: function() {
+        this.currentPage++;
+        this.renderNews();
+        this.showToast(`Mostrando mais notícias...`, 'success');
+    },
+    
+    // Mostrar/esconder botão "Ver Mais"
+    toggleLoadMoreButton: function() {
+        const container = document.getElementById('loadMoreContainer');
+        if (!container) return;
+        
+        const total = this.filteredNoticias.length;
+        const showing = this.currentPage * this.config.newsPerPage;
+        
+        if (showing < total) {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    },
+    
+    // Abrir modal com notícia completa
+    openNewsModal: function(noticiaId) {
+        const noticia = this.noticias.find(n => n.id === noticiaId);
+        if (!noticia) return;
+        
+        const shareUrl = encodeURIComponent(`${this.config.siteUrl}#noticia=${noticia.id}`);
+        const shareTitle = encodeURIComponent(noticia.title);
+        const shareText = encodeURIComponent(`📰 ${noticia.title} - Radar Militar`);
+        
+        const modal = document.createElement('div');
+        modal.className = 'news-modal show';
+        modal.innerHTML = `
+            <div class="news-modal-content">
+                <button class="news-modal-close" onclick="this.closest('.news-modal').remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <img src="${noticia.imagemPrincipal || noticia.imagemPreview}" 
+                     alt="${noticia.title}" 
+                     class="news-modal-image"
+                     onerror="this.src='https://via.placeholder.com/800x400?text=Imagem+Indisponível'">
+                
+                <div class="news-modal-body">
+                    <div class="news-category-badge" style="position: relative; top: 0; right: 0; display: inline-block; margin-bottom: 15px;">
+                        <i class="fas ${this.getCategoriaIcon(noticia.categoria)}"></i> ${noticia.categoria}
+                    </div>
+                    
+                    <h2 style="color: white; margin-bottom: 15px;">${noticia.title}</h2>
+                    
+                    <div style="color: var(--gold); margin-bottom: 20px; font-size: 0.9rem;">
+                        <i class="far fa-clock"></i> Publicado em ${new Date(noticia.dataPublicacao).toLocaleString('pt-BR')}
+                        <span style="margin-left: 15px;"><i class="fas fa-building"></i> ${noticia.source}</span>
+                    </div>
+                    
+                    <!-- Botões de compartilhamento no modal -->
+                    <div class="news-modal-share">
+                        <button class="share-btn whatsapp" onclick="NewsSystem.shareNews('whatsapp', '${shareUrl}', '${shareText}')">
+                            <i class="fab fa-whatsapp"></i>
+                        </button>
+                        <button class="share-btn facebook" onclick="NewsSystem.shareNews('facebook', '${shareUrl}', '${shareText}')">
+                            <i class="fab fa-facebook-f"></i>
+                        </button>
+                        <button class="share-btn twitter" onclick="NewsSystem.shareNews('twitter', '${shareUrl}', '${shareText}')">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button class="share-btn telegram" onclick="NewsSystem.shareNews('telegram', '${shareUrl}', '${shareText}')">
+                            <i class="fab fa-telegram-plane"></i>
+                        </button>
+                        <button class="share-btn copy" onclick="NewsSystem.copyLink('${this.config.siteUrl}#noticia=${noticia.id}')">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                    
+                    <div style="color: var(--text-dim); line-height: 1.6;">
+                        ${noticia.conteudo || noticia.descricaoCompleta || 'Conteúdo não disponível'}
+                    </div>
+                    
+                    ${this.renderTags(noticia.palavrasChaveEncontradas)}
+                    
+                    <div style="margin-top: 25px; text-align: center;">
+                        <a href="${noticia.url}" target="_blank" class="news-read-more" style="display: inline-block;">
+                            <i class="fas fa-external-link-alt"></i> Ler matéria original
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Fechar ao clicar fora
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.remove();
+        });
+    },
+    
+    // Filtrar notícias
+    filterNews: function(categoria) {
+        this.activeFilter = categoria;
+        this.currentPage = 1; // Resetar página
+        
+        // Atualizar botões ativos
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.textContent.includes(categoria === 'all' ? 'Todas' : categoria)) {
+                btn.classList.add('active');
+            }
+        });
+        
+        // Filtrar notícias
+        if (categoria === 'all') {
+            this.filteredNoticias = this.noticias;
+        } else {
+            this.filteredNoticias = this.noticias.filter(n => n.categoria === categoria);
+        }
+        
+        this.renderNews();
+        this.showToast(`Filtrando por: ${categoria === 'all' ? 'Todas' : categoria}`, 'info');
+    },
+    
+    // Calcular tempo relativo
+    calcularTempoRelativo: function(dataPublicacao) {
+        const data = new Date(dataPublicacao);
+        const agora = new Date();
+        const diffMs = agora - data;
+        const diffMin = Math.floor(diffMs / 60000);
+        
+        if (diffMin < 60) return `${diffMin} minutos atrás`;
+        if (diffMin < 1440) return `${Math.floor(diffMin / 60)} horas atrás`;
+        return `${Math.floor(diffMin / 1440)} dias atrás`;
+    },
+    
+    // Ícone por categoria
+    getCategoriaIcon: function(categoria) {
+        const icons = {
+            'Forças Armadas': 'fa-shield-alt',
+            'Marinha': 'fa-ship',
+            'Exército': 'fa-tank',
+            'Aeronáutica': 'fa-fighter-jet'
+        };
+        return icons[categoria] || 'fa-newspaper';
+    },
+    
+    // Atualizar estatísticas
+    updateStats: function(data) {
+        document.getElementById('totalNoticias').textContent = data.totalNoticias || this.noticias.length;
+        
+        // Contar notícias das últimas 6h
+        const seisHorasAtras = new Date(Date.now() - 6 * 60 * 60 * 1000);
+        const recentes = this.noticias.filter(n => new Date(n.dataPublicacao) > seisHorasAtras).length;
+        document.getElementById('ultimaHora').textContent = recentes;
+        
+        // Contar categorias únicas
+        const categorias = [...new Set(this.noticias.map(n => n.categoria))];
+        document.getElementById('categoriasAtivas').textContent = categorias.length;
+        
+        document.getElementById('updateTime').textContent = 
+            new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    },
+    
+    // Loading state
+    showLoading: function() {
+        const grid = document.getElementById('newsGrid');
+        if (!grid) return;
+        
+        grid.innerHTML = Array(2).fill(0).map(() => `
+            <div class="news-skeleton">
+                <div class="skeleton-image"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line"></div>
+            </div>
+        `).join('');
+    },
+    
+    // Error state
+    showError: function(message) {
+        const grid = document.getElementById('newsGrid');
+        if (!grid) return;
+        
+        grid.innerHTML = `
+            <div class="news-error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>${message}</h3>
+                <p>Tentando reconexão automática...</p>
+                <button onclick="NewsSystem.carregarNoticias()">
+                    <i class="fas fa-sync-alt"></i> Tentar novamente
+                </button>
+            </div>
+        `;
+    },
+    
+    // Toast notification
+    showToast: function(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = 'news-toast';
+        
+        let icon = 'fa-info-circle';
+        if (type === 'success') icon = 'fa-check-circle';
+        if (type === 'error') icon = 'fa-exclamation-circle';
+        
+        toast.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => toast.remove(), 3000);
+    },
+    
+    // Mock data para fallback
+    renderMockNews: function() {
+        this.noticias = [
+            {
+                id: 'mock1',
+                title: 'Porta-aviões e preparativos militares: os sinais de que os EUA podem atacar o Irã',
+                categoria: 'Forças Armadas',
+                source: 'G1',
+                imagemPreview: 'https://via.placeholder.com/400x200?text=EUA+vs+Irã',
+                imagemPrincipal: 'https://via.placeholder.com/800x400?text=EUA+vs+Irã',
+                descricaoCompleta: 'Trump ordenou reforço da presença militar americana no Oriente Médio, com dois porta-aviões...',
+                conteudo: 'O presidente dos Estados Unidos, Donald Trump, disse nesta quinta-feira (19) que o Irã precisa chegar a um "acordo significativo" nas negociações com os EUA nos próximos dez dias. Caso contrário, "coisas ruins acontecerão". A presença militar americana no Oriente Médio aumentou, com dois porta-aviões na região.',
+                dataPublicacao: new Date().toISOString(),
+                palavrasChaveEncontradas: ['militar', 'naval', 'internacional'],
+                url: '#'
+            },
+            {
+                id: 'mock2',
+                title: 'União de Maricá é campeã da Série Ouro e vai à elite do carnaval do Rio pela 1ª vez',
+                categoria: 'Marinha',
+                source: 'G1',
+                imagemPreview: 'https://via.placeholder.com/400x200?text=Carnaval+2026',
+                imagemPrincipal: 'https://via.placeholder.com/800x400?text=Carnaval+2026',
+                descricaoCompleta: 'Escola superou perda inicial de 0,2 ponto por estouro de tempo e conquistou o título...',
+                conteudo: 'A União de Maricá é a campeã da Série Ouro de 2026. A escola terminou em 1º lugar na apuração realizada na tarde desta quinta-feira (19), mesmo após perder 0,2 ponto no quesito evolução e enfrentar um grave acidente com o último carro alegórico durante o desfile.',
+                dataPublicacao: new Date(Date.now() - 3600000).toISOString(),
+                palavrasChaveEncontradas: ['naval', 'carnaval', 'cultura'],
+                url: '#'
+            }
+        ];
+        
+        this.filteredNoticias = this.noticias;
+        this.renderNews();
+    },
+    
+    // Auto refresh
+    setupAutoRefresh: function() {
+        setInterval(() => this.carregarNoticias(), this.config.refreshInterval);
+    },
+    
+    // Event listeners
+    setupEventListeners: function() {
+        // Verificar conexão com a internet
+        window.addEventListener('online', () => {
+            this.showToast('Conexão restabelecida. Atualizando...', 'success');
+            this.carregarNoticias();
+        });
+        
+        // Verificar se há notícia específica na URL (para compartilhamento)
+        this.checkUrlForNews();
+    },
+    
+    // Verificar URL para notícia compartilhada
+    checkUrlForNews: function() {
+        if (window.location.hash && window.location.hash.startsWith('#noticia=')) {
+            const noticiaId = window.location.hash.replace('#noticia=', '');
+            setTimeout(() => {
+                this.openNewsModal(noticiaId);
+            }, 1000);
+        }
+    }
+};
+
+// ===== FUNÇÕES GLOBAIS =====
+function carregarNoticias() {
+    NewsSystem.carregarNoticias();
+}
+
+function filterNews(categoria) {
+    NewsSystem.filterNews(categoria);
+}
+
+function toggleAllNews(action) {
+    NewsSystem.toggleAllNews(action);
+}
+
+function loadMoreNews() {
+    NewsSystem.loadMoreNews();
+}
+
+// Inicializar quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    // Verificar se a seção existe
+    if (document.getElementById('newsGrid')) {
+        NewsSystem.init();
+    }
+});
+
+// Adicionar Font Awesome se não existir
+if (!document.querySelector('link[href*="font-awesome"]')) {
+    const fa = document.createElement('link');
+    fa.rel = 'stylesheet';
+    fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css';
+    document.head.appendChild(fa);
+}
+</script>
   
 <div class="floating-download-container">
     <!-- Botão principal do download -->
@@ -4809,79 +6390,7 @@ setInterval(() => {
     <!-- Watermark -->
     <div class="watermark">By: ๖ۣۜCabral™</>  +5521989047220</div>
     
-    <!-- Header -->
-<!-- Header Aprimorado -->
-<!-- Header Aprimorado -->
-<header class="navy-header">
-    <div class="logo-container-enhanced">
-        <div class="logo-title">
-            <!-- Logo Circular -->
-            <div class="logo-circle">
-                <!-- Círculos decorativos -->
-                <div class="circle-decoration"></div>
-                <div class="circle-decoration"></div>
-                
-                <!-- Estrelas flutuantes -->
-                <div class="floating-star"></div>
-                <div class="floating-star"></div>
-                <div class="floating-star"></div>
-                <div class="floating-star"></div>
-                
-                <!-- Container da imagem com ZOOM -->
-                <div class="logo-image-container">
-                    <img src="imagens/logo.png" alt="Marujo Digital" class="logo-image-zoomed">
-                </div>
-            </div>
-            
-            <!-- Texto -->
-            <div class="logo-text">
-                <h1>Marujo Digital</h1>
-                <div class="subtitle">Cerimonial da Marinha</div>
-            </div>
-        </div>
-        
-    </div>
-</header>
-    <!-- Navegação -->
-    <nav class="navy-nav">
-        <div class="nav-menu">
-            <div class="nav-item">
-                <a href="#bandeiras" class="nav-link active" onclick="showSection('bandeiras')">
-                    <i class="fas fa-flag"></i> Bandeiras
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="#insignias" class="nav-link" onclick="showSection('insignias')">
-                    <i class="fas fa-chess-queen"></i> Insígnias
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="#sinais" class="nav-link" onclick="showSection('sinais')">
-                    <i class="fas fa-signal"></i> Cód Sinais
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="#protocolos" class="nav-link" onclick="showSection('protocolos')">
-                    <i class="fas fa-book-open"></i> Protocolos
-                </a>
-            </div>
-                        <!-- Na navegação principal -->
-<div class="nav-item">
-    <a href="apitos.html" class="nav-link" onclick="showSection('apitos')">
-        <i class="fas fa-bullhorn"></i> Apitos
-    </a>
-</div>
-<!-- Na navegação principal, adicione: -->
-<div class="nav-item">
-    <a href="#fonoclama" class="nav-link" onclick="showSection('fonoclama')">
-        <i class="fas fa-bullhorn"></i> Fonoclama
-    </a>
-</div>
-            <a href="sobre.html" class="nav-link">
-    <i class="fas fa-info-circle"></i> Sobre
-</a>
-        </div>
-    </nav>
+
     
     <!-- Conteúdo Principal -->
     <main class="main-content" id="mainContent">
