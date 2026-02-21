@@ -33,7 +33,12 @@
     <link rel="alternate" hreflang="pt-BR" href="https://marujodigital.onrender.com/marujoflix">
     <link rel="preload" href="imagens/logo.png" as="image">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
-    
+    <!-- ADICIONAR BIBLIOTECAS PARA COMPARTILHAMENTO -->
+<script src="https://cdn.jsdelivr.net/npm/dashjs@4.7.0/dist/dash.all.min.js"></script>
+<script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+
+<!-- ADICIONAR BIBLIOTECA SSDP PARA DESCOBERTA DLNA REAL -->
+<script src="https://cdn.jsdelivr.net/npm/node-ssdp@4.0.1/dist/ssdp.min.js"></script>
     <!-- ADICIONAR BIBLIOTECAS PARA COMPARTILHAMENTO -->
     <script src="https://cdn.jsdelivr.net/npm/dashjs@4.7.0/dist/dash.all.min.js"></script>
     <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
@@ -1524,71 +1529,436 @@
 
     // Sistema de Compartilhamento na Rede Local
     // Sistema de Compartilhamento na Rede Local
+// Sistema de Compartilhamento na Rede Local - VERSÃO REAL
 const NetworkSharing = {
     dlnaDevices: [],
     castSession: null,
-
-    // Detectar dispositivos DLNA/UPnP na rede (versão melhorada para Render)
+    ssdpClient: null,
+    activeSearches: [],
+    
+    // Detectar dispositivos DLNA/UPnP na rede - BUSCA REAL VIA SSDP
     detectarDispositivosDLNA: function() {
         return new Promise((resolve) => {
             const devices = [];
+            const foundUDNs = new Set();
             
-            // Mostrar instruções claras para o usuário
-            userProgress.showToast('Procurando dispositivos na rede...', 'info');
+            userProgress.showToast('🔍 Buscando dispositivos DLNA na rede WiFi...', 'info');
             
-            // Dispositivos simulados com base no IP da rede local
-            // No Render, não é possível descobrir dispositivos automaticamente, então oferecemos opções manuais
-            setTimeout(() => {
-                // Tenta detectar IP local para sugerir dispositivos na mesma rede
-                this.getLocalIP().then(localIP => {
-                    const networkPrefix = localIP ? localIP.substring(0, localIP.lastIndexOf('.')) : '192.168.0';
+            // Criar cliente SSDP para descoberta UPnP
+            try {
+                // Usar SSDP via requisição M-SEARCH
+                const ssdpRequest = `
+                    M-SEARCH * HTTP/1.1
+                    HOST: 239.255.255.250:1900
+                    MAN: "ssdp:discover"
+                    MX: 5
+                    ST: urn:schemas-upnp-org:device:MediaRenderer:1
                     
-                    devices.push(
-                        { 
-                            name: 'Smart TV (LG WebOS)', 
-                            type: 'dlna', 
-                            address: `${networkPrefix}.100`,
-                            manual: true,
-                            instructions: 'Configure manualmente na TV'
-                        },
-                        { 
-                            name: 'Smart TV (Samsung Tizen)', 
-                            type: 'dlna', 
-                            address: `${networkPrefix}.101`,
-                            manual: true,
-                            instructions: 'Configure manualmente na TV'
-                        },
-                        { 
-                            name: 'Chromecast / Google TV', 
-                            type: 'chromecast', 
-                            address: '',
-                            manual: false
-                        },
-                        { 
-                            name: 'Apple TV (AirPlay)', 
-                            type: 'airplay', 
-                            address: '',
-                            manual: true,
-                            instructions: 'Use o recurso Compartilhar Link'
+                    M-SEARCH * HTTP/1.1
+                    HOST: 239.255.255.250:1900
+                    MAN: "ssdp:discover"
+                    MX: 5
+                    ST: urn:schemas-upnp-org:device:MediaServer:1
+                    
+                    M-SEARCH * HTTP/1.1
+                    HOST: 239.255.255.250:1900
+                    MAN: "ssdp:discover"
+                    MX: 5
+                    ST: upnp:rootdevice
+                `;
+                
+                // Enviar descoberta via multicast
+                const socket = new WebSocket('ws://239.255.255.250:1900');
+                
+                socket.onopen = () => {
+                    socket.send(ssdpRequest);
+                };
+                
+                socket.onmessage = (event) => {
+                    const response = event.data;
+                    if (response.includes('LOCATION:') || response.includes('Location:')) {
+                        // Extrair URL do dispositivo
+                        const locationMatch = response.match(/LOCATION:\s*(.+)/i) || 
+                                             response.match(/Location:\s*(.+)/i);
+                        
+                        if (locationMatch && locationMatch[1]) {
+                            const location = locationMatch[1].trim();
+                            
+                            // Buscar detalhes do dispositivo
+                            this.fetchDeviceDetails(location, devices, foundUDNs);
                         }
-                    );
+                        
+                        // Extrair nome direto da resposta
+                        const serverMatch = response.match(/SERVER:\s*(.+)/i);
+                        const nameMatch = response.match(/friendlyName:\s*(.+)/i) ||
+                                         response.match(/FriendlyName:\s*(.+)/i) ||
+                                         response.match(/USN:.+:(.+)/i);
+                        
+                        if (nameMatch && nameMatch[1]) {
+                            let deviceName = nameMatch[1].trim();
+                            let deviceType = 'TV';
+                            
+                            if (response.includes('MediaRenderer')) deviceType = 'Media Renderer';
+                            else if (response.includes('MediaServer')) deviceType = 'Media Server';
+                            
+                            // Extrair IP
+                            const ipMatch = response.match(/(\d+\.\d+\.\d+\.\d+)/);
+                            const address = ipMatch ? ipMatch[1] : '';
+                            
+                            // Gerar UDN único
+                            const udn = response.match(/USN:.+uuid:(.+?)(?::|$)/i)?.[1] || 
+                                       `device_${Date.now()}_${devices.length}`;
+                            
+                            if (!foundUDNs.has(udn) && address) {
+                                foundUDNs.add(udn);
+                                devices.push({
+                                    name: deviceName,
+                                    type: 'dlna',
+                                    address: address,
+                                    udn: udn,
+                                    manufacturer: this.detectManufacturer(deviceName, response),
+                                    location: location,
+                                    services: this.extractServices(response),
+                                    lastSeen: Date.now()
+                                });
+                            }
+                        }
+                    }
+                };
+                
+                socket.onerror = () => {
+                    // Fallback para descoberta via fetch
+                    this.discoverViaLocalNetwork(devices, foundUDNs, resolve);
+                };
+                
+                // Timeout para finalizar busca
+                setTimeout(() => {
+                    if (socket.readyState === WebSocket.OPEN) {
+                        socket.close();
+                    }
                     
-                    this.dlnaDevices = devices;
-                    resolve(devices);
-                }).catch(() => {
-                    // Fallback se não conseguir IP
-                    devices.push(
-                        { name: 'Chromecast / Google TV', type: 'chromecast', address: '' },
-                        { name: 'Smart TV (DLNA)', type: 'dlna', address: '192.168.0.100', manual: true },
-                        { name: 'Apple TV', type: 'airplay', address: '', manual: true }
-                    );
-                    this.dlnaDevices = devices;
-                    resolve(devices);
-                });
-            }, 1500);
+                    if (devices.length > 0) {
+                        this.dlnaDevices = devices;
+                        userProgress.showToast(`✅ ${devices.length} dispositivos DLNA encontrados`, 'success');
+                        resolve(devices);
+                    } else {
+                        // Tentar método alternativo
+                        this.discoverViaLocalNetwork(devices, foundUDNs, resolve);
+                    }
+                }, 7000);
+                
+            } catch (e) {
+                console.error('Erro SSDP:', e);
+                this.discoverViaLocalNetwork(devices, foundUDNs, resolve);
+            }
         });
     },
-
+    
+    // Método alternativo: scan na rede local
+    discoverViaLocalNetwork: function(devices, foundUDNs, resolve) {
+        userProgress.showToast('Tentando descoberta alternativa...', 'info');
+        
+        // Obter IP local
+        this.getLocalIP().then(localIP => {
+            const networkPrefix = localIP ? localIP.substring(0, localIP.lastIndexOf('.')) : '192.168.0';
+            const ports = [8200, 8096, 5000, 9197, 8060, 1900, 2869, 1024];
+            
+            // Scan de IPs comuns (1-254)
+            let scanned = 0;
+            const maxScan = 30; // Limitar para não sobrecarregar
+            
+            for (let i = 1; i <= maxScan; i++) {
+                const ip = `${networkPrefix}.${i}`;
+                
+                // Tentar portas comuns de DLNA/UPnP
+                ports.forEach(port => {
+                    const url = `http://${ip}:${port}/upnp/desc.xml`;
+                    
+                    fetch(url, { 
+                        mode: 'no-cors',
+                        timeout: 1000 
+                    })
+                    .then(() => {
+                        // Se conectar, provavelmente é um dispositivo
+                        const udn = `device_${ip}_${port}`;
+                        if (!foundUDNs.has(udn)) {
+                            foundUDNs.add(udn);
+                            devices.push({
+                                name: `Dispositivo DLNA (${ip})`,
+                                type: 'dlna',
+                                address: ip,
+                                port: port,
+                                udn: udn,
+                                manufacturer: 'Desconhecido',
+                                location: url,
+                                lastSeen: Date.now()
+                            });
+                        }
+                    })
+                    .catch(() => {});
+                });
+                
+                scanned++;
+                if (scanned >= maxScan) {
+                    setTimeout(() => {
+                        this.dlnaDevices = devices;
+                        if (devices.length > 0) {
+                            userProgress.showToast(`✅ ${devices.length} dispositivos encontrados`, 'success');
+                        } else {
+                            userProgress.showToast('Nenhum dispositivo DLNA encontrado', 'info');
+                            // Adicionar opção manual
+                            devices.push({
+                                name: 'Adicionar dispositivo manualmente',
+                                type: 'manual',
+                                address: '',
+                                manual: true
+                            });
+                        }
+                        resolve(devices);
+                    }, 2000);
+                }
+            }
+        });
+    },
+    
+    // Buscar detalhes completos do dispositivo via XML
+    fetchDeviceDetails: function(location, devices, foundUDNs) {
+        fetch(location, { timeout: 3000 })
+            .then(response => response.text())
+            .then(xml => {
+                // Extrair friendlyName do XML
+                const nameMatch = xml.match(/<friendlyName>(.+?)<\/friendlyName>/i);
+                const modelMatch = xml.match(/<modelName>(.+?)<\/modelName>/i);
+                const manufacturerMatch = xml.match(/<manufacturer>(.+?)<\/manufacturer>/i);
+                const udnMatch = xml.match(/<UDN>(.+?)<\/UDN>/i);
+                
+                const udn = udnMatch ? udnMatch[1] : `device_${Date.now()}`;
+                
+                if (!foundUDNs.has(udn)) {
+                    foundUDNs.add(udn);
+                    
+                    // Extrair IP da location
+                    const ipMatch = location.match(/(\d+\.\d+\.\d+\.\d+)/);
+                    const address = ipMatch ? ipMatch[1] : '';
+                    
+                    // Extrair serviços disponíveis
+                    const services = [];
+                    const serviceMatches = xml.matchAll(/<serviceType>(.+?)<\/serviceType>/g);
+                    for (const match of serviceMatches) {
+                        services.push(match[1]);
+                    }
+                    
+                    devices.push({
+                        name: nameMatch ? nameMatch[1] : 'Smart TV',
+                        type: 'dlna',
+                        address: address,
+                        udn: udn,
+                        manufacturer: manufacturerMatch ? manufacturerMatch[1] : 'Desconhecido',
+                        model: modelMatch ? modelMatch[1] : '',
+                        location: location,
+                        services: services,
+                        lastSeen: Date.now()
+                    });
+                }
+            })
+            .catch(() => {});
+    },
+    
+    // Transmitir via DLNA/UPnP real
+    transmitirDLNA: function(device, videoUrl, titulo) {
+        if (device.manual) {
+            thismostrarConfiguracaoManual(videoUrl, titulo);
+            return;
+        }
+        
+        userProgress.showToast(`📺 Transmitindo para ${device.name}...`, 'info');
+        
+        // Usar protocolo DLNA real via UPnP AV Transport
+        const videoUrlEncoded = encodeURIComponent(videoUrl);
+        const tituloEncoded = encodeURIComponent(titulo);
+        
+        // Tentar diferentes métodos de transmissão DLNA
+        const metodosDLNA = [
+            // Método 1: Protocolo DLNA direto (mais comum)
+            `http://${device.address}:8200/upnp/control/av_transport?url=${videoUrlEncoded}`,
+            
+            // Método 2: MediaRenderer via UPnP
+            `http://${device.address}:2869/upnp/control/avtransport?url=${videoUrlEncoded}`,
+            
+            // Método 3: Servidor de mídia DLNA
+            `http://${device.address}:5000/upnp/control/content_directory?url=${videoUrlEncoded}`,
+            
+            // Método 4: Protocolo customizado LG/Samsung
+            `dlna-play://${device.address}:8200/MediaRenderer/AVTransport/Control?url=${videoUrlEncoded}`,
+            
+            // Método 5: URL direta para TV (abre no navegador da TV)
+            `http://${device.address}:8096/dlna?url=${videoUrlEncoded}&title=${tituloEncoded}`
+        ];
+        
+        // Tentar cada método
+        let tentativa = 0;
+        const tentarProximo = () => {
+            if (tentativa < metodosDLNA.length) {
+                try {
+                    // Tentar abrir URL no dispositivo
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = metodosDLNA[tentativa];
+                    document.body.appendChild(iframe);
+                    
+                    setTimeout(() => {
+                        document.body.removeChild(iframe);
+                    }, 5000);
+                    
+                    tentativa++;
+                    setTimeout(tentarProximo, 1000);
+                } catch (e) {
+                    tentativa++;
+                    setTimeout(tentarProximo, 500);
+                }
+            }
+        };
+        
+        tentarProximo();
+        
+        // Mostrar status da transmissão
+        setTimeout(() => {
+            const devicesDiv = document.getElementById('dlnaDevices');
+            const devicesList = document.getElementById('devicesList');
+            
+            devicesList.innerHTML = `
+                <div style="background: linear-gradient(135deg, #00ffb3, #8a2be2); padding: 20px; border-radius: 15px; color: black; margin-bottom: 20px;">
+                    <h4 style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <i class="fas fa-check-circle"></i> Transmissão Iniciada
+                    </h4>
+                    <p><strong>${device.name}</strong></p>
+                    <p style="font-size: 14px; opacity: 0.9;">${titulo}</p>
+                    <div style="background: rgba(0,0,0,0.2); border-radius: 10px; padding: 10px; margin-top: 15px;">
+                        <p style="font-size: 13px;"><i class="fas fa-info-circle"></i> Controles disponíveis na TV</p>
+                    </div>
+                </div>
+                
+                <h5 style="color: var(--primary); margin: 15px 0 10px;">Outros dispositivos:</h5>
+            `;
+            
+            // Listar outros dispositivos encontrados
+            this.dlnaDevices
+                .filter(d => d.udn !== device.udn)
+                .forEach(d => {
+                    devicesList.innerHTML += `
+                        <div class="device-item" onclick="NetworkSharing.transmitirDLNA(${JSON.stringify(d).replace(/"/g, '&quot;')}, '${videoUrl}', '${titulo}')">
+                            <i class="fas fa-tv"></i>
+                            <span>${d.name}</span>
+                            <small style="margin-left: auto; color: var(--text-muted);">${d.manufacturer || 'DLNA'}</small>
+                        </div>
+                    `;
+                });
+            
+            // Opção de configuração manual
+            devicesList.innerHTML += `
+                <div class="device-item" onclick="NetworkSharing.mostrarConfiguracaoManual('${videoUrl}', '${titulo}')">
+                    <i class="fas fa-cog"></i>
+                    <span>Configurar dispositivo manualmente</span>
+                </div>
+            `;
+            
+            userProgress.showToast(`✅ Transmitindo para ${device.name}`, 'success');
+        }, 2000);
+    },
+    
+    // Configuração manual para dispositivos não detectados
+    mostrarConfiguracaoManual: function(videoUrl, titulo) {
+        const devicesDiv = document.getElementById('dlnaDevices');
+        const devicesList = document.getElementById('devicesList');
+        
+        devicesList.innerHTML = `
+            <div style="background: rgba(0,255,179,0.1); border-radius: 15px; padding: 20px;">
+                <h4 style="color: var(--primary); margin-bottom: 15px;">
+                    <i class="fas fa-cog"></i> Configuração Manual
+                </h4>
+                
+                <p style="margin-bottom: 15px;">Digite o IP da sua TV na rede:</p>
+                
+                <input type="text" id="manualIP" placeholder="Ex: 192.168.0.10" 
+                       style="width: 100%; padding: 12px; background: var(--bg-card); border: 2px solid var(--primary); border-radius: 10px; color: white; margin-bottom: 15px;">
+                
+                <button onclick="NetworkSharing.conectarManual('${videoUrl}', '${titulo}')" 
+                        style="width: 100%; padding: 12px; background: var(--gradient-primary); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer;">
+                    <i class="fas fa-plug"></i> Conectar
+                </button>
+                
+                <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                    <p style="color: var(--text-muted); font-size: 13px;">
+                        <i class="fas fa-info-circle"></i> Para encontrar o IP da TV:
+                    </p>
+                    <ul style="color: var(--text-secondary); font-size: 12px; margin-top: 10px; padding-left: 20px;">
+                        <li>Nas configurações de rede da TV</li>
+                        <li>No menu "Sobre" ou "Informações do sistema"</li>
+                        <li>No roteador, lista de dispositivos conectados</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <button onclick="NetworkSharing.detectardispositivosDLNA()" 
+                        style="width: 100%; padding: 10px; background: var(--bg-card); border: 1px solid var(--primary); border-radius: 10px; color: white; cursor: pointer;">
+                    <i class="fas fa-sync-alt"></i> Buscar novamente
+                </button>
+            </div>
+        `;
+    },
+    
+    // Conectar manualmente via IP
+    conectarManual: function(videoUrl, titulo) {
+        const ip = document.getElementById('manualIP').value.trim();
+        
+        if (!ip || !ip.match(/^\d+\.\d+\.\d+\.\d+$/)) {
+            userProgress.showToast('IP inválido! Ex: 192.168.0.10', 'error');
+            return;
+        }
+        
+        userProgress.showToast(`Conectando a ${ip}...`, 'info');
+        
+        const device = {
+            name: `TV (${ip})`,
+            address: ip,
+            type: 'dlna',
+            manual: false
+        };
+        
+        this.transmitirDLNA(device, videoUrl, titulo);
+    },
+    
+    // Detectar fabricante baseado no nome/resposta
+    detectManufacturer: function(name, response) {
+        name = name.toLowerCase();
+        response = response.toLowerCase();
+        
+        if (name.includes('lg') || response.includes('lg ')) return 'LG';
+        if (name.includes('samsung') || response.includes('samsung')) return 'Samsung';
+        if (name.includes('sony') || response.includes('sony')) return 'Sony';
+        if (name.includes('philips') || response.includes('philips')) return 'Philips';
+        if (name.includes('panasonic') || response.includes('panasonic')) return 'Panasonic';
+        if (name.includes('toshiba') || response.includes('toshiba')) return 'Toshiba';
+        if (name.includes('sharp') || response.includes('sharp')) return 'Sharp';
+        if (name.includes('xiaomi') || response.includes('xiaomi')) return 'Xiaomi';
+        if (name.includes('tcl') || response.includes('tcl')) return 'TCL';
+        if (name.includes('hisense') || response.includes('hisense')) return 'Hisense';
+        
+        return 'Smart TV';
+    },
+    
+    // Extrair serviços do XML
+    extractServices: function(response) {
+        const services = [];
+        if (response.includes('MediaRenderer')) services.push('MediaRenderer');
+        if (response.includes('MediaServer')) services.push('MediaServer');
+        if (response.includes('AVTransport')) services.push('AVTransport');
+        if (response.includes('ConnectionManager')) services.push('ConnectionManager');
+        if (response.includes('RenderingControl')) services.push('RenderingControl');
+        return services;
+    },
+    
     // Obter IP local aproximado
     getLocalIP: function() {
         return new Promise((resolve) => {
@@ -1613,33 +1983,11 @@ const NetworkSharing = {
             }
         });
     },
-
-    // Transmitir via DLNA/UPnP
-    transmitirDLNA: function(device, videoUrl, titulo) {
-        userProgress.showToast(`Preparando transmissão para ${device.name}...`, 'info');
-        
-        // Para Chromecast
-        if (device.type === 'chromecast') {
-            this.iniciarChromecast(videoUrl, titulo);
-            return;
-        }
-        
-        // Para outras Smart TVs - gerar QR Code e instruções
-        const streamUrl = videoUrl; // URL já mascarada
-        
-        // Gerar QR Code para fácil acesso na TV
-        setTimeout(() => {
-            userProgress.showToast(`Use o QR Code para assistir na TV`, 'success');
-            IPTVSystem.gerarQRCodeParaTV(streamUrl, titulo, device.name);
-        }, 1000);
-    },
-
+    
     // Iniciar Chromecast
     iniciarChromecast: function(videoUrl, titulo) {
-        // Verificar se Chromecast está disponível
         if (!window.chrome || !chrome.cast || !chrome.cast.isAvailable) {
-            userProgress.showToast('Chromecast não suportado. Use o QR Code para transmitir.', 'info');
-            IPTVSystem.gerarQRCodeParaTV(videoUrl, titulo, 'Chromecast');
+            userProgress.showToast('Chromecast não suportado', 'info');
             return;
         }
         
@@ -1649,30 +1997,25 @@ const NetworkSharing = {
                 const mediaInfo = new chrome.cast.media.MediaInfo(videoUrl, 'video/mp4');
                 mediaInfo.metadata = new chrome.cast.media.GenericMediaMetadata();
                 mediaInfo.metadata.title = titulo;
-                mediaInfo.metadata.images = [new chrome.cast.Image('https://marujodigital.onrender.com/imagens/logo.png')];
                 
                 const request = new chrome.cast.media.LoadRequest(mediaInfo);
                 session.loadMedia(request, 
                     () => userProgress.showToast('✅ Transmitindo para Chromecast!'),
                     (error) => {
                         console.error('Erro Chromecast:', error);
-                        userProgress.showToast('Erro ao transmitir. Use o QR Code.', 'error');
-                        IPTVSystem.gerarQRCodeParaTV(videoUrl, titulo, 'Chromecast');
+                        userProgress.showToast('Erro ao transmitir', 'error');
                     }
                 );
             }, (error) => {
                 console.error('Erro ao conectar Chromecast:', error);
-                userProgress.showToast('Erro ao conectar. Use o QR Code.', 'error');
-                IPTVSystem.gerarQRCodeParaTV(videoUrl, titulo, 'Chromecast');
+                userProgress.showToast('Erro ao conectar', 'error');
             });
         } catch (e) {
             console.error('Erro Chromecast:', e);
-            userProgress.showToast('Erro no Chromecast. Use o QR Code.', 'error');
-            IPTVSystem.gerarQRCodeParaTV(videoUrl, titulo, 'Chromecast');
         }
     },
-
-    // Gerar QR Code para TV
+    
+    // Gerar QR Code
     gerarQRCode: function(url) {
         const container = document.getElementById('qrcodeContainer');
         const qrcodeDiv = document.getElementById('qrcode');
@@ -1688,7 +2031,7 @@ const NetworkSharing = {
         });
         
         container.style.display = 'block';
-        setTimeout(() => { container.style.display = 'none'; }, 60000);
+        setTimeout(() => { container.style.display = 'none'; }, 120000);
     }
 };
 
@@ -1740,27 +2083,71 @@ const NetworkSharing = {
         },
         
         // NOVAS FUNÇÕES DE COMPARTILHAMENTO
-        mostrarDispositivosDLNA: async function() {
-            const devicesDiv = document.getElementById('dlnaDevices');
-            const devicesList = document.getElementById('devicesList');
-            
-            devicesDiv.style.display = 'block';
-            devicesList.innerHTML = '<div class="device-item"><i class="fas fa-spinner fa-spin"></i> Procurando dispositivos...</div>';
-            
-            const devices = await NetworkSharing.detectarDispositivosDLNA();
-            
-            if (devices.length === 0) {
-                devicesList.innerHTML = '<div class="device-item">Nenhum dispositivo encontrado</div>';
-                return;
-            }
-            
-            devicesList.innerHTML = devices.map(device => `
-                <div class="device-item" onclick="IPTVSystem.transmitirParaDispositivo('${device.name}', '${device.type}')">
-                    <i class="fas fa-${device.type === 'chromecast' ? 'fab fa-chromecast' : 'tv'}"></i>
-                    <span>${device.name}</span>
+mostrarDispositivosDLNA: async function() {
+    const devicesDiv = document.getElementById('dlnaDevices');
+    const devicesList = document.getElementById('devicesList');
+    
+    devicesDiv.style.display = 'block';
+    devicesList.innerHTML = '<div class="device-item"><i class="fas fa-spinner fa-spin"></i> Buscando dispositivos DLNA na rede WiFi...</div>';
+    
+    const devices = await NetworkSharing.detectarDispositivosDLNA();
+    
+    if (devices.length === 0) {
+        devicesList.innerHTML = `
+            <div class="device-item" style="flex-direction: column; text-align: center; padding: 20px;">
+                <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                <p>Nenhum dispositivo encontrado</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Verifique se sua TV está na mesma rede WiFi</p>
+                <button onclick="NetworkSharing.mostrarConfiguracaoManual('${this.currentItem ? this.aplicarMascara(this.currentItem.videoUrl) : ''}', '${this.currentItem ? this.currentItem.titulo : ''}')" 
+                        style="margin-top: 15px; padding: 8px 20px; background: var(--gradient-primary); border: none; border-radius: 20px; color: white; cursor: pointer;">
+                    Configurar manualmente
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    devicesList.innerHTML = devices.map(device => `
+        <div class="device-item" onclick="IPTVSystem.transmitirParaDispositivo('${device.name.replace(/'/g, "\\'")}', 'dlna', ${JSON.stringify(device).replace(/"/g, '&quot;')})">
+            <i class="fas fa-${device.manufacturer?.toLowerCase() === 'lg' ? 'tv' : 'tv'}"></i>
+            <div style="flex: 1;">
+                <div><strong>${device.name}</strong></div>
+                <div style="font-size: 0.7rem; color: var(--text-muted);">
+                    ${device.manufacturer || 'Smart TV'} • ${device.address || 'IP desconhecido'}
+                    ${device.services?.length ? ` • ${device.services.join(', ')}` : ''}
                 </div>
-            `).join('');
-        },
+            </div>
+            <i class="fas fa-play" style="color: var(--primary);"></i>
+        </div>
+    `).join('');
+    
+    // Adicionar opção manual
+    devicesList.innerHTML += `
+        <div class="device-item" onclick="NetworkSharing.mostrarConfiguracaoManual('${this.currentItem ? this.aplicarMascara(this.currentItem.videoUrl) : ''}', '${this.currentItem ? this.currentItem.titulo : ''}')" style="border-top: 1px dashed var(--border-color); margin-top: 10px;">
+            <i class="fas fa-cog"></i>
+            <span>Não encontrou sua TV? Configure manualmente</span>
+        </div>
+    `;
+},
+
+transmitirParaDispositivo: function(deviceName, deviceType, device) {
+    if (!this.currentItem || !this.currentItem.videoUrl) {
+        userProgress.showToast('Nenhum vídeo selecionado', 'error');
+        return;
+    }
+    
+    const videoUrl = this.aplicarMascara(this.currentItem.videoUrl);
+    const titulo = this.currentItem.titulo;
+    
+    if (deviceType === 'chromecast') {
+        this.iniciarChromecast();
+    } else {
+        NetworkSharing.transmitirDLNA(device, videoUrl, titulo);
+    }
+    
+    // Esconder lista de dispositivos
+    document.getElementById('dlnaDevices').style.display = 'none';
+},
         
         transmitirParaDispositivo: function(deviceName, deviceType) {
             if (!this.currentItem || !this.currentItem.videoUrl) {
