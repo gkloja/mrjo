@@ -1,0 +1,5 @@
+/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, POST, OPTIONS
+  Access-Control-Allow-Headers: *
+  Content-Security-Policy: default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; media-src * data: blob: http: https:; connect-src * http: https:;
