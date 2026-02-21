@@ -1657,7 +1657,7 @@
         const IPTVSystem = {
             config: {
                 apiUrl: 'https://cors.eu.org/br2.bronxyshost.com:4009/lista.json',
-                fallbackUrl: 'https://api.codetabs.com/v1/proxy?quest=http://br2.bronxyshost.com:4009/lista.json',
+                fallbackUrl: 'https://cors.eu.org/br2.bronxyshost.com:4009/lista.json',
                 itemsPerPage: 24
             },
             
@@ -1691,24 +1691,22 @@
             },
             
             carregarDados: async function() {
-    this.showLoading();
-    
-    try {
-        // Agora funciona SEMPRE porque é no mesmo domínio!
-        const response = await fetch('/lista.json');
-        const data = await response.json();
-        
-        if (data && Array.isArray(data)) {
-            this.processarDados(data);
-            userProgress.showToast(`✅ ${data.length} filmes carregados!`);
-        } else {
-            this.processarDadosMock();
-        }
-    } catch (error) {
-        console.error('Erro:', error);
-        this.processarDadosMock();
-    }
-},
+                this.showLoading();
+                
+                try {
+                    let data = await this.fetchWithTimeout(this.config.apiUrl);
+                    if (!data) data = await this.fetchWithTimeout(this.config.fallbackUrl);
+                    
+                    if (data && Array.isArray(data)) {
+                        this.processarDados(data);
+                    } else {
+                        this.usarMockData();
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    this.usarMockData();
+                }
+            },
             
             fetchWithTimeout: async function(url, timeout = 8000) {
                 const controller = new AbortController();
