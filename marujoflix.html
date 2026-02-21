@@ -1691,22 +1691,101 @@
             },
             
             carregarDados: async function() {
-                this.showLoading();
-                
-                try {
-                    let data = await this.fetchWithTimeout(this.config.apiUrl);
-                    if (!data) data = await this.fetchWithTimeout(this.config.fallbackUrl);
-                    
-                    if (data && Array.isArray(data)) {
-                        this.processarDados(data);
-                    } else {
-                        this.usarMockData();
-                    }
-                } catch (error) {
-                    console.error('Erro:', error);
-                    this.usarMockData();
-                }
-            },
+    this.showLoading();
+    
+    // Tenta primeiro com seu JSON original
+    try {
+        // Usando JSONP (técnica que contorna CORS)
+        const data = await this.carregarComJsonp('https://br2.bronxyshost.com:4009/lista.json');
+        if (data && Array.isArray(data)) {
+            this.processarDados(data);
+            return;
+        }
+    } catch (error) {
+        console.log('JSONP falhou, tentando método alternativo');
+    }
+    
+    // Se falhar, usa dados mock com vídeos FUNCIONAIS
+    this.usarMockData();
+},
+
+carregarComJsonp: function(url) {
+    return new Promise((resolve, reject) => {
+        const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+        window[callbackName] = function(data) {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve(data);
+        };
+        
+        const script = document.createElement('script');
+        script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
+        script.onerror = reject;
+        document.body.appendChild(script);
+        
+        setTimeout(() => {
+            reject(new Error('Timeout'));
+        }, 10000);
+    });
+},
+
+usarMockData: function() {
+    // VÍDEOS 100% FUNCIONAIS (Google CDN)
+    this.todosItens = [
+        {
+            id: '1',
+            titulo: 'Big Buck Bunny',
+            tipo: 'Filme',
+            categoria: 'Filmes | Animação',
+            poster: 'https://via.placeholder.com/300x450/1a1a3a/00ffb3?text=Big+Buck+Bunny',
+            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            descricao: 'Uma história de um coelho gigante e seus amigos.'
+        },
+        {
+            id: '2',
+            titulo: 'Elephant Dream',
+            tipo: 'Filme',
+            categoria: 'Filmes | Animação',
+            poster: 'https://via.placeholder.com/300x450/1a1a3a/00ffb3?text=Elephant+Dream',
+            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+            descricao: 'A primeira animação open movie da Blender Foundation.'
+        },
+        {
+            id: '3',
+            titulo: 'Sintel',
+            tipo: 'Filme',
+            categoria: 'Filmes | Animação',
+            poster: 'https://via.placeholder.com/300x450/1a1a3a/00ffb3?text=Sintel',
+            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+            descricao: 'Uma jornada emocionante de uma garota e seu dragão.'
+        },
+        {
+            id: '4',
+            titulo: 'Tears of Steel',
+            tipo: 'Filme',
+            categoria: 'Filmes | Ficção',
+            poster: 'https://via.placeholder.com/300x450/1a1a3a/00ffb3?text=Tears+of+Steel',
+            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
+            descricao: 'Ficção científica com efeitos especiais incríveis.'
+        },
+        {
+            id: '5',
+            titulo: 'For Bigger Blazes',
+            tipo: 'Filme',
+            categoria: 'Filmes | Ação',
+            poster: 'https://via.placeholder.com/300x450/1a1a3a/00ffb3?text=For+Bigger+Blazes',
+            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+            descricao: 'Ação e aventura em alta definição.'
+        }
+    ];
+    
+    this.filmes = this.todosItens.filter(i => i.tipo === 'Filme');
+    this.series = this.todosItens.filter(i => i.tipo === 'Série');
+    this.categorias = ['Animação', 'Ficção', 'Ação'];
+    this.aplicarFiltros();
+    this.renderizar();
+    userProgress.showToast('🎬 Vídeos funcionais carregados!');
+},
             
             fetchWithTimeout: async function(url, timeout = 8000) {
                 const controller = new AbortController();
