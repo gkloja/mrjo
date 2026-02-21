@@ -1523,69 +1523,76 @@
     };
 
     // Sistema de Compartilhamento na Rede Local
-    const NetworkSharing = {
-        dlnaDevices: [],
-        castSession: null,
-        
-        // Inicializar Chromecast
-        initChromecast: function() {
-            if (!window.chrome || !chrome.cast || !chrome.cast.isAvailable) {
-                console.log('Chromecast não disponível');
-                return false;
-            }
+    // Sistema de Compartilhamento na Rede Local
+const NetworkSharing = {
+    dlnaDevices: [],
+    castSession: null,
+
+    // Detectar dispositivos DLNA/UPnP na rede (versão melhorada para Render)
+    detectarDispositivosDLNA: function() {
+        return new Promise((resolve) => {
+            const devices = [];
             
-            const sessionRequest = new chrome.cast.SessionRequest(chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID);
-            const apiConfig = new chrome.cast.ApiConfig(sessionRequest,
-                session => this.castSession = session,
-                status => console.log('Receiver status:', status)
-            );
+            // Mostrar instruções claras para o usuário
+            userProgress.showToast('Procurando dispositivos na rede...', 'info');
             
-            chrome.cast.initialize(apiConfig, () => {
-                console.log('Chromecast inicializado');
-            }, error => {
-                console.error('Erro Chromecast:', error);
-            });
-            
-            return true;
-        },
-        
-        // Detectar dispositivos DLNA/UPnP na rede
-        detectarDispositivosDLNA: function() {
-            return new Promise((resolve) => {
-                const devices = [];
-                
-                // Simular busca por dispositivos (em produção, usaria SSDP/UPnP real)
-                // Como não é possível fazer SSDP puro no browser, usamos uma abordagem alternativa
-                
-                // Tentar detectar Smart TVs via mDNS/DNS-SD (se disponível)
-                if (window.cordova || window.Android) {
-                    // Em app híbrido, podemos usar plugins nativos
-                    console.log('Em ambiente nativo, usar plugins');
-                }
-                
-                // Adicionar dispositivos simulados para demonstração
-                // Em produção, você precisaria de um servidor backend para fazer a descoberta SSDP
-                setTimeout(() => {
+            // Dispositivos simulados com base no IP da rede local
+            // No Render, não é possível descobrir dispositivos automaticamente, então oferecemos opções manuais
+            setTimeout(() => {
+                // Tenta detectar IP local para sugerir dispositivos na mesma rede
+                this.getLocalIP().then(localIP => {
+                    const networkPrefix = localIP ? localIP.substring(0, localIP.lastIndexOf('.')) : '192.168.0';
+                    
                     devices.push(
-                        { name: 'Sala TV (LG)', type: 'dlna', address: '192.168.1.100' },
-                        { name: 'Quarto TV (Samsung)', type: 'dlna', address: '192.168.1.101' },
-                        { name: 'Chromecast Ultra', type: 'chromecast', address: '' }
+                        { 
+                            name: 'Smart TV (LG WebOS)', 
+                            type: 'dlna', 
+                            address: `${networkPrefix}.100`,
+                            manual: true,
+                            instructions: 'Configure manualmente na TV'
+                        },
+                        { 
+                            name: 'Smart TV (Samsung Tizen)', 
+                            type: 'dlna', 
+                            address: `${networkPrefix}.101`,
+                            manual: true,
+                            instructions: 'Configure manualmente na TV'
+                        },
+                        { 
+                            name: 'Chromecast / Google TV', 
+                            type: 'chromecast', 
+                            address: '',
+                            manual: false
+                        },
+                        { 
+                            name: 'Apple TV (AirPlay)', 
+                            type: 'airplay', 
+                            address: '',
+                            manual: true,
+                            instructions: 'Use o recurso Compartilhar Link'
+                        }
+                    );
+                    
+                    this.dlnaDevices = devices;
+                    resolve(devices);
+                }).catch(() => {
+                    // Fallback se não conseguir IP
+                    devices.push(
+                        { name: 'Chromecast / Google TV', type: 'chromecast', address: '' },
+                        { name: 'Smart TV (DLNA)', type: 'dlna', address: '192.168.0.100', manual: true },
+                        { name: 'Apple TV', type: 'airplay', address: '', manual: true }
                     );
                     this.dlnaDevices = devices;
                     resolve(devices);
-                }, 2000);
-                
-                // Tentar descoberta real via SSDP se possível
-                this.scanSSDP();
-            });
-        },
-        
-        // Scan SSDP (UPnP) - limitado no browser
-        scanSSDP: function() {
-            // Em produção, você pode usar um websocket para um servidor que faz o scan
-            // ou usar a API NetworkInformation se disponível
+                });
+            }, 1500);
+        });
+    },
+
+    // Obter IP local aproximado
+    getLocalIP: function() {
+        return new Promise((resolve) => {
             try {
-                // Tentar obter endereço local
                 const rtc = new RTCPeerConnection({ iceServers: [] });
                 rtc.createDataChannel('');
                 rtc.createOffer().then(offer => rtc.setLocalDescription(offer));
@@ -1594,166 +1601,96 @@
                     if (ice && ice.candidate && ice.candidate.candidate) {
                         const match = /([0-9]{1,3}(\.[0-9]{1,3}){3})/.exec(ice.candidate.candidate);
                         if (match) {
-                            const localIP = match[1];
-                            console.log('IP Local:', localIP);
-                            // Aqui você pode usar esse IP para tentar conectar
+                            resolve(match[1]);
                         }
                         rtc.close();
                     }
                 };
-            } catch (e) {
-                console.log('Erro ao obter IP local:', e);
-            }
-        },
-        
-        // Transmitir via DLNA/UPnP
-        transmitirDLNA: function(device, videoUrl, titulo) {
-            userProgress.showToast(`Conectando à ${device.name}...`, 'info');
-            
-            // Criar um link temporário que a TV pode acessar
-            // A TV precisa acessar o vídeo diretamente, então precisamos de uma URL pública
-            // ou usar um servidor local de streaming
-            
-            // Criar um servidor local virtual (via Service Worker + Cache)
-            if ('serviceWorker' in navigator) {
-                this.setupStreamingServiceWorker(videoUrl, titulo);
-            }
-            
-            // Gerar URL com hash para acesso temporário
-            const streamUrl = this.createTemporaryStreamUrl(videoUrl);
-            
-            // Para TVs LG/WebOS, podemos tentar abrir o app de mídia
-            if (device.name.includes('LG')) {
-                // LG TV WebOS - tenta abrir app de mídia
-                window.open(`lgeapp://media?url=${encodeURIComponent(streamUrl)}`);
-            } else if (device.name.includes('Samsung')) {
-                // Samsung Tizen
-                window.open(`samsung-tv://play?url=${encodeURIComponent(streamUrl)}`);
-            }
-            
-            // Como fallback, mostrar instruções
-            setTimeout(() => {
-                userProgress.showToast(`Abra este link na TV: ${streamUrl}`, 'info');
                 
-                // Gerar QR Code para facilitar
-                this.gerarQRCode(streamUrl);
-            }, 2000);
-        },
-        
-        // Criar URL temporária para streaming
-        createTemporaryStreamUrl: function(originalUrl) {
-            // Em produção, você usaria um servidor proxy ou geraria um token
-            // Para este exemplo, retornamos a URL original se já for acessível
-            if (originalUrl.startsWith('http')) {
-                return originalUrl;
+                setTimeout(() => resolve('192.168.0'), 1000);
+            } catch (e) {
+                resolve('192.168.0');
             }
-            
-            // Se for blob ou data URL, precisamos de uma solução diferente
-            return window.location.origin + '/proxy?url=' + encodeURIComponent(originalUrl);
-        },
+        });
+    },
+
+    // Transmitir via DLNA/UPnP
+    transmitirDLNA: function(device, videoUrl, titulo) {
+        userProgress.showToast(`Preparando transmissão para ${device.name}...`, 'info');
         
-        // Configurar Service Worker para streaming local
-        setupStreamingServiceWorker: function(videoUrl, titulo) {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw-stream.js').then(reg => {
-                    console.log('Service Worker registrado para streaming');
-                    
-                    // Enviar informações do vídeo para o SW
-                    if (reg.active) {
-                        reg.active.postMessage({
-                            type: 'SETUP_STREAM',
-                            url: videoUrl,
-                            title: titulo
-                        });
-                    }
-                }).catch(err => {
-                    console.log('Erro ao registrar SW:', err);
-                });
-            }
-        },
+        // Para Chromecast
+        if (device.type === 'chromecast') {
+            this.iniciarChromecast(videoUrl, titulo);
+            return;
+        }
         
-        // Iniciar Chromecast
-        iniciarChromecast: function(videoUrl, titulo) {
-            if (!window.chrome || !chrome.cast || !chrome.cast.isAvailable) {
-                userProgress.showToast('Chromecast não suportado neste navegador', 'error');
-                return;
-            }
-            
+        // Para outras Smart TVs - gerar QR Code e instruções
+        const streamUrl = videoUrl; // URL já mascarada
+        
+        // Gerar QR Code para fácil acesso na TV
+        setTimeout(() => {
+            userProgress.showToast(`Use o QR Code para assistir na TV`, 'success');
+            IPTVSystem.gerarQRCodeParaTV(streamUrl, titulo, device.name);
+        }, 1000);
+    },
+
+    // Iniciar Chromecast
+    iniciarChromecast: function(videoUrl, titulo) {
+        // Verificar se Chromecast está disponível
+        if (!window.chrome || !chrome.cast || !chrome.cast.isAvailable) {
+            userProgress.showToast('Chromecast não suportado. Use o QR Code para transmitir.', 'info');
+            IPTVSystem.gerarQRCodeParaTV(videoUrl, titulo, 'Chromecast');
+            return;
+        }
+        
+        try {
             chrome.cast.requestSession((session) => {
                 this.castSession = session;
-                
                 const mediaInfo = new chrome.cast.media.MediaInfo(videoUrl, 'video/mp4');
                 mediaInfo.metadata = new chrome.cast.media.GenericMediaMetadata();
                 mediaInfo.metadata.title = titulo;
-                mediaInfo.metadata.images = [new chrome.cast.Image('https://via.placeholder.com/300')];
+                mediaInfo.metadata.images = [new chrome.cast.Image('https://marujodigital.onrender.com/imagens/logo.png')];
                 
                 const request = new chrome.cast.media.LoadRequest(mediaInfo);
-                
                 session.loadMedia(request, 
-                    () => userProgress.showToast('Transmitindo para Chromecast!'),
-                    (error) => userProgress.showToast('Erro ao transmitir: ' + error, 'error')
+                    () => userProgress.showToast('✅ Transmitindo para Chromecast!'),
+                    (error) => {
+                        console.error('Erro Chromecast:', error);
+                        userProgress.showToast('Erro ao transmitir. Use o QR Code.', 'error');
+                        IPTVSystem.gerarQRCodeParaTV(videoUrl, titulo, 'Chromecast');
+                    }
                 );
             }, (error) => {
-                userProgress.showToast('Erro ao conectar Chromecast', 'error');
+                console.error('Erro ao conectar Chromecast:', error);
+                userProgress.showToast('Erro ao conectar. Use o QR Code.', 'error');
+                IPTVSystem.gerarQRCodeParaTV(videoUrl, titulo, 'Chromecast');
             });
-        },
-        
-        // Gerar QR Code para compartilhamento rápido
-        gerarQRCode: function(url) {
-            const container = document.getElementById('qrcodeContainer');
-            const qrcodeDiv = document.getElementById('qrcode');
-            
-            // Limpar QR Code anterior
-            qrcodeDiv.innerHTML = '';
-            
-            // Criar novo QR Code
-            new QRCode(qrcodeDiv, {
-                text: url,
-                width: 200,
-                height: 200,
-                colorDark: "#00ffb3",
-                colorLight: "#0a0a1a",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-            
-            container.style.display = 'block';
-            
-            // Auto-esconder após 30 segundos
-            setTimeout(() => {
-                container.style.display = 'none';
-            }, 30000);
-        },
-        
-        // Compartilhar via WebRTC (p2p)
-        compartilharWebRTC: function(videoUrl, titulo) {
-            userProgress.showToast('Preparando compartilhamento P2P...', 'info');
-            
-            // Em produção, você usaria um signaling server
-            // Aqui usamos uma abordagem simplificada: gerar link único
-            const shareId = Math.random().toString(36).substring(7);
-            const shareUrl = `${window.location.origin}/watch/${shareId}`;
-            
-            // Salvar sessão no localStorage
-            localStorage.setItem(`share_${shareId}`, JSON.stringify({
-                url: videoUrl,
-                title: titulo,
-                expires: Date.now() + 3600000 // 1 hora
-            }));
-            
-            // Mostrar link e QR Code
-            this.gerarQRCode(shareUrl);
-            userProgress.showToast(`Link: ${shareUrl}`, 'info');
-            
-            // Tentar compartilhar via Web Share API se disponível
-            if (navigator.share) {
-                navigator.share({
-                    title: titulo,
-                    text: `Assista ${titulo} no MarujoFlix`,
-                    url: shareUrl
-                }).catch(() => {});
-            }
+        } catch (e) {
+            console.error('Erro Chromecast:', e);
+            userProgress.showToast('Erro no Chromecast. Use o QR Code.', 'error');
+            IPTVSystem.gerarQRCodeParaTV(videoUrl, titulo, 'Chromecast');
         }
-    };
+    },
+
+    // Gerar QR Code para TV
+    gerarQRCode: function(url) {
+        const container = document.getElementById('qrcodeContainer');
+        const qrcodeDiv = document.getElementById('qrcode');
+        qrcodeDiv.innerHTML = '';
+        
+        new QRCode(qrcodeDiv, {
+            text: url,
+            width: 200,
+            height: 200,
+            colorDark: "#00ffb3",
+            colorLight: "#0a0a1a",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        
+        container.style.display = 'block';
+        setTimeout(() => { container.style.display = 'none'; }, 60000);
+    }
+};
 
     // Sistema principal (modificado para incluir compartilhamento)
     const IPTVSystem = {
@@ -1880,6 +1817,46 @@
                 });
             }
         },
+        // Dentro do objeto IPTVSystem, adicione esta função:
+gerarQRCodeParaTV: function(videoUrl, titulo, deviceName) {
+    // Criar uma página simplificada para a TV
+    const tvUrl = `${window.location.origin}/tv?url=${encodeURIComponent(videoUrl)}&title=${encodeURIComponent(titulo)}`;
+    
+    // Gerar QR Code
+    const container = document.getElementById('qrcodeContainer');
+    const qrcodeDiv = document.getElementById('qrcode');
+    qrcodeDiv.innerHTML = '';
+    
+    new QRCode(qrcodeDiv, {
+        text: tvUrl,
+        width: 200,
+        height: 200,
+        colorDark: "#00ffb3",
+        colorLight: "#0a0a1a",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+    
+    // Adicionar instruções
+    const instrucoes = document.createElement('p');
+    instrucoes.style.color = '#00ffb3';
+    instrucoes.style.marginTop = '10px';
+    instrucoes.style.fontSize = '14px';
+    instrucoes.innerHTML = `📱 Escaneie com o celular<br>ou digite na TV:<br><small style="color:#8a8ac5">${tvUrl.substring(0, 30)}...</small>`;
+    
+    // Remover instruções antigas se existirem
+    const oldInstrucoes = container.querySelector('p:not(#qrcode)');
+    if (oldInstrucoes) oldInstrucoes.remove();
+    
+    container.appendChild(instrucoes);
+    container.style.display = 'block';
+    
+    userProgress.showToast(`QR Code gerado para ${deviceName}`, 'success');
+    
+    // Auto-esconder após 2 minutos
+    setTimeout(() => {
+        container.style.display = 'none';
+    }, 120000);
+},
         
         gerarLinkCompartilhamento: function(videoUrl, titulo) {
             // Criar um identificador único
@@ -2449,13 +2426,26 @@
 
     document.addEventListener('DOMContentLoaded', () => IPTVSystem.init());
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharPlayer(); });
-    document.addEventListener('click', (e) => {
-        const sidebar = document.getElementById('sidebarMenu');
-        const avatar = document.querySelector('.user-avatar');
-        if (sidebar.classList.contains('active') && !sidebar.contains(e.target) && !avatar.contains(e.target)) {
-            sidebar.classList.remove('active');
-        }
-    });
+    // Substitua o último document.addEventListener por este:
+document.addEventListener('click', (e) => {
+    const devicesDiv = document.getElementById('dlnaDevices');
+    const dlnaBtn = document.querySelector('.dlna-btn');
+    const qrcodeContainer = document.getElementById('qrcodeContainer');
+    
+    if (devicesDiv && devicesDiv.style.display === 'block' && 
+        !devicesDiv.contains(e.target) && 
+        dlnaBtn && !dlnaBtn.contains(e.target)) {
+        devicesDiv.style.display = 'none';
+    }
+    
+    // Fechar QR Code ao clicar fora (opcional)
+    if (qrcodeContainer && qrcodeContainer.style.display === 'block' && 
+        !qrcodeContainer.contains(e.target) && 
+        !e.target.classList.contains('dlna-btn') && 
+        !e.target.classList.contains('share-btn')) {
+        // Não fecha automaticamente para não atrapalhar
+    }
+});
 </script>
 </body>
 </html>
