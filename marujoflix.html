@@ -1339,1027 +1339,1059 @@
         <p class="footer-text">© <span id="currentYear"></span> MarujoFlix - Apenas Filmes e Séries</p>
     </footer>
 
-    <script>
-        // SISTEMA DE PROGRESSO DO USUÁRIO
-        const userProgress = {
-            xp: localStorage.getItem('marujoflix_xp') ? parseInt(localStorage.getItem('marujoflix_xp')) : 0,
-            level: localStorage.getItem('marujoflix_level') ? parseInt(localStorage.getItem('marujoflix_level')) : 1,
-            streak: localStorage.getItem('marujoflix_streak') ? parseInt(localStorage.getItem('marujoflix_streak')) : 0,
-            lastPlay: localStorage.getItem('marujoflix_lastPlay') ? new Date(localStorage.getItem('marujoflix_lastPlay')) : null,
-            totalWatchTime: localStorage.getItem('marujoflix_totalWatchTime') ? parseInt(localStorage.getItem('marujoflix_totalWatchTime')) : 0,
+<script>
+    // SISTEMA DE PROGRESSO DO USUÁRIO
+    const userProgress = {
+        xp: localStorage.getItem('marujoflix_xp') ? parseInt(localStorage.getItem('marujoflix_xp')) : 0,
+        level: localStorage.getItem('marujoflix_level') ? parseInt(localStorage.getItem('marujoflix_level')) : 1,
+        streak: localStorage.getItem('marujoflix_streak') ? parseInt(localStorage.getItem('marujoflix_streak')) : 0,
+        lastPlay: localStorage.getItem('marujoflix_lastPlay') ? new Date(localStorage.getItem('marujoflix_lastPlay')) : null,
+        totalWatchTime: localStorage.getItem('marujoflix_totalWatchTime') ? parseInt(localStorage.getItem('marujoflix_totalWatchTime')) : 0,
+        
+        // Filmes/Séries favoritos
+        favorites: localStorage.getItem('marujoflix_favorites') ? JSON.parse(localStorage.getItem('marujoflix_favorites')) : [],
+        
+        // Lista "Assistir Mais Tarde"
+        watchlist: localStorage.getItem('marujoflix_watchlist') ? JSON.parse(localStorage.getItem('marujoflix_watchlist')) : [],
+        
+        // Histórico de visualização
+        history: localStorage.getItem('marujoflix_history') ? JSON.parse(localStorage.getItem('marujoflix_history')) : [],
+        
+        // Progresso de cada vídeo (tempo assistido)
+        progress: localStorage.getItem('marujoflix_progress') ? JSON.parse(localStorage.getItem('marujoflix_progress')) : {},
+        
+        // Estatísticas detalhadas
+        stats: localStorage.getItem('marujoflix_stats') ? JSON.parse(localStorage.getItem('marujoflix_stats')) : {
+            filmesAssistidos: 0,
+            seriesAssistidas: 0,
+            totalVideos: 0,
+            byCategory: {}
+        },
+        
+        getNextLevelXP() {
+            return Math.floor(100 * Math.pow(1.5, this.level - 1));
+        },
+        
+        addXP(amount) {
+            this.xp += amount;
             
-            // Filmes/Séries favoritos
-            favorites: localStorage.getItem('marujoflix_favorites') ? JSON.parse(localStorage.getItem('marujoflix_favorites')) : [],
+            // Verifica se subiu de nível
+            while (this.xp >= this.getNextLevelXP()) {
+                this.xp -= this.getNextLevelXP();
+                this.level++;
+                this.showLevelUp();
+            }
             
-            // Lista "Assistir Mais Tarde"
-            watchlist: localStorage.getItem('marujoflix_watchlist') ? JSON.parse(localStorage.getItem('marujoflix_watchlist')) : [],
+            this.save();
+            this.updateLevelDisplay();
+        },
+        
+        updateStreak() {
+            const today = new Date().toDateString();
             
-            // Histórico de visualização
-            history: localStorage.getItem('marujoflix_history') ? JSON.parse(localStorage.getItem('marujoflix_history')) : [],
-            
-            // Progresso de cada vídeo (tempo assistido)
-            progress: localStorage.getItem('marujoflix_progress') ? JSON.parse(localStorage.getItem('marujoflix_progress')) : {},
-            
-            // Estatísticas detalhadas
-            stats: localStorage.getItem('marujoflix_stats') ? JSON.parse(localStorage.getItem('marujoflix_stats')) : {
-                filmesAssistidos: 0,
-                seriesAssistidas: 0,
-                totalVideos: 0,
-                byCategory: {}
-            },
-            
-            getNextLevelXP() {
-                return Math.floor(100 * Math.pow(1.5, this.level - 1));
-            },
-            
-            addXP(amount) {
-                this.xp += amount;
+            if (!this.lastPlay) {
+                this.streak = 1;
+            } else {
+                const lastPlayDate = new Date(this.lastPlay).toDateString();
+                const yesterday = new Date(Date.now() - 86400000).toDateString();
                 
-                // Verifica se subiu de nível
-                while (this.xp >= this.getNextLevelXP()) {
-                    this.xp -= this.getNextLevelXP();
-                    this.level++;
-                    this.showLevelUp();
-                }
-                
-                this.save();
-                this.updateLevelDisplay();
-            },
-            
-            updateStreak() {
-                const today = new Date().toDateString();
-                
-                if (!this.lastPlay) {
+                if (lastPlayDate === yesterday) {
+                    this.streak++;
+                } else if (lastPlayDate !== today) {
                     this.streak = 1;
-                } else {
-                    const lastPlayDate = new Date(this.lastPlay).toDateString();
-                    const yesterday = new Date(Date.now() - 86400000).toDateString();
-                    
-                    if (lastPlayDate === yesterday) {
-                        this.streak++;
-                    } else if (lastPlayDate !== today) {
-                        this.streak = 1;
-                    }
                 }
-                
-                this.lastPlay = new Date();
-                this.save();
-            },
+            }
             
-            addToHistory(item, currentTime = 0, duration = 0) {
-                // Remove duplicatas do histórico
-                this.history = this.history.filter(h => h.id !== item.id);
-                
-                // Adiciona ao início do histórico
-                this.history.unshift({
+            this.lastPlay = new Date();
+            this.save();
+        },
+        
+        addToHistory(item, currentTime = 0, duration = 0) {
+            // Remove duplicatas do histórico
+            this.history = this.history.filter(h => h.id !== item.id);
+            
+            // Adiciona ao início do histórico
+            this.history.unshift({
+                id: item.id,
+                titulo: item.titulo,
+                tipo: item.tipo,
+                categoria: item.categoria,
+                poster: item.poster,
+                watchedAt: new Date().toISOString(),
+                progress: currentTime,
+                duration: duration,
+                completed: currentTime > 0 && duration > 0 && (currentTime / duration) > 0.9
+            });
+            
+            // Mantém apenas os últimos 50 itens
+            if (this.history.length > 50) {
+                this.history = this.history.slice(0, 50);
+            }
+            
+            // Atualiza estatísticas
+            if (item.tipo === 'Filme') {
+                this.stats.filmesAssistidos++;
+            } else {
+                this.stats.seriesAssistidas++;
+            }
+            this.stats.totalVideos++;
+            
+            this.save();
+        },
+        
+        updateProgress(itemId, currentTime, duration) {
+            const wasCompleted = this.progress[itemId]?.completed || false;
+            const wasAt = this.progress[itemId]?.time || 0;
+            
+            this.progress[itemId] = {
+                time: currentTime,
+                duration: duration,
+                lastWatched: new Date().toISOString(),
+                completed: currentTime > 0 && duration > 0 && (currentTime / duration) > 0.9,
+                percent: duration > 0 ? (currentTime / duration) * 100 : 0
+            };
+            
+            // Se terminou o vídeo, ganha XP
+            if (!wasCompleted && this.progress[itemId].completed) {
+                this.addXP(25);
+                this.showToast('🎉 +25 XP por concluir!', 'success');
+            }
+            
+            this.save();
+            
+            // Atualiza display do progresso se estiver no player
+            const progressText = document.getElementById('progressText');
+            if (progressText) {
+                const percent = Math.round((currentTime / duration) * 100);
+                progressText.textContent = `Progresso: ${percent}% salvo`;
+            }
+        },
+        
+        toggleFavorite(item) {
+            const index = this.favorites.findIndex(f => f.id === item.id);
+            
+            if (index === -1) {
+                this.favorites.push({
                     id: item.id,
                     titulo: item.titulo,
                     tipo: item.tipo,
                     categoria: item.categoria,
                     poster: item.poster,
-                    watchedAt: new Date().toISOString(),
-                    progress: currentTime,
-                    duration: duration,
-                    completed: currentTime > 0 && duration > 0 && (currentTime / duration) > 0.9
+                    addedAt: new Date().toISOString()
                 });
-                
-                // Mantém apenas os últimos 50 itens
-                if (this.history.length > 50) {
-                    this.history = this.history.slice(0, 50);
-                }
-                
-                // Atualiza estatísticas
-                if (item.tipo === 'Filme') {
-                    this.stats.filmesAssistidos++;
-                } else {
-                    this.stats.seriesAssistidas++;
-                }
-                this.stats.totalVideos++;
-                
-                this.save();
-            },
-            
-            updateProgress(itemId, currentTime, duration) {
-                const wasCompleted = this.progress[itemId]?.completed || false;
-                const wasAt = this.progress[itemId]?.time || 0;
-                
-                this.progress[itemId] = {
-                    time: currentTime,
-                    duration: duration,
-                    lastWatched: new Date().toISOString(),
-                    completed: currentTime > 0 && duration > 0 && (currentTime / duration) > 0.9,
-                    percent: duration > 0 ? (currentTime / duration) * 100 : 0
-                };
-                
-                // Se terminou o vídeo, ganha XP
-                if (!wasCompleted && this.progress[itemId].completed) {
-                    this.addXP(25);
-                    this.showToast('🎉 +25 XP por concluir!', 'success');
-                }
-                
-                this.save();
-                
-                // Atualiza display do progresso se estiver no player
-                const progressText = document.getElementById('progressText');
-                if (progressText) {
-                    const percent = Math.round((currentTime / duration) * 100);
-                    progressText.textContent = `Progresso: ${percent}% salvo`;
-                }
-            },
-            
-            toggleFavorite(item) {
-                const index = this.favorites.findIndex(f => f.id === item.id);
-                
-                if (index === -1) {
-                    this.favorites.push({
-                        id: item.id,
-                        titulo: item.titulo,
-                        tipo: item.tipo,
-                        categoria: item.categoria,
-                        poster: item.poster,
-                        addedAt: new Date().toISOString()
-                    });
-                    this.addXP(5);
-                    this.showToast('❤️ Adicionado aos favoritos! (+5 XP)', 'success');
-                } else {
-                    this.favorites.splice(index, 1);
-                    this.showToast('Removido dos favoritos', 'info');
-                }
-                
-                this.save();
-                this.updateFavoriteButtons(item.id);
-            },
-            
-            toggleWatchlist(item) {
-                const index = this.watchlist.findIndex(w => w.id === item.id);
-                
-                if (index === -1) {
-                    this.watchlist.push({
-                        id: item.id,
-                        titulo: item.titulo,
-                        tipo: item.tipo,
-                        categoria: item.categoria,
-                        poster: item.poster,
-                        addedAt: new Date().toISOString()
-                    });
-                    this.addXP(3);
-                    this.showToast('📌 Adicionado à lista! (+3 XP)', 'success');
-                } else {
-                    this.watchlist.splice(index, 1);
-                    this.showToast('Removido da lista', 'info');
-                }
-                
-                this.save();
-                this.updateWatchlistButtons(item.id);
-            },
-            
-            getProgress(itemId) {
-                return this.progress[itemId] || { time: 0, percent: 0 };
-            },
-            
-            isFavorite(itemId) {
-                return this.favorites.some(f => f.id === itemId);
-            },
-            
-            isInWatchlist(itemId) {
-                return this.watchlist.some(w => w.id === itemId);
-            },
-            
-            getContinueWatching() {
-                // Retorna itens com progresso entre 5% e 95%
-                return Object.entries(this.progress)
-                    .filter(([_, prog]) => prog.percent > 5 && prog.percent < 95)
-                    .sort((a, b) => new Date(b[1].lastWatched) - new Date(a[1].lastWatched))
-                    .map(([id, prog]) => ({
-                        id,
-                        ...prog
-                    }));
-            },
-            
-            save() {
-                localStorage.setItem('marujoflix_xp', this.xp);
-                localStorage.setItem('marujoflix_level', this.level);
-                localStorage.setItem('marujoflix_streak', this.streak);
-                localStorage.setItem('marujoflix_lastPlay', this.lastPlay);
-                localStorage.setItem('marujoflix_totalWatchTime', this.totalWatchTime);
-                localStorage.setItem('marujoflix_favorites', JSON.stringify(this.favorites));
-                localStorage.setItem('marujoflix_watchlist', JSON.stringify(this.watchlist));
-                localStorage.setItem('marujoflix_history', JSON.stringify(this.history));
-                localStorage.setItem('marujoflix_progress', JSON.stringify(this.progress));
-                localStorage.setItem('marujoflix_stats', JSON.stringify(this.stats));
-            },
-            
-            updateLevelDisplay() {
-                const levelEl = document.getElementById('currentLevel');
-                const xpEl = document.getElementById('currentXP');
-                const nextXpEl = document.getElementById('nextLevelXP');
-                const xpFill = document.getElementById('xpFill');
-                const streakEl = document.getElementById('streakCount');
-                const levelTitle = document.getElementById('levelTitle');
-                const sidebarLevel = document.getElementById('sidebarLevel');
-                const sidebarRank = document.getElementById('sidebarRank');
-                
-                if (levelEl) levelEl.textContent = this.level;
-                if (xpEl) xpEl.textContent = this.xp;
-                if (nextXpEl) nextXpEl.textContent = this.getNextLevelXP();
-                if (xpFill) xpFill.style.width = `${(this.xp / this.getNextLevelXP()) * 100}%`;
-                if (streakEl) streakEl.textContent = this.streak;
-                
-                // Títulos baseados no nível
-                const ranks = ['INICIANTE', 'APRENDIZ', 'GUERREIRO', 'MESTRE', 'LENDA'];
-                const rank = ranks[Math.min(this.level - 1, ranks.length - 1)] || 'ASCENDIDO';
-                if (levelTitle) levelTitle.textContent = rank;
-                if (sidebarLevel) sidebarLevel.textContent = `Nv. ${this.level}`;
-                if (sidebarRank) sidebarRank.textContent = rank;
-                
-                // Atualiza estatísticas no sidebar
-                document.getElementById('statFilmesAssistidos').textContent = this.stats.filmesAssistidos || 0;
-                document.getElementById('statSeriesAssistidas').textContent = this.stats.seriesAssistidas || 0;
-                document.getElementById('statFavoritos').textContent = this.favorites.length;
-                document.getElementById('statWatchlist').textContent = this.watchlist.length;
-                document.getElementById('statHorasAssistidas').textContent = Math.round(this.totalWatchTime / 3600);
-                document.getElementById('statStreak').textContent = this.streak;
-            },
-            
-            showLevelUp() {
-                const notification = document.getElementById('levelNotification');
-                if (!notification) return;
-                
-                const oldLevel = this.level - 1;
-                
-                document.getElementById('oldLevel').textContent = oldLevel;
-                document.getElementById('newLevel').textContent = this.level;
-                document.getElementById('newLevelDisplay').textContent = this.level;
-                
-                const ranks = ['INICIANTE', 'APRENDIZ', 'GUERREIRO', 'MESTRE', 'LENDA'];
-                const rank = ranks[Math.min(this.level - 1, ranks.length - 1)] || 'ASCENDIDO';
-                document.getElementById('levelRank').textContent = rank;
-                
-                const titles = ['ASCENSÃO', 'EVOLUÇÃO', 'TRANSCENDÊNCIA', 'APOTEOSE'];
-                document.getElementById('evolutionTitle').textContent = titles[Math.floor(Math.random() * titles.length)];
-                
-                const colors = ['#00ffb3', '#8a2be2', '#ff6b9d', '#ff1493'];
-                const color = colors[(this.level - 1) % colors.length];
-                document.documentElement.style.setProperty('--level-color', color);
-                
-                const progressFill = document.getElementById('progressFill');
-                const progressValue = document.getElementById('progressValue');
-                
-                if (progressFill && progressValue) {
-                    progressFill.style.width = '75%';
-                    progressValue.textContent = `+${this.getNextLevelXP()} XP`;
-                }
-                
-                const benefitsList = document.getElementById('benefitsList');
-                if (benefitsList) {
-                    const benefits = [
-                        ['⚡', 'Bônus de XP'],
-                        ['✨', 'Novo título'],
-                        ['💎', 'Conquista rara'],
-                        ['🌟', 'Streak dobrado']
-                    ];
-                    
-                    const selectedBenefits = benefits
-                        .sort(() => 0.5 - Math.random())
-                        .slice(0, 2);
-                    
-                    benefitsList.innerHTML = selectedBenefits.map(b => `
-                        <div class="benefit-item">
-                            <span>${b[0]}</span>
-                            <span>${b[1]}</span>
-                        </div>
-                    `).join('');
-                }
-                
-                notification.classList.add('show');
-                
-                // Confete simulado
-                for (let i = 0; i < 5; i++) {
-                    setTimeout(() => {
-                        this.showToast('✨ Level Up! ✨', 'success');
-                    }, i * 200);
-                }
-                
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 5000);
-            },
-            
-            showToast(msg, type = 'success') {
-                const toast = document.getElementById('toast');
-                toast.textContent = msg;
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 3000);
+                this.addXP(5);
+                this.showToast('❤️ Adicionado aos favoritos! (+5 XP)', 'success');
+            } else {
+                this.favorites.splice(index, 1);
+                this.showToast('Removido dos favoritos', 'info');
             }
-        };
-
-        // Sistema principal
-        const IPTVSystem = {
-            config: {
-                apiUrl: 'https://cors.eu.org/br2.bronxyshost.com:4009/lista.json',
-                fallbackUrl: 'https://cors.eu.org/br2.bronxyshost.com:4009/lista.json',
-                itemsPerPage: 24
-            },
             
-            filmes: [],
-            series: [],
-            todosItens: [],
-            filtrados: [],
-            categorias: [],
-            categoriaAtiva: 'all',
-            busca: '',
-            paginaAtual: 1,
-            abaAtual: 'todos', // todos, favoritos, watchlist, continuar, historico
-            currentItem: null,
-            saveInterval: null,
+            this.save();
+            this.updateFavoriteButtons(item.id);
+        },
+        
+        toggleWatchlist(item) {
+            const index = this.watchlist.findIndex(w => w.id === item.id);
             
-            init: function() {
-                document.getElementById('currentYear').textContent = new Date().getFullYear();
-                userProgress.updateLevelDisplay();
-                this.carregarDados();
-                this.setupEventListeners();
-                
-                // Salva progresso a cada 30 segundos
-                this.saveInterval = setInterval(() => {
-                    if (this.currentItem) {
-                        const video = document.getElementById('videoPlayer');
-                        if (video && video.duration) {
-                            userProgress.updateProgress(this.currentItem.id, video.currentTime, video.duration);
-                        }
-                    }
-                }, 30000);
-            },
-            
-            carregarDados: async function() {
-                this.showLoading();
-                
-                try {
-                    let data = await this.fetchWithTimeout(this.config.apiUrl);
-                    if (!data) data = await this.fetchWithTimeout(this.config.fallbackUrl);
-                    
-                    if (data && Array.isArray(data)) {
-                        this.processarDados(data);
-                    } else {
-                        this.usarMockData();
-                    }
-                } catch (error) {
-                    console.error('Erro:', error);
-                    this.usarMockData();
-                }
-            },
-            
-            fetchWithTimeout: async function(url, timeout = 8000) {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), timeout);
-                
-                try {
-                    const response = await fetch(url, { 
-                        signal: controller.signal,
-                        headers: { 'Accept': 'application/json' }
-                    });
-                    clearTimeout(timeoutId);
-                    return response.ok ? await response.json() : null;
-                } catch {
-                    clearTimeout(timeoutId);
-                    return null;
-                }
-            },
-            
-            processarDados: function(data) {
-                // FILTRO PRINCIPAL - REMOVER LINKS .TS E MANTER APENAS FILMES/SÉRIES
-                this.todosItens = data.filter(item => {
-                    const link = item.link || item.url || '';
-                    
-                    // Lista de categorias de FILMES E SÉRIES
-const categoriasFilmesSeries = [
-    'filmes | 4k', 'filmes | acao', 'filmes | animacao', 'filmes | aventura',
-    'filmes | cinema', 'filmes | comedia', 'filmes | crime', 'filmes | drama',
-    'filmes | familia', 'filmes | fantasia', 'filmes | faroeste', 'filmes | ficcao',
-    'filmes | guerra', 'filmes | infantis', 'filmes | lancamentos', 'filmes | legendados',
-    'filmes | nacionais', 'filmes | natalino', 'filmes | oscar 2024', 'filmes | oscar 2025',
-    'filmes | religiosos', 'filmes | romance', 'filmes | suspense', 'filmes | terror',
-    'series | netflix', 'series | amazon prime video', 'series | apple tv plus',
-    'series | disney plus', 'series | globoplay', 'series | max', 'series | paramount',
-    'series | star plus', 'series | discovery plus', 'series | lionsgate',
-    'series | claro video', 'series | crunchyroll', 'series | funimation now',
-    'series | brasil paralelo', 'series | pluto tv', 'series | play plus',
-    'series | sbt', 'series | univer', 'series | turcas', 'series | dorama',
-    'series | legendadas', 'series | outras produtoras'
-];
-                    
-                    const categoria = (item.categoria || '').toLowerCase();
-                    
-                    for (let cat of categoriasFilmesSeries) {
-                        if (categoria.includes(cat)) {
-                            return true;
-                        }
-                    }
-                    
-                    return false;
+            if (index === -1) {
+                this.watchlist.push({
+                    id: item.id,
+                    titulo: item.titulo,
+                    tipo: item.tipo,
+                    categoria: item.categoria,
+                    poster: item.poster,
+                    addedAt: new Date().toISOString()
                 });
-                
-                // Mapear para formato padronizado
-                this.todosItens = this.todosItens.map((item, index) => {
-                    const categoria = item.categoria || '';
-                    
-                    return {
-                        id: item.id || `item_${index}`,
-                        titulo: item.nome || item.name || 'Sem título',
-                        categoria: categoria,
-                        tipo: this.detectarTipo(categoria, item.nome),
-                        poster: item.logo || '',
-                        videoUrl: item.link || item.url || '',
-                        descricao: `Assista ${item.nome || 'este conteúdo'} online.`
-                    };
-                });
-                
-                // Separar filmes e séries
-                this.filmes = this.todosItens.filter(i => i.tipo === 'Filme');
-                this.series = this.todosItens.filter(i => i.tipo === 'Série');
-                
-                // Extrair categorias únicas
-                const cats = new Set();
-                this.todosItens.forEach(i => {
-                    let cat = this.simplificarCategoria(i.categoria);
-                    if (cat) cats.add(cat);
-                });
-                this.categorias = Array.from(cats).sort();
-                
-                this.aplicarFiltros();
-                this.renderizar();
-                
-                userProgress.showToast(`${this.todosItens.length} filmes e séries carregados!`);
-            },
+                this.addXP(3);
+                this.showToast('📌 Adicionado à lista! (+3 XP)', 'success');
+            } else {
+                this.watchlist.splice(index, 1);
+                this.showToast('Removido da lista', 'info');
+            }
             
-            detectarTipo: function(categoria, nome) {
-                const catLower = categoria.toLowerCase();
-                const nomeLower = (nome || '').toLowerCase();
-                
-                if (catLower.includes('series') || catLower.includes('[24h] series') || catLower.includes('[24h] animes')) {
-                    return 'Série';
-                }
-                if (nomeLower.includes('temporada') || nomeLower.includes('episódio')) {
-                    return 'Série';
-                }
-                return 'Filme';
-            },
+            this.save();
+            this.updateWatchlistButtons(item.id);
+        },
+        
+        getProgress(itemId) {
+            return this.progress[itemId] || { time: 0, percent: 0 };
+        },
+        
+        isFavorite(itemId) {
+            return this.favorites.some(f => f.id === itemId);
+        },
+        
+        isInWatchlist(itemId) {
+            return this.watchlist.some(w => w.id === itemId);
+        },
+        
+        getContinueWatching() {
+            // Retorna itens com progresso entre 5% e 95%
+            return Object.entries(this.progress)
+                .filter(([_, prog]) => prog.percent > 5 && prog.percent < 95)
+                .sort((a, b) => new Date(b[1].lastWatched) - new Date(a[1].lastWatched))
+                .map(([id, prog]) => ({
+                    id,
+                    ...prog
+                }));
+        },
+        
+        save() {
+            localStorage.setItem('marujoflix_xp', this.xp);
+            localStorage.setItem('marujoflix_level', this.level);
+            localStorage.setItem('marujoflix_streak', this.streak);
+            localStorage.setItem('marujoflix_lastPlay', this.lastPlay);
+            localStorage.setItem('marujoflix_totalWatchTime', this.totalWatchTime);
+            localStorage.setItem('marujoflix_favorites', JSON.stringify(this.favorites));
+            localStorage.setItem('marujoflix_watchlist', JSON.stringify(this.watchlist));
+            localStorage.setItem('marujoflix_history', JSON.stringify(this.history));
+            localStorage.setItem('marujoflix_progress', JSON.stringify(this.progress));
+            localStorage.setItem('marujoflix_stats', JSON.stringify(this.stats));
+        },
+        
+        updateLevelDisplay() {
+            const levelEl = document.getElementById('currentLevel');
+            const xpEl = document.getElementById('currentXP');
+            const nextXpEl = document.getElementById('nextLevelXP');
+            const xpFill = document.getElementById('xpFill');
+            const streakEl = document.getElementById('streakCount');
+            const levelTitle = document.getElementById('levelTitle');
+            const sidebarLevel = document.getElementById('sidebarLevel');
+            const sidebarRank = document.getElementById('sidebarRank');
             
-            simplificarCategoria: function(cat) {
-                return cat.replace('Canais |', '').replace('[24h]', '').trim();
-            },
+            if (levelEl) levelEl.textContent = this.level;
+            if (xpEl) xpEl.textContent = this.xp;
+            if (nextXpEl) nextXpEl.textContent = this.getNextLevelXP();
+            if (xpFill) xpFill.style.width = `${(this.xp / this.getNextLevelXP()) * 100}%`;
+            if (streakEl) streakEl.textContent = this.streak;
             
-            aplicarFiltros: function() {
-                let filtrados = [...this.todosItens];
-                
-                // Filtro por categoria
-                if (this.categoriaAtiva !== 'all') {
-                    filtrados = filtrados.filter(i => 
-                        i.categoria.toLowerCase().includes(this.categoriaAtiva.toLowerCase())
-                    );
-                }
-                
-                // Filtro por busca
-                if (this.busca.trim()) {
-                    const q = this.busca.toLowerCase().trim();
-                    filtrados = filtrados.filter(i => 
-                        i.titulo.toLowerCase().includes(q)
-                    );
-                }
-                
-                // Filtro por aba
-                if (this.abaAtual === 'favoritos') {
-                    filtrados = filtrados.filter(i => userProgress.isFavorite(i.id));
-                } else if (this.abaAtual === 'watchlist') {
-                    filtrados = filtrados.filter(i => userProgress.isInWatchlist(i.id));
-                } else if (this.abaAtual === 'continuar') {
-                    const continuarIds = userProgress.getContinueWatching().map(p => p.id);
-                    filtrados = filtrados.filter(i => continuarIds.includes(i.id));
-                } else if (this.abaAtual === 'historico') {
-                    const historicoIds = userProgress.history.map(h => h.id);
-                    filtrados = filtrados.filter(i => historicoIds.includes(i.id));
-                }
-                
-                this.filtrados = filtrados;
-            },
+            // Títulos baseados no nível
+            const ranks = ['INICIANTE', 'APRENDIZ', 'GUERREIRO', 'MESTRE', 'LENDA'];
+            const rank = ranks[Math.min(this.level - 1, ranks.length - 1)] || 'ASCENDIDO';
+            if (levelTitle) levelTitle.textContent = rank;
+            if (sidebarLevel) sidebarLevel.textContent = `Nv. ${this.level}`;
+            if (sidebarRank) sidebarRank.textContent = rank;
             
-            renderizar: function() {
-                this.renderizarCategorias();
-                this.renderizarGrid();
-                this.atualizarHero();
-                this.atualizarBuscaDisplay();
-                this.atualizarAbas();
-                this.atualizarSidebarLists();
-            },
+            // Atualiza estatísticas no sidebar
+            document.getElementById('statFilmesAssistidos').textContent = this.stats.filmesAssistidos || 0;
+            document.getElementById('statSeriesAssistidas').textContent = this.stats.seriesAssistidas || 0;
+            document.getElementById('statFavoritos').textContent = this.favorites.length;
+            document.getElementById('statWatchlist').textContent = this.watchlist.length;
+            document.getElementById('statHorasAssistidas').textContent = Math.round(this.totalWatchTime / 3600);
+            document.getElementById('statStreak').textContent = this.streak;
+        },
+        
+        showLevelUp() {
+            const notification = document.getElementById('levelNotification');
+            if (!notification) return;
             
-            renderizarCategorias: function() {
-                const tabs = document.getElementById('categoryTabs');
-                let html = `<div class="category-tab ${this.categoriaAtiva === 'all' ? 'active' : ''}" onclick="IPTVSystem.filtrarCategoria('all')">
-                    <i class="fas fa-globe"></i> Todos
-                </div>`;
-                
-                this.categorias.slice(0, 15).forEach(cat => {
-                    html += `<div class="category-tab ${this.categoriaAtiva === cat ? 'active' : ''}" 
-                             onclick="IPTVSystem.filtrarCategoria('${cat.replace(/'/g, "\\'")}')">
-                        ${this.truncate(cat, 20)}
-                    </div>`;
-                });
-                
-                tabs.innerHTML = html;
-            },
+            const oldLevel = this.level - 1;
             
-            renderizarGrid: function() {
-                const grid = document.getElementById('contentGrid');
-                
-                if (this.filtrados.length === 0) {
-                    let mensagem = 'Nenhum item encontrado';
-                    if (this.abaAtual === 'favoritos') {
-                        mensagem = 'Você ainda não tem favoritos. Clique no ❤️ nos filmes para adicionar!';
-                    } else if (this.abaAtual === 'watchlist') {
-                        mensagem = 'Sua lista "Assistir Mais Tarde" está vazia. Adicione filmes para ver depois!';
-                    } else if (this.abaAtual === 'continuar') {
-                        mensagem = 'Nenhum filme em andamento. Comece a assistir algo!';
-                    }
-                    
-                    grid.innerHTML = `
-                        <div class="no-results">
-                            <i class="fas fa-film"></i>
-                            <h3>${mensagem}</h3>
-                            <button onclick="IPTVSystem.mudarAba('todos')" class="watch-btn" style="margin-top: 20px; padding: 10px 30px; background: var(--gradient-primary); border: none; border-radius: 30px; color: white; cursor: pointer;">
-                                Ver todos os filmes
-                            </button>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                const inicio = 0;
-                const fim = this.paginaAtual * this.config.itemsPerPage;
-                const mostrar = this.filtrados.slice(0, fim);
-                
-                let html = '';
-                mostrar.forEach(item => {
-                    const progress = userProgress.getProgress(item.id);
-                    const isFavorite = userProgress.isFavorite(item.id);
-                    const isInWatchlist = userProgress.isInWatchlist(item.id);
-                    
-                    html += `
-                        <div class="content-card fade-in" onclick="IPTVSystem.abrirPlayer('${item.id}')">
-                            <div class="content-poster">
-                                <img src="${item.poster || 'https://via.placeholder.com/300x450?text=Filme'}" 
-                                     alt="${item.titulo}"
-                                     onerror="this.src='https://via.placeholder.com/300x450?text=Filme'">
-                                <div class="content-overlay">
-                                    <button class="content-play-btn" onclick="event.stopPropagation(); IPTVSystem.abrirPlayer('${item.id}')">
-                                        <i class="fas fa-play"></i>
-                                    </button>
-                                </div>
-                                <div class="content-badge">${item.tipo}</div>
-                                <div class="content-actions">
-                                    <button class="action-btn ${isFavorite ? 'active' : ''}" onclick="event.stopPropagation(); IPTVSystem.toggleFavoritoFromCard('${item.id}')">
-                                        <i class="fa${isFavorite ? 's' : 'r'} fa-heart"></i>
-                                    </button>
-                                    <button class="action-btn ${isInWatchlist ? 'active' : ''}" onclick="event.stopPropagation(); IPTVSystem.toggleWatchlistFromCard('${item.id}')">
-                                        <i class="fa${isInWatchlist ? 's' : 'r'} fa-bookmark"></i>
-                                    </button>
-                                </div>
-                                ${progress.percent > 0 && progress.percent < 95 ? `
-                                <div class="content-progress-indicator">
-                                    <div class="content-progress-fill" style="width: ${progress.percent}%;"></div>
-                                </div>
-                                ` : ''}
-                            </div>
-                            <div class="content-info">
-                                <h3 class="content-title">${this.truncate(item.titulo, 35)}</h3>
-                                <div class="content-category">
-                                    <i class="fas fa-tag"></i> ${this.truncate(this.simplificarCategoria(item.categoria), 20)}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                grid.innerHTML = html;
-                
-                if (fim < this.filtrados.length) {
-                    const btnContainer = document.createElement('div');
-                    btnContainer.style.gridColumn = '1 / -1';
-                    btnContainer.style.textAlign = 'center';
-                    btnContainer.style.padding = '20px 0';
-                    btnContainer.innerHTML = `
-                        <button onclick="IPTVSystem.verMais()" class="watch-btn" style="max-width: 200px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--primary); border-radius: 30px; padding: 10px 20px; color: white; cursor: pointer;">
-                            <i class="fas fa-chevron-down"></i> Ver Mais (${this.filtrados.length - fim})
-                        </button>
-                    `;
-                    grid.appendChild(btnContainer);
-                }
-            },
+            document.getElementById('oldLevel').textContent = oldLevel;
+            document.getElementById('newLevel').textContent = this.level;
+            document.getElementById('newLevelDisplay').textContent = this.level;
             
-            abrirPlayer: function(itemId) {
-                const item = this.todosItens.find(i => i.id === itemId);
-                if (!item || !item.videoUrl) {
-                    userProgress.showToast('Vídeo indisponível', 'error');
-                    return;
-                }
-                
-                this.currentItem = item;
-                
-                document.getElementById('playerTitulo').textContent = item.titulo;
-                document.getElementById('playerCategoria').innerHTML = `<i class="fas fa-tag"></i> ${item.tipo} • ${this.simplificarCategoria(item.categoria)}`;
-                document.getElementById('playerDescricao').textContent = item.descricao;
-                
-                const video = document.getElementById('videoPlayer');
-                video.src = item.videoUrl;
-                
-                // Carrega progresso salvo
-                const progress = userProgress.getProgress(item.id);
-                if (progress.time > 0 && progress.time < progress.duration - 30) {
-                    video.currentTime = progress.time;
-                    userProgress.showToast(`Continuando de ${Math.round(progress.percent)}%`, 'info');
-                }
-                
-                video.load();
-                
-                // Atualiza botões de favorito/watchlist
-                this.updateFavoriteButtons(item.id);
-                this.updateWatchlistButtons(item.id);
-                
-                document.getElementById('playerModal').classList.add('active');
-                document.body.style.overflow = 'hidden';
-                
-                // Marca como assistido hoje para streak
-                userProgress.updateStreak();
-                
-                // Adiciona ao histórico
-                userProgress.addToHistory(item);
-            },
+            const ranks = ['INICIANTE', 'APRENDIZ', 'GUERREIRO', 'MESTRE', 'LENDA'];
+            const rank = ranks[Math.min(this.level - 1, ranks.length - 1)] || 'ASCENDIDO';
+            document.getElementById('levelRank').textContent = rank;
             
-            toggleFavorito: function() {
-                if (this.currentItem) {
-                    userProgress.toggleFavorite(this.currentItem);
-                }
-            },
+            const titles = ['ASCENSÃO', 'EVOLUÇÃO', 'TRANSCENDÊNCIA', 'APOTEOSE'];
+            document.getElementById('evolutionTitle').textContent = titles[Math.floor(Math.random() * titles.length)];
             
-            toggleWatchlist: function() {
-                if (this.currentItem) {
-                    userProgress.toggleWatchlist(this.currentItem);
-                }
-            },
+            const colors = ['#00ffb3', '#8a2be2', '#ff6b9d', '#ff1493'];
+            const color = colors[(this.level - 1) % colors.length];
+            document.documentElement.style.setProperty('--level-color', color);
             
-            toggleFavoritoFromCard: function(itemId) {
-                const item = this.todosItens.find(i => i.id === itemId);
-                if (item) {
-                    userProgress.toggleFavorite(item);
-                    this.renderizarGrid();
-                }
-            },
+            const progressFill = document.getElementById('progressFill');
+            const progressValue = document.getElementById('progressValue');
             
-            toggleWatchlistFromCard: function(itemId) {
-                const item = this.todosItens.find(i => i.id === itemId);
-                if (item) {
-                    userProgress.toggleWatchlist(item);
-                    this.renderizarGrid();
-                }
-            },
+            if (progressFill && progressValue) {
+                progressFill.style.width = '75%';
+                progressValue.textContent = `+${this.getNextLevelXP()} XP`;
+            }
             
-            updateFavoriteButtons: function(itemId) {
-                const isFavorite = userProgress.isFavorite(itemId);
-                const btn = document.getElementById('favoriteBtn');
-                if (btn) {
-                    btn.innerHTML = `<i class="fa${isFavorite ? 's' : 'r'} fa-heart"></i> ${isFavorite ? 'Favoritado' : 'Favorito'}`;
-                    if (isFavorite) btn.classList.add('active');
-                    else btn.classList.remove('active');
-                }
-            },
-            
-            updateWatchlistButtons: function(itemId) {
-                const isInWatchlist = userProgress.isInWatchlist(itemId);
-                const btn = document.getElementById('watchlistBtn');
-                if (btn) {
-                    btn.innerHTML = `<i class="fa${isInWatchlist ? 's' : 'r'} fa-bookmark"></i> ${isInWatchlist ? 'Na Lista' : 'Assistir Depois'}`;
-                    if (isInWatchlist) btn.classList.add('active');
-                    else btn.classList.remove('active');
-                }
-            },
-            
-            mudarAba: function(aba) {
-                this.abaAtual = aba;
-                this.paginaAtual = 1;
-                
-                // Atualiza estilo das abas
-                ['todos', 'favoritos', 'watchlist', 'continuar'].forEach(a => {
-                    const el = document.getElementById(`aba${a.charAt(0).toUpperCase() + a.slice(1)}`);
-                    if (el) {
-                        if (a === aba) el.classList.add('active');
-                        else el.classList.remove('active');
-                    }
-                });
-                
-                this.aplicarFiltros();
-                this.renderizar();
-            },
-            
-            atualizarAbas: function() {
-                ['todos', 'favoritos', 'watchlist', 'continuar'].forEach(a => {
-                    const el = document.getElementById(`aba${a.charAt(0).toUpperCase() + a.slice(1)}`);
-                    if (el) {
-                        if (a === this.abaAtual) el.classList.add('active');
-                        else el.classList.remove('active');
-                    }
-                });
-            },
-            
-            atualizarSidebarLists: function() {
-                // Atualiza lista de continuar assistindo
-                const continuarLista = document.getElementById('continuarLista');
-                const continuar = userProgress.getContinueWatching().slice(0, 3);
-                
-                if (continuar.length > 0) {
-                    continuarLista.innerHTML = continuar.map(p => {
-                        const item = this.todosItens.find(i => i.id === p.id);
-                        if (!item) return '';
-                        return `
-                            <li onclick="IPTVSystem.abrirPlayer('${item.id}')">
-                                <i class="fas fa-play-circle"></i>
-                                <span>${this.truncate(item.titulo, 20)}</span>
-                                <small style="margin-left: auto; color: var(--primary);">${Math.round(p.percent)}%</small>
-                            </li>
-                        `;
-                    }).join('');
-                }
-                
-                // Atualiza lista de favoritos
-                const favoritosLista = document.getElementById('favoritosLista');
-                const favoritos = userProgress.favorites.slice(0, 3);
-                
-                if (favoritos.length > 0) {
-                    favoritosLista.innerHTML = favoritos.map(f => {
-                        return `
-                            <li onclick="IPTVSystem.abrirPlayer('${f.id}')">
-                                <i class="fas fa-heart" style="color: var(--accent);"></i>
-                                <span>${this.truncate(f.titulo, 20)}</span>
-                            </li>
-                        `;
-                    }).join('');
-                }
-                
-                // Atualiza lista de watchlist
-                const watchlistLista = document.getElementById('watchlistLista');
-                const watchlist = userProgress.watchlist.slice(0, 3);
-                
-                if (watchlist.length > 0) {
-                    watchlistLista.innerHTML = watchlist.map(w => {
-                        return `
-                            <li onclick="IPTVSystem.abrirPlayer('${w.id}')">
-                                <i class="fas fa-clock" style="color: var(--primary);"></i>
-                                <span>${this.truncate(w.titulo, 20)}</span>
-                            </li>
-                        `;
-                    }).join('');
-                }
-                
-                // Atualiza histórico
-                const historicoLista = document.getElementById('historicoLista');
-                const historico = userProgress.history.slice(0, 3);
-                
-                if (historico.length > 0) {
-                    historicoLista.innerHTML = historico.map(h => {
-                        return `
-                            <li onclick="IPTVSystem.abrirPlayer('${h.id}')">
-                                <i class="fas fa-history" style="color: var(--text-muted);"></i>
-                                <span>${this.truncate(h.titulo, 20)}</span>
-                            </li>
-                        `;
-                    }).join('');
-                }
-            },
-            
-            filtrarCategoria: function(cat) {
-                this.categoriaAtiva = cat;
-                this.paginaAtual = 1;
-                this.abaAtual = 'todos';
-                this.aplicarFiltros();
-                this.renderizar();
-            },
-            
-            limparFiltros: function() {
-                this.busca = '';
-                this.categoriaAtiva = 'all';
-                this.abaAtual = 'todos';
-                this.paginaAtual = 1;
-                document.getElementById('searchInput').value = '';
-                this.aplicarFiltros();
-                this.renderizar();
-            },
-            
-            verMais: function() {
-                this.paginaAtual++;
-                this.renderizarGrid();
-            },
-            
-            buscar: function(q) {
-                this.busca = q;
-                this.paginaAtual = 1;
-                this.abaAtual = 'todos';
-                this.aplicarFiltros();
-                this.renderizar();
-            },
-            
-            atualizarHero: function() {
-                document.getElementById('totalFilmes').textContent = this.filmes.length;
-                document.getElementById('totalSeries').textContent = this.series.length;
-                document.getElementById('totalCategorias').textContent = this.categorias.length;
-            },
-            
-            atualizarBuscaDisplay: function() {
-                const el = document.getElementById('searchResults');
-                if (this.busca || this.categoriaAtiva !== 'all') {
-                    el.style.display = 'block';
-                    document.getElementById('totalFiltrados').textContent = this.filtrados.length;
-                } else {
-                    el.style.display = 'none';
-                }
-            },
-            
-            showLoading: function() {
-                const grid = document.getElementById('contentGrid');
-                grid.innerHTML = Array(12).fill(0).map(() => `
-                    <div class="content-card skeleton">
-                        <div class="content-poster"></div>
-                        <div class="content-info">
-                            <div style="height:20px; background:rgba(255,255,255,0.1); margin-bottom:10px;"></div>
-                            <div style="height:15px; background:rgba(255,255,255,0.1); width:60%;"></div>
-                        </div>
-                    </div>
-                `).join('');
-            },
-            
-            usarMockData: function() {
-                this.todosItens = [
-                    { id: '1', titulo: 'Duna: Parte 2', tipo: 'Filme', categoria: 'Filmes | Ficção', poster: '', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', descricao: 'Continuação da épica saga.' },
-                    { id: '2', titulo: 'Deadpool & Wolverine', tipo: 'Filme', categoria: 'Filmes | Ação', poster: '', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', descricao: 'Os mercenários mais loucos juntos.' },
-                    { id: '3', titulo: 'Divertida Mente 2', tipo: 'Filme', categoria: 'Filmes | Animação', poster: '', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', descricao: 'As emoções estão de volta.' }
+            const benefitsList = document.getElementById('benefitsList');
+            if (benefitsList) {
+                const benefits = [
+                    ['⚡', 'Bônus de XP'],
+                    ['✨', 'Novo título'],
+                    ['💎', 'Conquista rara'],
+                    ['🌟', 'Streak dobrado']
                 ];
                 
-                this.filmes = this.todosItens.filter(i => i.tipo === 'Filme');
-                this.series = this.todosItens.filter(i => i.tipo === 'Série');
-                this.categorias = ['Ficção', 'Ação', 'Animação'];
-                this.aplicarFiltros();
-                this.renderizar();
-                userProgress.showToast('Modo demonstração', 'info');
-            },
-            
-            truncate: (t, l) => t?.length > l ? t.substr(0, l) + '...' : t || '',
-            
-            setupEventListeners: function() {
-                let timeout;
-                document.getElementById('searchInput').addEventListener('input', (e) => {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => this.buscar(e.target.value), 500);
-                });
+                const selectedBenefits = benefits
+                    .sort(() => 0.5 - Math.random())
+                    .slice(0, 2);
                 
-                // Salva progresso quando o vídeo é pausado
-                document.getElementById('videoPlayer').addEventListener('pause', () => {
-                    if (this.currentItem) {
-                        const video = document.getElementById('videoPlayer');
+                benefitsList.innerHTML = selectedBenefits.map(b => `
+                    <div class="benefit-item">
+                        <span>${b[0]}</span>
+                        <span>${b[1]}</span>
+                    </div>
+                `).join('');
+            }
+            
+            notification.classList.add('show');
+            
+            // Confete simulado
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    this.showToast('✨ Level Up! ✨', 'success');
+                }, i * 200);
+            }
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        },
+        
+        showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    };
+
+    // Sistema principal
+    const IPTVSystem = {
+        config: {
+            apiUrl: 'https://cors.eu.org/br2.bronxyshost.com:4009/lista.json',
+            fallbackUrl: 'https://cors.eu.org/br2.bronxyshost.com:4009/lista.json',
+            // Proxy para vídeos - MESMO DO JSON
+            videoProxy: 'https://cors.eu.org/',
+            itemsPerPage: 24
+        },
+        
+        filmes: [],
+        series: [],
+        todosItens: [],
+        filtrados: [],
+        categorias: [],
+        categoriaAtiva: 'all',
+        busca: '',
+        paginaAtual: 1,
+        abaAtual: 'todos', // todos, favoritos, watchlist, continuar, historico
+        currentItem: null,
+        saveInterval: null,
+        
+        init: function() {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            userProgress.updateLevelDisplay();
+            this.carregarDados();
+            this.setupEventListeners();
+            
+            // Salva progresso a cada 30 segundos
+            this.saveInterval = setInterval(() => {
+                if (this.currentItem) {
+                    const video = document.getElementById('videoPlayer');
+                    if (video && video.duration) {
                         userProgress.updateProgress(this.currentItem.id, video.currentTime, video.duration);
                     }
-                });
-                
-                // Salva quando o vídeo termina
-                document.getElementById('videoPlayer').addEventListener('ended', () => {
-                    if (this.currentItem) {
-                        const video = document.getElementById('videoPlayer');
-                        userProgress.updateProgress(this.currentItem.id, video.duration, video.duration);
-                        userProgress.showToast('🎉 Filme concluído! +25 XP', 'success');
-                    }
-                });
-                
-                // Atualiza tempo total assistido
-                document.getElementById('videoPlayer').addEventListener('timeupdate', () => {
-                    if (this.currentItem && !this._lastUpdate) {
-                        this._lastUpdate = Date.now();
-                        setTimeout(() => {
-                            this._lastUpdate = null;
-                        }, 1000);
-                    }
-                });
-            },
-            
-            // Funções de transmissão
-            transmitirChromecast: function() {
-                const video = document.getElementById('videoPlayer');
-                if (!video || !video.src) {
-                    userProgress.showToast('Nenhum vídeo carregado', 'error');
-                    return;
                 }
+            }, 30000);
+        },
+        
+        // ⚡ NOVO: Aplica proxy no vídeo igual ao JSON
+        aplicarProxyNoVideo: function(url) {
+            if (!url) return url;
+            
+            // Se já tem proxy, retorna original
+            if (url.includes('cors.eu.org')) return url;
+            
+            // Aplica o MESMO proxy que você usa no JSON
+            return this.config.videoProxy + url;
+        },
+        
+        carregarDados: async function() {
+            this.showLoading();
+            
+            try {
+                let data = await this.fetchWithTimeout(this.config.apiUrl);
+                if (!data) data = await this.fetchWithTimeout(this.config.fallbackUrl);
                 
-                if (window.chrome && chrome.cast && chrome.cast.isAvailable) {
-                    try {
-                        const castContext = cast.framework.CastContext.getInstance();
-                        castContext.requestSession()
-                            .then(() => {
-                                userProgress.showToast('Conectado ao Chromecast!');
-                            })
-                            .catch(() => {
-                                userProgress.showToast('Clique no ícone do Chromecast nos controles do vídeo', 'info');
-                            });
-                    } catch {
-                        userProgress.showToast('Use o ícone de Chromecast nos controles do vídeo', 'info');
-                    }
+                if (data && Array.isArray(data)) {
+                    this.processarDados(data);
                 } else {
-                    userProgress.showToast('Chromecast: Clique no ícone de TV nos controles do vídeo', 'info');
+                    this.usarMockData();
                 }
-            },
-            
-            ativarPictureInPicture: async function() {
-                const video = document.getElementById('videoPlayer');
-                if (!video) return;
-                
-                try {
-                    if (document.pictureInPictureEnabled) {
-                        if (video !== document.pictureInPictureElement) {
-                            await video.requestPictureInPicture();
-                            userProgress.showToast('Modo Picture-in-Picture ativado');
-                        } else {
-                            await document.exitPictureInPicture();
-                        }
-                    } else {
-                        userProgress.showToast('Seu navegador não suporta PiP', 'error');
-                    }
-                } catch {
-                    userProgress.showToast('Erro ao ativar PiP', 'error');
-                }
-            },
-            
-            compartilharVideo: function() {
-                const video = document.getElementById('videoPlayer');
-                const titulo = document.getElementById('playerTitulo').textContent;
-                
-                if (!video || !video.src) return;
-                
-                if (navigator.share) {
-                    navigator.share({
-                        title: titulo,
-                        text: `Assista ${titulo} no marujoflix`,
-                        url: video.src
-                    }).catch(() => {});
-                } else {
-                    navigator.clipboard.writeText(video.src)
-                        .then(() => userProgress.showToast('Link copiado!'))
-                        .catch(() => userProgress.showToast('Link: ' + video.src, 'info'));
-                }
+            } catch (error) {
+                console.error('Erro:', error);
+                this.usarMockData();
             }
-        };
-
-        // Funções globais
-        function fecharPlayer() {
-            const player = document.getElementById('playerModal');
+        },
+        
+        fetchWithTimeout: async function(url, timeout = 8000) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+            
+            try {
+                const response = await fetch(url, { 
+                    signal: controller.signal,
+                    headers: { 'Accept': 'application/json' }
+                });
+                clearTimeout(timeoutId);
+                return response.ok ? await response.json() : null;
+            } catch {
+                clearTimeout(timeoutId);
+                return null;
+            }
+        },
+        
+        processarDados: function(data) {
+            // FILTRO PRINCIPAL - REMOVER LINKS .TS E MANTER APENAS FILMES/SÉRIES
+            this.todosItens = data.filter(item => {
+                const link = item.link || item.url || '';
+                
+                // Lista de categorias de FILMES E SÉRIES
+const categoriasFilmesSeries = [
+'filmes | 4k', 'filmes | acao', 'filmes | animacao', 'filmes | aventura',
+'filmes | cinema', 'filmes | comedia', 'filmes | crime', 'filmes | drama',
+'filmes | familia', 'filmes | fantasia', 'filmes | faroeste', 'filmes | ficcao',
+'filmes | guerra', 'filmes | infantis', 'filmes | lancamentos', 'filmes | legendados',
+'filmes | nacionais', 'filmes | natalino', 'filmes | oscar 2024', 'filmes | oscar 2025',
+'filmes | religiosos', 'filmes | romance', 'filmes | suspense', 'filmes | terror',
+'series | netflix', 'series | amazon prime video', 'series | apple tv plus',
+'series | disney plus', 'series | globoplay', 'series | max', 'series | paramount',
+'series | star plus', 'series | discovery plus', 'series | lionsgate',
+'series | claro video', 'series | crunchyroll', 'series | funimation now',
+'series | brasil paralelo', 'series | pluto tv', 'series | play plus',
+'series | sbt', 'series | univer', 'series | turcas', 'series | dorama',
+'series | legendadas', 'series | outras produtoras'
+];
+                
+                const categoria = (item.categoria || '').toLowerCase();
+                
+                for (let cat of categoriasFilmesSeries) {
+                    if (categoria.includes(cat)) {
+                        return true;
+                    }
+                }
+                
+                return false;
+            });
+            
+            // Mapear para formato padronizado
+            this.todosItens = this.todosItens.map((item, index) => {
+                const categoria = item.categoria || '';
+                
+                return {
+                    id: item.id || `item_${index}`,
+                    titulo: item.nome || item.name || 'Sem título',
+                    categoria: categoria,
+                    tipo: this.detectarTipo(categoria, item.nome),
+                    poster: item.logo || '',
+                    videoUrl: item.link || item.url || '',
+                    descricao: `Assista ${item.nome || 'este conteúdo'} online.`
+                };
+            });
+            
+            // Separar filmes e séries
+            this.filmes = this.todosItens.filter(i => i.tipo === 'Filme');
+            this.series = this.todosItens.filter(i => i.tipo === 'Série');
+            
+            // Extrair categorias únicas
+            const cats = new Set();
+            this.todosItens.forEach(i => {
+                let cat = this.simplificarCategoria(i.categoria);
+                if (cat) cats.add(cat);
+            });
+            this.categorias = Array.from(cats).sort();
+            
+            this.aplicarFiltros();
+            this.renderizar();
+            
+            userProgress.showToast(`${this.todosItens.length} filmes e séries carregados!`);
+        },
+        
+        detectarTipo: function(categoria, nome) {
+            const catLower = categoria.toLowerCase();
+            const nomeLower = (nome || '').toLowerCase();
+            
+            if (catLower.includes('series') || catLower.includes('[24h] series') || catLower.includes('[24h] animes')) {
+                return 'Série';
+            }
+            if (nomeLower.includes('temporada') || nomeLower.includes('episódio')) {
+                return 'Série';
+            }
+            return 'Filme';
+        },
+        
+        simplificarCategoria: function(cat) {
+            return cat.replace('Canais |', '').replace('[24h]', '').trim();
+        },
+        
+        aplicarFiltros: function() {
+            let filtrados = [...this.todosItens];
+            
+            // Filtro por categoria
+            if (this.categoriaAtiva !== 'all') {
+                filtrados = filtrados.filter(i => 
+                    i.categoria.toLowerCase().includes(this.categoriaAtiva.toLowerCase())
+                );
+            }
+            
+            // Filtro por busca
+            if (this.busca.trim()) {
+                const q = this.busca.toLowerCase().trim();
+                filtrados = filtrados.filter(i => 
+                    i.titulo.toLowerCase().includes(q)
+                );
+            }
+            
+            // Filtro por aba
+            if (this.abaAtual === 'favoritos') {
+                filtrados = filtrados.filter(i => userProgress.isFavorite(i.id));
+            } else if (this.abaAtual === 'watchlist') {
+                filtrados = filtrados.filter(i => userProgress.isInWatchlist(i.id));
+            } else if (this.abaAtual === 'continuar') {
+                const continuarIds = userProgress.getContinueWatching().map(p => p.id);
+                filtrados = filtrados.filter(i => continuarIds.includes(i.id));
+            } else if (this.abaAtual === 'historico') {
+                const historicoIds = userProgress.history.map(h => h.id);
+                filtrados = filtrados.filter(i => historicoIds.includes(i.id));
+            }
+            
+            this.filtrados = filtrados;
+        },
+        
+        renderizar: function() {
+            this.renderizarCategorias();
+            this.renderizarGrid();
+            this.atualizarHero();
+            this.atualizarBuscaDisplay();
+            this.atualizarAbas();
+            this.atualizarSidebarLists();
+        },
+        
+        renderizarCategorias: function() {
+            const tabs = document.getElementById('categoryTabs');
+            let html = `<div class="category-tab ${this.categoriaAtiva === 'all' ? 'active' : ''}" onclick="IPTVSystem.filtrarCategoria('all')">
+                <i class="fas fa-globe"></i> Todos
+            </div>`;
+            
+            this.categorias.slice(0, 15).forEach(cat => {
+                html += `<div class="category-tab ${this.categoriaAtiva === cat ? 'active' : ''}" 
+                         onclick="IPTVSystem.filtrarCategoria('${cat.replace(/'/g, "\\'")}')">
+                    ${this.truncate(cat, 20)}
+                </div>`;
+            });
+            
+            tabs.innerHTML = html;
+        },
+        
+        renderizarGrid: function() {
+            const grid = document.getElementById('contentGrid');
+            
+            if (this.filtrados.length === 0) {
+                let mensagem = 'Nenhum item encontrado';
+                if (this.abaAtual === 'favoritos') {
+                    mensagem = 'Você ainda não tem favoritos. Clique no ❤️ nos filmes para adicionar!';
+                } else if (this.abaAtual === 'watchlist') {
+                    mensagem = 'Sua lista "Assistir Mais Tarde" está vazia. Adicione filmes para ver depois!';
+                } else if (this.abaAtual === 'continuar') {
+                    mensagem = 'Nenhum filme em andamento. Comece a assistir algo!';
+                }
+                
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-film"></i>
+                        <h3>${mensagem}</h3>
+                        <button onclick="IPTVSystem.mudarAba('todos')" class="watch-btn" style="margin-top: 20px; padding: 10px 30px; background: var(--gradient-primary); border: none; border-radius: 30px; color: white; cursor: pointer;">
+                            Ver todos os filmes
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            const inicio = 0;
+            const fim = this.paginaAtual * this.config.itemsPerPage;
+            const mostrar = this.filtrados.slice(0, fim);
+            
+            let html = '';
+            mostrar.forEach(item => {
+                const progress = userProgress.getProgress(item.id);
+                const isFavorite = userProgress.isFavorite(item.id);
+                const isInWatchlist = userProgress.isInWatchlist(item.id);
+                
+                html += `
+                    <div class="content-card fade-in" onclick="IPTVSystem.abrirPlayer('${item.id}')">
+                        <div class="content-poster">
+                            <img src="${item.poster || 'https://via.placeholder.com/300x450?text=Filme'}" 
+                                 alt="${item.titulo}"
+                                 onerror="this.src='https://via.placeholder.com/300x450?text=Filme'">
+                            <div class="content-overlay">
+                                <button class="content-play-btn" onclick="event.stopPropagation(); IPTVSystem.abrirPlayer('${item.id}')">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            </div>
+                            <div class="content-badge">${item.tipo}</div>
+                            <div class="content-actions">
+                                <button class="action-btn ${isFavorite ? 'active' : ''}" onclick="event.stopPropagation(); IPTVSystem.toggleFavoritoFromCard('${item.id}')">
+                                    <i class="fa${isFavorite ? 's' : 'r'} fa-heart"></i>
+                                </button>
+                                <button class="action-btn ${isInWatchlist ? 'active' : ''}" onclick="event.stopPropagation(); IPTVSystem.toggleWatchlistFromCard('${item.id}')">
+                                    <i class="fa${isInWatchlist ? 's' : 'r'} fa-bookmark"></i>
+                                </button>
+                            </div>
+                            ${progress.percent > 0 && progress.percent < 95 ? `
+                            <div class="content-progress-indicator">
+                                <div class="content-progress-fill" style="width: ${progress.percent}%;"></div>
+                            </div>
+                            ` : ''}
+                        </div>
+                        <div class="content-info">
+                            <h3 class="content-title">${this.truncate(item.titulo, 35)}</h3>
+                            <div class="content-category">
+                                <i class="fas fa-tag"></i> ${this.truncate(this.simplificarCategoria(item.categoria), 20)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            grid.innerHTML = html;
+            
+            if (fim < this.filtrados.length) {
+                const btnContainer = document.createElement('div');
+                btnContainer.style.gridColumn = '1 / -1';
+                btnContainer.style.textAlign = 'center';
+                btnContainer.style.padding = '20px 0';
+                btnContainer.innerHTML = `
+                    <button onclick="IPTVSystem.verMais()" class="watch-btn" style="max-width: 200px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--primary); border-radius: 30px; padding: 10px 20px; color: white; cursor: pointer;">
+                        <i class="fas fa-chevron-down"></i> Ver Mais (${this.filtrados.length - fim})
+                    </button>
+                `;
+                grid.appendChild(btnContainer);
+            }
+        },
+        
+        // ⚡ FUNÇÃO CORRIGIDA - Agora aplica proxy no vídeo
+        abrirPlayer: function(itemId) {
+            const item = this.todosItens.find(i => i.id === itemId);
+            if (!item || !item.videoUrl) {
+                userProgress.showToast('Vídeo indisponível', 'error');
+                return;
+            }
+            
+            this.currentItem = item;
+            
+            document.getElementById('playerTitulo').textContent = item.titulo;
+            document.getElementById('playerCategoria').innerHTML = `<i class="fas fa-tag"></i> ${item.tipo} • ${this.simplificarCategoria(item.categoria)}`;
+            document.getElementById('playerDescricao').textContent = item.descricao;
+            
             const video = document.getElementById('videoPlayer');
             
-            // Salva progresso antes de fechar
-            if (IPTVSystem.currentItem) {
-                userProgress.updateProgress(IPTVSystem.currentItem.id, video.currentTime, video.duration);
+            // 🔥 CORREÇÃO: Aplicar o mesmo proxy do JSON no vídeo
+            const urlOriginal = item.videoUrl;
+            const urlComProxy = this.aplicarProxyNoVideo(urlOriginal);
+            
+            console.log('🎬 URL original:', urlOriginal);
+            console.log('🔄 URL com proxy:', urlComProxy);
+            
+            video.src = urlComProxy;
+            
+            // Carrega progresso salvo
+            const progress = userProgress.getProgress(item.id);
+            if (progress.time > 0 && progress.time < progress.duration - 30) {
+                video.addEventListener('loadedmetadata', () => {
+                    video.currentTime = progress.time;
+                    userProgress.showToast(`Continuando de ${Math.round(progress.percent)}%`, 'info');
+                }, { once: true });
             }
             
-            video.pause();
-            video.src = '';
-            player.classList.remove('active');
-            document.body.style.overflow = '';
+            video.load();
+            
+            // Tenta dar play automático
+            setTimeout(() => {
+                video.play().catch(e => {
+                    console.log('Autoplay bloqueado:', e);
+                    // Não é erro, só precisa do clique do usuário
+                });
+            }, 500);
+            
+            // Atualiza botões de favorito/watchlist
+            this.updateFavoriteButtons(item.id);
+            this.updateWatchlistButtons(item.id);
+            
+            document.getElementById('playerModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Marca como assistido hoje para streak
+            userProgress.updateStreak();
+            
+            // Adiciona ao histórico
+            userProgress.addToHistory(item);
+        },
+        
+        toggleFavorito: function() {
+            if (this.currentItem) {
+                userProgress.toggleFavorite(this.currentItem);
+            }
+        },
+        
+        toggleWatchlist: function() {
+            if (this.currentItem) {
+                userProgress.toggleWatchlist(this.currentItem);
+            }
+        },
+        
+        toggleFavoritoFromCard: function(itemId) {
+            const item = this.todosItens.find(i => i.id === itemId);
+            if (item) {
+                userProgress.toggleFavorite(item);
+                this.renderizarGrid();
+            }
+        },
+        
+        toggleWatchlistFromCard: function(itemId) {
+            const item = this.todosItens.find(i => i.id === itemId);
+            if (item) {
+                userProgress.toggleWatchlist(item);
+                this.renderizarGrid();
+            }
+        },
+        
+        updateFavoriteButtons: function(itemId) {
+            const isFavorite = userProgress.isFavorite(itemId);
+            const btn = document.getElementById('favoriteBtn');
+            if (btn) {
+                btn.innerHTML = `<i class="fa${isFavorite ? 's' : 'r'} fa-heart"></i> ${isFavorite ? 'Favoritado' : 'Favorito'}`;
+                if (isFavorite) btn.classList.add('active');
+                else btn.classList.remove('active');
+            }
+        },
+        
+        updateWatchlistButtons: function(itemId) {
+            const isInWatchlist = userProgress.isInWatchlist(itemId);
+            const btn = document.getElementById('watchlistBtn');
+            if (btn) {
+                btn.innerHTML = `<i class="fa${isInWatchlist ? 's' : 'r'} fa-bookmark"></i> ${isInWatchlist ? 'Na Lista' : 'Assistir Depois'}`;
+                if (isInWatchlist) btn.classList.add('active');
+                else btn.classList.remove('active');
+            }
+        },
+        
+        mudarAba: function(aba) {
+            this.abaAtual = aba;
+            this.paginaAtual = 1;
+            
+            // Atualiza estilo das abas
+            ['todos', 'favoritos', 'watchlist', 'continuar'].forEach(a => {
+                const el = document.getElementById(`aba${a.charAt(0).toUpperCase() + a.slice(1)}`);
+                if (el) {
+                    if (a === aba) el.classList.add('active');
+                    else el.classList.remove('active');
+                }
+            });
+            
+            this.aplicarFiltros();
+            this.renderizar();
+        },
+        
+        atualizarAbas: function() {
+            ['todos', 'favoritos', 'watchlist', 'continuar'].forEach(a => {
+                const el = document.getElementById(`aba${a.charAt(0).toUpperCase() + a.slice(1)}`);
+                if (el) {
+                    if (a === this.abaAtual) el.classList.add('active');
+                    else el.classList.remove('active');
+                }
+            });
+        },
+        
+        atualizarSidebarLists: function() {
+            // Atualiza lista de continuar assistindo
+            const continuarLista = document.getElementById('continuarLista');
+            const continuar = userProgress.getContinueWatching().slice(0, 3);
+            
+            if (continuar.length > 0) {
+                continuarLista.innerHTML = continuar.map(p => {
+                    const item = this.todosItens.find(i => i.id === p.id);
+                    if (!item) return '';
+                    return `
+                        <li onclick="IPTVSystem.abrirPlayer('${item.id}')">
+                            <i class="fas fa-play-circle"></i>
+                            <span>${this.truncate(item.titulo, 20)}</span>
+                            <small style="margin-left: auto; color: var(--primary);">${Math.round(p.percent)}%</small>
+                        </li>
+                    `;
+                }).join('');
+            }
+            
+            // Atualiza lista de favoritos
+            const favoritosLista = document.getElementById('favoritosLista');
+            const favoritos = userProgress.favorites.slice(0, 3);
+            
+            if (favoritos.length > 0) {
+                favoritosLista.innerHTML = favoritos.map(f => {
+                    return `
+                        <li onclick="IPTVSystem.abrirPlayer('${f.id}')">
+                            <i class="fas fa-heart" style="color: var(--accent);"></i>
+                            <span>${this.truncate(f.titulo, 20)}</span>
+                        </li>
+                    `;
+                }).join('');
+            }
+            
+            // Atualiza lista de watchlist
+            const watchlistLista = document.getElementById('watchlistLista');
+            const watchlist = userProgress.watchlist.slice(0, 3);
+            
+            if (watchlist.length > 0) {
+                watchlistLista.innerHTML = watchlist.map(w => {
+                    return `
+                        <li onclick="IPTVSystem.abrirPlayer('${w.id}')">
+                            <i class="fas fa-clock" style="color: var(--primary);"></i>
+                            <span>${this.truncate(w.titulo, 20)}</span>
+                        </li>
+                    `;
+                }).join('');
+            }
+            
+            // Atualiza histórico
+            const historicoLista = document.getElementById('historicoLista');
+            const historico = userProgress.history.slice(0, 3);
+            
+            if (historico.length > 0) {
+                historicoLista.innerHTML = historico.map(h => {
+                    return `
+                        <li onclick="IPTVSystem.abrirPlayer('${h.id}')">
+                            <i class="fas fa-history" style="color: var(--text-muted);"></i>
+                            <span>${this.truncate(h.titulo, 20)}</span>
+                        </li>
+                    `;
+                }).join('');
+            }
+        },
+        
+        filtrarCategoria: function(cat) {
+            this.categoriaAtiva = cat;
+            this.paginaAtual = 1;
+            this.abaAtual = 'todos';
+            this.aplicarFiltros();
+            this.renderizar();
+        },
+        
+        limparFiltros: function() {
+            this.busca = '';
+            this.categoriaAtiva = 'all';
+            this.abaAtual = 'todos';
+            this.paginaAtual = 1;
+            document.getElementById('searchInput').value = '';
+            this.aplicarFiltros();
+            this.renderizar();
+        },
+        
+        verMais: function() {
+            this.paginaAtual++;
+            this.renderizarGrid();
+        },
+        
+        buscar: function(q) {
+            this.busca = q;
+            this.paginaAtual = 1;
+            this.abaAtual = 'todos';
+            this.aplicarFiltros();
+            this.renderizar();
+        },
+        
+        atualizarHero: function() {
+            document.getElementById('totalFilmes').textContent = this.filmes.length;
+            document.getElementById('totalSeries').textContent = this.series.length;
+            document.getElementById('totalCategorias').textContent = this.categorias.length;
+        },
+        
+        atualizarBuscaDisplay: function() {
+            const el = document.getElementById('searchResults');
+            if (this.busca || this.categoriaAtiva !== 'all') {
+                el.style.display = 'block';
+                document.getElementById('totalFiltrados').textContent = this.filtrados.length;
+            } else {
+                el.style.display = 'none';
+            }
+        },
+        
+        showLoading: function() {
+            const grid = document.getElementById('contentGrid');
+            grid.innerHTML = Array(12).fill(0).map(() => `
+                <div class="content-card skeleton">
+                    <div class="content-poster"></div>
+                    <div class="content-info">
+                        <div style="height:20px; background:rgba(255,255,255,0.1); margin-bottom:10px;"></div>
+                        <div style="height:15px; background:rgba(255,255,255,0.1); width:60%;"></div>
+                    </div>
+                </div>
+            `).join('');
+        },
+        
+        usarMockData: function() {
+            this.todosItens = [
+                { id: '1', titulo: 'Duna: Parte 2', tipo: 'Filme', categoria: 'Filmes | Ficção', poster: '', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', descricao: 'Continuação da épica saga.' },
+                { id: '2', titulo: 'Deadpool & Wolverine', tipo: 'Filme', categoria: 'Filmes | Ação', poster: '', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', descricao: 'Os mercenários mais loucos juntos.' },
+                { id: '3', titulo: 'Divertida Mente 2', tipo: 'Filme', categoria: 'Filmes | Animação', poster: '', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', descricao: 'As emoções estão de volta.' }
+            ];
+            
+            this.filmes = this.todosItens.filter(i => i.tipo === 'Filme');
+            this.series = this.todosItens.filter(i => i.tipo === 'Série');
+            this.categorias = ['Ficção', 'Ação', 'Animação'];
+            this.aplicarFiltros();
+            this.renderizar();
+            userProgress.showToast('Modo demonstração', 'info');
+        },
+        
+        truncate: (t, l) => t?.length > l ? t.substr(0, l) + '...' : t || '',
+        
+        setupEventListeners: function() {
+            let timeout;
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => this.buscar(e.target.value), 500);
+            });
+            
+            // Salva progresso quando o vídeo é pausado
+            document.getElementById('videoPlayer').addEventListener('pause', () => {
+                if (this.currentItem) {
+                    const video = document.getElementById('videoPlayer');
+                    userProgress.updateProgress(this.currentItem.id, video.currentTime, video.duration);
+                }
+            });
+            
+            // Salva quando o vídeo termina
+            document.getElementById('videoPlayer').addEventListener('ended', () => {
+                if (this.currentItem) {
+                    const video = document.getElementById('videoPlayer');
+                    userProgress.updateProgress(this.currentItem.id, video.duration, video.duration);
+                    userProgress.showToast('🎉 Filme concluído! +25 XP', 'success');
+                }
+            });
+            
+            // Atualiza tempo total assistido
+            document.getElementById('videoPlayer').addEventListener('timeupdate', () => {
+                if (this.currentItem && !this._lastUpdate) {
+                    this._lastUpdate = Date.now();
+                    setTimeout(() => {
+                        this._lastUpdate = null;
+                    }, 1000);
+                }
+            });
+        },
+        
+        // Funções de transmissão
+        transmitirChromecast: function() {
+            const video = document.getElementById('videoPlayer');
+            if (!video || !video.src) {
+                userProgress.showToast('Nenhum vídeo carregado', 'error');
+                return;
+            }
+            
+            if (window.chrome && chrome.cast && chrome.cast.isAvailable) {
+                try {
+                    const castContext = cast.framework.CastContext.getInstance();
+                    castContext.requestSession()
+                        .then(() => {
+                            userProgress.showToast('Conectado ao Chromecast!');
+                        })
+                        .catch(() => {
+                            userProgress.showToast('Clique no ícone do Chromecast nos controles do vídeo', 'info');
+                        });
+                } catch {
+                    userProgress.showToast('Use o ícone de Chromecast nos controles do vídeo', 'info');
+                }
+            } else {
+                userProgress.showToast('Chromecast: Clique no ícone de TV nos controles do vídeo', 'info');
+            }
+        },
+        
+        ativarPictureInPicture: async function() {
+            const video = document.getElementById('videoPlayer');
+            if (!video) return;
+            
+            try {
+                if (document.pictureInPictureEnabled) {
+                    if (video !== document.pictureInPictureElement) {
+                        await video.requestPictureInPicture();
+                        userProgress.showToast('Modo Picture-in-Picture ativado');
+                    } else {
+                        await document.exitPictureInPicture();
+                    }
+                } else {
+                    userProgress.showToast('Seu navegador não suporta PiP', 'error');
+                }
+            } catch {
+                userProgress.showToast('Erro ao ativar PiP', 'error');
+            }
+        },
+        
+        compartilharVideo: function() {
+            const video = document.getElementById('videoPlayer');
+            const titulo = document.getElementById('playerTitulo').textContent;
+            
+            if (!video || !video.src) return;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: titulo,
+                    text: `Assista ${titulo} no marujoflix`,
+                    url: video.src
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(video.src)
+                    .then(() => userProgress.showToast('Link copiado!'))
+                    .catch(() => userProgress.showToast('Link: ' + video.src, 'info'));
+            }
         }
+    };
 
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebarMenu');
-            sidebar.classList.toggle('active');
-            
-            // Atualiza listas ao abrir
-            if (sidebar.classList.contains('active')) {
-                IPTVSystem.atualizarSidebarLists();
-            }
+    // Funções globais
+    function fecharPlayer() {
+        const player = document.getElementById('playerModal');
+        const video = document.getElementById('videoPlayer');
+        
+        // Salva progresso antes de fechar
+        if (IPTVSystem.currentItem) {
+            userProgress.updateProgress(IPTVSystem.currentItem.id, video.currentTime, video.duration);
         }
+        
+        video.pause();
+        video.src = '';
+        player.classList.remove('active');
+        document.body.style.overflow = '';
+    }
 
-        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-        function scrollToCategories() { document.querySelector('.categories-section').scrollIntoView({ behavior: 'smooth' }); }
-        function openSearch() { document.getElementById('searchInput').focus(); }
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebarMenu');
+        sidebar.classList.toggle('active');
+        
+        // Atualiza listas ao abrir
+        if (sidebar.classList.contains('active')) {
+            IPTVSystem.atualizarSidebarLists();
+        }
+    }
 
-        // Inicializar
-        document.addEventListener('DOMContentLoaded', () => IPTVSystem.init());
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    function scrollToCategories() { document.querySelector('.categories-section').scrollIntoView({ behavior: 'smooth' }); }
+    function openSearch() { document.getElementById('searchInput').focus(); }
 
-        // Fechar player com ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') fecharPlayer();
-        });
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => IPTVSystem.init());
 
-        // Fechar sidebar clicando fora
-        document.addEventListener('click', (e) => {
-            const sidebar = document.getElementById('sidebarMenu');
-            const avatar = document.querySelector('.user-avatar');
-            
-            if (sidebar.classList.contains('active') && 
-                !sidebar.contains(e.target) && 
-                !avatar.contains(e.target)) {
-                sidebar.classList.remove('active');
-            }
-        });
-    </script>
+    // Fechar player com ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') fecharPlayer();
+    });
+
+    // Fechar sidebar clicando fora
+    document.addEventListener('click', (e) => {
+        const sidebar = document.getElementById('sidebarMenu');
+        const avatar = document.querySelector('.user-avatar');
+        
+        if (sidebar.classList.contains('active') && 
+            !sidebar.contains(e.target) && 
+            !avatar.contains(e.target)) {
+            sidebar.classList.remove('active');
+        }
+    });
+</script>
 </body>
 </html>
