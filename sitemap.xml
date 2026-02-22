@@ -64,13 +64,23 @@
   </url>
   
     <url>
-    <loc>https://marujodigital.onrender.com/turma-papa-2023.html</loc>
+    <loc>https://marujodigital.onrender.com/marujo.html</loc>
     <lastmod>2024-12-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
       <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
       <image:title>Turma PAPA 2023 - Lista Completa de Formandos da Marinha | NIP e Nomes</image:title>
+    </image:image>
+  </url>
+      <url>
+    <loc>https://marujodigital.onrender.com/marujoflix.html</loc>
+    <lastmod>2024-12-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
+      <image:title>Marujo Flix | TV, Filmes e Séries</image:title>
     </image:image>
   </url>
   
