@@ -17,7 +17,7 @@
             --primary: #00ffb3;
             --primary-glow: rgba(0, 255, 179, 0.5);
             --secondary: #8a2be2;
-            --accent: #ff4d4d; /* Vermelho para Canais Ao Vivo */
+            --accent: #ff4d4d; /* Vermelho para Canais/Favoritos */
             --blue: #0088ff; /* Azul para Séries */
             
             --bg-darker: #050510;
@@ -51,17 +51,6 @@
         .loading-logo i { font-size: 4rem; color: white; }
         .loading-title { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; }
 
-        /* SKELETON LOADING */
-        .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 0 var(--side-padding-mobile) 40px; opacity: 0.8; }
-        @media (min-width: 640px) { .skeleton-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; } }
-        @media (min-width: 1024px) { .skeleton-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; padding: 0 var(--side-padding) 40px; } }
-        .skeleton-card { background: var(--gradient-card); border-radius: var(--border-radius); overflow: hidden; border: 1px solid var(--border-color); animation: skeleton-pulse 1.5s ease-in-out infinite; }
-        @keyframes skeleton-pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
-        .skeleton-poster { width: 100%; height: 280px; background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-light) 50%, var(--bg-card) 75%); background-size: 200% 100%; animation: skeleton-shimmer 1.5s infinite; }
-        .skeleton-info { padding: 20px; }
-        .skeleton-line { height: 20px; background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-light) 50%, var(--bg-card) 75%); background-size: 200% 100%; animation: skeleton-shimmer 1.5s infinite; border-radius: 10px; margin-bottom: 10px; }
-        @keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
         /* HEADER */
         .main-header { position: fixed; top: 0; left: 0; width: 100%; height: var(--header-height-mobile); background: rgba(10, 10, 26, 0.98); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-color); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--side-padding-mobile); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
         @media (min-width: 1024px) { .main-header { height: var(--header-height); padding: 0 var(--side-padding); } }
@@ -88,6 +77,7 @@
         .mobile-bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: rgba(10, 10, 26, 0.98); backdrop-filter: blur(20px); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 999; }
         @media (min-width: 768px) { .mobile-bottom-nav { display: none; } }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: var(--text-muted); background: none; border: none; cursor: pointer; flex: 1; font-size: 0.75rem; }
+        .nav-item.active { color: var(--primary); }
         .nav-item i { font-size: 1.4rem; }
 
         /* HERO SECTION */
@@ -98,17 +88,24 @@
         .hero-stat-number { display: block; font-size: 2.5rem; font-weight: 800; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero-stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* TABS */
-        .categories-section { padding: 20px var(--side-padding-mobile); }
-        @media (min-width: 1024px) { .categories-section { padding: 20px var(--side-padding); } }
-        .main-tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; justify-content: center; }
+        /* FILTROS E ABAS */
+        .categories-section { padding: 20px var(--side-padding-mobile) 0; }
+        @media (min-width: 1024px) { .categories-section { padding: 20px var(--side-padding) 0; } }
+        .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
         .main-tab { padding: 10px 20px; background: var(--bg-card); border-radius: 30px; cursor: pointer; color: var(--text-secondary); font-weight: 600; border: 1px solid var(--border-color); transition: var(--transition); }
         .main-tab.active { background: var(--gradient-primary); color: white; border-color: transparent; }
         
+        /* FILTRO DE GÊNEROS (NOVO) */
+        .genre-filters { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; margin-bottom: 20px; scrollbar-width: none; }
+        .genre-filters::-webkit-scrollbar { display: none; }
+        .genre-pill { padding: 8px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: var(--text-secondary); font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: var(--transition); }
+        .genre-pill:hover { background: rgba(0, 255, 179, 0.1); color: var(--primary); border-color: var(--primary); }
+        .genre-pill.active { background: var(--primary); color: black; font-weight: bold; }
+
         /* CONTENT GRID */
-        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 0 var(--side-padding-mobile) 80px; }
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 0 var(--side-padding-mobile) 20px; }
         @media (min-width: 640px) { .content-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; } }
-        @media (min-width: 1024px) { .content-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; padding: 0 var(--side-padding) 80px; } }
+        @media (min-width: 1024px) { .content-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; padding: 0 var(--side-padding) 20px; } }
         
         .content-card { background: var(--gradient-card); border-radius: var(--border-radius); overflow: hidden; border: 1px solid var(--border-color); cursor: pointer; transition: var(--transition); position: relative; animation: fadeInUp 0.5s ease forwards; opacity: 0; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -123,6 +120,12 @@
         .content-card:hover .content-overlay { opacity: 1; }
         .content-play-btn { background: var(--gradient-primary); border: none; border-radius: 50%; width: 60px; height: 60px; color: white; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; }
         
+        /* NOVO BOTÃO DE FAVORITO NO CARD */
+        .card-favorite-btn { position: absolute; top: 10px; left: 10px; width: 35px; height: 35px; border-radius: 50%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); color: white; display: flex; align-items: center; justify-content: center; z-index: 3; transition: var(--transition); }
+        .card-favorite-btn:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+        .card-favorite-btn.is-fav { color: var(--accent); border-color: var(--accent); }
+        .card-favorite-btn.is-fav i { font-weight: 900; } /* Coração preenchido */
+
         /* Badges de Tipo com Cores Dinâmicas */
         .content-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.9); padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; border: 1px solid; z-index: 2; }
         .badge-canal { color: var(--accent); border-color: var(--accent); }
@@ -132,6 +135,11 @@
         .content-info { padding: 15px; }
         .content-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .content-category { color: var(--text-muted); font-size: 0.8rem; }
+
+        /* BOTÃO CARREGAR MAIS */
+        .load-more-container { grid-column: 1 / -1; text-align: center; padding: 20px 0 80px 0; }
+        .load-more-btn { padding: 12px 30px; background: var(--gradient-card); border: 2px solid var(--primary); color: var(--primary); border-radius: 30px; font-weight: bold; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 10px; }
+        .load-more-btn:hover { background: var(--primary); color: black; box-shadow: 0 0 20px var(--primary-glow); transform: translateY(-3px); }
 
         /* SIDEBAR DE PERFIL */
         .sidebar-menu { position: fixed; top: 0; right: -100%; width: 90%; max-width: 350px; height: 100%; background: var(--gradient-card); z-index: 10002; transition: right 0.4s ease; border-left: 1px solid var(--border-color); overflow-y: auto; }
@@ -176,12 +184,12 @@
     <div class="search-overlay" id="searchOverlay">
         <div class="search-overlay-content">
             <div class="search-overlay-header">
-                <h2>Buscar Títulos</h2>
+                <h2>Procurar</h2>
                 <button class="search-overlay-close" onclick="toggleSearchBar()"><i class="fas fa-times"></i></button>
             </div>
             <div class="search-overlay-input-container">
                 <i class="fas fa-search search-overlay-icon"></i>
-                <input type="text" class="search-overlay-input" id="searchInput" placeholder="Qual canal, filme ou série procura?" autocomplete="off">
+                <input type="text" class="search-overlay-input" id="searchInput" placeholder="Digite o nome do filme, canal ou série..." autocomplete="off">
             </div>
         </div>
     </div>
@@ -211,19 +219,18 @@
 
     <section class="categories-section">
         <div class="main-tabs">
-            <button class="main-tab active" onclick="IPTVSystem.mudarAba('todos')" id="abaTodos">Todos</button>
+            <button class="main-tab active" onclick="IPTVSystem.mudarAba('todos')" id="abaTodos">Tudo</button>
             <button class="main-tab" onclick="IPTVSystem.mudarAba('canais')" id="abaCanais">Canais TV</button>
             <button class="main-tab" onclick="IPTVSystem.mudarAba('filmes')" id="abaFilmes">Filmes</button>
             <button class="main-tab" onclick="IPTVSystem.mudarAba('series')" id="abaSeries">Séries</button>
-            <button class="main-tab" onclick="IPTVSystem.mudarAba('favoritos')" id="abaFavoritos">Favoritos</button>
+            <button class="main-tab" onclick="IPTVSystem.mudarAba('favoritos')" id="abaFavoritos"><i class="fas fa-heart" style="color: var(--accent);"></i> Favoritos</button>
         </div>
+        
+        <div class="genre-filters" id="genreFilters">
+            </div>
     </section>
 
-    <div id="skeletonContainer">
-        <div class="skeleton-grid"></div>
-    </div>
-
-    <section class="content-grid" id="contentGrid" style="display: none;"></section>
+    <section class="content-grid" id="contentGrid"></section>
 
     <div class="sidebar-menu" id="sidebarMenu">
         <div class="sidebar-header">
@@ -232,7 +239,10 @@
             <h2 style="color: white;">Marujo <span style="color: var(--primary);" id="sidebarLevel">Nv. 1</span></h2>
         </div>
         <div style="padding: 20px; text-align: center; color: var(--text-muted);">
-            <p>Seu progresso fica salvo localmente no seu dispositivo.</p>
+            <p>Seus favoritos e progressos ficam salvos no cache do seu dispositivo automaticamente!</p>
+            <button onclick="IPTVSystem.mudarAba('favoritos'); toggleSidebar();" style="margin-top:20px; width: 100%; padding: 12px; background: var(--bg-card); border: 1px solid var(--accent); color: var(--text-primary); border-radius: 12px; cursor: pointer;">
+                <i class="fas fa-heart" style="color: var(--accent);"></i> Ver Meus Favoritos
+            </button>
         </div>
     </div>
 
@@ -243,13 +253,54 @@
         show: function(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> <span>${message}</span>`;
+            toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}" style="color: ${type === 'error' ? 'var(--accent)' : 'var(--primary)'}"></i> <span>${message}</span>`;
             this.container.appendChild(toast);
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
     };
 
-    // FUNÇÕES DE INTERFACE
+    // SISTEMA DE PROGRESSO E FAVORITOS (CACHE)
+    const userProgress = {
+        xp: parseInt(localStorage.getItem('marujoflix_xp')) || 0,
+        level: parseInt(localStorage.getItem('marujoflix_level')) || 1,
+        favorites: JSON.parse(localStorage.getItem('marujoflix_favorites')) || [], // Lista de IDs favoritados
+        
+        getNextLevelXP() { return Math.floor(100 * Math.pow(1.5, this.level - 1)); },
+        
+        addXP(amount) {
+            this.xp += amount;
+            while (this.xp >= this.getNextLevelXP()) {
+                this.xp -= this.getNextLevelXP();
+                this.level++;
+                ToastSystem.show(`🎉 Subiste de Nível! Nível ${this.level}!`, 'success');
+            }
+            this.save();
+            document.getElementById('sidebarLevel').textContent = `Nv. ${this.level}`;
+        },
+        
+        toggleFavorite(itemId) {
+            const index = this.favorites.indexOf(itemId);
+            if (index === -1) {
+                this.favorites.push(itemId);
+                this.addXP(10);
+                ToastSystem.show('Adicionado aos Favoritos! ❤️', 'success');
+            } else {
+                this.favorites.splice(index, 1);
+                ToastSystem.show('Removido dos Favoritos 💔', 'error');
+            }
+            this.save();
+        },
+        
+        isFavorite(itemId) { return this.favorites.includes(itemId); },
+        
+        save() {
+            localStorage.setItem('marujoflix_xp', this.xp);
+            localStorage.setItem('marujoflix_level', this.level);
+            localStorage.setItem('marujoflix_favorites', JSON.stringify(this.favorites));
+        }
+    };
+
+    // FUNÇÕES DE INTERFACE BÁSICA
     function toggleSearchBar() {
         const overlay = document.getElementById('searchOverlay');
         overlay.classList.toggle('active');
@@ -257,25 +308,21 @@
     }
     function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('active'); }
 
-    // SISTEMA PRINCIPAL E CATEGORIZAÇÃO
+    // SISTEMA PRINCIPAL DO CATÁLOGO
     const IPTVSystem = {
         config: { apiUrl: 'https://cors.eu.org/br2.bronxyshost.com:4009/lista.json', itemsPerPage: 48 },
-        todosItens: [], filtrados: [], busca: '', paginaAtual: 1, abaAtual: 'todos',
+        todosItens: [], filtrados: [], generosUnicos: [], 
+        busca: '', generoAtivo: 'all', paginaAtual: 1, abaAtual: 'todos',
         
         init: function() {
-            this.gerarSkeleton();
+            document.getElementById('sidebarLevel').textContent = `Nv. ${userProgress.level}`;
             this.carregarDados();
             
+            // Evento de Digitação na Busca
             document.getElementById('searchInput').addEventListener('input', (e) => {
                 this.busca = e.target.value.toLowerCase();
                 this.aplicarFiltros();
             });
-        },
-        
-        gerarSkeleton: function() {
-            let html = '';
-            for(let i=0; i<12; i++) html += `<div class="skeleton-card"><div class="skeleton-poster"></div><div class="skeleton-info"><div class="skeleton-line"></div></div></div>`;
-            document.querySelector('.skeleton-grid').innerHTML = html;
         },
         
         carregarDados: async function() {
@@ -287,50 +334,74 @@
                 } else throw new Error();
             } catch (error) {
                 console.log("Erro na API, confira o CORS ou a URL.");
+                ToastSystem.show("Erro ao conectar ao servidor.", "error");
             }
         },
 
-        // A MÁGICA DA CATEGORIZAÇÃO ESTÁ AQUI
-        detectarTipo: function(categoriaStr) {
-            const cat = categoriaStr.toLowerCase();
-            
+        detectarTipo: function(catStr) {
+            const cat = catStr.toLowerCase();
             if (cat.includes('canais') || cat === 'nacional' || cat === 'esportes' || cat === 'documentarios') return 'Canal';
             if (cat.includes('series') || cat.includes('novelas') || cat.includes('programas de tv') || cat.includes('dorama')) return 'Série';
             if (cat.includes('filmes') || cat.includes('shows') || cat.includes('stand up') || cat.includes('cursos') || cat.includes('[xxx]')) return 'Filme';
-            
             return 'Outros';
         },
 
-        // Limpa nomes longos como "Canais | Filmes e Séries" para apenas "Filmes e Séries"
-        simplificarCategoria: function(categoriaStr) {
-            return categoriaStr.replace(/^(Canais \| |Filmes \| |Series \| |\[XXX\] )/i, '').trim();
+        simplificarCategoria: function(catStr) {
+            return catStr.replace(/^(Canais \| |Filmes \| |Series \| |\[XXX\] )/i, '').trim();
         },
         
         processarDados: function(data) {
             this.todosItens = data.map((item, index) => {
                 const catStr = item.categoria || 'Geral';
-                const tipoCorreto = this.detectarTipo(catStr);
-                
                 return {
                     id: item.id || `item_${index}`,
                     titulo: item.nome || 'Sem título',
-                    categoriaFull: catStr,
                     categoriaLimpa: this.simplificarCategoria(catStr),
-                    tipo: tipoCorreto,
+                    tipo: this.detectarTipo(catStr),
                     poster: item.logo || '',
                     videoUrl: item.link || ''
                 };
             });
             
-            // Atualizar os contadores no topo do site
+            // Puxar todos os gêneros disponíveis (sem repetições e em ordem alfabética)
+            this.generosUnicos = [...new Set(this.todosItens.map(i => i.categoriaLimpa))].filter(Boolean).sort();
+            this.renderizarGêneros();
+            
+            // Atualizar contadores
             document.getElementById('totalCanais').textContent = this.todosItens.filter(i => i.tipo === 'Canal').length;
             document.getElementById('totalFilmes').textContent = this.todosItens.filter(i => i.tipo === 'Filme').length;
             document.getElementById('totalSeries').textContent = this.todosItens.filter(i => i.tipo === 'Série').length;
             
-            // Ocultar barras de carregamento
+            // Tirar o ecrã de carregamento
             document.getElementById('loadingScreen').classList.add('hidden');
-            document.getElementById('skeletonContainer').style.display = 'none';
-            document.getElementById('contentGrid').style.display = 'grid';
+            
+            this.aplicarFiltros();
+        },
+
+        renderizarGêneros: function() {
+            const box = document.getElementById('genreFilters');
+            let html = `<div class="genre-pill ${this.generoAtivo === 'all' ? 'active' : ''}" onclick="IPTVSystem.filtrarGenero('all')">Qualquer Gênero</div>`;
+            
+            this.generosUnicos.forEach(g => {
+                html += `<div class="genre-pill ${this.generoAtivo === g ? 'active' : ''}" onclick="IPTVSystem.filtrarGenero('${g.replace(/'/g, "\\'")}')">${g}</div>`;
+            });
+            box.innerHTML = html;
+        },
+        
+        filtrarGenero: function(gen) {
+            this.generoAtivo = gen;
+            this.renderizarGêneros();
+            this.aplicarFiltros();
+        },
+
+        mudarAba: function(aba) {
+            this.abaAtual = aba;
+            document.querySelectorAll('.main-tab').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`aba${aba.charAt(0).toUpperCase() + aba.slice(1)}`).classList.add('active');
+            
+            // Reseta busca e gênero ao trocar de aba principal
+            this.busca = ''; document.getElementById('searchInput').value = '';
+            this.generoAtivo = 'all'; this.renderizarGêneros();
             
             this.aplicarFiltros();
         },
@@ -338,12 +409,18 @@
         aplicarFiltros: function() {
             let result = this.todosItens;
             
-            // Filtro das Abas
+            // 1. Filtro de Abas
             if (this.abaAtual === 'canais') result = result.filter(i => i.tipo === 'Canal');
             else if (this.abaAtual === 'filmes') result = result.filter(i => i.tipo === 'Filme');
             else if (this.abaAtual === 'series') result = result.filter(i => i.tipo === 'Série');
+            else if (this.abaAtual === 'favoritos') result = result.filter(i => userProgress.isFavorite(i.id));
             
-            // Filtro da Barra de Busca
+            // 2. Filtro de Gênero (Pills)
+            if (this.generoAtivo !== 'all') {
+                result = result.filter(i => i.categoriaLimpa === this.generoAtivo);
+            }
+
+            // 3. Filtro de Texto (Pesquisa)
             if (this.busca) {
                 result = result.filter(i => i.titulo.toLowerCase().includes(this.busca) || i.categoriaLimpa.toLowerCase().includes(this.busca));
             }
@@ -352,41 +429,62 @@
             this.paginaAtual = 1;
             this.renderizarGrid();
         },
+
+        carregarMais: function() {
+            this.paginaAtual++;
+            this.renderizarGrid();
+        },
         
-        mudarAba: function(aba) {
-            this.abaAtual = aba;
-            document.querySelectorAll('.main-tab').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`aba${aba.charAt(0).toUpperCase() + aba.slice(1)}`).classList.add('active');
-            this.aplicarFiltros();
+        // Clica no coração para salvar favorito
+        clicarFavorito: function(event, itemId) {
+            event.stopPropagation(); // Impede de abrir o filme ao clicar no coração
+            userProgress.toggleFavorite(itemId);
+            
+            // Se eu estou dentro da aba de favoritos e tirei o favorito, eu re-renderizo a grid inteira para sumir
+            if(this.abaAtual === 'favoritos') {
+                this.aplicarFiltros();
+            } else {
+                // Senão, eu só troco a cor do coração que eu cliquei (Mais rápido e suave)
+                const btn = event.currentTarget;
+                const isFav = userProgress.isFavorite(itemId);
+                btn.className = `card-favorite-btn ${isFav ? 'is-fav' : ''}`;
+                btn.innerHTML = `<i class="${isFav ? 'fas' : 'far'} fa-heart"></i>`;
+            }
         },
         
         renderizarGrid: function() {
             const grid = document.getElementById('contentGrid');
             if(this.filtrados.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">Nenhum resultado encontrado.</div>`;
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
+                    <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 15px; display:block;"></i>
+                    Nenhum resultado encontrado.
+                </div>`;
                 return;
             }
             
+            // Limite de paginação
             const itensMostrar = this.filtrados.slice(0, this.paginaAtual * this.config.itemsPerPage);
-            grid.innerHTML = itensMostrar.map((item, index) => {
-                
-                // Define a cor da badge consoante o tipo de conteúdo
+            
+            let html = itensMostrar.map((item, index) => {
                 let badgeClass = 'badge-filme';
                 if(item.tipo === 'Canal') badgeClass = 'badge-canal';
                 if(item.tipo === 'Série') badgeClass = 'badge-serie';
 
-                // Imagem de Fallback baseada no tipo
-                const fallbackImg = item.tipo === 'Canal' 
-                    ? 'https://via.placeholder.com/300x300?text=Canal+TV' 
-                    : 'https://via.placeholder.com/300x450?text=Cartaz';
+                const fallbackImg = item.tipo === 'Canal' ? 'https://via.placeholder.com/300x300?text=Canal+TV' : 'https://via.placeholder.com/300x450?text=Cartaz';
+                
+                // Verifica se é favorito para colocar o coração preenchido
+                const isFav = userProgress.isFavorite(item.id);
 
                 return `
-                <div class="content-card" style="animation-delay: ${Math.min(index * 0.05, 0.5)}s" onclick="IPTVSystem.abrirPlayer('${item.id}')">
+                <div class="content-card" style="animation-delay: ${Math.min(index * 0.02, 0.3)}s" onclick="IPTVSystem.abrirPlayer('${item.id}')">
                     <div class="content-poster">
                         <img src="${item.poster}" onerror="this.src='${fallbackImg}'">
-                        <div class="content-overlay">
-                            <div class="content-play-btn"><i class="fas fa-play"></i></div>
+                        
+                        <div class="card-favorite-btn ${isFav ? 'is-fav' : ''}" onclick="IPTVSystem.clicarFavorito(event, '${item.id}')" title="Favoritar">
+                            <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
                         </div>
+
+                        <div class="content-overlay"><div class="content-play-btn"><i class="fas fa-play"></i></div></div>
                         <div class="content-badge ${badgeClass}">${item.tipo}</div>
                     </div>
                     <div class="content-info">
@@ -396,15 +494,26 @@
                 </div>
                 `;
             }).join('');
+
+            // Lógica do botão "Carregar Mais"
+            if (this.filtrados.length > this.paginaAtual * this.config.itemsPerPage) {
+                html += `
+                <div class="load-more-container">
+                    <button class="load-more-btn" onclick="IPTVSystem.carregarMais()">
+                        <i class="fas fa-arrow-down"></i> Carregar Mais Filmes (${this.filtrados.length - (this.paginaAtual * this.config.itemsPerPage)} restantes)
+                    </button>
+                </div>
+                `;
+            }
+
+            grid.innerHTML = html;
         },
 
         abrirPlayer: function(itemId) {
-            const item = this.todosItens.find(i => i.id === itemId);
-            if (!item) return;
-            
-            ToastSystem.show(`A carregar ${item.tipo}...`, 'success');
+            userProgress.addXP(25); // Ganha 25 XP ao clicar pra assistir
+            ToastSystem.show(`A preparar o player...`, 'success');
             setTimeout(() => {
-                window.location.href = `http://br2.bronxyshost.com:4009/player/${item.id}`;
+                window.location.href = `http://br2.bronxyshost.com:4009/player/${itemId}`;
             }, 800);
         }
     };
@@ -413,4 +522,5 @@
 </script>
 </body>
 </html>
+
 
