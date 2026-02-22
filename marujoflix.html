@@ -3,31 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Marujo Flix | TV, Filmes e Séries</title>
+    <title>Marujo Flix | Filmes, Séries e TV</title>
     <meta name="theme-color" content="#0a0a1a">
-        <meta name="google-adsense-account" content="ca-pub-2351298778216089">
+    <meta name="google-adsense-account" content="ca-pub-2351298778216089">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
-      notifyButton: {
-        enable: false
-      }
-    });
-
-    // 🔥 REGISTRA O TOKEN CORRETAMENTE
-    if (typeof LibSignal !== "undefined") {
-      LibSignal.register();
-    }
-  });
-</script>
     
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
+          notifyButton: { enable: false }
+        });
+        if (typeof LibSignal !== "undefined") { LibSignal.register(); }
+      });
+    </script>
+
     <style>
         /* RESET E VARIÁVEIS OTIMIZADAS */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -36,21 +30,16 @@
             --primary: #00ffb3;
             --primary-glow: rgba(0, 255, 179, 0.5);
             --secondary: #8a2be2;
-            --accent: #ff4d4d; /* Vermelho para Canais/Favoritos */
-            --blue: #0088ff; /* Azul para Séries */
-            
+            --accent: #ff4d4d;
+            --blue: #0088ff;
             --bg-darker: #050510;
             --bg-card: rgba(18, 18, 48, 0.8);
-            --bg-card-light: rgba(26, 26, 58, 0.9);
-            
             --text-primary: #ffffff;
             --text-secondary: #b0b0ff;
             --text-muted: #8a8ac5;
-            
             --border-color: rgba(0, 255, 179, 0.15);
             --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
             --gradient-card: linear-gradient(145deg, rgba(18, 18, 48, 0.9), rgba(26, 26, 58, 0.95));
-            
             --header-height: 80px;
             --header-height-mobile: 70px;
             --side-padding: 40px;
@@ -61,26 +50,105 @@
 
         body { font-family: 'Inter', sans-serif; background: var(--bg-darker); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; min-height: 100vh; background-image: radial-gradient(circle at 10% 20%, rgba(0, 255, 179, 0.03) 0%, transparent 30%), radial-gradient(circle at 90% 50%, rgba(138, 43, 226, 0.03) 0%, transparent 40%); }
 
-        /* LOADING SCREEN */
+        /* LOADING SCREEN INTERATIVO (NOVO) */
         .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-darker); z-index: 20000; display: flex; align-items: center; justify-content: center; transition: opacity 0.8s ease, visibility 0.8s ease; }
         .loading-screen.hidden { opacity: 0; visibility: hidden; }
-        .loading-content { text-align: center; padding: 40px; }
-        .loading-logo { width: 120px; height: 120px; background: var(--gradient-primary); border-radius: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; box-shadow: 0 0 50px var(--primary-glow); animation: pulse-logo 2s infinite; }
-        @keyframes pulse-logo { 0%, 100% { transform: scale(1); box-shadow: 0 0 50px var(--primary-glow); } 50% { transform: scale(1.05); box-shadow: 0 0 80px var(--primary-glow); } }
-        .loading-logo i { font-size: 4rem; color: white; }
+        .loading-content { text-align: center; padding: 40px; max-width: 90%; }
+        
+        /* Efeito de Radar/Sonar no Logo */
+        .sonar-wrapper { position: relative; display: inline-block; margin-bottom: 30px; }
+        .sonar-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--primary); animation: sonar 2s infinite linear; z-index: -1; }
+        @keyframes sonar { 0% { width: 100%; height: 100%; opacity: 1; } 100% { width: 250%; height: 250%; opacity: 0; } }
+        
+        .loading-logo { width: 120px; height: 120px; background: var(--gradient-primary); border-radius: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 50px var(--primary-glow); z-index: 2; position: relative; }
+        .loading-logo i { font-size: 4rem; color: white; animation: pulse-logo 2s infinite; }
+        @keyframes pulse-logo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        
         .loading-title { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; }
+        .loading-tip-container { height: 30px; margin-bottom: 20px; }
+        .loading-tip { color: var(--text-secondary); font-size: 1rem; font-style: italic; transition: opacity 0.4s ease; opacity: 1; letter-spacing: 0.5px; }
+        
+        .loading-progress-bar { width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; margin: 0 auto; overflow: hidden; position: relative; }
+        .loading-progress-fill { width: 30%; height: 100%; background: var(--gradient-primary); position: absolute; animation: loadSweep 1.5s infinite ease-in-out; border-radius: 4px; }
+        @keyframes loadSweep { 0% { left: -30%; } 100% { left: 100%; } }
 
         /* HEADER */
-        .main-header { position: fixed; top: 0; left: 0; width: 100%; height: var(--header-height-mobile); background: rgba(10, 10, 26, 0.98); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-color); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--side-padding-mobile); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
+        .main-header { position: fixed; top: 0; left: 0; width: 100%; height: var(--header-height-mobile); background: rgba(5, 5, 16, 0.8); backdrop-filter: blur(20px); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--side-padding-mobile); transition: var(--transition); border-bottom: 1px solid transparent; }
+        .main-header.scrolled { background: rgba(5, 5, 16, 0.98); border-bottom: 1px solid var(--border-color); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
         @media (min-width: 1024px) { .main-header { height: var(--header-height); padding: 0 var(--side-padding); } }
         .logo { display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .logo-icon { width: 40px; height: 40px; background: var(--gradient-primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 0 20px var(--primary-glow); }
         .logo-text h1 { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
         .header-actions { display: flex; align-items: center; gap: 15px; }
-        .search-button, .user-avatar { width: 45px; height: 45px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; transition: var(--transition); }
+        .search-button, .user-avatar { width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; transition: var(--transition); backdrop-filter: blur(5px); }
+        .user-avatar { background: var(--gradient-primary); border: none; }
+        .search-button:hover, .user-avatar:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--primary-glow); }
+
+        /* DESTAQUE DO DIA (HERO BANNER) */
+        .featured-banner { position: relative; width: 100%; height: 75vh; min-height: 500px; display: flex; align-items: flex-end; padding: var(--side-padding-mobile); overflow: hidden; margin-top: 0; }
+        @media (min-width: 1024px) { .featured-banner { height: 85vh; padding: 80px var(--side-padding); } }
+        .featured-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center top; filter: blur(5px) brightness(0.7); transform: scale(1.05); transition: background-image 1s ease; }
+        .featured-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, var(--bg-darker) 0%, rgba(5,5,16,0.5) 50%, rgba(5,5,16,0.1) 100%); }
+        .featured-content { position: relative; z-index: 10; max-width: 800px; animation: fadeInUp 1s ease forwards; }
+        .featured-badge { display: inline-block; padding: 5px 15px; background: rgba(0, 255, 179, 0.2); color: var(--primary); border: 1px solid var(--primary); border-radius: 20px; font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 15px; backdrop-filter: blur(5px); }
+        .featured-title { font-size: 2.8rem; font-weight: 900; margin-bottom: 10px; line-height: 1.1; text-shadow: 0 4px 20px rgba(0,0,0,0.8); }
+        @media (min-width: 768px) { .featured-title { font-size: 4rem; } }
+        .featured-genres { color: var(--text-secondary); font-size: 1rem; margin-bottom: 25px; display: flex; gap: 10px; align-items: center; }
+        .btn-play-featured { padding: 15px 35px; background: var(--gradient-primary); border: none; border-radius: 30px; color: black; font-size: 1.1rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: var(--transition); box-shadow: 0 10px 30px var(--primary-glow); }
+        .btn-play-featured:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 40px var(--primary-glow); }
+
+        /* ABAS E GÊNEROS */
+        .categories-section { padding: 20px var(--side-padding-mobile) 0; margin-top: -30px; position: relative; z-index: 20; }
+        @media (min-width: 1024px) { .categories-section { padding: 20px var(--side-padding) 0; } }
+        .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .main-tab { padding: 10px 20px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 30px; cursor: pointer; color: var(--text-secondary); font-weight: 600; border: 1px solid rgba(255,255,255,0.1); transition: var(--transition); }
+        .main-tab:hover { background: rgba(0,255,179,0.1); color: var(--primary); }
+        .main-tab.active { background: var(--primary); color: black; border-color: transparent; box-shadow: 0 5px 20px var(--primary-glow); }
         
-        /* SEARCH OVERLAY */
+        .genre-filters { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; margin-bottom: 10px; scrollbar-width: none; }
+        .genre-filters::-webkit-scrollbar { display: none; }
+        .genre-pill { padding: 6px 16px; background: transparent; border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-muted); font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: var(--transition); }
+        .genre-pill:hover { background: rgba(0, 255, 179, 0.05); color: var(--primary); border-color: var(--primary); }
+        .genre-pill.active { background: var(--primary); color: black; font-weight: bold; }
+
+        /* CONTENT GRID */
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding: 20px var(--side-padding-mobile) 80px; }
+        @media (min-width: 640px) { .content-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; } }
+        @media (min-width: 1024px) { .content-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; padding: 20px var(--side-padding) 80px; } }
+        
+        .content-card { background: var(--gradient-card); border-radius: var(--border-radius); overflow: hidden; border: 1px solid var(--border-color); cursor: pointer; transition: var(--transition); position: relative; animation: fadeInUp 0.6s ease forwards; opacity: 0; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .content-card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 15px 35px rgba(0, 255, 179, 0.25); z-index: 5; }
+        
+        .content-poster { width: 100%; aspect-ratio: 2/3; position: relative; overflow: hidden; background: #111; }
+        .content-poster img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .content-card:hover .content-poster img { transform: scale(1.1); filter: brightness(0.6); }
+        
+        .content-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s ease; }
+        .content-card:hover .content-overlay { opacity: 1; }
+        .content-play-btn { background: rgba(0, 255, 179, 0.9); border: none; border-radius: 50%; width: 50px; height: 50px; color: black; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px var(--primary-glow); }
+        
+        .card-favorite-btn { position: absolute; top: 8px; left: 8px; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); color: white; display: flex; align-items: center; justify-content: center; z-index: 3; transition: var(--transition); }
+        .card-favorite-btn:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.15); }
+        .card-favorite-btn.is-fav { color: var(--accent); border-color: var(--accent); background: rgba(0,0,0,0.8); }
+        .card-favorite-btn.is-fav i { font-weight: 900; }
+
+        .badges-container { position: absolute; top: 8px; right: 8px; display: flex; flex-direction: column; gap: 5px; align-items: flex-end; z-index: 2; }
+        .content-badge { background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); padding: 3px 8px; border-radius: 8px; font-size: 0.65rem; font-weight: bold; border: 1px solid; letter-spacing: 0.5px; }
+        .badge-canal { color: var(--accent); border-color: var(--accent); }
+        .badge-filme { color: var(--primary); border-color: var(--primary); }
+        .badge-serie { color: var(--blue); border-color: var(--blue); }
+        .badge-leg { background: #ffb700; color: black; border-color: #ffb700; }
+
+        .content-info { padding: 12px; background: linear-gradient(to top, rgba(18,18,48,1) 0%, rgba(18,18,48,0.8) 100%); }
+        .content-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
+        .content-category { color: var(--text-muted); font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .load-more-container { grid-column: 1 / -1; text-align: center; padding: 10px 0 40px 0; }
+        .load-more-btn { padding: 15px 40px; background: transparent; border: 2px solid var(--primary); color: var(--primary); border-radius: 30px; font-weight: 800; letter-spacing: 1px; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 10px; }
+        .load-more-btn:hover { background: var(--gradient-primary); color: black; border-color: transparent; box-shadow: 0 10px 30px var(--primary-glow); transform: translateY(-3px); }
+
+        /* OUTROS ITENS */
         .search-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 16, 0.98); backdrop-filter: blur(20px); z-index: 10000; display: none; align-items: flex-start; justify-content: center; padding: 80px 20px; opacity: 0; transition: opacity 0.3s ease; }
         .search-overlay.active { display: flex; opacity: 1; }
         .search-overlay-content { width: 100%; max-width: 800px; background: var(--gradient-card); border-radius: 30px; padding: 25px; border: 1px solid var(--border-color); transform: translateY(-20px); transition: transform 0.4s ease; }
@@ -92,84 +160,20 @@
         .search-overlay-input { width: 100%; padding: 20px 50px; font-size: 1.2rem; background: rgba(255,255,255,0.07); border: 2px solid var(--border-color); border-radius: 40px; color: var(--text-primary); }
         .search-overlay-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 30px var(--primary-glow); }
 
-        /* MOBILE NAV */
         .mobile-bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: rgba(10, 10, 26, 0.98); backdrop-filter: blur(20px); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 999; }
         @media (min-width: 768px) { .mobile-bottom-nav { display: none; } }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: var(--text-muted); background: none; border: none; cursor: pointer; flex: 1; font-size: 0.75rem; }
         .nav-item.active { color: var(--primary); }
         .nav-item i { font-size: 1.4rem; }
 
-        /* HERO SECTION */
-        .hero-section { margin-top: calc(var(--header-height-mobile) + 20px); padding: 50px var(--side-padding-mobile); background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(22, 33, 62, 0.98)); border-radius: 30px; margin-left: var(--side-padding-mobile); margin-right: var(--side-padding-mobile); text-align: center; border: 1px solid var(--border-color); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
-        @media (min-width: 1024px) { .hero-section { margin-top: calc(var(--header-height) + 30px); padding: 80px var(--side-padding); } }
-        .hero-stats { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
-        .hero-stat { text-align: center; }
-        .hero-stat-number { display: block; font-size: 2.5rem; font-weight: 800; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero-stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-
-        /* FILTROS E ABAS */
-        .categories-section { padding: 20px var(--side-padding-mobile) 0; }
-        @media (min-width: 1024px) { .categories-section { padding: 20px var(--side-padding) 0; } }
-        .main-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
-        .main-tab { padding: 10px 20px; background: var(--bg-card); border-radius: 30px; cursor: pointer; color: var(--text-secondary); font-weight: 600; border: 1px solid var(--border-color); transition: var(--transition); }
-        .main-tab.active { background: var(--gradient-primary); color: white; border-color: transparent; }
-        
-        /* FILTRO DE GÊNEROS (NOVO) */
-        .genre-filters { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; margin-bottom: 20px; scrollbar-width: none; }
-        .genre-filters::-webkit-scrollbar { display: none; }
-        .genre-pill { padding: 8px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: var(--text-secondary); font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: var(--transition); }
-        .genre-pill:hover { background: rgba(0, 255, 179, 0.1); color: var(--primary); border-color: var(--primary); }
-        .genre-pill.active { background: var(--primary); color: black; font-weight: bold; }
-
-        /* CONTENT GRID */
-        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 0 var(--side-padding-mobile) 20px; }
-        @media (min-width: 640px) { .content-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; } }
-        @media (min-width: 1024px) { .content-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; padding: 0 var(--side-padding) 20px; } }
-        
-        .content-card { background: var(--gradient-card); border-radius: var(--border-radius); overflow: hidden; border: 1px solid var(--border-color); cursor: pointer; transition: var(--transition); position: relative; animation: fadeInUp 0.5s ease forwards; opacity: 0; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .content-card:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(0, 255, 179, 0.2); }
-        
-        .content-poster { width: 100%; height: 240px; position: relative; overflow: hidden; background: #111; }
-        @media (min-width: 1024px) { .content-poster { height: 280px; } }
-        .content-poster img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
-        .content-card:hover .content-poster img { transform: scale(1.1); }
-        
-        .content-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
-        .content-card:hover .content-overlay { opacity: 1; }
-        .content-play-btn { background: var(--gradient-primary); border: none; border-radius: 50%; width: 60px; height: 60px; color: white; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; }
-        
-        /* NOVO BOTÃO DE FAVORITO NO CARD */
-        .card-favorite-btn { position: absolute; top: 10px; left: 10px; width: 35px; height: 35px; border-radius: 50%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); color: white; display: flex; align-items: center; justify-content: center; z-index: 3; transition: var(--transition); }
-        .card-favorite-btn:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
-        .card-favorite-btn.is-fav { color: var(--accent); border-color: var(--accent); }
-        .card-favorite-btn.is-fav i { font-weight: 900; } /* Coração preenchido */
-
-        /* Badges de Tipo com Cores Dinâmicas */
-        .content-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.9); padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; border: 1px solid; z-index: 2; }
-        .badge-canal { color: var(--accent); border-color: var(--accent); }
-        .badge-filme { color: var(--primary); border-color: var(--primary); }
-        .badge-serie { color: var(--blue); border-color: var(--blue); }
-
-        .content-info { padding: 15px; }
-        .content-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .content-category { color: var(--text-muted); font-size: 0.8rem; }
-
-        /* BOTÃO CARREGAR MAIS */
-        .load-more-container { grid-column: 1 / -1; text-align: center; padding: 20px 0 80px 0; }
-        .load-more-btn { padding: 12px 30px; background: var(--gradient-card); border: 2px solid var(--primary); color: var(--primary); border-radius: 30px; font-weight: bold; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 10px; }
-        .load-more-btn:hover { background: var(--primary); color: black; box-shadow: 0 0 20px var(--primary-glow); transform: translateY(-3px); }
-
-        /* SIDEBAR DE PERFIL */
         .sidebar-menu { position: fixed; top: 0; right: -100%; width: 90%; max-width: 350px; height: 100%; background: var(--gradient-card); z-index: 10002; transition: right 0.4s ease; border-left: 1px solid var(--border-color); overflow-y: auto; }
         .sidebar-menu.active { right: 0; }
-        .sidebar-header { padding: 30px 20px; text-align: center; border-bottom: 1px solid var(--border-color); position: relative; }
+        .sidebar-header { padding: 40px 20px; text-align: center; border-bottom: 1px solid var(--border-color); position: relative; }
         .sidebar-close-btn { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.1); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; }
-        .sidebar-avatar { width: 80px; height: 80px; background: var(--gradient-primary); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        .sidebar-avatar { width: 90px; height: 90px; background: var(--gradient-primary); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #000; box-shadow: 0 0 30px var(--primary-glow); }
 
-        /* TOAST NOTIFICATIONS */
         .toast-container { position: fixed; top: 90px; right: 20px; z-index: 20001; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .toast { background: var(--bg-card); border-left: 4px solid var(--primary); padding: 15px 20px; border-radius: 8px; color: white; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s forwards; pointer-events: all; }
+        .toast { background: var(--bg-card); border-left: 4px solid var(--primary); padding: 15px 20px; border-radius: 8px; color: white; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s forwards; pointer-events: all; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
     </style>
 </head>
@@ -177,38 +181,55 @@
     
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-content">
-            <div class="loading-logo"><i class="fas fa-ship"></i></div>
+            <div class="sonar-wrapper">
+                <div class="loading-logo"><i class="fas fa-ship"></i></div>
+                <div class="sonar-ring"></div>
+            </div>
             <h1 class="loading-title">MarujoFlix</h1>
-            <div style="color: var(--text-secondary);">A carregar o catálogo...</div>
+            <div class="loading-tip-container">
+                <p id="loadingTip" class="loading-tip">Preparando a sua embarcação...</p>
+            </div>
+            <div class="loading-progress-bar">
+                <div class="loading-progress-fill"></div>
+            </div>
         </div>
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <header class="main-header">
+    <header class="main-header" id="mainHeader">
         <div class="logo" onclick="window.scrollTo(0,0)">
             <div class="logo-icon"><i class="fas fa-anchor"></i></div>
             <div class="logo-text">
                 <h1>MarujoFlix</h1>
-                <span>CATÁLOGO</span>
             </div>
         </div>
-        
         <div class="header-actions">
             <div class="search-button" onclick="toggleSearchBar()"><i class="fas fa-search"></i></div>
             <div class="user-avatar" onclick="toggleSidebar()"><i class="fas fa-user"></i></div>
         </div>
     </header>
 
+    <div class="featured-banner" id="featuredBanner" style="display: none;">
+        <div class="featured-bg" id="featuredBg"></div>
+        <div class="featured-overlay"></div>
+        <div class="featured-content">
+            <span class="featured-badge"><i class="fas fa-fire"></i> DESTAQUE DO DIA</span>
+            <h2 class="featured-title" id="featuredTitle">Carregando...</h2>
+            <p class="featured-genres" id="featuredCategory"><i class="fas fa-tag"></i> Aguarde</p>
+            <button class="btn-play-featured" id="featuredPlayBtn"><i class="fas fa-play"></i> Assistir Agora</button>
+        </div>
+    </div>
+
     <div class="search-overlay" id="searchOverlay">
         <div class="search-overlay-content">
             <div class="search-overlay-header">
-                <h2>Procurar</h2>
+                <h2>O que vamos assistir hoje?</h2>
                 <button class="search-overlay-close" onclick="toggleSearchBar()"><i class="fas fa-times"></i></button>
             </div>
             <div class="search-overlay-input-container">
                 <i class="fas fa-search search-overlay-icon"></i>
-                <input type="text" class="search-overlay-input" id="searchInput" placeholder="Digite o nome do filme, canal ou série..." autocomplete="off">
+                <input type="text" class="search-overlay-input" id="searchInput" placeholder="Filmes, Animes, Canais..." autocomplete="off">
             </div>
         </div>
     </div>
@@ -219,54 +240,80 @@
         <button class="nav-item" onclick="toggleSidebar()"><i class="fas fa-user"></i></button>
     </nav>
 
-    <section class="hero-section">
-        <div class="hero-stats">
-            <div class="hero-stat">
-                <span class="hero-stat-number" id="totalCanais">0</span>
-                <span class="hero-stat-label">Canais TV</span>
-            </div>
-            <div class="hero-stat">
-                <span class="hero-stat-number" id="totalFilmes">0</span>
-                <span class="hero-stat-label">Filmes</span>
-            </div>
-            <div class="hero-stat">
-                <span class="hero-stat-number" id="totalSeries">0</span>
-                <span class="hero-stat-label">Séries</span>
-            </div>
-        </div>
-    </section>
-
-    <section class="categories-section">
+    <section class="categories-section" id="catalogo">
         <div class="main-tabs">
             <button class="main-tab active" onclick="IPTVSystem.mudarAba('todos')" id="abaTodos">Tudo</button>
-            <button class="main-tab" onclick="IPTVSystem.mudarAba('canais')" id="abaCanais">Canais TV</button>
             <button class="main-tab" onclick="IPTVSystem.mudarAba('filmes')" id="abaFilmes">Filmes</button>
-            <button class="main-tab" onclick="IPTVSystem.mudarAba('series')" id="abaSeries">Séries</button>
-            <button class="main-tab" onclick="IPTVSystem.mudarAba('favoritos')" id="abaFavoritos"><i class="fas fa-heart" style="color: var(--accent);"></i> Favoritos</button>
+            <button class="main-tab" onclick="IPTVSystem.mudarAba('series')" id="abaSeries">Séries & Animes</button>
+            <button class="main-tab" onclick="IPTVSystem.mudarAba('canais')" id="abaCanais">Canais TV</button>
+            <button class="main-tab" onclick="IPTVSystem.mudarAba('favoritos')" id="abaFavoritos"><i class="fas fa-heart" style="color: var(--accent);"></i> Meus Favoritos</button>
         </div>
         
-        <div class="genre-filters" id="genreFilters">
-            </div>
+        <div class="genre-filters" id="genreFilters"></div>
     </section>
 
-    <section class="content-grid" id="contentGrid"></section>
+    <div id="skeletonContainer">
+        <div class="skeleton-grid"></div>
+    </div>
+
+    <section class="content-grid" id="contentGrid" style="display: none;"></section>
 
     <div class="sidebar-menu" id="sidebarMenu">
         <div class="sidebar-header">
             <button class="sidebar-close-btn" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
-            <div class="sidebar-avatar"><i class="fas fa-user"></i></div>
+            <div class="sidebar-avatar"><i class="fas fa-anchor"></i></div>
             <h2 style="color: white;">Marujo <span style="color: var(--primary);" id="sidebarLevel">Nv. 1</span></h2>
         </div>
-        <div style="padding: 20px; text-align: center; color: var(--text-muted);">
-            <p>Seus favoritos e progressos ficam salvos no cache do seu dispositivo automaticamente!</p>
-            <button onclick="IPTVSystem.mudarAba('favoritos'); toggleSidebar();" style="margin-top:20px; width: 100%; padding: 12px; background: var(--bg-card); border: 1px solid var(--accent); color: var(--text-primary); border-radius: 12px; cursor: pointer;">
-                <i class="fas fa-heart" style="color: var(--accent);"></i> Ver Meus Favoritos
+        <div style="padding: 20px; text-align: center;">
+            <p style="color: var(--text-muted); margin-bottom: 20px;">A sua base de operações. Tudo que você favorita fica salvo no cache da sua embarcação!</p>
+            
+            <div style="display: flex; justify-content: space-around; margin-bottom: 30px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px;">
+                <div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);" id="statFavs">0</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Favoritos</div>
+                </div>
+                <div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);" id="statXP">0</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Pontos XP</div>
+                </div>
+            </div>
+
+            <button onclick="IPTVSystem.mudarAba('favoritos'); toggleSidebar(); window.scrollTo(0, document.getElementById('catalogo').offsetTop);" style="width: 100%; padding: 15px; background: var(--gradient-primary); border: none; color: black; font-weight: bold; border-radius: 12px; cursor: pointer; transition: var(--transition);">
+                <i class="fas fa-play"></i> Acessar Meus Favoritos
             </button>
         </div>
     </div>
 
 <script>
-    // TOAST SYSTEM
+    // HEADER SCROLL EFFECT
+    window.addEventListener('scroll', () => {
+        const header = document.getElementById('mainHeader');
+        if (window.scrollY > 50) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+    });
+
+    // CURIOSIDADES DO LOADING (Muda a cada 2.5s)
+    const curiosidades = [
+        "A preparar as pipocas e a içar as velas...",
+        "Você sabia? O filme mais longo do mundo tem 857 horas!",
+        "Ajustando os radares para resolução 4K...",
+        "Favoritar um filme te dá XP para subir de nível!",
+        "Removendo filmes duplicados do catálogo...",
+        "Quase lá! Sintonizando os últimos canais..."
+    ];
+    let tipIndex = 0;
+    const loadingTipTimer = setInterval(() => {
+        const tipEl = document.getElementById('loadingTip');
+        if(tipEl) {
+            tipEl.style.opacity = 0;
+            setTimeout(() => {
+                tipIndex = (tipIndex + 1) % curiosidades.length;
+                tipEl.textContent = curiosidades[tipIndex];
+                tipEl.style.opacity = 1;
+            }, 400);
+        }
+    }, 2500);
+
     const ToastSystem = {
         container: document.getElementById('toastContainer'),
         show: function(message, type = 'success') {
@@ -278,11 +325,10 @@
         }
     };
 
-    // SISTEMA DE PROGRESSO E FAVORITOS (CACHE)
     const userProgress = {
         xp: parseInt(localStorage.getItem('marujoflix_xp')) || 0,
         level: parseInt(localStorage.getItem('marujoflix_level')) || 1,
-        favorites: JSON.parse(localStorage.getItem('marujoflix_favorites')) || [], // Lista de IDs favoritados
+        favorites: JSON.parse(localStorage.getItem('marujoflix_favorites')) || [], 
         
         getNextLevelXP() { return Math.floor(100 * Math.pow(1.5, this.level - 1)); },
         
@@ -291,10 +337,10 @@
             while (this.xp >= this.getNextLevelXP()) {
                 this.xp -= this.getNextLevelXP();
                 this.level++;
-                ToastSystem.show(`🎉 Subiste de Nível! Nível ${this.level}!`, 'success');
+                ToastSystem.show(`🚀 Nível ${this.level} Alcançado!`, 'success');
             }
             this.save();
-            document.getElementById('sidebarLevel').textContent = `Nv. ${this.level}`;
+            this.updateUI();
         },
         
         toggleFavorite(itemId) {
@@ -308,6 +354,7 @@
                 ToastSystem.show('Removido dos Favoritos 💔', 'error');
             }
             this.save();
+            this.updateUI();
         },
         
         isFavorite(itemId) { return this.favorites.includes(itemId); },
@@ -316,10 +363,15 @@
             localStorage.setItem('marujoflix_xp', this.xp);
             localStorage.setItem('marujoflix_level', this.level);
             localStorage.setItem('marujoflix_favorites', JSON.stringify(this.favorites));
+        },
+
+        updateUI() {
+            document.getElementById('sidebarLevel').textContent = `Nv. ${this.level}`;
+            document.getElementById('statFavs').textContent = this.favorites.length;
+            document.getElementById('statXP').textContent = this.xp;
         }
     };
 
-    // FUNÇÕES DE INTERFACE BÁSICA
     function toggleSearchBar() {
         const overlay = document.getElementById('searchOverlay');
         overlay.classList.toggle('active');
@@ -327,21 +379,34 @@
     }
     function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('active'); }
 
-    // SISTEMA PRINCIPAL DO CATÁLOGO
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
     const IPTVSystem = {
-        config: { apiUrl: 'https://cors.eu.org/br2.bronxyshost.com:4009/lista.json', itemsPerPage: 48 },
+        config: { apiUrl: 'https://cors.eu.org/br2.bronxyshost.com:4009/lista.json', itemsPerPage: 36 },
         todosItens: [], filtrados: [], generosUnicos: [], 
         busca: '', generoAtivo: 'all', paginaAtual: 1, abaAtual: 'todos',
         
         init: function() {
-            document.getElementById('sidebarLevel').textContent = `Nv. ${userProgress.level}`;
+            userProgress.updateUI();
+            this.gerarSkeleton();
             this.carregarDados();
             
-            // Evento de Digitação na Busca
             document.getElementById('searchInput').addEventListener('input', (e) => {
                 this.busca = e.target.value.toLowerCase();
                 this.aplicarFiltros();
             });
+        },
+        
+        gerarSkeleton: function() {
+            let html = '';
+            for(let i=0; i<12; i++) html += `<div class="skeleton-card"><div class="skeleton-poster"></div><div class="skeleton-info"><div class="skeleton-line"></div></div></div>`;
+            document.querySelector('.skeleton-grid').innerHTML = html;
         },
         
         carregarDados: async function() {
@@ -352,55 +417,112 @@
                     this.processarDados(data);
                 } else throw new Error();
             } catch (error) {
-                console.log("Erro na API, confira o CORS ou a URL.");
-                ToastSystem.show("Erro ao conectar ao servidor.", "error");
+                clearInterval(loadingTipTimer);
+                ToastSystem.show("Modo offline ativado.", "error");
             }
         },
 
         detectarTipo: function(catStr) {
             const cat = catStr.toLowerCase();
             if (cat.includes('canais') || cat === 'nacional' || cat === 'esportes' || cat === 'documentarios') return 'Canal';
-            if (cat.includes('series') || cat.includes('novelas') || cat.includes('programas de tv') || cat.includes('dorama')) return 'Série';
+            if (cat.includes('series') || cat.includes('novelas') || cat.includes('programas de tv') || cat.includes('dorama') || cat.includes('anime')) return 'Série';
             if (cat.includes('filmes') || cat.includes('shows') || cat.includes('stand up') || cat.includes('cursos') || cat.includes('[xxx]')) return 'Filme';
             return 'Outros';
         },
 
         simplificarCategoria: function(catStr) {
-            return catStr.replace(/^(Canais \| |Filmes \| |Series \| |\[XXX\] )/i, '').trim();
+            return catStr.replace(/^(Canais \| |Filmes \| |Series \| |\[XXX\] )/i, '').replace(/\[24H\] /i, '').trim();
         },
         
         processarDados: function(data) {
-            this.todosItens = data.map((item, index) => {
+            const mapaUnicos = new Map();
+            
+            data.forEach((item, index) => {
                 const catStr = item.categoria || 'Geral';
-                return {
+                const tipo = this.detectarTipo(catStr);
+                
+                const nomeLimpo = (item.nome || 'Sem título').replace(/\(Legendado\)|\(Dublado\)|\[4K\]|\[FHD\]|\(4K\)|\[720p\]/gi, '').trim();
+                const chaveUnica = nomeLimpo.toLowerCase() + '-' + tipo;
+                const isLeg = (item.nome || '').toLowerCase().includes('legend') || catStr.toLowerCase().includes('legend');
+
+                const itemProcessado = {
                     id: item.id || `item_${index}`,
-                    titulo: item.nome || 'Sem título',
+                    titulo: nomeLimpo,
                     categoriaLimpa: this.simplificarCategoria(catStr),
-                    tipo: this.detectarTipo(catStr),
+                    tipo: tipo,
                     poster: item.logo || '',
-                    videoUrl: item.link || ''
+                    videoUrl: item.link || '',
+                    isLeg: isLeg 
                 };
+
+                if (mapaUnicos.has(chaveUnica)) {
+                    const existente = mapaUnicos.get(chaveUnica);
+                    if (!existente.poster && itemProcessado.poster) {
+                        mapaUnicos.set(chaveUnica, itemProcessado);
+                    }
+                } else {
+                    mapaUnicos.set(chaveUnica, itemProcessado);
+                }
             });
+
+            const itensLimpos = Array.from(mapaUnicos.values());
+
+            let animesComFoto = [];
+            let vodComFoto = [];
+            let canais = [];
+            let resto = [];
+
+            itensLimpos.forEach(item => {
+                if (item.tipo === 'Canal') {
+                    canais.push(item);
+                } else if (item.poster && item.poster.trim() !== '') {
+                    if (item.categoriaLimpa.toLowerCase().includes('anime')) animesComFoto.push(item);
+                    else vodComFoto.push(item);
+                } else {
+                    resto.push(item);
+                }
+            });
+
+            vodComFoto = shuffleArray(vodComFoto);
+            animesComFoto = shuffleArray(animesComFoto);
+
+            // A ordem do sistema: Animes -> Filmes -> Resto. (Canais separados pro fim)
+            this.todosItens = [...animesComFoto, ...vodComFoto, ...resto, ...canais];
             
-            // Puxar todos os gêneros disponíveis (sem repetições e em ordem alfabética)
-            this.generosUnicos = [...new Set(this.todosItens.map(i => i.categoriaLimpa))].filter(Boolean).sort();
-            this.renderizarGêneros();
+            this.renderizarDestaque(vodComFoto.length > 0 ? vodComFoto[0] : this.todosItens[0]);
             
-            // Atualizar contadores
-            document.getElementById('totalCanais').textContent = this.todosItens.filter(i => i.tipo === 'Canal').length;
-            document.getElementById('totalFilmes').textContent = this.todosItens.filter(i => i.tipo === 'Filme').length;
-            document.getElementById('totalSeries').textContent = this.todosItens.filter(i => i.tipo === 'Série').length;
-            
-            // Tirar o ecrã de carregamento
+            clearInterval(loadingTipTimer);
             document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('skeletonContainer').style.display = 'none';
+            document.getElementById('contentGrid').style.display = 'grid';
             
             this.aplicarFiltros();
         },
 
+        renderizarDestaque: function(item) {
+            if(!item || !item.poster) return;
+            const banner = document.getElementById('featuredBanner');
+            document.getElementById('featuredBg').style.backgroundImage = `url('${item.poster}')`;
+            document.getElementById('featuredTitle').textContent = item.titulo;
+            document.getElementById('featuredCategory').innerHTML = `<i class="fas fa-tag"></i> ${item.categoriaLimpa}`;
+            document.getElementById('featuredPlayBtn').onclick = () => this.abrirPlayer(item.id);
+            banner.style.display = 'flex';
+        },
+
         renderizarGêneros: function() {
             const box = document.getElementById('genreFilters');
-            let html = `<div class="genre-pill ${this.generoAtivo === 'all' ? 'active' : ''}" onclick="IPTVSystem.filtrarGenero('all')">Qualquer Gênero</div>`;
             
+            // Pega os itens da aba atual para gerar os botões (Se tiver em Canais, mostra Gêneros de Canais)
+            let baseForGenres = this.todosItens;
+            if (this.abaAtual === 'todos') baseForGenres = baseForGenres.filter(i => i.tipo !== 'Canal');
+            else if (this.abaAtual === 'canais') baseForGenres = baseForGenres.filter(i => i.tipo === 'Canal');
+            else if (this.abaAtual === 'filmes') baseForGenres = baseForGenres.filter(i => i.tipo === 'Filme');
+            else if (this.abaAtual === 'series') baseForGenres = baseForGenres.filter(i => i.tipo === 'Série');
+            else if (this.abaAtual === 'favoritos') baseForGenres = baseForGenres.filter(i => userProgress.isFavorite(i.id));
+
+            this.generosUnicos = [...new Set(baseForGenres.map(i => i.categoriaLimpa))].filter(Boolean).sort();
+            
+            let html = `<div class="genre-pill ${this.generoAtivo === 'all' ? 'active' : ''}" onclick="IPTVSystem.filtrarGenero('all')">Todos</div>`;
             this.generosUnicos.forEach(g => {
                 html += `<div class="genre-pill ${this.generoAtivo === g ? 'active' : ''}" onclick="IPTVSystem.filtrarGenero('${g.replace(/'/g, "\\'")}')">${g}</div>`;
             });
@@ -418,31 +540,30 @@
             document.querySelectorAll('.main-tab').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`aba${aba.charAt(0).toUpperCase() + aba.slice(1)}`).classList.add('active');
             
-            // Reseta busca e gênero ao trocar de aba principal
             this.busca = ''; document.getElementById('searchInput').value = '';
-            this.generoAtivo = 'all'; this.renderizarGêneros();
+            this.generoAtivo = 'all'; 
+            
+            // Oculta banner de destaque se não estiver no "Todos"
+            document.getElementById('featuredBanner').style.display = (aba === 'todos') ? 'flex' : 'none';
             
             this.aplicarFiltros();
+            this.renderizarGêneros(); // Atualiza as pílulas para condizer com a aba
         },
         
         aplicarFiltros: function() {
             let result = this.todosItens;
             
-            // 1. Filtro de Abas
-            if (this.abaAtual === 'canais') result = result.filter(i => i.tipo === 'Canal');
+            // === FILTRO DA ABA (O SEGREDO PARA ESCONDER OS CANAIS NO INÍCIO) ===
+            if (this.abaAtual === 'todos') {
+                result = result.filter(i => i.tipo !== 'Canal'); // Esconde canais do Início!
+            }
+            else if (this.abaAtual === 'canais') result = result.filter(i => i.tipo === 'Canal');
             else if (this.abaAtual === 'filmes') result = result.filter(i => i.tipo === 'Filme');
             else if (this.abaAtual === 'series') result = result.filter(i => i.tipo === 'Série');
             else if (this.abaAtual === 'favoritos') result = result.filter(i => userProgress.isFavorite(i.id));
             
-            // 2. Filtro de Gênero (Pills)
-            if (this.generoAtivo !== 'all') {
-                result = result.filter(i => i.categoriaLimpa === this.generoAtivo);
-            }
-
-            // 3. Filtro de Texto (Pesquisa)
-            if (this.busca) {
-                result = result.filter(i => i.titulo.toLowerCase().includes(this.busca) || i.categoriaLimpa.toLowerCase().includes(this.busca));
-            }
+            if (this.generoAtivo !== 'all') result = result.filter(i => i.categoriaLimpa === this.generoAtivo);
+            if (this.busca) result = result.filter(i => i.titulo.toLowerCase().includes(this.busca) || i.categoriaLimpa.toLowerCase().includes(this.busca));
             
             this.filtrados = result;
             this.paginaAtual = 1;
@@ -454,16 +575,13 @@
             this.renderizarGrid();
         },
         
-        // Clica no coração para salvar favorito
         clicarFavorito: function(event, itemId) {
-            event.stopPropagation(); // Impede de abrir o filme ao clicar no coração
+            event.stopPropagation(); 
             userProgress.toggleFavorite(itemId);
             
-            // Se eu estou dentro da aba de favoritos e tirei o favorito, eu re-renderizo a grid inteira para sumir
             if(this.abaAtual === 'favoritos') {
-                this.aplicarFiltros();
+                this.aplicarFiltros(); 
             } else {
-                // Senão, eu só troco a cor do coração que eu cliquei (Mais rápido e suave)
                 const btn = event.currentTarget;
                 const isFav = userProgress.isFavorite(itemId);
                 btn.className = `card-favorite-btn ${isFav ? 'is-fav' : ''}`;
@@ -474,14 +592,13 @@
         renderizarGrid: function() {
             const grid = document.getElementById('contentGrid');
             if(this.filtrados.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
-                    <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 15px; display:block;"></i>
-                    Nenhum resultado encontrado.
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted); background: var(--bg-card); border-radius: 20px; border: 1px dashed var(--primary);">
+                    <i class="fas fa-ghost" style="font-size: 3rem; margin-bottom: 15px; display:block; color: var(--primary);"></i>
+                    Nenhum tesouro encontrado por aqui.
                 </div>`;
                 return;
             }
             
-            // Limite de paginação
             const itensMostrar = this.filtrados.slice(0, this.paginaAtual * this.config.itemsPerPage);
             
             let html = itensMostrar.map((item, index) => {
@@ -490,36 +607,37 @@
                 if(item.tipo === 'Série') badgeClass = 'badge-serie';
 
                 const fallbackImg = item.tipo === 'Canal' ? 'https://via.placeholder.com/300x300?text=Canal+TV' : 'https://via.placeholder.com/300x450?text=Cartaz';
-                
-                // Verifica se é favorito para colocar o coração preenchido
                 const isFav = userProgress.isFavorite(item.id);
 
                 return `
                 <div class="content-card" style="animation-delay: ${Math.min(index * 0.02, 0.3)}s" onclick="IPTVSystem.abrirPlayer('${item.id}')">
                     <div class="content-poster">
-                        <img src="${item.poster}" onerror="this.src='${fallbackImg}'">
+                        <img src="${item.poster}" onerror="this.src='${fallbackImg}'" loading="lazy">
                         
                         <div class="card-favorite-btn ${isFav ? 'is-fav' : ''}" onclick="IPTVSystem.clicarFavorito(event, '${item.id}')" title="Favoritar">
                             <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
                         </div>
 
-                        <div class="content-overlay"><div class="content-play-btn"><i class="fas fa-play"></i></div></div>
-                        <div class="content-badge ${badgeClass}">${item.tipo}</div>
+                        <div class="badges-container">
+                            <div class="content-badge ${badgeClass}">${item.tipo}</div>
+                            ${item.isLeg ? `<div class="content-badge badge-leg">CC</div>` : ''}
+                        </div>
+
+                        <div class="content-overlay"><div class="content-play-btn"><i class="fas fa-play" style="margin-left: 5px;"></i></div></div>
                     </div>
                     <div class="content-info">
                         <div class="content-title">${item.titulo}</div>
-                        <div class="content-category"><i class="fas fa-tag"></i> ${item.categoriaLimpa}</div>
+                        <div class="content-category">${item.categoriaLimpa}</div>
                     </div>
                 </div>
                 `;
             }).join('');
 
-            // Lógica do botão "Carregar Mais"
             if (this.filtrados.length > this.paginaAtual * this.config.itemsPerPage) {
                 html += `
                 <div class="load-more-container">
                     <button class="load-more-btn" onclick="IPTVSystem.carregarMais()">
-                        <i class="fas fa-arrow-down"></i> Carregar Mais Filmes (${this.filtrados.length - (this.paginaAtual * this.config.itemsPerPage)} restantes)
+                        <i class="fas fa-arrow-down"></i> Revelar Mais (+${this.filtrados.length - (this.paginaAtual * this.config.itemsPerPage)})
                     </button>
                 </div>
                 `;
@@ -529,11 +647,8 @@
         },
 
         abrirPlayer: function(itemId) {
-            userProgress.addXP(25); // Ganha 25 XP ao clicar pra assistir
-            ToastSystem.show(`A preparar o player...`, 'success');
-            setTimeout(() => {
-                window.location.href = `http://br2.bronxyshost.com:4009/player/${itemId}`;
-            }, 800);
+            userProgress.addXP(25); 
+            window.location.href = `http://br2.bronxyshost.com:4009/player/${itemId}`;
         }
     };
 
@@ -541,5 +656,4 @@
 </script>
 </body>
 </html>
-
 
