@@ -391,7 +391,7 @@
     }
     function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('active'); }
     
-    function openEpisodesModal(title, children) {
+        function openEpisodesModal(title, children) {
         document.getElementById('episodesTitle').textContent = title;
         const list = document.getElementById('episodesList');
         
@@ -401,6 +401,7 @@
             let optName = child.nomeOriginal.replace(title, '').replace(/^[-\|\s]+/, '').trim();
             if(!optName) optName = "Assistir Principal"; 
             
+            // A CORREÇÃO ESTÁ AQUI: Passamos exatamente o child.id (ID único do episódio)
             return `
             <div class="episode-btn" onclick="IPTVSystem.irParaVideo('${child.id}')">
                 <span style="font-weight: bold;">${optName}</span>
@@ -412,6 +413,7 @@
         document.getElementById('modalOverlay').classList.add('active');
         document.getElementById('episodesModal').classList.add('active');
     }
+
 
     function closeEpisodesModal() {
         document.getElementById('modalOverlay').classList.remove('active');
@@ -757,10 +759,12 @@
             }
         },
 
-        irParaVideo: function(itemId) {
+                irParaVideo: function(itemId) {
             userProgress.addXP(25); 
+            // Usa o itemId específico que veio do clique no botão
             window.location.href = `http://br2.bronxyshost.com:4009/player/${itemId}`;
         }
+
     };
 
     document.addEventListener('DOMContentLoaded', () => IPTVSystem.init());
