@@ -396,7 +396,8 @@ function openEpisodesModal(title, children) {
     const list = document.getElementById('episodesList');
     
     // Ordenar para garantir que Dublados costumam aparecer primeiro
-    children.sort((a, b) => a.nomeOriginal.localeCompare(b.nomeOriginal));
+    children.sort((a, b) => a.nomeOriginal.localeCompare(b.nomeOriginal, undefined, { numeric: true, sensitivity: 'base' }));
+
 
         list.innerHTML = children.map(child => {
         const original = child.nomeOriginal; // Mantemos o nome original com S01E01, etc.
