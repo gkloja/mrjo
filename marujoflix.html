@@ -461,19 +461,34 @@ function openEpisodesModal(title, children) {
         todosItens: [], filtrados: [], generosUnicos: [], 
         busca: '', generoAtivo: 'all', paginaAtual: 1, abaAtual: 'todos', searchTimeout: null,
         
-        init: function() {
-            userProgress.updateUI();
-            this.gerarSkeleton();
-            this.carregarDados();
-            
-            document.getElementById('searchInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') this.executarBusca();
-            });
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                clearTimeout(this.searchTimeout);
-                this.searchTimeout = setTimeout(() => { this.executarBusca(); }, 1200);
-            });
-        },
+init: function() {
+    userProgress.updateUI();
+    this.gerarSkeleton();
+    this.carregarDados();
+    
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') this.executarBusca();
+    });
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(() => { this.executarBusca(); }, 1200);
+    });
+
+    // ========== NOVO CÓDIGO PARA BUSCAR PELA URL ==========
+    // Pega os parâmetros da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('q'); // 'q' é o nome do parâmetro (pode mudar)
+
+    // Se existir o parâmetro 'q', preenche o campo e executa a busca
+    if (searchQuery) {
+        // Pequeno atraso para garantir que os dados já carregaram
+        setTimeout(() => {
+            document.getElementById('searchInput').value = decodeURIComponent(searchQuery);
+            this.executarBusca(); // Executa a busca automaticamente
+        }, 1500); // Ajuste o tempo se necessário (1500ms = 1.5 segundos)
+    }
+    // ========== FIM DO NOVO CÓDIGO ==========
+},
 
         acessarFavoritosLateral: function() {
             toggleSidebar(); 
