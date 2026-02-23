@@ -315,7 +315,7 @@
         "Ajustando os radares para a melhor qualidade...",
         "Favoritar um filme te dá XP para subir de nível!",
         "Removendo duplicados e organizando as séries...",
-        "Você sabia? O catálogo 4K está sempre no topo!",
+        "Você sabia? O catálogo FHD está sempre no topo!",
         "Quase lá! Sintonizando os mares da diversão..."
     ];
     let tipIndex = 0;
@@ -495,7 +495,7 @@
             return catStr.replace(/^(Canais \| |Filmes \| |Series \| |\[XXX\] )/i, '').replace(/\[24H\] /i, '').trim();
         },
         
-        processarDados: function(data) {
+                        processarDados: function(data) {
             const mapaAgrupado = new Map();
             
             data.forEach((item, index) => {
@@ -506,19 +506,20 @@
                 const isAdulto = catStr.toLowerCase().includes('xxx') || catStr.toLowerCase().includes('adulto');
                 const is4K = (nomeOriginal.toUpperCase().includes('4K') || catStr.toUpperCase().includes('4K') || nomeOriginal.toUpperCase().includes('FHD'));
                 
+                // 🚀 Detecta se é lançamento baseado na sua lista
+                const isLancamento = catStr.toLowerCase().includes('lancamento') || catStr.toLowerCase().includes('lançamento') || nomeOriginal.toLowerCase().includes('lançamento');
+                
                 let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|\(Legendado\)|\(Dublado\)|\[4K\]|\[FHD\]|\(4K\)|\[720p\]).*/gi, '').trim();
                 if(tipo === 'Canal') nomeGrupo = nomeOriginal;
 
                 const chaveUnica = nomeGrupo.toLowerCase() + '-' + tipo;
                 const isLeg = (item.nome || '').toLowerCase().includes('legend') || catStr.toLowerCase().includes('legend');
                 
-
-// Mude para isso:
-const filhoObj = {
-    id: `idx_${index}`, // 🚀 AGORA USA A POSIÇÃO EXATA DA LINHA!
-    nomeOriginal: nomeOriginal,
-    videoUrl: item.link || ''
-};
+                const filhoObj = {
+                    id: `idx_${index}`, // ID Ninja perfeito contra bugs!
+                    nomeOriginal: nomeOriginal,
+                    videoUrl: item.link || ''
+                };
 
                 if (mapaAgrupado.has(chaveUnica)) {
                     const grupoExistente = mapaAgrupado.get(chaveUnica);
@@ -527,6 +528,7 @@ const filhoObj = {
                     if (isLeg) grupoExistente.isLeg = true;
                     if (is4K) grupoExistente.is4K = true;
                     if (isAdulto) grupoExistente.isAdulto = true;
+                    if (isLancamento) grupoExistente.isLancamento = true;
                 } else {
                     mapaAgrupado.set(chaveUnica, {
                         id_main: filhoObj.id, 
@@ -537,6 +539,7 @@ const filhoObj = {
                         isLeg: isLeg,
                         is4K: is4K,
                         isAdulto: isAdulto,
+                        isLancamento: isLancamento,
                         children: [filhoObj] 
                     });
                 }
@@ -544,8 +547,9 @@ const filhoObj = {
 
             const itensAgrupados = Array.from(mapaAgrupado.values());
 
-            let premiumMix = []; // 4K e Séries
-            let regularVod = []; // Filmes Normais
+            let lancamentosTop = []; 
+            let premiumMix = [];     
+            let regularVod = [];     
             let canais = [];
             let adultos = [];
             let resto = [];
@@ -557,26 +561,24 @@ const filhoObj = {
                     canais.push(item);
                 } else if (!item.poster || item.poster.trim() === '') {
                     resto.push(item);
+                } else if (item.isLancamento) {
+                    lancamentosTop.push(item); // Lançamentos ganham prioridade máxima
+                } else if (item.tipo === 'Série' || item.categoriaLimpa.toLowerCase().includes('anime')) {
+                    premiumMix.push(item);
                 } else {
-                    // Tem foto, não é canal nem adulto
-                    if (item.is4K || item.tipo === 'Série' || item.categoriaLimpa.toLowerCase().includes('anime')) {
-                        premiumMix.push(item);
-                    } else {
-                        regularVod.push(item);
-                    }
+                    regularVod.push(item);
                 }
             });
 
+            lancamentosTop = shuffleArray(lancamentosTop);
             premiumMix = shuffleArray(premiumMix);
             regularVod = shuffleArray(regularVod);
             canais = shuffleArray(canais);
             adultos = shuffleArray(adultos);
 
-            // A MÁGICA: O que é Premium fica na frente. Adultos ficam no fundo absoluto.
-            this.todosItens = [...premiumMix, ...regularVod, ...resto, ...canais, ...adultos];
+            this.todosItens = [...lancamentosTop, ...premiumMix, ...regularVod, ...resto, ...canais, ...adultos];
             
-            // Destaque pega os melhores, mas nunca pega adulto
-            const destaque = premiumMix.length > 0 ? premiumMix[0] : (regularVod.length > 0 ? regularVod[0] : null);
+            const destaque = lancamentosTop.length > 0 ? lancamentosTop[0] : (premiumMix.length > 0 ? premiumMix[0] : regularVod.length > 0 ? regularVod[0] : null);
             if(destaque) this.renderizarDestaque(destaque);
             
             clearInterval(loadingTipTimer);
@@ -584,8 +586,12 @@ const filhoObj = {
             document.getElementById('skeletonContainer').style.display = 'none';
             document.getElementById('contentGrid').style.display = 'grid';
             
+            // 🚀 A CORREÇÃO ESTÁ AQUI: Isso faz as categorias aparecerem imediatamente!
+            this.renderizarGêneros(); 
             this.aplicarFiltros();
         },
+
+
 
         ajustarLayoutTopo: function(ocultarBanner) {
             const catalogo = document.getElementById('catalogo');
@@ -690,7 +696,7 @@ const filhoObj = {
             }
         },
         
-        renderizarGrid: function() {
+                renderizarGrid: function() {
             const grid = document.getElementById('contentGrid');
             if(this.filtrados.length === 0) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted); background: var(--bg-card); border-radius: 20px; border: 1px dashed var(--primary);">
@@ -710,7 +716,12 @@ const filhoObj = {
                 const fallbackImg = item.tipo === 'Canal' ? 'https://via.placeholder.com/300x300?text=Canal+TV' : 'https://via.placeholder.com/300x450?text=Cartaz';
                 const isFav = userProgress.isFavorite(item.id_main);
 
+                // 🚀 ADICIONANDO OS BADGES DE FORMA INTELIGENTE
                 let badgesHtml = `<div class="content-badge ${badgeClass}">${item.tipo}</div>`;
+                
+                // Se for lançamento, adiciona o badge vermelho de "NOVO"
+                if(item.isLancamento) badgesHtml += `<div class="content-badge" style="background: var(--accent); color: white; border: none; box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);"><i class="fas fa-fire"></i> NOVO</div>`;
+                
                 if(item.is4K) badgesHtml += `<div class="content-badge badge-4k"><i class="fas fa-gem"></i> 4K</div>`;
                 if(item.isLeg) badgesHtml += `<div class="content-badge badge-leg">CC</div>`;
                 if(item.children.length > 1) badgesHtml += `<div class="content-badge badge-opcoes"><i class="fas fa-list"></i> ${item.children.length} Opções</div>`;
@@ -749,6 +760,7 @@ const filhoObj = {
             }
             grid.innerHTML = html;
         },
+
 
         abrirPlayerOuModal: function(id_main) {
             const grupo = this.todosItens.find(i => i.id_main === id_main);
