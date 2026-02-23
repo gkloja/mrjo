@@ -512,11 +512,13 @@
                 const chaveUnica = nomeGrupo.toLowerCase() + '-' + tipo;
                 const isLeg = (item.nome || '').toLowerCase().includes('legend') || catStr.toLowerCase().includes('legend');
                 
-                const filhoObj = {
-                    id: item.id || `item_${index}`,
-                    nomeOriginal: nomeOriginal,
-                    videoUrl: item.link || ''
-                };
+
+// Mude para isso:
+const filhoObj = {
+    id: `idx_${index}`, // 🚀 AGORA USA A POSIÇÃO EXATA DA LINHA!
+    nomeOriginal: nomeOriginal,
+    videoUrl: item.link || ''
+};
 
                 if (mapaAgrupado.has(chaveUnica)) {
                     const grupoExistente = mapaAgrupado.get(chaveUnica);
@@ -771,6 +773,13 @@
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 
