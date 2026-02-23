@@ -391,28 +391,62 @@
     }
     function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('active'); }
     
-        function openEpisodesModal(title, children) {
-        document.getElementById('episodesTitle').textContent = title;
-        const list = document.getElementById('episodesList');
-        
-        children.sort((a, b) => a.nomeOriginal.localeCompare(b.nomeOriginal));
+function openEpisodesModal(title, children) {
+    document.getElementById('episodesTitle').textContent = title;
+    const list = document.getElementById('episodesList');
+    
+    // Ordenar para garantir que Dublados costumam aparecer primeiro
+    children.sort((a, b) => a.nomeOriginal.localeCompare(b.nomeOriginal));
 
-        list.innerHTML = children.map(child => {
-            let optName = child.nomeOriginal.replace(title, '').replace(/^[-\|\s]+/, '').trim();
-            if(!optName) optName = "Assistir Principal"; 
-            
-            // A CORREÇÃO ESTÁ AQUI: Passamos exatamente o child.id (ID único do episódio)
-            return `
-            <div class="episode-btn" onclick="IPTVSystem.irParaVideo('${child.id}')">
-                <span style="font-weight: bold;">${optName}</span>
-                <i class="fas fa-play-circle"></i>
+    list.innerHTML = children.map(child => {
+        const original = child.nomeOriginal.toUpperCase();
+        let optName = "";
+        let qualityTag = "";
+
+        // 1. Detecção de Qualidade Independente (Mostra 4K e HDR juntos se existirem)
+        if (original.includes('4K') || original.includes('UHD')) {
+            qualityTag += " <span style='color:var(--primary); font-size:0.7rem; border:1px solid var(--primary); padding:1px 4px; border-radius:4px; margin-left:5px;'>4K</span>";
+        }
+        if (original.includes('[HDR]') || original.includes('HDR10')) {
+            qualityTag += " <span style='color:#ffcc00; font-size:0.7rem; border:1px solid #ffcc00; padding:1px 4px; border-radius:4px; margin-left:5px;'>HDR</span>";
+        }
+
+        // 2. Lógica de Idioma
+        // Se contém [L], (L) ou LEGENDADO, marcamos como Legendado. Caso contrário, Dublado.
+        if (original.includes('[L]') || original.includes('(L)') || original.includes('LEGENDADO')) {
+            optName = "Assistir Legendado";
+        } else {
+            optName = "Assistir Dublado";
+        }
+
+
+        return `
+        <div class="episode-btn" onclick="IPTVSystem.irParaVideo('${child.id}')" style="margin-bottom:8px;">
+            <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                <div style="width: 42px; height: 42px; background: rgba(0, 255, 179, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0, 255, 179, 0.2);">
+                    <i class="fas ${optName.includes('Legendado') ? 'fa-closed-captioning' : 'fa-microphone'}" style="color: var(--primary); font-size: 1.1rem;"></i>
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center;">
+                        <span style="font-weight: 700; color: white; font-size: 0.95rem;">${optName}</span>
+                        ${qualityTag}
+                    </div>
+                    <small style="color: var(--text-muted); font-size: 0.75rem;">Servidor Marujo de Alta Velocidade</small>
+                </div>
             </div>
-            `;
-        }).join('');
+            <div style="background: var(--primary); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px var(--primary-glow);">
+                <i class="fas fa-play" style="font-size: 0.7rem; color: #050510; margin-left: 2px;"></i>
+            </div>
+        </div>
+        `;
+    }).join('');
 
-        document.getElementById('modalOverlay').classList.add('active');
-        document.getElementById('episodesModal').classList.add('active');
-    }
+    document.getElementById('modalOverlay').classList.add('active');
+    document.getElementById('episodesModal').classList.add('active');
+}
+
+
+
 
 
     function closeEpisodesModal() {
@@ -509,7 +543,8 @@
                 // 🚀 Detecta se é lançamento baseado na sua lista
                 const isLancamento = catStr.toLowerCase().includes('lancamento') || catStr.toLowerCase().includes('lançamento') || nomeOriginal.toLowerCase().includes('lançamento');
                 
-                let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|\(Legendado\)|\(Dublado\)|\[4K\]|\[FHD\]|\(4K\)|\[720p\]).*/gi, '').trim();
+let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|\(Legendado\)|\(Dublado\)|\[4K\]|\[FHD\]|\(4K\)|\[720p\]|\[L\]|\[D\]|\[HDR\]|\[HDR10\]).*/gi, '').trim();
+
                 if(tipo === 'Canal') nomeGrupo = nomeOriginal;
 
                 const chaveUnica = nomeGrupo.toLowerCase() + '-' + tipo;
