@@ -608,6 +608,41 @@
             object-fit: cover; /* Recorta para preencher */
         }
 
+/* --- BOTÃO DE DOWNLOAD DO APP --- */
+.btn-download-app {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 990;
+    background: var(--gradient-primary);
+    color: #000;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-weight: 800;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 5px 20px var(--primary-glow);
+    transition: var(--transition);
+}
+
+.btn-download-app:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 10px 30px var(--primary-glow);
+    color: #000;
+}
+
+/* Ajuste para não cobrir o menu inferior no celular */
+@media (max-width: 768px) {
+    .btn-download-app {
+        bottom: 90px; 
+        left: 20px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+}
+
 
     </style>
 </head>
@@ -1046,7 +1081,26 @@ function openEpisodesModal(title, children) {
         }
         return array;
     }
-     
+     // ⚓ FUNÇÃO PARA DETECTAR SE ESTÁ NO APP OU NO NAVEGADOR
+function verificarAmbienteNavegacao() {
+    const userAgent = navigator.userAgent.toLowerCase();
+    
+    // 1. Verifica se está rodando como um PWA instalado
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    
+    // 2. Verifica se é o WebView do Android (apps costumam ter 'wv' no user-agent)
+    const isAndroidWebView = userAgent.includes('wv');
+    
+    // 3. Verifica se é um WebView de iOS
+    const isIosWebView = /(iphone|ipod|ipad).*applewebkit(?!.*safari)/.test(userAgent);
+
+    // Se NÃO for PWA, NÃO for Android WebView e NÃO for iOS WebView...
+    if (!isPWA && !isAndroidWebView && !isIosWebView) {
+        // ...o usuário está num navegador normal. Mostra o botão!
+        document.getElementById('btnDownloadApp').style.display = 'flex';
+    }
+}
+
         const IPTVSystem = {
         config: { 
             apiUrl: 'https://cors.eu.org/br2.bronxyshost.com:4009/lista.json', 
@@ -1610,13 +1664,20 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
     const tipEl = document.getElementById('loadingTip');
     if (tipEl) {
         const patenteAtual = getRankTitle(userProgress.level);
-        tipEl.innerHTML = `<span ...>Bem-vindo a bordo, ${patenteAtual}! ...</span>`;
+        tipEl.innerHTML = `<span>Bem-vindo a bordo, ${patenteAtual}! ...</span>`;
     }
+    
+    verificarAmbienteNavegacao(); // <-- ADICIONE ESTA LINHA AQUI
+    
     IPTVSystem.init(); // continua aqui
 });
+
 </script>
     <div id="floatingRewardContainer" class="floating-reward-container">
         </div>
+<a href="marujoflix.apk" download id="btnDownloadApp" class="btn-download-app" style="display: none;">
+    <i class="fas fa-download"></i> Instalar App
+</a>
 
 </body>
 </html>
