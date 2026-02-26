@@ -1148,50 +1148,81 @@ function verificarAmbienteNavegacao() {
             container.innerHTML = html;
         },
 
-        executarCompartilhamentoDiario: async function() {
+                executarCompartilhamentoDiario: async function() {
             const shareData = {
                 title: 'Marujo Flix',
                 text: 'Venha assistir a filmes, séries e TV online grátis no Marujo Flix! Ganhe XP e suba de patente!',
                 url: window.location.origin // Compartilha a URL principal do site
             };
-
-            const today = new Date().toDateString();
             
-            // Tenta usar a API nativa (Android/iOS)
-            if (navigator.share) {
+            const textoParaCopiar = `${shareData.text} ${shareData.url}`;
+            const today = new Date().toDateString();
+
+            // Função interna para entregar a recompensa se der certo
+            const entregarRecompensa = () => {
+                userProgress.addXP(50);
+                localStorage.setItem('marujoflix_last_share', today);
+                ToastSystem.show('🎉 Recompensa Coletada! +50 XP!', 'success');
+                IPTVSystem.renderFloatingButton();
+            };
+
+            // 1. Tenta abrir o menu nativo de compartilhamento do celular (Precisa de HTTPS)
+            if (navigator.share && window.isSecureContext) {
                 try {
                     await navigator.share(shareData);
-                    // SUCESSO: O usuário escolheu um app e compartilhou
-                    userProgress.addXP(50);
-                    localStorage.setItem('marujoflix_last_share', today);
-                    
-                    ToastSystem.show('🎉 Recompensa Diária Coletada! +50 XP!', 'success');
-                    
-                    // Efeito sonoro opcional de sucesso (se quiser, descomente)
-                     new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3').play().catch(()=>{});
-
-                    this.renderFloatingButton(); // Atualiza o botão para inativo
+                    entregarRecompensa(); // Se o usuário escolheu o WhatsApp, Insta, etc.
+                    return; 
                 } catch (error) {
-                    // Se o erro for AbortError, o usuário cancelou a tela de compartilhamento
+                    // Se o erro for AbortError, o usuário apenas fechou a gaveta de compartilhar
                     if (error.name === 'AbortError') {
-                        ToastSystem.show('Compartilhamento cancelado. O XP não foi coletado.', 'error');
-                    } else {
-                        console.log('Erro no share:', error);
+                        ToastSystem.show('Compartilhamento cancelado.', 'error');
+                        return;
                     }
+                    // Se deu outro erro, ele ignora e tenta o plano B abaixo
                 }
+            }
+
+            // 2. PLANO B: Copiar para a área de transferência (Para PC ou se o share falhar)
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textoParaCopiar).then(() => {
+                    ToastSystem.show('Link copiado! Cole para seus amigos. 🚀', 'success');
+                    entregarRecompensa();
+                }).catch(() => tentarCopiaExtrema(textoParaCopiar, entregarRecompensa));
             } else {
-                // Fallback para PC (Copia para área de transferência)
-                // No PC não dá para verificar "cancelamento", então damos o benefício da dúvida.
-                navigator.clipboard.writeText(shareData.text + ' ' + shareData.url).then(() => {
-                    userProgress.addXP(500);
-                    localStorage.setItem('marujoflix_last_share', today);
-                    ToastSystem.show('Link copiado! Cole para seus amigos. +500 XP 🚀', 'success');
-                    this.renderFloatingButton();
-                }).catch(() => {
-                    ToastSystem.show('Erro ao copiar link.', 'error');
-                });
+                // 3. PLANO C (EXTREMO): Para WebViews antigos ou sites sem HTTPS (Seu APK)
+                tentarCopiaExtrema(textoParaCopiar, entregarRecompensa);
+            }
+
+            // Função do Plano C
+            function tentarCopiaExtrema(texto, callbackSucesso) {
+                try {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = texto;
+                    // Esconde o campo para o usuário não ver
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-9999px";
+                    textArea.style.top = "-9999px";
+                    document.body.appendChild(textArea);
+                    
+                    textArea.focus();
+                    textArea.select();
+                    
+                    // O comando mágico que funciona até em navegadores pré-históricos
+                    const funcionou = document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    
+                    if (funcionou) {
+                        ToastSystem.show('Link copiado! Cole para seus amigos. 🚀', 'success');
+                        callbackSucesso();
+                    } else {
+                        ToastSystem.show('Erro: Seu dispositivo bloqueou a cópia.', 'error');
+                    }
+                } catch (err) {
+                    ToastSystem.show('Erro ao tentar copiar o link.', 'error');
+                }
             }
         },
+
         
 init: function() {
 userProgress.updateUI();
