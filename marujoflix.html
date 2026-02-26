@@ -460,6 +460,100 @@
   justify-content: center;
   border: 2px solid var(--bg-darker);
 }
+        /* --- BOTÃO FLUTUANTE DE RECOMPENSA DIÁRIA --- */
+        .floating-reward-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 990; /* Fica abaixo do modal e sidebar, mas acima do conteúdo */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        /* Ajuste para mobile para não cobrir a barra inferior */
+        @media (max-width: 768px) {
+            .floating-reward-container {
+                bottom: 90px; /* Sobe para não bater na navbar mobile */
+                right: 20px;
+            }
+        }
+
+        .btn-floating-reward {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Efeito elástico */
+            position: relative;
+        }
+
+        /* ESTADO ATIVO: Recompensa Disponível (Pulsando e Colorido) */
+        .btn-floating-reward.active {
+            background: linear-gradient(135deg, #ff0077, var(--secondary));
+            animation: pulse-reward 2s infinite;
+        }
+
+        .btn-floating-reward.active:hover {
+            transform: scale(1.1) rotate(-10deg);
+        }
+        
+        /* Pequeno badge de "XP" no botão */
+        .xp-badge-float {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            background: var(--primary);
+            color: black;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 2px solid var(--bg-darker);
+        }
+
+        /* ESTADO INATIVO: Já coletado (Cinza e menor) */
+        .btn-floating-reward.inactive {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-muted);
+            transform: scale(0.8);
+            box-shadow: none;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        
+        /* Tooltip (texto que aparece ao passar o mouse) */
+        .reward-tooltip {
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: var(--transition);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        
+        .floating-reward-container:hover .reward-tooltip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes pulse-reward {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 119, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 0, 119, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 119, 0); }
+        }
+
     </style>
 </head>
 <body>
@@ -905,15 +999,98 @@ function openEpisodesModal(title, children) {
 
         estatisticasSite: { viewsPopulares: {}, totalViews: 0 }, // GUARDA OS DADOS AQUI
         busca: '', generoAtivo: 'all', paginaAtual: 1, abaAtual: 'todos', searchTimeout: null,
+        irParaVideo: function(itemId) {
+            userProgress.addXP(25); 
+            window.location.href = `http://br2.bronxyshost.com:4009/player/${itemId}`;
+        },
+
+        // --- NOVO SISTEMA DE RECOMPENSA FLUTUANTE ---
+
+        renderFloatingButton: function() {
+            const container = document.getElementById('floatingRewardContainer');
+            if(!container) return;
+
+            const today = new Date().toDateString();
+            const lastShare = localStorage.getItem('marujoflix_last_share');
+            // Se a data de hoje for diferente da última data salva, pode ganhar
+            const canEarn = (lastShare !== today);
+
+            let html = '';
+            if(canEarn) {
+                // ESTADO ATIVO: Presente pulsando
+                html = `
+                    <div class="reward-tooltip">🎁 Recompensa Diária: +50 XP!</div>
+                    <button class="btn-floating-reward active" onclick="IPTVSystem.executarCompartilhamentoDiario()">
+                        <div class="xp-badge-float">+50</div>
+                        <i class="fas fa-gift fa-bounce"></i> </button>
+                `;
+            } else {
+                // ESTADO INATIVO: Checkmark cinza
+                html = `
+                     <div class="reward-tooltip">Volte amanhã para mais XP!</div>
+                    <button class="btn-floating-reward inactive" onclick="ToastSystem.show('Você já coletou sua recompensa de hoje! Volte amanhã.', 'info')">
+                        <i class="fas fa-check-circle"></i>
+                    </button>
+                `;
+            }
+            container.innerHTML = html;
+        },
+
+        executarCompartilhamentoDiario: async function() {
+            const shareData = {
+                title: 'Marujo Flix',
+                text: 'Venha assistir a filmes, séries e TV online grátis no Marujo Flix! Ganhe XP e suba de patente!',
+                url: window.location.origin // Compartilha a URL principal do site
+            };
+
+            const today = new Date().toDateString();
+            
+            // Tenta usar a API nativa (Android/iOS)
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                    // SUCESSO: O usuário escolheu um app e compartilhou
+                    userProgress.addXP(50);
+                    localStorage.setItem('marujoflix_last_share', today);
+                    
+                    ToastSystem.show('🎉 Recompensa Diária Coletada! +50 XP!', 'success');
+                    
+                    // Efeito sonoro opcional de sucesso (se quiser, descomente)
+                     new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3').play().catch(()=>{});
+
+                    this.renderFloatingButton(); // Atualiza o botão para inativo
+                } catch (error) {
+                    // Se o erro for AbortError, o usuário cancelou a tela de compartilhamento
+                    if (error.name === 'AbortError') {
+                        ToastSystem.show('Compartilhamento cancelado. O XP não foi coletado.', 'error');
+                    } else {
+                        console.log('Erro no share:', error);
+                    }
+                }
+            } else {
+                // Fallback para PC (Copia para área de transferência)
+                // No PC não dá para verificar "cancelamento", então damos o benefício da dúvida.
+                navigator.clipboard.writeText(shareData.text + ' ' + shareData.url).then(() => {
+                    userProgress.addXP(500);
+                    localStorage.setItem('marujoflix_last_share', today);
+                    ToastSystem.show('Link copiado! Cole para seus amigos. +500 XP 🚀', 'success');
+                    this.renderFloatingButton();
+                }).catch(() => {
+                    ToastSystem.show('Erro ao copiar link.', 'error');
+                });
+            }
+        },
         
 init: function() {
-    userProgress.updateUI();
-    this.gerarSkeleton();
-    this.carregarDados();
-    this.carregarEstatisticas(); // CARREGA AS VIEWS PRIMEIRO
-    document.getElementById('searchInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') this.executarBusca();
-    });
+userProgress.updateUI();
+            this.gerarSkeleton();
+            this.carregarDados();
+            this.carregarEstatisticas(); 
+            this.renderFloatingButton(); // <--- ADICIONE ESTA LINHA AQUI
+            
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.executarBusca();
+            });
     document.getElementById('searchInput').addEventListener('input', (e) => {
         clearTimeout(this.searchTimeout);
         this.searchTimeout = setTimeout(() => { this.executarBusca(); }, 1200);
@@ -934,6 +1111,15 @@ init: function() {
     }
     // ========== FIM DO NOVO CÓDIGO ==========
 },
+// ... (resto do código do IPTVSystem acima) ...
+
+        
+        
+        // --- FIM DO NOVO SISTEMA ---
+
+
+// ... (fechamento do objeto e listeners finais)
+
 
         acessarFavoritosLateral: function() {
             toggleSidebar(); 
@@ -1355,33 +1541,8 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
             userProgress.addXP(25); 
             // Usa o itemId específico que veio do clique no botão
             window.location.href = `http://br2.bronxyshost.com:4009/player/${itemId}`;
-        },
-                compartilharSite: function() {
-            const shareData = {
-                title: 'Marujo Flix',
-                text: 'Venha assistir a filmes, séries e TV online grátis no Marujo Flix!',
-                url: window.location.href
-            };
-
-            // Tenta usar a API de compartilhamento nativa (Mobile)
-            if (navigator.share) {
-                navigator.share(shareData).then(() => {
-                    userProgress.addXP(500); // Super recompensa de XP
-                    ToastSystem.show('Obrigado por espalhar a palavra! +500 XP 🚀', 'success');
-                }).catch((error) => {
-                    console.log('Compartilhamento cancelado ou falhou', error);
-                });
-            } else {
-                // Fallback para Desktop (Copia o link para a área de transferência)
-                navigator.clipboard.writeText(window.location.href).then(() => {
-                    userProgress.addXP(500);
-                    ToastSystem.show('Link copiado pro seu diário de bordo! +500 XP 🚀', 'success');
-                }).catch(() => {
-                    ToastSystem.show('Não foi possível copiar o link.', 'error');
-                });
-            }
         }
-
+                
 
     };
 
@@ -1396,6 +1557,9 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
     IPTVSystem.init(); // continua aqui
 });
 </script>
+    <div id="floatingRewardContainer" class="floating-reward-container">
+        </div>
+
 </body>
 </html>
 
