@@ -1690,20 +1690,21 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
     };
 
     document.addEventListener('DOMContentLoaded', () => IPTVSystem.init());
+        // Deixamos apenas UM evento DOMContentLoaded para iniciar tudo
     document.addEventListener('DOMContentLoaded', () => {
-    // Agora userProgress e getRankTitle já existem
-    const tipEl = document.getElementById('loadingTip');
-    if (tipEl) {
-        const patenteAtual = getRankTitle(userProgress.level);
-        tipEl.innerHTML = `<span>Bem-vindo a bordo, ${patenteAtual}! ...</span>`;
-    }
-    
-    verificarAmbienteNavegacao(); // <-- ADICIONE ESTA LINHA AQUI
-    
-    IPTVSystem.init(); // continua aqui
-});
-
+        // Agora userProgress e getRankTitle já existem
+        const tipEl = document.getElementById('loadingTip');
+        if (tipEl) {
+            const patenteAtual = getRankTitle(userProgress.level);
+            tipEl.innerHTML = `<span>Bem-vindo a bordo, ${patenteAtual}! ...</span>`;
+        }
+        
+        verificarAmbienteNavegacao(); 
+        
+        IPTVSystem.init(); // O sistema agora inicia apenas UMA vez de forma limpa
+    });
 </script>
+
     <div id="floatingRewardContainer" class="floating-reward-container">
         </div>
 <a href="marujoflix.apk" download id="btnDownloadApp" class="btn-download-app" style="display: none;">
