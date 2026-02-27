@@ -1557,46 +1557,21 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
             }
         },
 
-                renderizarDestaque: async function(item) {
+                        renderizarDestaque: function(item) {
             if(!item || !item.poster) return;
             
             const bgElement = document.getElementById('featuredBg');
             
-            // 1. Reseta o fundo com a imagem do poster (caso a internet esteja lenta)
+            // Fundo estático super rápido com o poster
             bgElement.style.backgroundImage = `url('${item.poster}')`;
-            bgElement.innerHTML = ''; // Limpa qualquer vídeo anterior
+            bgElement.innerHTML = ''; // Garante que não tem vídeo rodando
+            bgElement.style.filter = 'blur(5px) brightness(0.7)'; // Mantém aquele efeito visual bonito
             
-            // 2. Preenche os textos
             document.getElementById('featuredTitle').textContent = item.titulo;
             document.getElementById('featuredCategory').innerHTML = `<i class="fas fa-tag"></i> ${item.categoriaLimpa}`;
             document.getElementById('featuredPlayBtn').onclick = () => this.abrirPlayerOuModal(item.id_main);
-
-            // 3. NOVO: Busca o trailer no TMDB para tocar no fundo!
-            // Usamos um try/catch para não travar o site se o TMDB demorar
-            try {
-                const info = await TMDBSystem.buscarInfo(item.titulo, item.tipo);
-                
-                if (info && info.trailer) {
-                    // Tira o borrado (blur) para o vídeo ficar nítido, mas mantém escuro
-                    bgElement.style.filter = 'brightness(0.5)'; 
-                    
-                    // Hack CSS para o iframe do YouTube cobrir a tela toda sem bordas pretas!
-                    bgElement.innerHTML = `
-                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none;">
-                            <iframe style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%); opacity: 0.8;" 
-                                    src="https://www.youtube.com/embed/${info.trailer}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${info.trailer}&modestbranding=1" 
-                                    frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
-                            </iframe>
-                        </div>
-                    `;
-                } else {
-                    // Se não tiver trailer, devolve o efeito borrado original na imagem
-                    bgElement.style.filter = 'blur(5px) brightness(0.7)';
-                }
-            } catch (e) {
-                bgElement.style.filter = 'blur(5px) brightness(0.7)';
-            }
         },
+
 
 
                 renderizarGêneros: function() {
