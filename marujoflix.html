@@ -11,7 +11,7 @@
     <!-- META DESCRIÇÃO ENRIQUECIDA -->
     <meta name="description" content="Assista aos melhores filmes, séries e canais de TV online grátis no Marujo Flix. Ação, comédia, drama, Futebol, documentários e muito mais. Atualizado diariamente!">
     
-    <!-- PALAVRAS-CHAVE (AINDA ÚTEIS PARA ALGUNS BUSCADORES) -->
+    <!-- PAAVRAS-CHAVE (AINDA ÚTEIS PARA ALGUNS BUSCADORES) -->
     <meta name="keywords" content="filmes online, séries online, tv online grátis, assistir filmes, marujo flix, marujoflix, filmes de ação, séries de drama, streaming grátis, cinema em casa, Jogos de Futebol">
     
     <!-- AUTOR E COPYRIGHT -->
@@ -529,19 +529,24 @@
         }
         
         /* Tooltip (texto que aparece ao passar o mouse) */
-        .reward-tooltip {
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            margin-bottom: 10px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: var(--transition);
-            pointer-events: none;
-            white-space: nowrap;
-        }
+/* Tooltip (texto que aparece ao passar o mouse) */
+.reward-tooltip {
+    position: absolute; /* ISSO RESOLVE O PROBLEMA: Tira o texto do caminho físico */
+    bottom: 100%;       /* Joga o texto para cima do botão */
+    right: 0;           /* Alinha à direita */
+    margin-bottom: 15px;/* Espaço entre o botão e o texto */
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: var(--transition);
+    pointer-events: none; /* Garante que o texto NUNCA intercepte cliques */
+    white-space: nowrap;
+}
+
         
         .floating-reward-container:hover .reward-tooltip {
             opacity: 1;
@@ -802,8 +807,16 @@
             <h3 id="episodesTitle">Escolha uma Opção</h3>
             <button class="episodes-close" onclick="closeEpisodesModal()"><i class="fas fa-times"></i></button>
         </div>
+        
+        <div id="tmdbContainer" style="display: none; padding: 20px; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.2);">
+            <div id="tmdbTrailer" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: none;">
+                </div>
+            <p id="tmdbSinopse" style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; text-align: justify; margin: 0;"></p>
+        </div>
+        
         <div class="episodes-list" id="episodesList"></div>
     </div>
+
 
 <script>
     window.addEventListener('scroll', () => {
@@ -842,6 +855,62 @@ setTimeout(() => {
 
 
   
+      // ⚓ SISTEMA TMDB (Trailers e Sinopses)
+        // ⚓ SISTEMA TMDB (Trailers e Sinopses)
+    const TMDBSystem = {
+        apiKey: '05d9219b08b6af53612ea63272f4484a', // Sua chave real do TMDB
+        
+        async buscarInfo(titulo, tipoConteudo) {
+            // CORREÇÃO AQUI: Agora ele só cancela se a chave estiver totalmente vazia
+            if (!this.apiKey) return null; 
+            
+            try {
+                // Limpa o título para facilitar a busca no TMDB
+                let tituloLimpo = titulo.replace(/O Filme|Dublado|Legendado/gi, '').trim();
+                let tipoBusca = (tipoConteudo === 'Série') ? 'tv' : 'movie';
+                
+                // 1. Busca o ID do filme/série
+                let urlBusca = `https://api.themoviedb.org/3/search/${tipoBusca}?api_key=${this.apiKey}&query=${encodeURIComponent(tituloLimpo)}&language=pt-BR`;
+                let resBusca = await fetch(urlBusca);
+                let dadosBusca = await resBusca.json();
+                
+                // Se não achar, tenta uma busca genérica (multi)
+                if (!dadosBusca.results || dadosBusca.results.length === 0) {
+                    urlBusca = `https://api.themoviedb.org/3/search/multi?api_key=${this.apiKey}&query=${encodeURIComponent(tituloLimpo)}&language=pt-BR`;
+                    resBusca = await fetch(urlBusca);
+                    dadosBusca = await resBusca.json();
+                    if (!dadosBusca.results || dadosBusca.results.length === 0) return null;
+                }
+
+                const resultado = dadosBusca.results[0];
+                const idTmdb = resultado.id;
+                const mediaType = resultado.media_type || tipoBusca;
+                
+                // 2. Busca o Trailer pelo ID
+                let urlVideo = `https://api.themoviedb.org/3/${mediaType}/${idTmdb}/videos?api_key=${this.apiKey}&language=pt-BR`;
+                let resVideo = await fetch(urlVideo);
+                let dadosVideo = await resVideo.json();
+                
+                let trailerKey = null;
+                if (dadosVideo.results && dadosVideo.results.length > 0) {
+                    // Pega o primeiro trailer oficial do YouTube
+                    const trailer = dadosVideo.results.find(v => v.type === 'Trailer' && v.site === 'YouTube') || dadosVideo.results.find(v => v.site === 'YouTube');
+                    if (trailer) trailerKey = trailer.key;
+                }
+                
+                return {
+                    sinopse: resultado.overview || 'A sinopse deste título ainda não está disponível em nossos registros.',
+                    trailer: trailerKey
+                };
+
+            } catch (error) {
+                console.log("Erro ao buscar no TMDB:", error);
+                return null;
+            }
+        }
+    };
+
+
 
     const ToastSystem = {
         container: document.getElementById('toastContainer'),
@@ -1017,62 +1086,104 @@ updateLoadingScreen();
     }
     function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('active'); }
     
-function openEpisodesModal(title, children) {
-    document.getElementById('episodesTitle').textContent = title;
-    const list = document.getElementById('episodesList');
-    
-    // Ordenar para garantir que Dublados costumam aparecer primeiro
-    children.sort((a, b) => a.nomeOriginal.localeCompare(b.nomeOriginal, undefined, { numeric: true, sensitivity: 'base' }));
+    async function openEpisodesModal(title, children, tipo) {
+        document.getElementById('episodesTitle').textContent = title;
+        const list = document.getElementById('episodesList');
+        const tmdbContainer = document.getElementById('tmdbContainer');
+        const tmdbTrailer = document.getElementById('tmdbTrailer');
+        const tmdbSinopse = document.getElementById('tmdbSinopse');
+        
+        // Tela de carregamento rápida enquanto busca no TMDB
+        list.innerHTML = '<div style="text-align:center; padding: 30px;"><i class="fas fa-compass fa-spin" style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;"></i><p style="color: var(--text-muted);">Buscando registros navais...</p></div>';
+        tmdbContainer.style.display = 'none';
+        tmdbTrailer.innerHTML = '';
+        tmdbTrailer.style.display = 'none';
+        
+        // Limpa o botão de fallback antigo (se houver) ao abrir um novo filme
+        const oldFallback = document.getElementById('btnYoutubeFallback');
+        if(oldFallback) oldFallback.remove();
+        
+        document.getElementById('modalOverlay').classList.add('active');
+        document.getElementById('episodesModal').classList.add('active');
 
+        // Busca dados no TMDB (Ignora se for Canal de TV)
+        if (tipo === 'Filme' || tipo === 'Série') {
+            const info = await TMDBSystem.buscarInfo(title, tipo);
+            
+            if (info) {
+                tmdbContainer.style.display = 'block';
+                
+                // CORREÇÃO DA SINOPSE: Limita a altura e cria uma barra de rolagem (scroll)
+                tmdbSinopse.textContent = info.sinopse;
+                tmdbSinopse.style.maxHeight = '90px'; // Altura máxima permitida
+                tmdbSinopse.style.overflowY = 'auto'; // Habilita o scroll
+                tmdbSinopse.style.paddingRight = '10px'; // Dá um espaço para a barra
+                
+                if (info.trailer) {
+                    tmdbTrailer.style.display = 'block';
+                    
+                    // CORREÇÃO DO ERRO 153: Adicionando "origin" e um link alternativo
+                    const urlAtual = window.location.origin;
+                    tmdbTrailer.innerHTML = `<iframe width="100%" height="100%" style="position: absolute; top: 0; left: 0;" src="https://www.youtube.com/embed/${info.trailer}?origin=${urlAtual}" title="Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                    
+                    // Cria um link logo abaixo do player para quem sofrer com o vídeo bloqueado
+                    const fallbackHtml = `<a id="btnYoutubeFallback" href="https://www.youtube.com/watch?v=${info.trailer}" target="_blank" style="display: block; text-align: center; color: var(--accent); font-size: 0.75rem; margin-top: -10px; margin-bottom: 15px; text-decoration: none;"><i class="fab fa-youtube"></i> Trailer não carregou? Assista direto no YouTube</a>`;
+                    tmdbTrailer.insertAdjacentHTML('afterend', fallbackHtml);
+                }
+            }
+        }
+
+        // Renderiza os botões de play/episódios (código original mantido)
+        children.sort((a, b) => a.nomeOriginal.localeCompare(b.nomeOriginal, undefined, { numeric: true, sensitivity: 'base' }));
 
         list.innerHTML = children.map(child => {
-        const original = child.nomeOriginal; // Mantemos o nome original com S01E01, etc.
-        const originalUpper = original.toUpperCase();
-        let qualityTag = "";
+            const original = child.nomeOriginal;
+            const originalUpper = original.toUpperCase();
+            let qualityTag = "";
 
-        // Detecção de Qualidade
-        if (originalUpper.includes('4K') || originalUpper.includes('UHD')) {
-            qualityTag += " <span style='color:var(--primary); font-size:0.7rem; border:1px solid var(--primary); padding:1px 4px; border-radius:4px; margin-left:5px;'>4K</span>";
-        }
-        
-        // Lógica de Idioma simplificada para o Badge
-        const isLeg = originalUpper.includes('[L]') || originalUpper.includes('(L)') || originalUpper.includes('LEGENDADO');
-        const langIcon = isLeg ? 'fa-closed-captioning' : 'fa-microphone';
+            if (originalUpper.includes('4K') || originalUpper.includes('UHD')) {
+                qualityTag += " <span style='color:var(--primary); font-size:0.7rem; border:1px solid var(--primary); padding:1px 4px; border-radius:4px; margin-left:5px;'>4K</span>";
+            }
+            
+            const isLeg = originalUpper.includes('[L]') || originalUpper.includes('(L)') || originalUpper.includes('LEGENDADO');
+            const langIcon = isLeg ? 'fa-closed-captioning' : 'fa-microphone';
 
-        return `
-        <div class="episode-btn" onclick="IPTVSystem.irParaVideo('${child.id}')" style="margin-bottom:8px;">
-            <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
-                <div style="width: 42px; height: 42px; background: rgba(0, 255, 179, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0, 255, 179, 0.2);">
-                    <i class="fas ${langIcon}" style="color: var(--primary); font-size: 1.1rem;"></i>
-                </div>
-                <div style="display: flex; flex-direction: column;">
-                    <div style="display: flex; align-items: center; flex-wrap: wrap;">
-                        <span style="font-weight: 700; color: white; font-size: 0.9rem;">${original}</span>
-                        ${qualityTag}
+            return `
+            <div class="episode-btn" onclick="IPTVSystem.irParaVideo('${child.id}')" style="margin-bottom:8px;">
+                <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                    <div style="width: 42px; height: 42px; background: rgba(0, 255, 179, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0, 255, 179, 0.2);">
+                        <i class="fas ${langIcon}" style="color: var(--primary); font-size: 1.1rem;"></i>
                     </div>
-                    <small style="color: var(--text-muted); font-size: 0.7rem;">Toque para zarpar e assistir</small>
+                    <div style="display: flex; flex-direction: column;">
+                        <div style="display: flex; align-items: center; flex-wrap: wrap;">
+                            <span style="font-weight: 700; color: white; font-size: 0.9rem;">${original}</span>
+                            ${qualityTag}
+                        </div>
+                        <small style="color: var(--text-muted); font-size: 0.7rem;">Toque para zarpar e assistir</small>
+                    </div>
+                </div>
+                <div style="background: var(--primary); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px var(--primary-glow); flex-shrink: 0;">
+                    <i class="fas fa-play" style="font-size: 0.7rem; color: #050510; margin-left: 2px;"></i>
                 </div>
             </div>
-            <div style="background: var(--primary); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px var(--primary-glow); flex-shrink: 0;">
-                <i class="fas fa-play" style="font-size: 0.7rem; color: #050510; margin-left: 2px;"></i>
-            </div>
-        </div>
-        `;
-    }).join('');
-
-
-    document.getElementById('modalOverlay').classList.add('active');
-    document.getElementById('episodesModal').classList.add('active');
-}
+            `;
+        }).join('');
+    }
 
 
 
 
 
-    function closeEpisodesModal() {
+
+
+        function closeEpisodesModal() {
         document.getElementById('modalOverlay').classList.remove('active');
         document.getElementById('episodesModal').classList.remove('active');
+        // Corta o vídeo do YouTube para não continuar tocando o som escondido
+        const trailerDiv = document.getElementById('tmdbTrailer');
+        if(trailerDiv) trailerDiv.innerHTML = ''; 
     }
+
 
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
@@ -1653,18 +1764,21 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
 
 
 
-                abrirPlayerOuModal: function(id_main) {
-            userProgress.addToHistory(id_main); // SALVA NO HISTÓRICO AUTOMATICAMENTE!
+                        abrirPlayerOuModal: function(id_main) {
+            userProgress.addToHistory(id_main); 
             
             const grupo = this.todosItens.find(i => i.id_main === id_main);
             if (!grupo) return;
 
-            if (grupo.children.length === 1) {
+            // Se for canal de TV, vai direto pro player (não tem trailer)
+            if (grupo.tipo === 'Canal' && grupo.children.length === 1) {
                 this.irParaVideo(grupo.children[0].id);
             } else {
-                openEpisodesModal(grupo.titulo, grupo.children);
+                // Filmes e Séries abrem o modal para exibir Trailer e Sinopse!
+                openEpisodesModal(grupo.titulo, grupo.children, grupo.tipo);
             }
         },
+
 
         // --- FUNÇÕES DE GERENCIAR O HISTÓRICO ---
         limparHistorico: function() {
