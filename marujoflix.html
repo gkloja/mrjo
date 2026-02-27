@@ -1124,7 +1124,9 @@ updateLoadingScreen();
                     
                     // CORREÇÃO DO ERRO 153: Adicionando "origin" e um link alternativo
                     const urlAtual = window.location.origin;
-                    tmdbTrailer.innerHTML = `<iframe width="100%" height="100%" style="position: absolute; top: 0; left: 0;" src="https://www.youtube.com/embed/${info.trailer}?origin=${urlAtual}" title="Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                    // CORREÇÃO: Adicionado autoplay=1 no link do YouTube
+tmdbTrailer.innerHTML = `<iframe width="100%" height="100%" style="position: absolute; top: 0; left: 0;" src="https://www.youtube.com/embed/${info.trailer}?autoplay=1&origin=${urlAtual}" title="Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+
                     
                     // Cria um link logo abaixo do player para quem sofrer com o vídeo bloqueado
                     const fallbackHtml = `<a id="btnYoutubeFallback" href="https://www.youtube.com/watch?v=${info.trailer}" target="_blank" style="display: block; text-align: center; color: var(--accent); font-size: 0.75rem; margin-top: -10px; margin-bottom: 15px; text-decoration: none;"><i class="fab fa-youtube"></i> Trailer não carregou? Assista direto no YouTube</a>`;
@@ -1555,13 +1557,47 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
             }
         },
 
-        renderizarDestaque: function(item) {
+                renderizarDestaque: async function(item) {
             if(!item || !item.poster) return;
-            document.getElementById('featuredBg').style.backgroundImage = `url('${item.poster}')`;
+            
+            const bgElement = document.getElementById('featuredBg');
+            
+            // 1. Reseta o fundo com a imagem do poster (caso a internet esteja lenta)
+            bgElement.style.backgroundImage = `url('${item.poster}')`;
+            bgElement.innerHTML = ''; // Limpa qualquer vídeo anterior
+            
+            // 2. Preenche os textos
             document.getElementById('featuredTitle').textContent = item.titulo;
             document.getElementById('featuredCategory').innerHTML = `<i class="fas fa-tag"></i> ${item.categoriaLimpa}`;
             document.getElementById('featuredPlayBtn').onclick = () => this.abrirPlayerOuModal(item.id_main);
+
+            // 3. NOVO: Busca o trailer no TMDB para tocar no fundo!
+            // Usamos um try/catch para não travar o site se o TMDB demorar
+            try {
+                const info = await TMDBSystem.buscarInfo(item.titulo, item.tipo);
+                
+                if (info && info.trailer) {
+                    // Tira o borrado (blur) para o vídeo ficar nítido, mas mantém escuro
+                    bgElement.style.filter = 'brightness(0.5)'; 
+                    
+                    // Hack CSS para o iframe do YouTube cobrir a tela toda sem bordas pretas!
+                    bgElement.innerHTML = `
+                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none;">
+                            <iframe style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%); opacity: 0.8;" 
+                                    src="https://www.youtube.com/embed/${info.trailer}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${info.trailer}&modestbranding=1" 
+                                    frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+                            </iframe>
+                        </div>
+                    `;
+                } else {
+                    // Se não tiver trailer, devolve o efeito borrado original na imagem
+                    bgElement.style.filter = 'blur(5px) brightness(0.7)';
+                }
+            } catch (e) {
+                bgElement.style.filter = 'blur(5px) brightness(0.7)';
+            }
         },
+
 
                 renderizarGêneros: function() {
             const box = document.getElementById('genreFilters');
