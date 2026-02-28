@@ -1018,30 +1018,24 @@ setTimeout(() => {
     let unsubscribeComments = null;
 
     // Função Inteligente de Login (Resolve o erro do Median.co e Navegador)
-    function fazerLoginGoogle() {
-        if(!window.fbOps) return;
-        ToastSystem.show('Conectando ao Google...', 'info');
-        
-        // Detecta se está em um celular ou WebView (Como o Median.co)
-        const isMobileOrWebView = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|wv/i.test(navigator.userAgent);
+    // Substitua sua function fazerLoginGoogle() por esta versão otimizada
+function fazerLoginGoogle() {
+    if(!window.fbOps) return;
+    ToastSystem.show('Iniciando embarque no Google...', 'info');
 
-        if (isMobileOrWebView) {
-            // Em Apps, Popups são bloqueados. O Redirecionamento é 100% garantido.
-            window.fbOps.signInWithRedirect(window.auth, window.googleProvider).catch((error) => {
-                console.error("ERRO GOOGLE REDIRECT: ", error);
-                ToastSystem.show("Erro ao conectar com a conta Google.", "error");
-            });
-        } else {
-            // No PC, tenta o Popup para uma experiência mais rápida e limpa
-            window.fbOps.signInWithPopup(window.auth, window.googleProvider)
-                .then((result) => ToastSystem.show(`Bem-vindo, ${result.user.displayName.split(' ')[0]}!`, 'success'))
-                .catch((error) => {
-                    console.error("ERRO GOOGLE POPUP: ", error);
-                    // Se o popup for bloqueado no PC, tenta o redirecionamento como plano B
-                    window.fbOps.signInWithRedirect(window.auth, window.googleProvider);
-                });
-        }
-    }
+    // Força o usuário a poder escolher a conta ao invés de entrar em loop automático
+    window.googleProvider.setCustomParameters({
+        prompt: 'select_account'
+    });
+
+    // Usa sempre o redirect. Como configuramos o Median.co pra não pular fora da tela, 
+    // a tela do app inteira vai pro Google e volta nativamente!
+    window.fbOps.signInWithRedirect(window.auth, window.googleProvider).catch((error) => {
+        console.error("ERRO GOOGLE LOGIN: ", error);
+        ToastSystem.show("Erro ao tentar abrir a tela do Google.", "error");
+    });
+}
+
 
     function fazerLogout() {
         if(!window.fbOps) return;
