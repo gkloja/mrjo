@@ -1160,11 +1160,60 @@ setTimeout(() => {
         if(typeof renderizarInputChatGlobal === 'function') renderizarInputChatGlobal();
         if(typeof currentMovieIdForComments !== 'undefined' && currentMovieIdForComments) renderizarAreaDeComentario();
     }
+        // O link da sua API
     const API_COMENTARIOS = 'https://cors.eu.org/br2.bronxyshost.com:4009';
 
+    // 1. CARREGAR COMENTÁRIOS (Usando GET com mode: cors)
+    async function carregarComentarios(movieId) {
+        currentMovieIdForComments = movieId;
+        document.getElementById('commentsSection').style.display = 'block';
+        const lista = document.getElementById('commentsList');
+        
+        lista.innerHTML = '<div style="color: var(--text-muted); text-align: center; font-size: 0.85rem;"><i class="fas fa-compass fa-spin"></i> Buscando pergaminhos no servidor...</div>';
 
+        try {
+            const response = await fetch(`${API_COMENTARIOS}/ler_comentarios`, {
+                method: 'GET',
+                mode: 'cors',
+                headers: { 'Accept': 'application/json' }
+            });
+            
+            if (response.ok) {
+                console.log('✅ API conectada com sucesso (Leitura)');
+                const todosComentarios = await response.json();
+                
+                // Pega só os comentários do filme atual
+                const comentariosDoFilme = todosComentarios.filter(c => c.filmeId === movieId);
+                
+                lista.innerHTML = '';
+                if(comentariosDoFilme.length === 0) {
+                    lista.innerHTML = '<div style="color: var(--text-muted); text-align: center; font-size: 0.85rem;">Seja o primeiro a comentar!</div>';
+                }
+                
+                comentariosDoFilme.forEach((c) => {
+                    lista.innerHTML += `
+                        <div class="comment-item">
+                            <img src="${c.userPhoto || 'https://via.placeholder.com/35'}" class="comment-avatar">
+                            <div class="comment-content">
+                                <div class="comment-author">${c.userName}</div>
+                                <div class="comment-text">${c.text}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                lista.scrollTop = lista.scrollHeight; // Rola pra baixo
+            } else {
+                throw new Error('Servidor não respondeu com OK');
+            }
+        } catch (error) {
+            console.log('⚠️ API offline - falha ao carregar comentários');
+            lista.innerHTML = '<div style="color: var(--accent); text-align: center; font-size: 0.85rem;">⚠️ Conexão com os satélites falhou.</div>';
+        }
+        
+        renderizarAreaDeComentario();
+    }
 
-    // 2. FUNÇÃO PARA SALVAR (UPLOAD)
+    // 2. ENVIAR COMENTÁRIO (Usando POST com mode: cors e JSON)
     async function enviarComentario() {
         const input = document.getElementById('comentarioInput');
         if (!input) return;
@@ -1172,9 +1221,9 @@ setTimeout(() => {
         
         if (!text || !currentUser || !currentMovieIdForComments) return;
         
-        input.value = ''; // Limpa o campo para o usuário
+        input.value = ''; // Limpa a caixinha rápido
         
-        // Monta a caixa (JSON) que será enviada para o seu servidor
+        // Monta os dados
         const pacote = {
             filmeId: currentMovieIdForComments,
             userId: currentUser.uid,
@@ -1185,65 +1234,30 @@ setTimeout(() => {
         };
 
         try {
-            const resposta = await fetch(`${API_COMENTARIOS}/salvar_comentario`, {
+            const response = await fetch(`${API_COMENTARIOS}/salvar_comentario`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                mode: 'cors',
+                headers: { 
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json' // Avisa que está mandando um JSON
+                },
                 body: JSON.stringify(pacote)
             });
 
-            if (resposta.ok) {
-                userProgress.addXP(5); // Dá XP por comentar
-                // Recarrega os comentários para a mensagem da pessoa aparecer na tela
-                carregarComentarios(currentMovieIdForComments); 
+            if (response.ok) {
+                console.log('✅ API conectada com sucesso (Gravação)');
+                userProgress.addXP(5); // Ganha o XP
+                carregarComentarios(currentMovieIdForComments); // Recarrega a lista para mostrar a nova mensagem
             } else {
+                console.log('⚠️ O servidor recebeu a conexão, mas recusou os dados.');
                 ToastSystem.show('O servidor recusou a mensagem.', 'error');
             }
         } catch (error) {
-            console.error("Erro ao enviar:", error);
-            ToastSystem.show('Bloqueio de CORS ou Servidor Offline.', 'error');
+            console.log('⚠️ API offline - falha ao enviar comentário');
+            ToastSystem.show('Erro de comunicação com o servidor.', 'error');
         }
     }
 
-  // 1. FUNÇÃO PARA CARREGAR (DOWNLOAD)
-    async function carregarComentarios(movieId) {
-        currentMovieIdForComments = movieId;
-        document.getElementById('commentsSection').style.display = 'block';
-        const lista = document.getElementById('commentsList');
-        
-        lista.innerHTML = '<div style="color: var(--text-muted); text-align: center; font-size: 0.85rem;"><i class="fas fa-compass fa-spin"></i> Buscando pergaminhos no servidor...</div>';
-
-        try {
-            const resposta = await fetch(`${API_COMENTARIOS}/ler_comentarios`);
-            const todosComentarios = await resposta.json();
-            
-            // Filtra para mostrar APENAS os comentários deste filme específico
-            const comentariosDoFilme = todosComentarios.filter(c => c.filmeId === movieId);
-            
-            lista.innerHTML = '';
-            if(comentariosDoFilme.length === 0) {
-                lista.innerHTML = '<div style="color: var(--text-muted); text-align: center; font-size: 0.85rem;">Seja o primeiro a comentar!</div>';
-            }
-            
-            comentariosDoFilme.forEach((c) => {
-                lista.innerHTML += `
-                    <div class="comment-item">
-                        <img src="${c.userPhoto || 'https://via.placeholder.com/35'}" class="comment-avatar">
-                        <div class="comment-content">
-                            <div class="comment-author">${c.userName}</div>
-                            <div class="comment-text">${c.text}</div>
-                        </div>
-                    </div>
-                `;
-            });
-            lista.scrollTop = lista.scrollHeight; // Rola para a última mensagem
-            
-        } catch (error) {
-            console.error("Erro ao carregar:", error);
-            lista.innerHTML = '<div style="color: var(--accent); text-align: center; font-size: 0.85rem;">Os satélites perderam a conexão com os comentários.</div>';
-        }
-        
-        renderizarAreaDeComentario();
-    }
 
     function renderizarAreaDeComentario() {
         const area = document.getElementById('commentActionArea');
