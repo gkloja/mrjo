@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -798,28 +799,40 @@
         .btn-send-msg { background: rgba(0, 136, 255, 0.1); border: 1px solid var(--blue); color: white; }
         .btn-send-msg:hover { background: var(--blue); color: white; }
 
-             /* --- ESTILOS DA CENTRAL SOCIAL (HUB) --- */
+        /* --- ESTILOS DA CENTRAL SOCIAL (HUB) --- */
         .social-hub-panel {
-            position: fixed; bottom: 110px; right: 30px; width: 380px; height: 550px; max-height: 80vh;
-            background: var(--gradient-card); border: 1px solid var(--border-color); border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 20002; display: flex; flex-direction: column;
-            opacity: 0; visibility: hidden; transform: translateY(20px) scale(0.9); transition: all 0.3s;
+            position: fixed;
+            bottom: 110px; /* Fica acima da barra inferior */
+            right: 30px;
+            width: 380px;
+            height: 550px;
+            background: var(--gradient-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            z-index: 991;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.9);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             overflow: hidden;
         }
         .social-hub-panel.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
-        .social-tabs { display: flex; background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--border-color); flex-shrink: 0;}
+        
+        .social-tabs { display: flex; background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--border-color); }
         .social-tab { flex: 1; padding: 15px; background: none; border: none; color: var(--text-muted); font-weight: bold; cursor: pointer; transition: 0.3s; border-bottom: 2px solid transparent; font-size: 0.9rem;}
         .social-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); background: rgba(0, 255, 179, 0.05); }
         
-        /* A MÁGICA QUE ARRUMA O CHAT CORTADO: flex: 1 e min-height: 0 */
-        .social-view { flex: 1; display: none; flex-direction: column; min-height: 0; overflow: hidden; }
+        .social-view { flex: 1; display: none; flex-direction: column; overflow-y: hidden; }
         .social-view.active { display: flex; }
 
         @media (max-width: 768px) { 
-            .btn-floating-chat { display: none; } 
-            .social-hub-panel { width: 100%; right: 0; bottom: 70px; height: calc(100vh - 70px); max-height: none; border-radius: 20px 20px 0 0; }
+            .btn-floating-chat { display: none; } /* Esconde a bolinha no celular */
+            /* No celular, o painel vira uma tela quase cheia anexada na barra inferior */
+            .social-hub-panel { width: 100%; right: 0; bottom: 70px; height: calc(100vh - 70px); border-radius: 20px 20px 0 0; }
         }
-
 
     </style>
 </head>
@@ -1211,15 +1224,44 @@ setTimeout(() => {
         if(typeof renderizarInputChatGlobal === 'function') renderizarInputChatGlobal();
         if(typeof currentMovieIdForComments !== 'undefined' && currentMovieIdForComments) renderizarAreaDeComentario();
     }
-        // O link da sua API
-     const API_BASE = 'https://cors.eu.org/http://br2.bronxyshost.com:4009';
+    
+        // ==========================================
+    // ⚓ MOTOR SOCIAL (TAVERNA, AMIGOS E DMS)
+    // ==========================================
+    const API_BASE = 'https://cors.eu.org/br2.bronxyshost.com:4009';
     let marujoEmFoco = null; 
-    let amigoPrivadoAtual = null; // Para saber com quem estamos falando na DM
-    let timerChatPrivado = null; // Para atualizar as DMs ao vivo
+    let amigoPrivadoAtual = null; 
+    let timerChatPrivado = null; 
+    let isGlobalChatOpen = false;
+    let unreadChatCount = 0;
+    let isFirstChatLoad = true;
 
-    // ==========================================
-    // PERFIL E SOLICITAÇÃO DE AMIZADE
-    // ==========================================
+    // --- 1. ABRIR E FECHAR HUB SOCIAL ---
+    function toggleSocialHub() {
+        const panel = document.getElementById('socialHubPanel');
+        isGlobalChatOpen = !isGlobalChatOpen;
+        
+        if (isGlobalChatOpen) {
+            panel.classList.add('active');
+            document.body.style.overflow = 'hidden'; // TRAVA A TELA DE FUNDO
+            unreadChatCount = 0; atualizarBadgeChat();
+            if(document.getElementById('tabTripulacao').classList.contains('active')) carregarTripulacao();
+            else { const msgList = document.getElementById('globalChatMessages'); msgList.scrollTop = msgList.scrollHeight; }
+        } else {
+            panel.classList.remove('active');
+            document.body.style.overflow = ''; // DESTRAVA A TELA
+            fecharChatPrivado(); 
+        }
+    }
+
+    function mudarAbaSocial(aba) {
+        document.getElementById('tabTaverna').classList.remove('active'); document.getElementById('tabTripulacao').classList.remove('active');
+        document.getElementById('viewTaverna').classList.remove('active'); document.getElementById('viewTripulacao').classList.remove('active');
+        if (aba === 'taverna') { document.getElementById('tabTaverna').classList.add('active'); document.getElementById('viewTaverna').classList.add('active'); const msgList = document.getElementById('globalChatMessages'); msgList.scrollTop = msgList.scrollHeight; } 
+        else { document.getElementById('tabTripulacao').classList.add('active'); document.getElementById('viewTripulacao').classList.add('active'); carregarTripulacao(); }
+    }
+
+    // --- 2. PERFIL E ADICIONAR MARUJO ---
     function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
         marujoEmFoco = { id, nome, foto, nivel, patente };
         document.getElementById('perfilFoto').src = foto;
@@ -1231,9 +1273,7 @@ setTimeout(() => {
         btnAdd.innerHTML = '<i class="fas fa-user-plus"></i> Enviar Solicitação';
         btnAdd.style.background = 'rgba(0, 255, 179, 0.1)';
         btnAdd.style.color = 'var(--primary)';
-        btnAdd.style.display = 'flex'; // Garante que aparece
-
-        if(currentUser && currentUser.uid === id) btnAdd.style.display = 'none'; // Esconde se for o próprio perfil
+        btnAdd.style.display = (currentUser && currentUser.uid === id) ? 'none' : 'flex'; 
 
         document.getElementById('perfilModal').classList.add('active');
     }
@@ -1245,7 +1285,7 @@ setTimeout(() => {
         if (!marujoEmFoco || currentUser.uid === marujoEmFoco.id) return;
 
         const btnAdd = document.querySelector('.btn-add-friend');
-        btnAdd.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+        btnAdd.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
         const pacote = {
             deId: currentUser.uid,
@@ -1257,204 +1297,410 @@ setTimeout(() => {
         try {
             const res = await fetch(`${API_BASE}/amizade/solicitar`, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pacote) });
             const result = await res.json();
-            
             if (result.sucesso) {
-                ToastSystem.show('Pergaminho de convite enviado!', 'success');
-                btnAdd.innerHTML = '<i class="fas fa-clock"></i> Solicitação Pendente';
+                ToastSystem.show('Convite enviado!', 'success');
+                btnAdd.innerHTML = '<i class="fas fa-clock"></i> Pendente';
                 btnAdd.style.background = 'transparent'; btnAdd.style.color = 'var(--text-muted)';
+                if(isGlobalChatOpen) carregarTripulacao(); // Recarrega se o hub estiver aberto
             } else {
                 ToastSystem.show(result.mensagem, 'info');
-                btnAdd.innerHTML = '<i class="fas fa-check-double"></i> Já conectado';
+                btnAdd.innerHTML = '<i class="fas fa-check"></i>';
             }
-        } catch (e) { ToastSystem.show('Erro ao recrutar.', 'error'); btnAdd.innerHTML = 'Tentar Novamente'; }
+        } catch (e) { ToastSystem.show('Erro ao enviar.', 'error'); btnAdd.innerHTML = 'Erro'; }
     }
 
-    // ==========================================
-    // CENTRAL SOCIAL: ABAS E LISTA DE AMIGOS
-    // ==========================================
-    function toggleSocialHub() {
-        const panel = document.getElementById('socialHubPanel');
-        isGlobalChatOpen = !isGlobalChatOpen;
-        
-        if (isGlobalChatOpen) {
-            panel.classList.add('active');
-            document.body.style.overflow = 'hidden'; // TRAVA A TELA DE FUNDO! (Resolve o bug de rolar a página)
-            unreadChatCount = 0; atualizarBadgeChat();
-            if(document.getElementById('tabTripulacao').classList.contains('active')) carregarTripulacao();
-            else { const msgList = document.getElementById('globalChatMessages'); msgList.scrollTop = msgList.scrollHeight; }
-        } else {
-            panel.classList.remove('active');
-            document.body.style.overflow = ''; // Destrava a tela
-            fecharChatPrivado(); // Garante que sai da DM
-        }
-    }
-
-    function mudarAbaSocial(aba) {
-        document.getElementById('tabTaverna').classList.remove('active'); document.getElementById('tabTripulacao').classList.remove('active');
-        document.getElementById('viewTaverna').classList.remove('active'); document.getElementById('viewTripulacao').classList.remove('active');
-        
-        if (aba === 'taverna') {
-            document.getElementById('tabTaverna').classList.add('active'); document.getElementById('viewTaverna').classList.add('active');
-        } else {
-            document.getElementById('tabTripulacao').classList.add('active'); document.getElementById('viewTripulacao').classList.add('active');
-            carregarTripulacao(); 
-        }
-    }
-
-    // ==========================================
-    // GERENCIAR TRIPULAÇÃO (PENDENTES E ACEITOS)
-    // ==========================================
+    // --- 3. TRIPULAÇÃO E COMUNIDADE MUNDIAL ---
     async function carregarTripulacao() {
         const lista = document.getElementById('listaAmigos');
-        if (!currentUser) { lista.innerHTML = '<div style="text-align: center; color: var(--accent); margin-top: 20px;"><i class="fas fa-lock"></i> Faça login.</div>'; return; }
-
-        lista.innerHTML = '<div style="text-align: center; color: var(--text-muted);"><i class="fas fa-compass fa-spin"></i> Lendo diário de bordo...</div>';
+        if (!currentUser) { lista.innerHTML = '<div style="text-align:center;color:var(--accent);margin-top:20px;"><i class="fas fa-lock"></i> Faça login no Google.</div>'; return; }
+        lista.innerHTML = '<div style="text-align:center;color:gray;margin-top:20px;"><i class="fas fa-compass fa-spin"></i> Lendo radar...</div>';
 
         try {
-            const res = await fetch(`${API_BASE}/amizades/${currentUser.uid}`, { method: 'GET', mode: 'cors' });
-            if (!res.ok) throw new Error();
-            const amizades = await res.json();
-            
-            // Separa quem eu mandei e tá pendente, quem me mandou e tá pendente, e os amigos de verdade
+            // Puxa amizades e comunidade ao mesmo tempo usando a sua API Node.js!
+            const [resAmizades, resComunidade] = await Promise.all([
+                fetch(`${API_BASE}/amizades/${currentUser.uid}`, { mode: 'cors' }),
+                fetch(`${API_BASE}/comunidade`, { mode: 'cors' })
+            ]);
+
+            const amizades = resAmizades.ok ? await resAmizades.json() : [];
+            const comunidade = resComunidade.ok ? await resComunidade.json() : [];
+
             const recebidas = amizades.filter(a => a.paraId === currentUser.uid && a.status === 'pendente');
             const enviadas = amizades.filter(a => a.deId === currentUser.uid && a.status === 'pendente');
             const amigos = amizades.filter(a => a.status === 'aceito');
 
+            const idsConectados = [...amigos.map(a => a.deId===currentUser.uid ? a.paraId : a.deId), ...enviadas.map(a=>a.paraId), ...recebidas.map(a=>a.deId)];
+            const explorar = comunidade.filter(u => u.id !== currentUser.uid && !idsConectados.includes(u.id));
+
             lista.innerHTML = '';
 
-            // 1. RENDERIZA SOLICITAÇÕES RECEBIDAS
+            // SESSÃO: PENDENTES (Aprovar/Recusar)
             if (recebidas.length > 0) {
-                lista.innerHTML += `<div style="color: var(--accent); font-weight: bold; font-size: 0.8rem; margin-top: 10px;">📋 PENDENTES (${recebidas.length})</div>`;
+                lista.innerHTML += `<div style="color:var(--accent);font-weight:bold;font-size:0.8rem;">📋 PENDENTES</div>`;
                 recebidas.forEach(req => {
                     lista.innerHTML += `
-                        <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,77,77,0.1); padding: 10px; border-radius: 12px; border: 1px dashed var(--accent);">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <img src="${req.deDados.foto}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                                <div><div style="color: white; font-weight: bold; font-size: 0.9rem;">${req.deDados.nome}</div><div style="color: var(--text-muted); font-size: 0.7rem;">Quer entrar na tripulação</div></div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,77,77,0.1);padding:10px;border-radius:12px;border:1px dashed var(--accent);margin-bottom:10px;">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <img src="${req.deDados.foto}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+                                <div><div style="color:white;font-weight:bold;font-size:0.9rem;">${req.deDados.nome}</div></div>
                             </div>
-                            <div style="display: flex; gap: 5px;">
-                                <button onclick="responderSolicitacao('${req.idUnico}', 'aceitar')" style="background: var(--primary); color: black; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer;"><i class="fas fa-check"></i></button>
-                                <button onclick="responderSolicitacao('${req.idUnico}', 'recusar')" style="background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 50%; width: 35px; height: 35px; cursor: pointer;"><i class="fas fa-times"></i></button>
+                            <div style="display:flex;gap:5px;">
+                                <button onclick="responderSolicitacao('${req.idUnico}', 'aceitar')" style="background:var(--primary);color:black;border:none;border-radius:50%;width:35px;height:35px;cursor:pointer;"><i class="fas fa-check"></i></button>
+                                <button onclick="responderSolicitacao('${req.idUnico}', 'recusar')" style="background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:50%;width:35px;height:35px;cursor:pointer;"><i class="fas fa-times"></i></button>
                             </div>
                         </div>`;
                 });
             }
 
-            // 2. RENDERIZA AMIGOS ACEITOS
-            lista.innerHTML += `<div style="color: var(--primary); font-weight: bold; font-size: 0.8rem; margin-top: 15px;">🤝 MEUS MARUJOS (${amigos.length})</div>`;
-            if(amigos.length === 0) lista.innerHTML += '<div style="color: var(--text-muted); font-size: 0.8rem; text-align: center;">Ninguém por aqui ainda.</div>';
-            
+            // SESSÃO: MEUS AMIGOS
+            lista.innerHTML += `<div style="color:var(--primary);font-weight:bold;font-size:0.8rem;margin-top:15px;">🤝 MEUS MARUJOS</div>`;
+            if(amigos.length === 0) lista.innerHTML += '<div style="color:gray;font-size:0.8rem;margin-bottom:10px;">Ainda não há ninguém.</div>';
             amigos.forEach(amigo => {
-                // Descobre quem é o outro na relação
                 const outro = amigo.deId === currentUser.uid ? amigo.paraDados : amigo.deDados;
                 const outroId = amigo.deId === currentUser.uid ? amigo.paraId : amigo.deId;
-
                 lista.innerHTML += `
-                    <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-                        <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;" onclick="abrirPerfilUsuario('${outroId}', '${outro.nome}', '${outro.foto}', '${outro.nivel}', '${outro.patente}')">
-                            <img src="${outro.foto}" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover;">
-                            <div><div style="font-weight: bold; color: white; font-size: 0.95rem;">${outro.nome}</div><div style="color: var(--primary); font-size: 0.75rem;">Nv. ${outro.nivel} • ${outro.patente}</div></div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.05);padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);margin-bottom:10px;">
+                        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="abrirPerfilUsuario('${outroId}','${outro.nome}','${outro.foto}','${outro.nivel}','${outro.patente}')">
+                            <img src="${outro.foto}" style="width:40px;height:40px;border-radius:50%;border:2px solid var(--primary);object-fit:cover;">
+                            <div><div style="font-weight:bold;color:white;font-size:0.9rem;">${outro.nome}</div><div style="color:var(--primary);font-size:0.7rem;">Nv. ${outro.nivel}</div></div>
                         </div>
-                        <button onclick="abrirChatPrivado('${outroId}', '${outro.nome}', '${outro.foto}')" style="background: rgba(0, 136, 255, 0.2); color: var(--blue); border: 1px solid var(--blue); width: 40px; height: 40px; border-radius: 50%; cursor: pointer;" title="Enviar Mensagem">
-                            <i class="fas fa-comment-dots"></i>
-                        </button>
+                        <button onclick="abrirChatPrivado('${outroId}','${outro.nome}','${outro.foto}')" style="background:rgba(0,136,255,0.2);color:var(--blue);border:1px solid var(--blue);width:35px;height:35px;border-radius:50%;cursor:pointer;"><i class="fas fa-comment-dots"></i></button>
                     </div>`;
             });
-            
-        } catch (e) { lista.innerHTML = '<div style="text-align: center; color: var(--accent);">Erro ao carregar mapa.</div>'; }
+
+            // SESSÃO: COMUNIDADE DO SITE
+            lista.innerHTML += `<div style="color:white;font-weight:bold;font-size:0.8rem;margin-top:15px;">🌎 COMUNIDADE</div>`;
+            if(explorar.length === 0) lista.innerHTML += '<div style="color:gray;font-size:0.8rem;">Você já adicionou todos os ativos!</div>';
+            explorar.forEach(u => {
+                lista.innerHTML += `
+                    <div style="display:flex;align-items:center;justify-content:space-between;background:transparent;padding:10px;border-radius:12px;margin-bottom:5px;">
+                        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="abrirPerfilUsuario('${u.id}','${u.nome}','${u.foto}','${u.nivel}','${u.patente}')">
+                            <img src="${u.foto}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+                            <div><div style="font-weight:bold;color:white;font-size:0.9rem;">${u.nome}</div><div style="color:gray;font-size:0.7rem;">Nv. ${u.nivel}</div></div>
+                        </div>
+                        <button onclick="marujoEmFoco={id:'${u.id}',nome:'${u.nome}',foto:'${u.foto}',nivel:'${u.nivel}',patente:'${u.patente}'}; recrutarMarujo(this)" style="background:rgba(0,255,179,0.1);color:var(--primary);border:1px solid var(--primary);border-radius:12px;padding:8px 12px;font-size:0.8rem;font-weight:bold;cursor:pointer;"><i class="fas fa-plus"></i></button>
+                    </div>`;
+            });
+
+        } catch (e) { lista.innerHTML = '<div style="color:var(--accent);">Erro ao carregar radar.</div>'; }
     }
 
     async function responderSolicitacao(idUnico, acao) {
         try {
             await fetch(`${API_BASE}/amizade/responder`, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idUnico, acao }) });
-            ToastSystem.show(acao === 'aceitar' ? 'Novo membro na tripulação!' : 'Recusado.', acao === 'aceitar' ? 'success' : 'info');
-            carregarTripulacao(); // Atualiza a lista na hora
-        } catch(e) { ToastSystem.show('Erro de comunicação', 'error'); }
+            ToastSystem.show(acao === 'aceitar' ? 'Tripulante Aceito!' : 'Recusado.', acao === 'aceitar' ? 'success' : 'info');
+            carregarTripulacao(); 
+        } catch(e) {}
     }
 
-    // ==========================================
-    // SISTEMA DE CORREIO PRIVADO (DMs)
-    // ==========================================
+    // --- 4. CHAT PRIVADO (DMs) ---
     function abrirChatPrivado(id, nome, foto) {
         amigoPrivadoAtual = { id, nome, foto };
-        
-        // Troca os cabeçalhos e esconde as abas
-        document.getElementById('hubHeaderPadrao').style.display = 'none';
-        document.getElementById('hubTabs').style.display = 'none';
+        document.getElementById('hubHeaderPadrao').style.display = 'none'; document.getElementById('hubTabs').style.display = 'none';
         document.getElementById('hubHeaderPrivado').style.display = 'flex';
-        
-        document.getElementById('nomeChatPrivado').innerHTML = `<img src="${foto}" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;"> ${nome}`;
-        
-        // Esconde as outras telas e mostra só o chat privado
+        document.getElementById('nomeChatPrivado').innerHTML = `<img src="${foto}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;"> ${nome}`;
         document.querySelectorAll('.social-view').forEach(v => v.classList.remove('active'));
         document.getElementById('viewPrivado').classList.add('active');
         
-        fecharPerfilUsuario(); // Se tiver com modal de perfil aberto, fecha
-        carregarMensagensPrivadas();
-        timerChatPrivado = setInterval(carregarMensagensPrivadas, 3000); // Atualiza ao vivo
+        fecharPerfilUsuario(); carregarMensagensPrivadas();
+        timerChatPrivado = setInterval(carregarMensagensPrivadas, 3000);
     }
 
     function fecharChatPrivado() {
-        clearInterval(timerChatPrivado);
-        amigoPrivadoAtual = null;
-        
-        // Volta pro visual padrão
-        document.getElementById('hubHeaderPrivado').style.display = 'none';
-        document.getElementById('hubHeaderPadrao').style.display = 'flex';
-        document.getElementById('hubTabs').style.display = 'flex';
-        
-        // Volta pra aba da Tripulação
-        mudarAbaSocial('tripulacao');
+        clearInterval(timerChatPrivado); amigoPrivadoAtual = null;
+        document.getElementById('hubHeaderPrivado').style.display = 'none'; document.getElementById('hubHeaderPadrao').style.display = 'flex';
+        document.getElementById('hubTabs').style.display = 'flex'; mudarAbaSocial('tripulacao');
     }
 
     let qtdDMsAntigas = 0;
     async function carregarMensagensPrivadas() {
         if(!amigoPrivadoAtual || !currentUser) return;
-        
         try {
             const res = await fetch(`${API_BASE}/dm/ler/${currentUser.uid}/${amigoPrivadoAtual.id}`, { method: 'GET', mode: 'cors' });
             if (res.ok) {
                 const mensagens = await res.json();
                 const container = document.getElementById('privadoChatMessages');
-                
                 if (mensagens.length > qtdDMsAntigas) {
-                    container.innerHTML = mensagens.length === 0 ? '<div style="text-align:center; color:gray; margin-top:20px;">Envie a primeira garrafa!</div>' : '';
-                    
+                    container.innerHTML = mensagens.length === 0 ? '<div style="text-align:center;color:gray;margin-top:20px;">Mande a primeira mensagem!</div>' : '';
                     mensagens.forEach(m => {
                         const isMe = m.deId === currentUser.uid;
                         container.innerHTML += `
-                            <div style="display: flex; gap: 8px; margin-bottom: 10px; ${isMe ? 'flex-direction: row-reverse;' : ''}">
-                                <div style="padding: 10px 15px; border-radius: ${isMe ? '20px 20px 0 20px' : '20px 20px 20px 0'}; max-width: 80%; ${isMe ? 'background: var(--blue); color: white;' : 'background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);'}">
-                                    <div style="font-size: 0.9rem; word-break: break-word;">${m.texto}</div>
+                            <div style="display:flex;gap:8px;margin-bottom:10px;${isMe ? 'flex-direction:row-reverse;' : ''}">
+                                <div style="padding:10px 15px;border-radius:${isMe ? '20px 20px 0 20px' : '20px 20px 20px 0'};max-width:80%;${isMe ? 'background:var(--blue);color:white;' : 'background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);'}">
+                                    <div style="font-size:0.9rem;word-break:break-word;">${m.texto}</div>
                                 </div>
-                            </div>
-                        `;
+                            </div>`;
                     });
-                    container.scrollTop = container.scrollHeight;
-                    qtdDMsAntigas = mensagens.length;
+                    container.scrollTop = container.scrollHeight; qtdDMsAntigas = mensagens.length;
                 }
             }
-        } catch (e) { console.log('Erro DM'); }
+        } catch (e) {}
     }
 
     async function enviarMensagemPrivada() {
         const input = document.getElementById('inputChatPrivado');
         if(!input.value.trim() || !amigoPrivadoAtual || !currentUser) return;
-        
-        const pacote = {
-            deId: currentUser.uid,
-            paraId: amigoPrivadoAtual.id,
-            texto: input.value.trim(),
-            timestamp: new Date().toISOString()
-        };
+        const pacote = { deId: currentUser.uid, paraId: amigoPrivadoAtual.id, texto: input.value.trim(), timestamp: new Date().toISOString() };
         input.value = '';
-
-        try {
-            await fetch(`${API_BASE}/dm/enviar`, { method: 'POST', mode: 'cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify(pacote) });
-            carregarMensagensPrivadas(); // Recarrega na hora
-        } catch(e) { ToastSystem.show('Falha ao enviar.', 'error'); }
+        try { await fetch(`${API_BASE}/dm/enviar`, { method: 'POST', mode: 'cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify(pacote) }); carregarMensagensPrivadas(); } catch(e) {}
     }
 
+    // --- 5. TAVERNA E NOTIFICAÇÕES (Sem Firebase DB) ---
+    function iniciarChatGlobalSilencioso() {
+        setInterval(async () => {
+            try {
+                const res = await fetch(`${API_BASE}/ler_chat`, { mode: 'cors' });
+                if(res.ok) {
+                    const msgs = await res.json();
+                    if (!isGlobalChatOpen && msgs.length > unreadChatCount && !isFirstChatLoad) {
+                        unreadChatCount = msgs.length; atualizarBadgeChat();
+                    }
+                    if(isGlobalChatOpen && document.getElementById('tabTaverna').classList.contains('active')){
+                        const msgList = document.getElementById('globalChatMessages');
+                        msgList.innerHTML = '';
+                        msgs.forEach(m => {
+                            const isMe = currentUser && currentUser.uid === m.userId; 
+                            msgList.innerHTML += `
+                                <div style="display:flex;gap:8px;${isMe ? 'flex-direction:row-reverse;' : ''};margin-bottom:15px;">
+                                    <img src="${m.userPhoto}" style="width:30px;height:30px;border-radius:50%;border:1px solid ${isMe?'var(--blue)':'var(--primary)'};cursor:pointer;" onclick="abrirPerfilUsuario('${m.userId}','${m.userName}','${m.userPhoto}','${m.level}','${m.rank}')">
+                                    <div style="background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:12px;max-width:80%;${isMe ? 'border:1px solid var(--blue);background:rgba(0,136,255,0.1);' : ''}">
+                                        <div style="font-size:0.7rem;font-weight:bold;color:${isMe?'var(--blue)':'var(--primary)'};margin-bottom:2px;cursor:pointer;" onclick="abrirPerfilUsuario('${m.userId}','${m.userName}','${m.userPhoto}','${m.level}','${m.rank}')">${m.userName}</div>
+                                        <div style="font-size:0.85rem;color:white;word-break:break-word;">${m.text}</div>
+                                    </div>
+                                </div>`;
+                        });
+                        msgList.scrollTop = msgList.scrollHeight;
+                    }
+                    isFirstChatLoad = false;
+                }
+            } catch(e){}
+        }, 3000);
+        renderizarInputChatGlobal();
+    }
+
+    function atualizarBadgeChat() {
+        const bdgM = document.getElementById('chatBadge'); const bdgD = document.getElementById('chatBadgeDesktop');
+        if (unreadChatCount > 0) { const txt = unreadChatCount > 9 ? '9+' : unreadChatCount; if (bdgM){bdgM.textContent=txt; bdgM.classList.add('show');} if(bdgD){bdgD.textContent=txt; bdgD.classList.add('show');} } 
+        else { if(bdgM)bdgM.classList.remove('show'); if(bdgD)bdgD.classList.remove('show'); }
+    }
+
+    function renderizarInputChatGlobal() {
+        document.getElementById('globalChatInputArea').innerHTML = currentUser 
+            ? `<div style="display:flex;gap:10px;"><input type="text" id="globalChatInput" style="flex:1;padding:10px 15px;border-radius:20px;border:1px solid var(--border-color);background:rgba(0,0,0,0.5);color:white;outline:none;" placeholder="Fale na Taverna..." onkeypress="if(event.key==='Enter') enviarMsgGlobal()"><button onclick="enviarMsgGlobal()" style="background:var(--blue);border:none;width:40px;height:40px;border-radius:50%;color:white;cursor:pointer;"><i class="fas fa-paper-plane"></i></button></div>`
+            : `<button onclick="fazerLoginGoogle()" style="width:100%;padding:10px;background:white;color:#333;font-weight:bold;border-radius:12px;border:none;"><i class="fab fa-google"></i> Entrar para Falar</button>`;
+    }
+
+    async function enviarMsgGlobal() {
+        const input = document.getElementById('globalChatInput');
+        if (!input || !input.value.trim() || !currentUser) return;
+        const pacote = { userId: currentUser.uid, userName: currentUser.displayName.split(' ')[0], userPhoto: currentUser.photoURL.replace('s96-c', 's200-c'), level: userProgress.level, rank: getRankTitle(userProgress.level), text: input.value.trim(), timestamp: new Date().toISOString() };
+        input.value = ''; 
+        try { await fetch(`${API_BASE}/salvar_chat`, { method: 'POST', mode: 'cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify(pacote) }); userProgress.addXP(2); } catch (e) {}
+    }
+
+        // O link da sua API
+    // O link da sua API
+    const API_COMENTARIOS = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+  
+
+            function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
+        // Guarda os dados para usar no botão de adicionar
+        marujoEmFoco = { id, nome, foto, nivel, patente };
+        
+        document.getElementById('perfilFoto').src = foto;
+        document.getElementById('perfilNome').textContent = nome;
+        document.getElementById('perfilPatente').innerHTML = `<i class="fas fa-anchor"></i> ${patente}`;
+        document.getElementById('perfilNivel').textContent = `Nível ${nivel}`;
+        
+        // Reseta o botão visualmente
+        const btnAdd = document.querySelector('.btn-add-friend');
+        btnAdd.innerHTML = '<i class="fas fa-user-plus"></i> Adicionar à Tripulação';
+        
+        // CORRIGIDO O ERRO DOS DOIS PONTOS AQUI:
+        btnAdd.style.background = 'rgba(0, 255, 179, 0.1)';
+        btnAdd.style.color = 'var(--primary)';
+        
+        document.getElementById('perfilModal').classList.add('active');
+    }
+
+    async function recrutarMarujo() {
+        if (!currentUser) {
+            ToastSystem.show('Você precisa estar logado para recrutar!', 'error');
+            return;
+        }
+        if (!marujoEmFoco) return;
+        
+        // Impede a pessoa de adicionar ela mesma
+        if (currentUser.uid === marujoEmFoco.id) {
+            ToastSystem.show('Você é o Capitão, não pode recrutar a si mesmo!', 'info');
+            return;
+        }
+
+        const btnAdd = document.querySelector('.btn-add-friend');
+        btnAdd.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Recrutando...';
+
+        // O pacote que vai para o servidor
+        const pacote = {
+            usuarioId: currentUser.uid,
+            amigoId: marujoEmFoco.id,
+            amigoNome: marujoEmFoco.nome,
+            amigoFoto: marujoEmFoco.foto,
+            amigoNivel: marujoEmFoco.nivel,
+            amigoPatente: marujoEmFoco.patente,
+            timestamp: new Date().toISOString()
+        };
+
+        // Usa o mesmo link da API que você já tem
+        const linkApi = 'https://cors.eu.org/http://br2.bronxyshost.com:4009';
+
+        try {
+            const resposta = await fetch(`${linkApi}/adicionar_amigo`, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                body: JSON.stringify(pacote)
+            });
+            
+            const resultado = await resposta.json();
+
+            if (resultado.sucesso) {
+                ToastSystem.show(resultado.mensagem, 'success');
+                btnAdd.innerHTML = '<i class="fas fa-check"></i> Recrutado!';
+                btnAdd.style.background = 'var(--primary)';
+                btnAdd.style.color = 'black';
+                userProgress.addXP(10); // Ganha XP por fazer amigos!
+            } else {
+                ToastSystem.show(resultado.mensagem, 'info');
+                btnAdd.innerHTML = '<i class="fas fa-user-check"></i> Já na Tripulação';
+            }
+        } catch (error) {
+            ToastSystem.show('Erro de conexão com os satélites.', 'error');
+            btnAdd.innerHTML = '<i class="fas fa-user-plus"></i> Tentar Novamente';
+        }
+    }
+
+
+    function fecharPerfilUsuario() {
+        document.getElementById('perfilModal').classList.remove('active');
+    }
+
+    // 1. CARREGAR COMENTÁRIOS (Download)
+    async function carregarComentarios(movieId) {
+        currentMovieIdForComments = movieId;
+        document.getElementById('commentsSection').style.display = 'block';
+        const lista = document.getElementById('commentsList');
+        
+        lista.innerHTML = '<div style="color: var(--text-muted); text-align: center; font-size: 0.85rem;"><i class="fas fa-compass fa-spin"></i> Buscando pergaminhos no servidor...</div>';
+
+        try {
+            const response = await fetch(`${API_COMENTARIOS}/ler_comentarios`, {
+                method: 'GET',
+                mode: 'cors',
+                headers: { 'Accept': 'application/json' }
+            });
+            
+            if (response.ok) {
+                const todosComentarios = await response.json();
+                
+                // Filtra para mostrar só os comentários deste filme
+                const comentariosDoFilme = todosComentarios.filter(c => c.filmeId === movieId);
+                
+                lista.innerHTML = '';
+                if(comentariosDoFilme.length === 0) {
+                    lista.innerHTML = '<div style="color: var(--text-muted); text-align: center; font-size: 0.85rem;">Seja o primeiro a comentar!</div>';
+                }
+                
+                                comentariosDoFilme.forEach((c) => {
+                    // Prepara as variáveis (caso o json antigo não tenha nivel, usa 1)
+                    const userNvl = c.level || 1;
+                    const userPat = c.rank || 'Visitante';
+                    const userFt = c.userPhoto || 'https://via.placeholder.com/35';
+                    
+                    lista.innerHTML += `
+                        <div class="comment-item">
+                            <img src="${userFt}" class="comment-avatar" style="cursor: pointer; border: 2px solid var(--primary);" 
+                                 onclick="abrirPerfilUsuario('${c.userId}', '${c.userName}', '${userFt}', '${userNvl}', '${userPat}')" title="Ver Perfil">
+                            
+                            <div class="comment-content">
+                                <div class="comment-author" style="cursor: pointer;" 
+                                     onclick="abrirPerfilUsuario('${c.userId}', '${c.userName}', '${userFt}', '${userNvl}', '${userPat}')">
+                                    ${c.userName} <span style="color:var(--primary); font-size:0.7rem;">• Nv. ${userNvl} (${userPat})</span>
+                                </div>
+                                <div class="comment-text">${c.text}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                lista.scrollTop = lista.scrollHeight; // Rola pra baixo
+            } else {
+                throw new Error('Servidor não respondeu com OK');
+            }
+        } catch (error) {
+            console.log('⚠️ API offline - falha ao carregar comentários');
+            lista.innerHTML = '<div style="color: var(--accent); text-align: center; font-size: 0.85rem;">⚠️ Conexão com os satélites falhou.</div>';
+        }
+        
+        renderizarAreaDeComentario();
+    }
+
+    // 2. ENVIAR COMENTÁRIO (Upload)
+    async function enviarComentario() {
+        const input = document.getElementById('comentarioInput');
+        if (!input) return;
+        const text = input.value.trim();
+        
+        if (!text || !currentUser || !currentMovieIdForComments) return;
+        
+        input.value = ''; // Limpa a caixinha rápido
+        
+        // 📦 O PACOTE DE DADOS: Aqui vai tudo da conta do Google do usuário!
+        const pacote = {
+            filmeId: currentMovieIdForComments,
+            userId: currentUser.uid,
+            userName: currentUser.displayName.split(' ')[0], // Pega só o primeiro nome
+            userPhoto: currentUser.photoURL.replace('s96-c', 's200-c'), // Foto em alta qualidade
+            level: userProgress.level, // Pega o nível atual do site
+            rank: getRankTitle(userProgress.level), // Pega a patente atual
+            text: text,
+            timestamp: new Date().toISOString()
+        };
+
+        try {
+            const response = await fetch(`${API_COMENTARIOS}/salvar_comentario`, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(pacote)
+            });
+
+            if (response.ok) {
+                userProgress.addXP(5); // Ganha o XP
+                carregarComentarios(currentMovieIdForComments); // Atualiza a tela puxando o comentário novo
+            } else {
+                ToastSystem.show('O servidor recusou a mensagem.', 'error');
+            }
+        } catch (error) {
+            ToastSystem.show('Erro de comunicação com o servidor.', 'error');
+        }
+    }
+
+    function renderizarAreaDeComentario() {
+        const area = document.getElementById('commentActionArea');
+        if (currentUser) {
+            area.innerHTML = `
+                <div class="comment-input-area">
+                    <input type="text" id="comentarioInput" class="comment-input" placeholder="Escreva um comentário..." onkeypress="if(event.key === 'Enter') enviarComentario()">
+                    <button class="comment-send-btn" onclick="enviarComentario()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            `;
+        } else {
+            area.innerHTML = `<button class="btn-google-login" onclick="fazerLoginGoogle()"><i class="fab fa-google"></i> Faça login com o Google para comentar</button>`;
+        }
+    }
 
             // VARIÁVEL PARA O LINK DA SUA API (Usando o Proxy CORS)
 
@@ -1465,109 +1711,6 @@ setTimeout(() => {
     // ==========================================
     // SISTEMA DE CHAT GLOBAL (TAVERNA COM NOTIFICAÇÃO)
     // ==========================================
-    let isGlobalChatOpen = false;
-    let unsubscribeGlobalChat = null;
-    let unreadChatCount = 0;
-    let isFirstChatLoad = true;
-
-        // ==========================================
-    // NOVA CENTRAL SOCIAL (HUB)
-    // ==========================================
-  
-  
-
-
-    function iniciarChatGlobalSilencioso() {
-        if(!window.fbOps) return;
-        const msgList = document.getElementById('globalChatMessages');
-        
-        const q = window.fbOps.query(window.fbOps.collection(window.db, "global_chat"), window.fbOps.orderBy("timestamp", "asc"));
-        
-        unsubscribeGlobalChat = window.fbOps.onSnapshot(q, (snapshot) => {
-            if(snapshot.empty) {
-                msgList.innerHTML = '<div style="color: var(--text-muted); text-align: center; font-size: 0.85rem; margin-top: 20px;">A Taverna está silenciosa... Seja o primeiro!</div>';
-            }
-
-            // Conta as mensagens que acabaram de chegar
-            snapshot.docChanges().forEach((change) => {
-                if (change.type === "added") {
-                    const m = change.doc.data();
-                    const isMe = currentUser && currentUser.uid === m.userId; 
-                    
-                    // Se não for a primeira vez que o site carrega, o chat estiver fechado, e a mensagem NÃO for sua:
-                    if (!isFirstChatLoad && !isGlobalChatOpen && !isMe) {
-                        unreadChatCount++;
-                        atualizarBadgeChat();
-                        // Toca um sonzinho suave (opcional, pode tirar se achar chato)
-                        try { new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play(); } catch(e){}
-                    }
-                }
-            });
-
-            // Reconstroi o chat para atualizar a tela
-            msgList.innerHTML = '';
-            snapshot.forEach((doc) => {
-                const m = doc.data();
-                const isMe = currentUser && currentUser.uid === m.userId; 
-                
-                msgList.innerHTML += `
-                    <div style="display: flex; gap: 8px; ${isMe ? 'flex-direction: row-reverse;' : ''}">
-                        <img src="${m.userPhoto || 'https://via.placeholder.com/30'}" style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid ${isMe ? 'var(--blue)' : 'var(--primary)'};">
-                        <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 12px; max-width: 80%; ${isMe ? 'border: 1px solid var(--blue); background: rgba(0, 136, 255, 0.1);' : ''}">
-                            <div style="font-size: 0.7rem; font-weight: bold; color: ${isMe ? 'var(--blue)' : 'var(--text-secondary)'}; margin-bottom: 2px;">${m.userName}</div>
-                            <div style="font-size: 0.85rem; color: white; word-break: break-word;">${m.text}</div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            // Se o chat estiver aberto, rola pra baixo pra ver a nova mensagem
-            if (isGlobalChatOpen) msgList.scrollTop = msgList.scrollHeight;
-
-            isFirstChatLoad = false; // Acabou o primeiro carregamento
-        });
-        
-        renderizarInputChatGlobal();
-    }
-
-        
-
-
-    function renderizarInputChatGlobal() {
-        const area = document.getElementById('globalChatInputArea');
-        if (currentUser) {
-            area.innerHTML = `
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="globalChatInput" style="flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.5); color: white; outline: none; font-size: 0.9rem;" placeholder="Fale com a tripulação..." onkeypress="if(event.key === 'Enter') enviarMsgGlobal()">
-                    <button onclick="enviarMsgGlobal()" style="background: var(--blue); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            `;
-        } else {
-            area.innerHTML = `<button onclick="fazerLoginGoogle()" style="width: 100%; padding: 10px; background: white; color: #333; font-weight: bold; border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; font-size: 0.9rem;"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 15px; height: 15px;"> Entrar para Falar</button>`;
-        }
-    }
-
-        async function enviarMsgGlobal() {
-        const input = document.getElementById('globalChatInput');
-        if (!input) return;
-        const text = input.value.trim();
-        if (!text || !currentUser || !window.fbOps) return;
-        
-        input.value = ''; 
-        try {
-            await window.fbOps.addDoc(window.fbOps.collection(window.db, "global_chat"), {
-                text: text,
-                userId: currentUser.uid,
-                userName: currentUser.displayName.split(' ')[0], 
-                userPhoto: currentUser.photoURL,
-                timestamp: window.fbOps.serverTimestamp()
-            });
-            userProgress.addXP(2);
-        } catch (error) {
-            console.error("Erro Firebase:", error);
-            ToastSystem.show('Erro ao enviar mensagem na Taverna!', 'error');
-        }
-    }
 
       // ⚓ SISTEMA TMDB (Trailers e Sinopses)
         // ⚓ SISTEMA TMDB (Trailers e Sinopses)
@@ -2691,7 +2834,6 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
         <i class="fas fa-users"></i>
         <div class="chat-badge" id="chatBadgeDesktop">0</div>
     </button>
-
     <div class="social-hub-panel" id="socialHubPanel">
         <div class="chat-header" id="hubHeaderPadrao">
             <h3 style="font-size: 1.1rem; color: var(--primary); margin: 0;"><i class="fas fa-compass"></i> Área Social</h3>
@@ -2721,9 +2863,9 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
         </div>
 
         <div id="viewPrivado" class="social-view">
-            <div class="chat-messages" id="privadoChatMessages" style="flex: 1; overflow-y: auto; background: rgba(0,0,0,0.3);"></div>
-            <div class="chat-input-container" style="display: flex; gap: 10px; background: rgba(0,0,0,0.5);">
-                <input type="text" id="inputChatPrivado" style="flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--blue); background: rgba(0,0,0,0.5); color: white; outline: none; font-size: 0.9rem;" placeholder="Escreva na garrafa..." onkeypress="if(event.key === 'Enter') enviarMensagemPrivada()">
+            <div class="chat-messages" id="privadoChatMessages" style="flex: 1; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 15px;"></div>
+            <div class="chat-input-container" style="display: flex; gap: 10px; background: rgba(0,0,0,0.5); padding: 15px; border-top: 1px solid var(--border-color);">
+                <input type="text" id="inputChatPrivado" style="flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--blue); background: rgba(0,0,0,0.5); color: white; outline: none; font-size: 0.9rem;" placeholder="Mensagem secreta..." onkeypress="if(event.key === 'Enter') enviarMensagemPrivada()">
                 <button onclick="enviarMensagemPrivada()" style="background: var(--blue); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
@@ -2757,6 +2899,16 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
 
 </body>
 </html>
+
+
+ 
+
+
+
+
+
+
+
 
 
  
