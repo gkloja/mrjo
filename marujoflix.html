@@ -682,6 +682,101 @@
         .comment-input:focus { border-color: var(--primary); }
         .comment-send-btn { background: var(--gradient-primary); border: none; width: 42px; height: 42px; border-radius: 50%; color: black; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .btn-google-login { width: 100%; padding: 12px; background: white; color: #333; font-weight: bold; border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; margin-top: 10px; }
+        /* --- CHAT GLOBAL FLUTUANTE (TAVERNA) --- */
+        .btn-floating-chat {
+            position: fixed;
+            bottom: 110px; /* Fica logo acima da recompensa de XP */
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--blue);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0, 136, 255, 0.4);
+            z-index: 990;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .btn-floating-chat:hover { transform: scale(1.1); background: white; color: var(--blue); }
+        
+        .chat-panel {
+            position: fixed;
+            bottom: 180px;
+            right: 30px;
+            width: 350px;
+            height: 450px;
+            background: var(--gradient-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            z-index: 991;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.9);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .chat-panel.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        .chat-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); border-radius: 20px 20px 0 0; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
+        .chat-input-container { padding: 15px; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.3); border-radius: 0 0 20px 20px; }
+
+        @media (max-width: 768px) { 
+            .btn-floating-chat { bottom: 160px; right: 20px; } 
+            .chat-panel { width: 90%; right: 5%; bottom: 80px; height: 60vh; }
+        }
+                /* --- CONTADOR ONLINE --- */
+        .online-counter { 
+            display: flex; align-items: center; gap: 8px; 
+            font-size: 0.85rem; font-weight: bold; color: white; 
+            background: rgba(0,0,0,0.5); padding: 6px 12px; 
+            border-radius: 20px; border: 1px solid rgba(0, 255, 179, 0.3); 
+            cursor: default;
+        }
+        .online-dot { 
+            width: 8px; height: 8px; background: var(--primary); 
+            border-radius: 50%; box-shadow: 0 0 10px var(--primary-glow); 
+            animation: blink 2s infinite; 
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        
+        @media (max-width: 768px) {
+            .online-text { display: none; } /* Esconde o texto no celular, deixa só o número e a bolinha */
+        }
+
+        /* --- BADGE DE NOTIFICAÇÃO DO CHAT --- */
+        .chat-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff0077; /* Vermelho/Rosa chamativo */
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 900;
+            min-width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--bg-darker);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Efeito elástico ao aparecer */
+            pointer-events: none;
+        }
+        .chat-badge.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
 
     </style>
 </head>
@@ -749,9 +844,15 @@
             <div class="logo-text"><h1>MarujoFlix</h1></div>
         </div>
         <div class="header-actions">
+            <div class="online-counter" title="Marujos a bordo agora">
+                <div class="online-dot"></div>
+                <span id="onlineCountNumber">1</span> <span class="online-text">Online</span>
+            </div>
+            
             <div class="search-button" onclick="toggleSearchBar()"><i class="fas fa-search"></i></div>
             <div class="user-avatar" onclick="toggleSidebar()"><i class="fas fa-user"></i></div>
         </div>
+
     </header>
 
     <div class="featured-banner" id="featuredBanner" style="display: none;">
@@ -920,17 +1021,61 @@ setTimeout(() => {
     setTimeout(() => { atualizarMenuLateral(null); }, 200);
 
     // Fica vigiando até o Google carregar com sucesso (não desiste mais)
+        // Fica vigiando até o Google carregar com sucesso
     let timerFirebase = setInterval(() => {
         if(window.fbOps && window.auth) {
-            clearInterval(timerFirebase); // Carregou! Pode parar de procurar.
-            
-            window.fbOps.onAuthStateChanged(window.auth, (user) => {
+            clearInterval(timerFirebase); 
+                        // LIGA O RADAR SILENCIOSO DO CHAT
+            if(!unsubscribeGlobalChat) iniciarChatGlobalSilencioso();
+
+            window.fbOps.onAuthStateChanged(window.auth, async (user) => {
                 currentUser = user;
+                
+                if (user) {
+                    // --- DOWNLOAD DOS DADOS DA NUVEM ---
+                    const userRef = window.fbOps.doc(window.db, "users", user.uid);
+                    const docSnap = await window.fbOps.getDoc(userRef);
+                    
+                    if (docSnap.exists()) {
+                        // Se a pessoa já tem conta, puxa da nuvem para o site!
+                        const dados = docSnap.data();
+                        userProgress.xp = dados.xp || 0;
+                        userProgress.level = dados.level || 1;
+                        userProgress.favorites = dados.favorites || [];
+                        userProgress.history = dados.history || [];
+                        
+                        // Salva no celular pra ficar igual à nuvem
+                        userProgress.save(); 
+                    } else {
+                        // Se é a primeira vez dela logando, sobe os dados do celular pra nuvem!
+                        userProgress.save();
+                    }
+                    
+                    ToastSystem.show(`Conectado à nuvem!`, 'success');
+                } else {
+                    // --- SE DESLOGOU, CARREGA COMO VISITANTE ---
+                    userProgress.xp = parseInt(localStorage.getItem('marujoflix_xp')) || 0;
+                    userProgress.level = parseInt(localStorage.getItem('marujoflix_level')) || 1;
+                    userProgress.favorites = JSON.parse(localStorage.getItem('marujoflix_favorites')) || [];
+                    userProgress.history = JSON.parse(localStorage.getItem('marujoflix_history')) || [];
+                }
+
                 atualizarMenuLateral(user);
+                userProgress.updateUI(); // Atualiza os números no menu
+                
+                // Se a pessoa deslogar enquanto olha a aba de favoritos, recarrega a tela
+                                // Se a pessoa deslogar enquanto olha a aba de favoritos...
+                if(IPTVSystem.abaAtual === 'favoritos' || IPTVSystem.abaAtual === 'historico') {
+                    IPTVSystem.aplicarFiltros(); 
+                }
+                
                 if(currentMovieIdForComments) renderizarAreaDeComentario();
+                if(isGlobalChatOpen) renderizarInputChatGlobal(); // <--- ADICIONE ESTA LINHA AQUI
+
             });
         }
-    }, 500); // Tenta a cada meio segundo
+    }, 500); 
+
 
 
     function fazerLoginGoogle() {
@@ -1063,6 +1208,132 @@ setTimeout(() => {
             timestamp: window.fbOps.serverTimestamp()
         });
         userProgress.addXP(5); // Dá 5 de XP por comentar!
+    }
+
+    // ==========================================
+    // SISTEMA DE CHAT GLOBAL (TAVERNA)
+    // ==========================================
+    // ==========================================
+    // SISTEMA DE CHAT GLOBAL (TAVERNA COM NOTIFICAÇÃO)
+    // ==========================================
+    let isGlobalChatOpen = false;
+    let unsubscribeGlobalChat = null;
+    let unreadChatCount = 0;
+    let isFirstChatLoad = true;
+
+    function toggleGlobalChat() {
+        const panel = document.getElementById('globalChatPanel');
+        isGlobalChatOpen = !isGlobalChatOpen;
+        
+        if (isGlobalChatOpen) {
+            panel.classList.add('active');
+            
+            // Zera o contador e esconde a bolinha
+            unreadChatCount = 0;
+            atualizarBadgeChat();
+            
+            // Rola as mensagens para o final
+            const msgList = document.getElementById('globalChatMessages');
+            msgList.scrollTop = msgList.scrollHeight;
+        } else {
+            panel.classList.remove('active');
+        }
+    }
+
+    function iniciarChatGlobalSilencioso() {
+        if(!window.fbOps) return;
+        const msgList = document.getElementById('globalChatMessages');
+        
+        const q = window.fbOps.query(window.fbOps.collection(window.db, "global_chat"), window.fbOps.orderBy("timestamp", "asc"));
+        
+        unsubscribeGlobalChat = window.fbOps.onSnapshot(q, (snapshot) => {
+            if(snapshot.empty) {
+                msgList.innerHTML = '<div style="color: var(--text-muted); text-align: center; font-size: 0.85rem; margin-top: 20px;">A Taverna está silenciosa... Seja o primeiro!</div>';
+            }
+
+            // Conta as mensagens que acabaram de chegar
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added") {
+                    const m = change.doc.data();
+                    const isMe = currentUser && currentUser.uid === m.userId; 
+                    
+                    // Se não for a primeira vez que o site carrega, o chat estiver fechado, e a mensagem NÃO for sua:
+                    if (!isFirstChatLoad && !isGlobalChatOpen && !isMe) {
+                        unreadChatCount++;
+                        atualizarBadgeChat();
+                        // Toca um sonzinho suave (opcional, pode tirar se achar chato)
+                        try { new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play(); } catch(e){}
+                    }
+                }
+            });
+
+            // Reconstroi o chat para atualizar a tela
+            msgList.innerHTML = '';
+            snapshot.forEach((doc) => {
+                const m = doc.data();
+                const isMe = currentUser && currentUser.uid === m.userId; 
+                
+                msgList.innerHTML += `
+                    <div style="display: flex; gap: 8px; ${isMe ? 'flex-direction: row-reverse;' : ''}">
+                        <img src="${m.userPhoto || 'https://via.placeholder.com/30'}" style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid ${isMe ? 'var(--blue)' : 'var(--primary)'};">
+                        <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 12px; max-width: 80%; ${isMe ? 'border: 1px solid var(--blue); background: rgba(0, 136, 255, 0.1);' : ''}">
+                            <div style="font-size: 0.7rem; font-weight: bold; color: ${isMe ? 'var(--blue)' : 'var(--text-secondary)'}; margin-bottom: 2px;">${m.userName}</div>
+                            <div style="font-size: 0.85rem; color: white; word-break: break-word;">${m.text}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Se o chat estiver aberto, rola pra baixo pra ver a nova mensagem
+            if (isGlobalChatOpen) msgList.scrollTop = msgList.scrollHeight;
+
+            isFirstChatLoad = false; // Acabou o primeiro carregamento
+        });
+        
+        renderizarInputChatGlobal();
+    }
+
+    function atualizarBadgeChat() {
+        const badge = document.getElementById('chatBadge');
+        if (!badge) return;
+        
+        if (unreadChatCount > 0) {
+            badge.textContent = unreadChatCount > 9 ? '9+' : unreadChatCount; // Mostra "9+" se tiver muitas
+            badge.classList.add('show');
+        } else {
+            badge.classList.remove('show');
+        }
+    }
+
+    function renderizarInputChatGlobal() {
+        const area = document.getElementById('globalChatInputArea');
+        if (currentUser) {
+            area.innerHTML = `
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="globalChatInput" style="flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.5); color: white; outline: none; font-size: 0.9rem;" placeholder="Fale com a tripulação..." onkeypress="if(event.key === 'Enter') enviarMsgGlobal()">
+                    <button onclick="enviarMsgGlobal()" style="background: var(--blue); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            `;
+        } else {
+            area.innerHTML = `<button onclick="fazerLoginGoogle()" style="width: 100%; padding: 10px; background: white; color: #333; font-weight: bold; border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; font-size: 0.9rem;"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 15px; height: 15px;"> Entrar para Falar</button>`;
+        }
+    }
+
+    async function enviarMsgGlobal() {
+        const input = document.getElementById('globalChatInput');
+        if (!input) return;
+        const text = input.value.trim();
+        if (!text || !currentUser || !window.fbOps) return;
+        
+        input.value = ''; 
+        await window.fbOps.addDoc(window.fbOps.collection(window.db, "global_chat"), {
+            text: text,
+            userId: currentUser.uid,
+            userName: currentUser.displayName.split(' ')[0], 
+            userPhoto: currentUser.photoURL,
+            timestamp: window.fbOps.serverTimestamp()
+        });
+        userProgress.addXP(2);
     }
 
       // ⚓ SISTEMA TMDB (Trailers e Sinopses)
@@ -1237,12 +1508,26 @@ setTimeout(() => {
             ToastSystem.show('Diário de bordo limpo!', 'success');
         },
 
-        save() {
+                save() {
+            // 1. Salva localmente (como backup para visitantes sem conta)
             localStorage.setItem('marujoflix_xp', this.xp);
             localStorage.setItem('marujoflix_level', this.level);
             localStorage.setItem('marujoflix_favorites', JSON.stringify(this.favorites));
             localStorage.setItem('marujoflix_history', JSON.stringify(this.history));
+
+            // 2. Salva na Nuvem do Google (se estiver logado)
+            if (typeof currentUser !== 'undefined' && currentUser && window.fbOps) {
+                const userRef = window.fbOps.doc(window.db, "users", currentUser.uid);
+                window.fbOps.setDoc(userRef, {
+                    xp: this.xp,
+                    level: this.level,
+                    favorites: this.favorites,
+                    history: this.history,
+                    lastUpdate: window.fbOps.serverTimestamp()
+                }, { merge: true }); // O merge:true não apaga outros dados que possam existir lá
+            }
         },
+
                         updateUI() {
             const elRank = document.getElementById('sidebarRank');
             
@@ -2073,6 +2358,39 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
                 
 
     };
+    
+        // ==========================================
+    // SISTEMA DE RADAR (Pessoas Online)
+    // ==========================================
+    let mySessionId = 'sessao_' + Math.random().toString(36).substr(2, 9);
+
+    let radarTimer = setInterval(() => {
+        if(window.fbOps && window.db) {
+            clearInterval(radarTimer);
+            
+            // 1. Pega um "Bilhete de Entrada"
+            const sessionRef = window.fbOps.doc(window.db, "online_users", mySessionId);
+            window.fbOps.setDoc(sessionRef, { active: true });
+
+            // 2. Fica observando quantos bilhetes existem na mesa
+            const qOnline = window.fbOps.collection(window.db, "online_users");
+            window.fbOps.onSnapshot(qOnline, (snapshot) => {
+                const count = snapshot.size;
+                const contadorElemento = document.getElementById('onlineCountNumber');
+                if(contadorElemento) contadorElemento.textContent = count;
+            });
+            
+            // 3. Rasga o bilhete se a pessoa fechar a aba do navegador
+            window.addEventListener("beforeunload", () => {
+                window.fbOps.deleteDoc(sessionRef);
+            });
+            // Tenta rasgar o bilhete caso ela mude de aplicativo no celular
+            window.addEventListener("pagehide", () => {
+                window.fbOps.deleteDoc(sessionRef);
+            });
+        }
+    }, 1000);
+
 
     // Deixamos apenas UM evento DOMContentLoaded para iniciar tudo
     document.addEventListener('DOMContentLoaded', () => {
@@ -2093,7 +2411,7 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDruRISw56lL0dZpnKpFv2COaJkUmamgoc",
@@ -2109,9 +2427,28 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
   window.db = getFirestore(app);
   window.googleProvider = new GoogleAuthProvider();
   
-  // Exporta as funções para o seu script principal poder usar
-  window.fbOps = { signInWithPopup, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc };
+  // Exporta as funções (incluindo o deleteDoc agora)
+  window.fbOps = { signInWithPopup, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc };
 </script>
+
+
+
+    <button class="btn-floating-chat" onclick="toggleGlobalChat()">
+        <i class="fas fa-comments"></i>
+        <div class="chat-badge" id="chatBadge">0</div>
+    </button>
+
+
+    <div class="chat-panel" id="globalChatPanel">
+        <div class="chat-header">
+            <h3 style="font-size: 1.1rem; color: var(--blue); margin: 0;"><i class="fas fa-ship"></i> Taverna Marujo</h3>
+            <button onclick="toggleGlobalChat()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-messages" id="globalChatMessages">
+            <div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 20px;">Carregando mensagens na garrafa...</div>
+        </div>
+        <div class="chat-input-container" id="globalChatInputArea"></div>
+    </div>
 
 
     <div id="floatingRewardContainer" class="floating-reward-container">
