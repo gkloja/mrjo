@@ -1018,12 +1018,16 @@ setTimeout(() => {
     let unsubscribeComments = null;
 
     // Função Inteligente de Login (Resolve o erro do Median.co e Navegador)
-// Função chamada ao clicar no botão de login
-function fazerLoginGoogle() {
-    if (!window.fbOps) return;
-
-    // Inicia o fluxo de redirecionamento para o Google
-    window.fbOps.signInWithRedirect(window.auth, window.googleProvider);
+    function fazerLoginGoogle() {
+    if(!window.fbOps) return;
+    ToastSystem.show('Conectando ao Google...', 'info');
+    
+    // Sempre usa redirect para evitar popups e funcionar em WebViews
+    window.fbOps.signInWithRedirect(window.auth, window.googleProvider)
+        .catch((error) => {
+            console.error("ERRO GOOGLE REDIRECT: ", error);
+            ToastSystem.show("Erro ao conectar com a conta Google.", "error");
+        });
 }
 
     function fazerLogout() {
