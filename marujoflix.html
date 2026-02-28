@@ -1012,31 +1012,35 @@ setTimeout(() => {
   
   
       // ⚓ SISTEMA DE LOGIN E COMENTÁRIOS (FIREBASE)
+     // ⚓ SISTEMA DE LOGIN E COMENTÁRIOS (FIREBASE)
     let currentUser = null;
     let currentMovieIdForComments = null;
     let unsubscribeComments = null;
 
-    // Inicia a vigilância de Login
-    // Força o botão a aparecer na tela IMEDIATAMENTE como visitante
-  //  setTimeout(() => { atualizarMenuLateral(null); }, 200);
-
-    // Fica vigiando até o Google carregar com sucesso (não desiste mais)
-        // Fica vigiando até o Google carregar com sucesso
-        // Fica vigiando até o Google carregar com sucesso
-        // Fica vigiando até o Google carregar com sucesso
-        // APAGAMOS O SETTIMEOUT DAQUI PARA NÃO SOBRESCREVER MAIS O LOGIN!
-
-    // Fica vigiando até o Google carregar com sucesso
-        // Volta a função de login para POPUP (A única que mantém a pessoa dentro do app)
+    // Função Inteligente de Login (Resolve o erro do Median.co e Navegador)
     function fazerLoginGoogle() {
         if(!window.fbOps) return;
         ToastSystem.show('Conectando ao Google...', 'info');
-        window.fbOps.signInWithPopup(window.auth, window.googleProvider)
-            .then((result) => ToastSystem.show(`Bem-vindo, ${result.user.displayName}!`, 'success'))
-            .catch((error) => {
-                console.error("ERRO GOOGLE: ", error);
-                ToastSystem.show("Erro: Seu aplicativo/navegador bloqueou o pop-up do Google.", "error");
+        
+        // Detecta se está em um celular ou WebView (Como o Median.co)
+        const isMobileOrWebView = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|wv/i.test(navigator.userAgent);
+
+        if (isMobileOrWebView) {
+            // Em Apps, Popups são bloqueados. O Redirecionamento é 100% garantido.
+            window.fbOps.signInWithRedirect(window.auth, window.googleProvider).catch((error) => {
+                console.error("ERRO GOOGLE REDIRECT: ", error);
+                ToastSystem.show("Erro ao conectar com a conta Google.", "error");
             });
+        } else {
+            // No PC, tenta o Popup para uma experiência mais rápida e limpa
+            window.fbOps.signInWithPopup(window.auth, window.googleProvider)
+                .then((result) => ToastSystem.show(`Bem-vindo, ${result.user.displayName.split(' ')[0]}!`, 'success'))
+                .catch((error) => {
+                    console.error("ERRO GOOGLE POPUP: ", error);
+                    // Se o popup for bloqueado no PC, tenta o redirecionamento como plano B
+                    window.fbOps.signInWithRedirect(window.auth, window.googleProvider);
+                });
+        }
     }
 
     function fazerLogout() {
@@ -1044,30 +1048,45 @@ setTimeout(() => {
         window.fbOps.signOut(window.auth).then(() => ToastSystem.show('Você deslogou.', 'info'));
     }
 
-    // Fica vigiando até o Google carregar com sucesso
+    // Fica vigiando até o Firebase carregar com sucesso
     let timerFirebase = setInterval(() => {
         if(window.fbOps && window.auth) {
             clearInterval(timerFirebase); 
             
+            // 1. Verifica se o usuário acabou de voltar de um redirecionamento de Login (Median.co/Mobile)
+            window.fbOps.getRedirectResult(window.auth).then((result) => {
+                if (result && result.user) {
+                    ToastSystem.show(`Bem-vindo a bordo, ${result.user.displayName.split(' ')[0]}!`, 'success');
+                }
+            }).catch((error) => console.error("Erro no Redirect Result: ", error));
+
             // Liga o chat silencioso
             if(typeof iniciarChatGlobalSilencioso === 'function' && !unsubscribeGlobalChat) iniciarChatGlobalSilencioso();
 
-            // Vigia o status do login
+            // Vigia o status do login constantemente
             window.fbOps.onAuthStateChanged(window.auth, async (user) => {
                 currentUser = user;
                 
+                // ✅ CORREÇÃO AQUI: Atualiza a interface IMEDIATAMENTE, não espera o banco de dados!
+                atualizarTodaAInterface(user);
+                
                 if (user) {
-                    // Puxa os dados da Nuvem
-                    const userRef = window.fbOps.doc(window.db, "users", user.uid);
-                    const docSnap = await window.fbOps.getDoc(userRef);
-                    if (docSnap.exists()) {
-                        const dados = docSnap.data();
-                        if ((dados.xp || 0) > userProgress.xp) {
-                            userProgress.xp = dados.xp || 0;
-                            userProgress.level = dados.level || 1;
+                    // Protege a requisição com try...catch para que a interface não congele caso a internet caia
+                    try {
+                        const userRef = window.fbOps.doc(window.db, "users", user.uid);
+                        const docSnap = await window.fbOps.getDoc(userRef);
+                        
+                        if (docSnap.exists()) {
+                            const dados = docSnap.data();
+                            if ((dados.xp || 0) > userProgress.xp) {
+                                userProgress.xp = dados.xp || 0;
+                                userProgress.level = dados.level || 1;
+                            }
+                            userProgress.favorites = [...new Set([...userProgress.favorites, ...(dados.favorites || [])])];
+                            userProgress.history = [...new Set([...userProgress.history, ...(dados.history || [])])];
                         }
-                        userProgress.favorites = [...new Set([...userProgress.favorites, ...(dados.favorites || [])])];
-                        userProgress.history = [...new Set([...userProgress.history, ...(dados.history || [])])];
+                    } catch (err) {
+                        console.log("Aviso: Falha ao sincronizar dados na nuvem (o local continuará salvo).", err);
                     }
                     userProgress.save(); 
                 } else {
@@ -1078,9 +1097,6 @@ setTimeout(() => {
                     userProgress.history = JSON.parse(localStorage.getItem('marujoflix_history')) || [];
                 }
 
-                // A MÁGICA ACONTECE AQUI: Atualiza absolutamente todas as fotos da tela!
-                atualizarTodaAInterface(user);
-                
                 // Atualiza os números (XP e Nível)
                 userProgress.updateUI();
                 
@@ -1092,28 +1108,31 @@ setTimeout(() => {
         }
     }, 500);
 
-
-            function atualizarTodaAInterface(user) {
-        // Elementos da Tela de Carregamento
+    function atualizarTodaAInterface(user) {
         const loadingImg = document.querySelector('.rank-icon');
         const loadingName = document.getElementById('rankTitle');
-        // Elementos do Site
         const headerAvatar = document.querySelector('.user-avatar');
         const sidebarAvatar = document.querySelector('.sidebar-avatar img');
         const sidebarRank = document.getElementById('sidebarRank');
         const authArea = document.getElementById('sidebarAuthArea');
 
         if (user) {
+            // ✅ CORREÇÃO: Previne erros se a photoURL não for exatamente do formato padrão do Google
+            let fotoUser = user.photoURL ? user.photoURL : 'https://via.placeholder.com/150';
+            if(fotoUser.includes('s96-c')) fotoUser = fotoUser.replace('s96-c', 's200-c'); // Melhora a qualidade
+            
+            let primeiroNome = user.displayName ? user.displayName.split(' ')[0] : 'Marujo';
+
             // 1. FOTO NA PATENTE (CARREGAMENTO)
-            if(loadingImg) loadingImg.innerHTML = `<img src="${user.photoURL.replace('s96-c', 's200-c')}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
-            if(loadingName) loadingName.textContent = user.displayName.split(' ')[0];
+            if(loadingImg) loadingImg.innerHTML = `<img src="${fotoUser}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
+            if(loadingName) loadingName.textContent = primeiroNome;
 
             // 2. FOTO NO EMOJI DE USER (TOPO DA TELA)
-            if(headerAvatar) headerAvatar.innerHTML = `<img src="${user.photoURL}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
+            if(headerAvatar) headerAvatar.innerHTML = `<img src="${fotoUser}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
 
             // 3. FOTO E NOME NO MENU LATERAL
-            if(sidebarAvatar) sidebarAvatar.src = user.photoURL.replace("s96-c", "s200-c"); 
-            if(sidebarRank) sidebarRank.innerHTML = `${user.displayName.split(' ')[0]} <br><small style="font-size:0.7rem; color:var(--text-muted); cursor:pointer;" onclick="fazerLogout()">Sair da Conta</small>`;
+            if(sidebarAvatar) sidebarAvatar.src = fotoUser; 
+            if(sidebarRank) sidebarRank.innerHTML = `${primeiroNome} <br><small style="font-size:0.7rem; color:var(--text-muted); cursor:pointer;" onclick="fazerLogout()">Sair da Conta</small>`;
             
             if(authArea) authArea.innerHTML = `<button onclick="fazerLogout()" style="background: rgba(255,0,0,0.1); border: 1px solid var(--accent); color: var(--accent); padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.8rem; transition: all 0.3s;"><i class="fas fa-sign-out-alt"></i> Deslogar</button>`;
 
@@ -1127,7 +1146,7 @@ setTimeout(() => {
             if(authArea) authArea.innerHTML = `<button onclick="fazerLoginGoogle()" style="width: 85%; margin: 0 auto; padding: 12px; background: white; color: #333; font-weight: bold; border-radius: 30px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 5px 15px rgba(255,255,255,0.2); transition: all 0.3s;"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 20px; height: 20px;"> Entrar com Google</button>`;
         }
 
-        // Atualiza os Chats para reconhecer a conta
+        // Atualiza os Chats para reconhecer a conta imediatamente
         if(typeof renderizarInputChatGlobal === 'function') renderizarInputChatGlobal();
         if(typeof currentMovieIdForComments !== 'undefined' && currentMovieIdForComments) renderizarAreaDeComentario();
     }
