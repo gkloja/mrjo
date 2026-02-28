@@ -1024,30 +1024,34 @@ setTimeout(() => {
         // Fica vigiando até o Google carregar com sucesso
         // Fica vigiando até o Google carregar com sucesso
         // Fica vigiando até o Google carregar com sucesso
+        // APAGAMOS O SETTIMEOUT DAQUI PARA NÃO SOBRESCREVER MAIS O LOGIN!
+
+    // Fica vigiando até o Google carregar com sucesso
     let timerFirebase = setInterval(() => {
         if(window.fbOps && window.auth) {
             clearInterval(timerFirebase); 
             
+            // 1. RECEBEDOR DO REDIRECT (Se ele estava voltando do Google, pega os dados aqui)
+            window.fbOps.getRedirectResult(window.auth).then((result) => {
+                if (result) ToastSystem.show(`Bem-vindo de volta, ${result.user.displayName.split(' ')[0]}!`, 'success');
+            }).catch((error) => console.log("Nenhum redirecionamento pendente."));
+
+            // 2. LIGA O RADAR SILENCIOSO DO CHAT
             if(!unsubscribeGlobalChat) iniciarChatGlobalSilencioso();
 
+            // 3. VIGIA O LOGIN
             window.fbOps.onAuthStateChanged(window.auth, async (user) => {
                 currentUser = user;
                 
                 if (user) {
-                    // ==========================================
-                    // 1. FOTO NA PATENTE (LOADING SCREEN)
-                    // ==========================================
+                    // FOTO NA PATENTE (LOADING SCREEN)
                     const rankIconContainer = document.querySelector('.rank-icon');
-                    if(rankIconContainer) {
-                        rankIconContainer.innerHTML = `<img src="${user.photoURL.replace('s96-c', 's200-c')}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
-                    }
+                    if(rankIconContainer) rankIconContainer.innerHTML = `<img src="${user.photoURL.replace('s96-c', 's200-c')}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
                     
                     const loadingRank = document.getElementById('rankTitle');
                     if(loadingRank) loadingRank.textContent = user.displayName.split(' ')[0];
 
-                    // ==========================================
-                    // 2. SINCRONIZAÇÃO INTELIGENTE DE XP
-                    // ==========================================
+                    // SINCRONIZAÇÃO NUVEM
                     const userRef = window.fbOps.doc(window.db, "users", user.uid);
                     const docSnap = await window.fbOps.getDoc(userRef);
                     
@@ -1064,14 +1068,17 @@ setTimeout(() => {
                         userProgress.save();
                     }
                 } else {
-                    // MODO VISITANTE
+                    // VISITANTE
                     userProgress.xp = parseInt(localStorage.getItem('marujoflix_xp')) || 0;
                     userProgress.level = parseInt(localStorage.getItem('marujoflix_level')) || 1;
                     userProgress.favorites = JSON.parse(localStorage.getItem('marujoflix_favorites')) || [];
                     userProgress.history = JSON.parse(localStorage.getItem('marujoflix_history')) || [];
+                    
+                    // Se for visitante, garante que o menu mostre o botão de login
+                    atualizarMenuLateral(null);
                 }
 
-                atualizarMenuLateral(user);
+                if(user) atualizarMenuLateral(user); // Se tiver logado, atualiza com os dados dele
                 userProgress.updateUI();
                 
                 if(IPTVSystem.abaAtual === 'favoritos' || IPTVSystem.abaAtual === 'historico') {
@@ -1087,26 +1094,18 @@ setTimeout(() => {
 
 
 
-        function fazerLoginGoogle() {
+
+            function fazerLoginGoogle() {
         if(!window.fbOps) return;
-        ToastSystem.show('Conectando aos mares do Google...', 'info');
+        ToastSystem.show('Abrindo os portões do Google...', 'info');
         
-        window.fbOps.signInWithPopup(window.auth, window.googleProvider)
-            .then((result) => {
-                ToastSystem.show(`Bem-vindo, ${result.user.displayName}!`, 'success');
-                // Força a atualização da interface imediatamente
-                currentUser = result.user;
-                atualizarMenuLateral(result.user);
-                if(currentMovieIdForComments) renderizarAreaDeComentario();
-                renderizarInputChatGlobal();
-            })
+        // Usa Redirect em vez de Popup (Resolve o erro dentro de Aplicativos/APKs)
+        window.fbOps.signInWithRedirect(window.auth, window.googleProvider)
             .catch((error) => {
-                // O DETECTOR DE ERROS: Isso vai nos dizer o que está dando errado!
-                console.error("ERRO COMPLETO DO GOOGLE: ", error);
-                alert("O GOOGLE BLOQUEOU O LOGIN: " + error.message);
+                console.error("Erro no redirecionamento: ", error);
+                alert("Erro ao conectar ao Google: " + error.message);
             });
     }
-
 
     function fazerLogout() {
         if(!window.fbOps) return;
@@ -2429,7 +2428,7 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -2446,9 +2445,10 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
   window.db = getFirestore(app);
   window.googleProvider = new GoogleAuthProvider();
   
-  // Exporta as funções (incluindo o deleteDoc agora)
-  window.fbOps = { signInWithPopup, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc };
+  // ADICIONAMOS O REDIRECT AQUI NO FINAL
+  window.fbOps = { signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc };
 </script>
+
 
 
 
