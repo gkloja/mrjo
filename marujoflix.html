@@ -1019,8 +1019,13 @@ setTimeout(() => {
     let unsubscribeComments = null;
 
     // Função Inteligente de Login (Resolve o erro do Median.co e Navegador)
-    function fazerLoginGoogle() {
-        if(!window.fbOps) return;
+        function fazerLoginGoogle() {
+        // Se o Firebase ainda estiver carregando, avise o usuário em vez de ignorar o clique!
+        if(!window.fbOps) {
+            ToastSystem.show('Preparando os sistemas, tente novamente em 2 segundos...', 'info');
+            return;
+        }
+        
         ToastSystem.show('Conectando ao Google...', 'info');
         
         // Detecta se está em um celular ou WebView (Como o Median.co)
@@ -1030,19 +1035,28 @@ setTimeout(() => {
             // Em Apps, Popups são bloqueados. O Redirecionamento é 100% garantido.
             window.fbOps.signInWithRedirect(window.auth, window.googleProvider).catch((error) => {
                 console.error("ERRO GOOGLE REDIRECT: ", error);
-                ToastSystem.show("Erro ao conectar com a conta Google.", "error");
+                ToastSystem.show("Erro ao abrir a página do Google.", "error");
             });
         } else {
-            // No PC, tenta o Popup para uma experiência mais rápida e limpa
+            // No PC, tenta o Popup
             window.fbOps.signInWithPopup(window.auth, window.googleProvider)
                 .then((result) => ToastSystem.show(`Bem-vindo, ${result.user.displayName.split(' ')[0]}!`, 'success'))
                 .catch((error) => {
                     console.error("ERRO GOOGLE POPUP: ", error);
-                    // Se o popup for bloqueado no PC, tenta o redirecionamento como plano B
-                    window.fbOps.signInWithRedirect(window.auth, window.googleProvider);
+                    // Se o usuário fechou o popup de propósito, não faça nada.
+                    if(error.code === 'auth/popup-closed-by-user') {
+                        ToastSystem.show("Login cancelado.", "info");
+                        return;
+                    }
+                    // Se o popup for bloqueado pelo navegador, avise e redirecione!
+                    ToastSystem.show("Popup bloqueado! Redirecionando...", "info");
+                    setTimeout(() => {
+                        window.fbOps.signInWithRedirect(window.auth, window.googleProvider);
+                    }, 1000);
                 });
         }
     }
+
 
     function fazerLogout() {
         if(!window.fbOps) return;
@@ -2431,7 +2445,15 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
   const app = initializeApp(firebaseConfig);
   window.auth = getAuth(app);
   window.db = getFirestore(app);
+    // Como era:
+  // window.googleProvider = new GoogleAuthProvider();
+
+  // COMO DEVE FICAR:
   window.googleProvider = new GoogleAuthProvider();
+  window.googleProvider.setCustomParameters({
+      prompt: 'select_account' // <--- ISSO RESOLVE O BUG DE NÃO CONSEGUIR LOGAR NOVAMENTE
+  });
+
   
   // ADICIONAMOS O REDIRECT AQUI NO FINAL
   window.fbOps = { signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc };
