@@ -1161,9 +1161,10 @@ setTimeout(() => {
         if(typeof currentMovieIdForComments !== 'undefined' && currentMovieIdForComments) renderizarAreaDeComentario();
     }
         // O link da sua API
+    // O link da sua API
     const API_COMENTARIOS = 'https://cors.eu.org/br2.bronxyshost.com:4009';
 
-    // 1. CARREGAR COMENTÁRIOS (Usando GET com mode: cors)
+    // 1. CARREGAR COMENTÁRIOS (Download)
     async function carregarComentarios(movieId) {
         currentMovieIdForComments = movieId;
         document.getElementById('commentsSection').style.display = 'block';
@@ -1179,10 +1180,9 @@ setTimeout(() => {
             });
             
             if (response.ok) {
-                console.log('✅ API conectada com sucesso (Leitura)');
                 const todosComentarios = await response.json();
                 
-                // Pega só os comentários do filme atual
+                // Filtra para mostrar só os comentários deste filme
                 const comentariosDoFilme = todosComentarios.filter(c => c.filmeId === movieId);
                 
                 lista.innerHTML = '';
@@ -1191,11 +1191,12 @@ setTimeout(() => {
                 }
                 
                 comentariosDoFilme.forEach((c) => {
+                    // Monta o comentário com a Foto, Nome e Patente que vieram do servidor
                     lista.innerHTML += `
                         <div class="comment-item">
                             <img src="${c.userPhoto || 'https://via.placeholder.com/35'}" class="comment-avatar">
                             <div class="comment-content">
-                                <div class="comment-author">${c.userName}</div>
+                                <div class="comment-author">${c.userName} <span style="color:var(--primary); font-size:0.7rem;">• Nv. ${c.level || 1} (${c.rank || 'Visitante'})</span></div>
                                 <div class="comment-text">${c.text}</div>
                             </div>
                         </div>
@@ -1213,7 +1214,7 @@ setTimeout(() => {
         renderizarAreaDeComentario();
     }
 
-    // 2. ENVIAR COMENTÁRIO (Usando POST com mode: cors e JSON)
+    // 2. ENVIAR COMENTÁRIO (Upload)
     async function enviarComentario() {
         const input = document.getElementById('comentarioInput');
         if (!input) return;
@@ -1223,12 +1224,14 @@ setTimeout(() => {
         
         input.value = ''; // Limpa a caixinha rápido
         
-        // Monta os dados
+        // 📦 O PACOTE DE DADOS: Aqui vai tudo da conta do Google do usuário!
         const pacote = {
             filmeId: currentMovieIdForComments,
             userId: currentUser.uid,
-            userName: currentUser.displayName.split(' ')[0],
-            userPhoto: currentUser.photoURL,
+            userName: currentUser.displayName.split(' ')[0], // Pega só o primeiro nome
+            userPhoto: currentUser.photoURL.replace('s96-c', 's200-c'), // Foto em alta qualidade
+            level: userProgress.level, // Pega o nível atual do site
+            rank: getRankTitle(userProgress.level), // Pega a patente atual
             text: text,
             timestamp: new Date().toISOString()
         };
@@ -1239,25 +1242,21 @@ setTimeout(() => {
                 mode: 'cors',
                 headers: { 
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json' // Avisa que está mandando um JSON
+                    'Content-Type': 'application/json' 
                 },
                 body: JSON.stringify(pacote)
             });
 
             if (response.ok) {
-                console.log('✅ API conectada com sucesso (Gravação)');
                 userProgress.addXP(5); // Ganha o XP
-                carregarComentarios(currentMovieIdForComments); // Recarrega a lista para mostrar a nova mensagem
+                carregarComentarios(currentMovieIdForComments); // Atualiza a tela puxando o comentário novo
             } else {
-                console.log('⚠️ O servidor recebeu a conexão, mas recusou os dados.');
                 ToastSystem.show('O servidor recusou a mensagem.', 'error');
             }
         } catch (error) {
-            console.log('⚠️ API offline - falha ao enviar comentário');
             ToastSystem.show('Erro de comunicação com o servidor.', 'error');
         }
     }
-
 
     function renderizarAreaDeComentario() {
         const area = document.getElementById('commentActionArea');
