@@ -1019,16 +1019,29 @@ setTimeout(() => {
 
     // Função Inteligente de Login (Resolve o erro do Median.co e Navegador)
     function fazerLoginGoogle() {
-    if(!window.fbOps) return;
-    ToastSystem.show('Conectando ao Google...', 'info');
-    
-    // Sempre usa redirect para evitar popups e funcionar em WebViews
-    window.fbOps.signInWithRedirect(window.auth, window.googleProvider)
-        .catch((error) => {
-            console.error("ERRO GOOGLE REDIRECT: ", error);
-            ToastSystem.show("Erro ao conectar com a conta Google.", "error");
-        });
-}
+        if(!window.fbOps) return;
+        ToastSystem.show('Conectando ao Google...', 'info');
+        
+        // Detecta se está em um celular ou WebView (Como o Median.co)
+        const isMobileOrWebView = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|wv/i.test(navigator.userAgent);
+
+        if (isMobileOrWebView) {
+            // Em Apps, Popups são bloqueados. O Redirecionamento é 100% garantido.
+            window.fbOps.signInWithRedirect(window.auth, window.googleProvider).catch((error) => {
+                console.error("ERRO GOOGLE REDIRECT: ", error);
+                ToastSystem.show("Erro ao conectar com a conta Google.", "error");
+            });
+        } else {
+            // No PC, tenta o Popup para uma experiência mais rápida e limpa
+            window.fbOps.signInWithPopup(window.auth, window.googleProvider)
+                .then((result) => ToastSystem.show(`Bem-vindo, ${result.user.displayName.split(' ')[0]}!`, 'success'))
+                .catch((error) => {
+                    console.error("ERRO GOOGLE POPUP: ", error);
+                    // Se o popup for bloqueado no PC, tenta o redirecionamento como plano B
+                    window.fbOps.signInWithRedirect(window.auth, window.googleProvider);
+                });
+        }
+    }
 
     function fazerLogout() {
         if(!window.fbOps) return;
