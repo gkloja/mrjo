@@ -1018,63 +1018,44 @@ setTimeout(() => {
     let currentMovieIdForComments = null;
     let unsubscribeComments = null;
 
-    // Função Inteligente de Login (Resolve o erro do Median.co e Navegador)
-        function fazerLoginGoogle() {
-        // Se o Firebase ainda estiver carregando, avise o usuário em vez de ignorar o clique!
+    function fazerLoginGoogle() {
         if(!window.fbOps) {
-            ToastSystem.show('Preparando os sistemas, tente novamente em 2 segundos...', 'info');
+            ToastSystem.show('Preparando os motores, aguarde um segundo...', 'info');
             return;
         }
         
-        ToastSystem.show('Conectando ao Google...', 'info');
+        ToastSystem.show('Abrindo porta de embarque...', 'info');
         
-        // Detecta se está em um celular ou WebView (Como o Median.co)
-        const isMobileOrWebView = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|wv/i.test(navigator.userAgent);
-
-        if (isMobileOrWebView) {
-            // Em Apps, Popups são bloqueados. O Redirecionamento é 100% garantido.
-            window.fbOps.signInWithRedirect(window.auth, window.googleProvider).catch((error) => {
-                console.error("ERRO GOOGLE REDIRECT: ", error);
-                ToastSystem.show("Erro ao abrir a página do Google.", "error");
+        // Vamos usar APENAS POPUP. Evita o erro de "missing initial state".
+        window.fbOps.signInWithPopup(window.auth, window.googleProvider)
+            .then((result) => ToastSystem.show(`Bem-vindo, ${result.user.displayName.split(' ')[0]}!`, 'success'))
+            .catch((error) => {
+                console.error("ERRO GOOGLE POPUP: ", error);
+                if(error.code === 'auth/popup-closed-by-user') {
+                    ToastSystem.show("Embarque cancelado.", "info");
+                } else {
+                    // O alerta abaixo avisa caso o seu APK esteja bloqueando o popup
+                    alert("Erro ao logar. Se estiver no App, ative a opção de 'Múltiplas Janelas / Popups' no criador do aplicativo. Detalhe: " + error.message);
+                }
             });
-        } else {
-            // No PC, tenta o Popup
-            window.fbOps.signInWithPopup(window.auth, window.googleProvider)
-                .then((result) => ToastSystem.show(`Bem-vindo, ${result.user.displayName.split(' ')[0]}!`, 'success'))
-                .catch((error) => {
-                    console.error("ERRO GOOGLE POPUP: ", error);
-                    // Se o usuário fechou o popup de propósito, não faça nada.
-                    if(error.code === 'auth/popup-closed-by-user') {
-                        ToastSystem.show("Login cancelado.", "info");
-                        return;
-                    }
-                    // Se o popup for bloqueado pelo navegador, avise e redirecione!
-                    ToastSystem.show("Popup bloqueado! Redirecionando...", "info");
-                    setTimeout(() => {
-                        window.fbOps.signInWithRedirect(window.auth, window.googleProvider);
-                    }, 1000);
-                });
-        }
     }
-
 
     function fazerLogout() {
         if(!window.fbOps) return;
-        window.fbOps.signOut(window.auth).then(() => ToastSystem.show('Você deslogou.', 'info'));
+        window.fbOps.signOut(window.auth).then(() => {
+            ToastSystem.show('Você deslogou da embarcação.', 'info');
+            // MÁGICA: Recarrega a página em 1 segundo para limpar a memória do navegador!
+            setTimeout(() => { window.location.reload(); }, 1000);
+        });
     }
 
+
     // Fica vigiando até o Firebase carregar com sucesso
+        // Fica vigiando até o Firebase carregar com sucesso
     let timerFirebase = setInterval(() => {
         if(window.fbOps && window.auth) {
             clearInterval(timerFirebase); 
             
-            // 1. Verifica se o usuário acabou de voltar de um redirecionamento de Login (Median.co/Mobile)
-            window.fbOps.getRedirectResult(window.auth).then((result) => {
-                if (result && result.user) {
-                    ToastSystem.show(`Bem-vindo a bordo, ${result.user.displayName.split(' ')[0]}!`, 'success');
-                }
-            }).catch((error) => console.error("Erro no Redirect Result: ", error));
-
             // Liga o chat silencioso
             if(typeof iniciarChatGlobalSilencioso === 'function' && !unsubscribeGlobalChat) iniciarChatGlobalSilencioso();
 
@@ -1082,11 +1063,10 @@ setTimeout(() => {
             window.fbOps.onAuthStateChanged(window.auth, async (user) => {
                 currentUser = user;
                 
-                // ✅ CORREÇÃO AQUI: Atualiza a interface IMEDIATAMENTE, não espera o banco de dados!
+                // Atualiza a interface (Foto na patente, menu, cabeçalho)
                 atualizarTodaAInterface(user);
                 
                 if (user) {
-                    // Protege a requisição com try...catch para que a interface não congele caso a internet caia
                     try {
                         const userRef = window.fbOps.doc(window.db, "users", user.uid);
                         const docSnap = await window.fbOps.getDoc(userRef);
@@ -1101,7 +1081,7 @@ setTimeout(() => {
                             userProgress.history = [...new Set([...userProgress.history, ...(dados.history || [])])];
                         }
                     } catch (err) {
-                        console.log("Aviso: Falha ao sincronizar dados na nuvem (o local continuará salvo).", err);
+                        console.log("Aviso: Sincronização na nuvem com lentidão.", err);
                     }
                     userProgress.save(); 
                 } else {
@@ -1112,16 +1092,12 @@ setTimeout(() => {
                     userProgress.history = JSON.parse(localStorage.getItem('marujoflix_history')) || [];
                 }
 
-                // Atualiza os números (XP e Nível)
                 userProgress.updateUI();
-                
-                // Atualiza a tela de filmes se necessário
-                if(IPTVSystem.abaAtual === 'favoritos' || IPTVSystem.abaAtual === 'historico') {
-                    IPTVSystem.aplicarFiltros(); 
-                }
+                if(IPTVSystem.abaAtual === 'favoritos' || IPTVSystem.abaAtual === 'historico') IPTVSystem.aplicarFiltros(); 
             });
         }
     }, 500);
+
 
     function atualizarTodaAInterface(user) {
         const loadingImg = document.querySelector('.rank-icon');
@@ -2430,7 +2406,7 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -2445,19 +2421,15 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
   const app = initializeApp(firebaseConfig);
   window.auth = getAuth(app);
   window.db = getFirestore(app);
-    // Como era:
-  // window.googleProvider = new GoogleAuthProvider();
-
-  // COMO DEVE FICAR:
+  
   window.googleProvider = new GoogleAuthProvider();
   window.googleProvider.setCustomParameters({
-      prompt: 'select_account' // <--- ISSO RESOLVE O BUG DE NÃO CONSEGUIR LOGAR NOVAMENTE
+      prompt: 'select_account' // Garante que a pessoa possa escolher a conta ao relogar
   });
 
-  
-  // ADICIONAMOS O REDIRECT AQUI NO FINAL
-  window.fbOps = { signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc };
+  window.fbOps = { signInWithPopup, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc };
 </script>
+
 
 
 
