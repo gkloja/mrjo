@@ -1018,7 +1018,7 @@ setTimeout(() => {
 
     // Inicia a vigilância de Login
     // Força o botão a aparecer na tela IMEDIATAMENTE como visitante
-    setTimeout(() => { atualizarMenuLateral(null); }, 200);
+  //  setTimeout(() => { atualizarMenuLateral(null); }, 200);
 
     // Fica vigiando até o Google carregar com sucesso (não desiste mais)
         // Fica vigiando até o Google carregar com sucesso
@@ -1027,34 +1027,39 @@ setTimeout(() => {
         // APAGAMOS O SETTIMEOUT DAQUI PARA NÃO SOBRESCREVER MAIS O LOGIN!
 
     // Fica vigiando até o Google carregar com sucesso
+        // Volta a função de login para POPUP (A única que mantém a pessoa dentro do app)
+    function fazerLoginGoogle() {
+        if(!window.fbOps) return;
+        ToastSystem.show('Conectando ao Google...', 'info');
+        window.fbOps.signInWithPopup(window.auth, window.googleProvider)
+            .then((result) => ToastSystem.show(`Bem-vindo, ${result.user.displayName}!`, 'success'))
+            .catch((error) => {
+                console.error("ERRO GOOGLE: ", error);
+                ToastSystem.show("Erro: Seu aplicativo/navegador bloqueou o pop-up do Google.", "error");
+            });
+    }
+
+    function fazerLogout() {
+        if(!window.fbOps) return;
+        window.fbOps.signOut(window.auth).then(() => ToastSystem.show('Você deslogou.', 'info'));
+    }
+
+    // Fica vigiando até o Google carregar com sucesso
     let timerFirebase = setInterval(() => {
         if(window.fbOps && window.auth) {
             clearInterval(timerFirebase); 
             
-            // 1. RECEBEDOR DO REDIRECT (Se ele estava voltando do Google, pega os dados aqui)
-            window.fbOps.getRedirectResult(window.auth).then((result) => {
-                if (result) ToastSystem.show(`Bem-vindo de volta, ${result.user.displayName.split(' ')[0]}!`, 'success');
-            }).catch((error) => console.log("Nenhum redirecionamento pendente."));
+            // Liga o chat silencioso
+            if(typeof iniciarChatGlobalSilencioso === 'function' && !unsubscribeGlobalChat) iniciarChatGlobalSilencioso();
 
-            // 2. LIGA O RADAR SILENCIOSO DO CHAT
-            if(!unsubscribeGlobalChat) iniciarChatGlobalSilencioso();
-
-            // 3. VIGIA O LOGIN
+            // Vigia o status do login
             window.fbOps.onAuthStateChanged(window.auth, async (user) => {
                 currentUser = user;
                 
                 if (user) {
-                    // FOTO NA PATENTE (LOADING SCREEN)
-                    const rankIconContainer = document.querySelector('.rank-icon');
-                    if(rankIconContainer) rankIconContainer.innerHTML = `<img src="${user.photoURL.replace('s96-c', 's200-c')}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
-                    
-                    const loadingRank = document.getElementById('rankTitle');
-                    if(loadingRank) loadingRank.textContent = user.displayName.split(' ')[0];
-
-                    // SINCRONIZAÇÃO NUVEM
+                    // Puxa os dados da Nuvem
                     const userRef = window.fbOps.doc(window.db, "users", user.uid);
                     const docSnap = await window.fbOps.getDoc(userRef);
-                    
                     if (docSnap.exists()) {
                         const dados = docSnap.data();
                         if ((dados.xp || 0) > userProgress.xp) {
@@ -1063,96 +1068,70 @@ setTimeout(() => {
                         }
                         userProgress.favorites = [...new Set([...userProgress.favorites, ...(dados.favorites || [])])];
                         userProgress.history = [...new Set([...userProgress.history, ...(dados.history || [])])];
-                        userProgress.save(); 
-                    } else {
-                        userProgress.save();
                     }
+                    userProgress.save(); 
                 } else {
-                    // VISITANTE
+                    // Carrega do Celular (Visitante)
                     userProgress.xp = parseInt(localStorage.getItem('marujoflix_xp')) || 0;
                     userProgress.level = parseInt(localStorage.getItem('marujoflix_level')) || 1;
                     userProgress.favorites = JSON.parse(localStorage.getItem('marujoflix_favorites')) || [];
                     userProgress.history = JSON.parse(localStorage.getItem('marujoflix_history')) || [];
-                    
-                    // Se for visitante, garante que o menu mostre o botão de login
-                    atualizarMenuLateral(null);
                 }
 
-                if(user) atualizarMenuLateral(user); // Se tiver logado, atualiza com os dados dele
+                // A MÁGICA ACONTECE AQUI: Atualiza absolutamente todas as fotos da tela!
+                atualizarTodaAInterface(user);
+                
+                // Atualiza os números (XP e Nível)
                 userProgress.updateUI();
                 
+                // Atualiza a tela de filmes se necessário
                 if(IPTVSystem.abaAtual === 'favoritos' || IPTVSystem.abaAtual === 'historico') {
                     IPTVSystem.aplicarFiltros(); 
                 }
-                
-                if(currentMovieIdForComments) renderizarAreaDeComentario();
-                renderizarInputChatGlobal(); 
             });
         }
     }, 500);
 
 
-
-
-
-            function fazerLoginGoogle() {
-        if(!window.fbOps) return;
-        ToastSystem.show('Abrindo os portões do Google...', 'info');
-        
-        // Usa Redirect em vez de Popup (Resolve o erro dentro de Aplicativos/APKs)
-        window.fbOps.signInWithRedirect(window.auth, window.googleProvider)
-            .catch((error) => {
-                console.error("Erro no redirecionamento: ", error);
-                alert("Erro ao conectar ao Google: " + error.message);
-            });
-    }
-
-    function fazerLogout() {
-        if(!window.fbOps) return;
-        window.fbOps.signOut(window.auth).then(() => ToastSystem.show('Você deslogou da embarcação.', 'info'));
-    }
-
-        function atualizarMenuLateral(user) {
-        const avatarImgSidebar = document.querySelector('.sidebar-avatar img');
-        const headerAvatar = document.querySelector('.user-avatar'); // O botãozinho lá no topo
-        const nameElement = document.getElementById('sidebarRank');
+            function atualizarTodaAInterface(user) {
+        // Elementos da Tela de Carregamento
+        const loadingImg = document.querySelector('.rank-icon');
+        const loadingName = document.getElementById('rankTitle');
+        // Elementos do Site
+        const headerAvatar = document.querySelector('.user-avatar');
+        const sidebarAvatar = document.querySelector('.sidebar-avatar img');
+        const sidebarRank = document.getElementById('sidebarRank');
         const authArea = document.getElementById('sidebarAuthArea');
 
         if (user) {
-            // FOTO NO TOPO DA TELA (HEADER)
-            if(headerAvatar) {
-                headerAvatar.innerHTML = `<img src="${user.photoURL}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
-            }
+            // 1. FOTO NA PATENTE (CARREGAMENTO)
+            if(loadingImg) loadingImg.innerHTML = `<img src="${user.photoURL.replace('s96-c', 's200-c')}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
+            if(loadingName) loadingName.textContent = user.displayName.split(' ')[0];
+
+            // 2. FOTO NO EMOJI DE USER (TOPO DA TELA)
+            if(headerAvatar) headerAvatar.innerHTML = `<img src="${user.photoURL}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
+
+            // 3. FOTO E NOME NO MENU LATERAL
+            if(sidebarAvatar) sidebarAvatar.src = user.photoURL.replace("s96-c", "s200-c"); 
+            if(sidebarRank) sidebarRank.innerHTML = `${user.displayName.split(' ')[0]} <br><small style="font-size:0.7rem; color:var(--text-muted); cursor:pointer;" onclick="fazerLogout()">Sair da Conta</small>`;
             
-            // FOTO NO MENU LATERAL
-            if(avatarImgSidebar) avatarImgSidebar.src = user.photoURL.replace("s96-c", "s200-c"); 
-            
-            let primeiroNome = user.displayName.split(' ')[0];
-            if(nameElement) nameElement.innerHTML = primeiroNome;
-            
-            if(authArea) {
-                authArea.innerHTML = `
-                    <button onclick="fazerLogout()" style="background: rgba(255,0,0,0.1); border: 1px solid var(--accent); color: var(--accent); padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.8rem; transition: all 0.3s;">
-                        <i class="fas fa-sign-out-alt"></i> Deslogar
-                    </button>
-                `;
-            }
+            if(authArea) authArea.innerHTML = `<button onclick="fazerLogout()" style="background: rgba(255,0,0,0.1); border: 1px solid var(--accent); color: var(--accent); padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.8rem; transition: all 0.3s;"><i class="fas fa-sign-out-alt"></i> Deslogar</button>`;
+
         } else {
-            // VOLTA PARA O VISITANTE
-            if(headerAvatar) headerAvatar.innerHTML = `<i class="fas fa-user"></i>`; // Volta o emoji
-            if(avatarImgSidebar) avatarImgSidebar.src = 'imagens/1772133683485~2.png'; 
-            if(nameElement) nameElement.innerHTML = "Visitante";
+            // RESTAURA PARA VISITANTE SE DESLOGAR
+            if(loadingImg) loadingImg.innerHTML = `<i class="fas fa-anchor" id="rankIcon"></i>`;
+            if(headerAvatar) headerAvatar.innerHTML = `<i class="fas fa-user"></i>`;
+            if(sidebarAvatar) sidebarAvatar.src = 'imagens/1772133683485~2.png'; 
+            if(sidebarRank) sidebarRank.textContent = getRankTitle(userProgress.level);
             
-            if(authArea) {
-                authArea.innerHTML = `
-                    <button onclick="fazerLoginGoogle()" style="width: 85%; margin: 0 auto; padding: 12px; background: white; color: #333; font-weight: bold; border-radius: 30px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 5px 15px rgba(255,255,255,0.2); transition: all 0.3s;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 20px; height: 20px;">
-                        Entrar com Google
-                    </button>
-                `;
-            }
+            if(authArea) authArea.innerHTML = `<button onclick="fazerLoginGoogle()" style="width: 85%; margin: 0 auto; padding: 12px; background: white; color: #333; font-weight: bold; border-radius: 30px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 5px 15px rgba(255,255,255,0.2); transition: all 0.3s;"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 20px; height: 20px;"> Entrar com Google</button>`;
         }
+
+        // Atualiza os Chats para reconhecer a conta
+        if(typeof renderizarInputChatGlobal === 'function') renderizarInputChatGlobal();
+        if(typeof currentMovieIdForComments !== 'undefined' && currentMovieIdForComments) renderizarAreaDeComentario();
     }
+
 
     function carregarComentarios(movieId) {
         currentMovieIdForComments = movieId;
@@ -1546,18 +1525,7 @@ setTimeout(() => {
             }
         },
 
-                        updateUI() {
-            const elRank = document.getElementById('sidebarRank');
-            
-            // Se estiver logado, mantém o nome da pessoa. Se for visitante, mostra a Patente Naval.
-            if(elRank) {
-                if (typeof currentUser !== 'undefined' && currentUser) {
-                    elRank.innerHTML = currentUser.displayName.split(' ')[0] + `<br><small style="font-size:0.7rem; color:var(--text-muted); cursor:pointer;" onclick="fazerLogout()">Sair da Conta</small>`;
-                } else {
-                    elRank.textContent = getRankTitle(this.level);
-                }
-            }
-            
+                                updateUI() {
             const elLevel = document.getElementById('sidebarLevel');
             if(elLevel) elLevel.textContent = `Nv. ${this.level}`;
             
