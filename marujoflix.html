@@ -1228,7 +1228,7 @@ setTimeout(() => {
     const API_COMENTARIOS = 'https://cors.eu.org/br2.bronxyshost.com:4009';
     let marujoEmFoco = null; // Guarda quem está no modal agora
 
-        function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
+            function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
         // Guarda os dados para usar no botão de adicionar
         marujoEmFoco = { id, nome, foto, nivel, patente };
         
@@ -1240,11 +1240,14 @@ setTimeout(() => {
         // Reseta o botão visualmente
         const btnAdd = document.querySelector('.btn-add-friend');
         btnAdd.innerHTML = '<i class="fas fa-user-plus"></i> Adicionar à Tripulação';
-        btnAdd..background = 'rgba(0, 255, 179, 0.1)';
+        
+        // CORRIGIDO O ERRO DOS DOIS PONTOS AQUI:
+        btnAdd.style.background = 'rgba(0, 255, 179, 0.1)';
         btnAdd.style.color = 'var(--primary)';
         
         document.getElementById('perfilModal').classList.add('active');
     }
+
     async function recrutarMarujo() {
         if (!currentUser) {
             ToastSystem.show('Você precisa estar logado para recrutar!', 'error');
@@ -1584,17 +1587,21 @@ setTimeout(() => {
         renderizarInputChatGlobal();
     }
 
-    function atualizarBadgeChat() {
-        const badge = document.getElementById('chatBadge');
-        if (!badge) return;
+        function atualizarBadgeChat() {
+        const badgeMobile = document.getElementById('chatBadge');
+        const badgeDesktop = document.getElementById('chatBadgeDesktop');
         
         if (unreadChatCount > 0) {
-            badge.textContent = unreadChatCount > 9 ? '9+' : unreadChatCount; // Mostra "9+" se tiver muitas
-            badge.classList.add('show');
+            const texto = unreadChatCount > 9 ? '9+' : unreadChatCount;
+            
+            if (badgeMobile) { badgeMobile.textContent = texto; badgeMobile.classList.add('show'); }
+            if (badgeDesktop) { badgeDesktop.textContent = texto; badgeDesktop.classList.add('show'); }
         } else {
-            badge.classList.remove('show');
+            if (badgeMobile) badgeMobile.classList.remove('show');
+            if (badgeDesktop) badgeDesktop.classList.remove('show');
         }
     }
+
 
     function renderizarInputChatGlobal() {
         const area = document.getElementById('globalChatInputArea');
