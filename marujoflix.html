@@ -1023,11 +1023,11 @@ setTimeout(() => {
     // Fica vigiando até o Google carregar com sucesso (não desiste mais)
         // Fica vigiando até o Google carregar com sucesso
         // Fica vigiando até o Google carregar com sucesso
+        // Fica vigiando até o Google carregar com sucesso
     let timerFirebase = setInterval(() => {
         if(window.fbOps && window.auth) {
             clearInterval(timerFirebase); 
             
-            // LIGA O RADAR SILENCIOSO DO CHAT
             if(!unsubscribeGlobalChat) iniciarChatGlobalSilencioso();
 
             window.fbOps.onAuthStateChanged(window.auth, async (user) => {
@@ -1035,40 +1035,34 @@ setTimeout(() => {
                 
                 if (user) {
                     // ==========================================
-                    // 1. ATUALIZA A TELA DE CARREGAMENTO IMEDIATAMENTE
+                    // 1. FOTO NA PATENTE (LOADING SCREEN)
                     // ==========================================
-                    const loadingImg = document.querySelector('.loading-logo img');
-                    if(loadingImg) loadingImg.src = user.photoURL.replace("s96-c", "s200-c");
+                    const rankIconContainer = document.querySelector('.rank-icon');
+                    if(rankIconContainer) {
+                        rankIconContainer.innerHTML = `<img src="${user.photoURL.replace('s96-c', 's200-c')}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
+                    }
                     
                     const loadingRank = document.getElementById('rankTitle');
                     if(loadingRank) loadingRank.textContent = user.displayName.split(' ')[0];
 
                     // ==========================================
-                    // 2. SINCRONIZAÇÃO INTELIGENTE DE XP (NUVEM + CELULAR)
+                    // 2. SINCRONIZAÇÃO INTELIGENTE DE XP
                     // ==========================================
                     const userRef = window.fbOps.doc(window.db, "users", user.uid);
                     const docSnap = await window.fbOps.getDoc(userRef);
                     
                     if (docSnap.exists()) {
                         const dados = docSnap.data();
-                        
-                        // Mantém o maior XP (Nunca perde progresso)
                         if ((dados.xp || 0) > userProgress.xp) {
                             userProgress.xp = dados.xp || 0;
                             userProgress.level = dados.level || 1;
                         }
-                        
-                        // Junta os favoritos da nuvem com os do celular sem duplicar
                         userProgress.favorites = [...new Set([...userProgress.favorites, ...(dados.favorites || [])])];
                         userProgress.history = [...new Set([...userProgress.history, ...(dados.history || [])])];
-                        
                         userProgress.save(); 
                     } else {
-                        // Primeira vez logando: sobe os dados do celular pra nuvem!
                         userProgress.save();
                     }
-                    
-                    ToastSystem.show(`Bem-vindo a bordo, ${user.displayName.split(' ')[0]}!`, 'success');
                 } else {
                     // MODO VISITANTE
                     userProgress.xp = parseInt(localStorage.getItem('marujoflix_xp')) || 0;
@@ -1084,7 +1078,6 @@ setTimeout(() => {
                     IPTVSystem.aplicarFiltros(); 
                 }
                 
-                // ATUALIZA OS CHATS SEMPRE (Corrigindo o bug do botão travado)
                 if(currentMovieIdForComments) renderizarAreaDeComentario();
                 renderizarInputChatGlobal(); 
             });
@@ -1093,43 +1086,51 @@ setTimeout(() => {
 
 
 
-    function fazerLoginGoogle() {
+
+        function fazerLoginGoogle() {
         if(!window.fbOps) return;
+        ToastSystem.show('Conectando aos mares do Google...', 'info');
+        
         window.fbOps.signInWithPopup(window.auth, window.googleProvider)
-            .then((result) => ToastSystem.show(`Bem-vindo, ${result.user.displayName}!`, 'success'))
-            .catch((error) => ToastSystem.show('Erro ao conectar ao Google.', 'error'));
+            .then((result) => {
+                ToastSystem.show(`Bem-vindo, ${result.user.displayName}!`, 'success');
+                // Força a atualização da interface imediatamente
+                currentUser = result.user;
+                atualizarMenuLateral(result.user);
+                if(currentMovieIdForComments) renderizarAreaDeComentario();
+                renderizarInputChatGlobal();
+            })
+            .catch((error) => {
+                // O DETECTOR DE ERROS: Isso vai nos dizer o que está dando errado!
+                console.error("ERRO COMPLETO DO GOOGLE: ", error);
+                alert("O GOOGLE BLOQUEOU O LOGIN: " + error.message);
+            });
     }
+
 
     function fazerLogout() {
         if(!window.fbOps) return;
         window.fbOps.signOut(window.auth).then(() => ToastSystem.show('Você deslogou da embarcação.', 'info'));
     }
 
-    function atualizarMenuLateral(user) {
-        // 1. Pega as imagens que precisam ser trocadas
+        function atualizarMenuLateral(user) {
         const avatarImgSidebar = document.querySelector('.sidebar-avatar img');
         const headerAvatar = document.querySelector('.user-avatar'); // O botãozinho lá no topo
-        
-        // 2. Pega os textos e a área do botão
         const nameElement = document.getElementById('sidebarRank');
         const authArea = document.getElementById('sidebarAuthArea');
 
         if (user) {
-            // ==========================================
-            // QUANDO A PESSOA ESTÁ LOGADA
-            // ==========================================
+            // FOTO NO TOPO DA TELA (HEADER)
+            if(headerAvatar) {
+                headerAvatar.innerHTML = `<img src="${user.photoURL}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
+            }
             
-            // Troca a logo grande pela foto do Google em alta qualidade
-            avatarImgSidebar.src = user.photoURL.replace("s96-c", "s200-c"); 
+            // FOTO NO MENU LATERAL
+            if(avatarImgSidebar) avatarImgSidebar.src = user.photoURL.replace("s96-c", "s200-c"); 
             
-            // Troca o ícone no topo do site pela mini foto da pessoa
-            headerAvatar.innerHTML = `<img src="${user.photoURL}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
-            
-            // Coloca o primeiro nome da pessoa
             let primeiroNome = user.displayName.split(' ')[0];
-            nameElement.innerHTML = primeiroNome;
+            if(nameElement) nameElement.innerHTML = primeiroNome;
             
-            // Cria o botão de "Sair" vermelhinho
             if(authArea) {
                 authArea.innerHTML = `
                     <button onclick="fazerLogout()" style="background: rgba(255,0,0,0.1); border: 1px solid var(--accent); color: var(--accent); padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.8rem; transition: all 0.3s;">
@@ -1137,21 +1138,12 @@ setTimeout(() => {
                     </button>
                 `;
             }
-            
         } else {
-            // ==========================================
-            // QUANDO É UM VISITANTE
-            // ==========================================
+            // VOLTA PARA O VISITANTE
+            if(headerAvatar) headerAvatar.innerHTML = `<i class="fas fa-user"></i>`; // Volta o emoji
+            if(avatarImgSidebar) avatarImgSidebar.src = 'imagens/1772133683485~2.png'; 
+            if(nameElement) nameElement.innerHTML = "Visitante";
             
-            // Volta para a sua logo padrão
-            avatarImgSidebar.src = 'imagens/1772133683485~2.png'; 
-            
-            // Volta pro ícone de bonequinho no topo
-            headerAvatar.innerHTML = `<i class="fas fa-user"></i>`;
-            
-            nameElement.innerHTML = "Visitante";
-            
-            // Mostra o botão bonitão do Google
             if(authArea) {
                 authArea.innerHTML = `
                     <button onclick="fazerLoginGoogle()" style="width: 85%; margin: 0 auto; padding: 12px; background: white; color: #333; font-weight: bold; border-radius: 30px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 5px 15px rgba(255,255,255,0.2); transition: all 0.3s;">
@@ -1162,6 +1154,7 @@ setTimeout(() => {
             }
         }
     }
+
     function carregarComentarios(movieId) {
         currentMovieIdForComments = movieId;
         document.getElementById('commentsSection').style.display = 'block';
