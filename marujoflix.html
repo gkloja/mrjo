@@ -1026,19 +1026,6 @@ function fazerLoginGoogle() {
     window.fbOps.signInWithRedirect(window.auth, window.googleProvider);
 }
 
-// No início da aplicação (ex.: useEffect ou window.onload), capture o resultado
-window.fbOps.getRedirectResult(window.auth)
-    .then((result) => {
-        if (result.user) {
-            // Login bem-sucedido após o retorno do redirect
-            ToastSystem.show(`Bem-vindo, ${result.user.displayName.split(' ')[0]}!`, 'success');
-        }
-    })
-    .catch((error) => {
-        console.error("Erro no retorno do redirect:", error);
-        // Trate erros (ex.: conta já existente com credenciais diferentes)
-    });
-
     function fazerLogout() {
         if(!window.fbOps) return;
         window.fbOps.signOut(window.auth).then(() => ToastSystem.show('Você deslogou.', 'info'));
