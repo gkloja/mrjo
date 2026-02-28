@@ -1052,6 +1052,7 @@ setTimeout(() => {
 
     // Fica vigiando até o Firebase carregar com sucesso
         // Fica vigiando até o Firebase carregar com sucesso
+        // Fica vigiando até o Firebase carregar com sucesso
     let timerFirebase = setInterval(() => {
         if(window.fbOps && window.auth) {
             clearInterval(timerFirebase); 
@@ -1063,40 +1064,56 @@ setTimeout(() => {
             window.fbOps.onAuthStateChanged(window.auth, async (user) => {
                 currentUser = user;
                 
-                // Atualiza a interface (Foto na patente, menu, cabeçalho)
+                // Atualiza as fotos e botões na tela imediatamente
                 atualizarTodaAInterface(user);
                 
                 if (user) {
                     try {
+                        // 1. VAI NA NUVEM BUSCAR A CAIXA DO TESOURO DESTE USUÁRIO
                         const userRef = window.fbOps.doc(window.db, "users", user.uid);
                         const docSnap = await window.fbOps.getDoc(userRef);
                         
                         if (docSnap.exists()) {
                             const dados = docSnap.data();
+                            
+                            // 2. NUVEM É SOBERANA: Pega o XP salvo no Google
                             if ((dados.xp || 0) > userProgress.xp) {
                                 userProgress.xp = dados.xp || 0;
                                 userProgress.level = dados.level || 1;
                             }
+                            
+                            // 3. RECUPERA OS FAVORITOS E HISTÓRICO (Mescla caso tenha favoritado algo offline)
                             userProgress.favorites = [...new Set([...userProgress.favorites, ...(dados.favorites || [])])];
                             userProgress.history = [...new Set([...userProgress.history, ...(dados.history || [])])];
                         }
                     } catch (err) {
                         console.log("Aviso: Sincronização na nuvem com lentidão.", err);
                     }
+                    
+                    // 4. Salva no celular novo para garantir
                     userProgress.save(); 
                 } else {
-                    // Carrega do Celular (Visitante)
+                    // SE NÃO TIVER LOGADO, Carrega apenas do Celular (Visitante)
                     userProgress.xp = parseInt(localStorage.getItem('marujoflix_xp')) || 0;
                     userProgress.level = parseInt(localStorage.getItem('marujoflix_level')) || 1;
                     userProgress.favorites = JSON.parse(localStorage.getItem('marujoflix_favorites')) || [];
                     userProgress.history = JSON.parse(localStorage.getItem('marujoflix_history')) || [];
                 }
 
+                // Atualiza os números no menu lateral
                 userProgress.updateUI();
-                if(IPTVSystem.abaAtual === 'favoritos' || IPTVSystem.abaAtual === 'historico') IPTVSystem.aplicarFiltros(); 
+                
+                // ========================================================
+                // A MÁGICA ESTÁ AQUI: Atualiza TUDO na tela imediatamente!
+                // Isso acende os corações vermelhos e atualiza o histórico.
+                // ========================================================
+                if (typeof IPTVSystem !== 'undefined') {
+                    IPTVSystem.aplicarFiltros(); 
+                }
             });
         }
     }, 500);
+
 
 
     function atualizarTodaAInterface(user) {
