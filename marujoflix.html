@@ -1096,8 +1096,7 @@ setTimeout(() => {
                     } catch (err) {
                         // O RAIO-X DE ERRO: Vai mostrar na sua tela o motivo exato!
                         console.error("Erro de sincronização: ", err);
-                        alert("ERRO AO LER NUVEM: " + err.code + " | " + err.message);
-                        ToastSystem.show("Erro ao buscar seu save na nuvem.", "error");
+                      
                     }
 
                     userProgress.save(); // Pega o que baixou e salva no celular
@@ -1161,25 +1160,71 @@ setTimeout(() => {
         if(typeof renderizarInputChatGlobal === 'function') renderizarInputChatGlobal();
         if(typeof currentMovieIdForComments !== 'undefined' && currentMovieIdForComments) renderizarAreaDeComentario();
     }
+    const API_COMENTARIOS = 'https://cors.eu.org/br2.bronxyshost.com:4009';
 
 
-    function carregarComentarios(movieId) {
+
+    // 2. FUNÇÃO PARA SALVAR (UPLOAD)
+    async function enviarComentario() {
+        const input = document.getElementById('comentarioInput');
+        if (!input) return;
+        const text = input.value.trim();
+        
+        if (!text || !currentUser || !currentMovieIdForComments) return;
+        
+        input.value = ''; // Limpa o campo para o usuário
+        
+        // Monta a caixa (JSON) que será enviada para o seu servidor
+        const pacote = {
+            filmeId: currentMovieIdForComments,
+            userId: currentUser.uid,
+            userName: currentUser.displayName.split(' ')[0],
+            userPhoto: currentUser.photoURL,
+            text: text,
+            timestamp: new Date().toISOString()
+        };
+
+        try {
+            const resposta = await fetch(`${API_COMENTARIOS}/salvar_comentario`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(pacote)
+            });
+
+            if (resposta.ok) {
+                userProgress.addXP(5); // Dá XP por comentar
+                // Recarrega os comentários para a mensagem da pessoa aparecer na tela
+                carregarComentarios(currentMovieIdForComments); 
+            } else {
+                ToastSystem.show('O servidor recusou a mensagem.', 'error');
+            }
+        } catch (error) {
+            console.error("Erro ao enviar:", error);
+            ToastSystem.show('Bloqueio de CORS ou Servidor Offline.', 'error');
+        }
+    }
+
+  // 1. FUNÇÃO PARA CARREGAR (DOWNLOAD)
+    async function carregarComentarios(movieId) {
         currentMovieIdForComments = movieId;
         document.getElementById('commentsSection').style.display = 'block';
         const lista = document.getElementById('commentsList');
         
-        if(unsubscribeComments) unsubscribeComments(); // Para de ouvir o filme anterior
+        lista.innerHTML = '<div style="color: var(--text-muted); text-align: center; font-size: 0.85rem;"><i class="fas fa-compass fa-spin"></i> Buscando pergaminhos no servidor...</div>';
 
-        if(!window.fbOps) return;
-        const q = window.fbOps.query(window.fbOps.collection(window.db, `movies/${movieId}/comments`), window.fbOps.orderBy("timestamp", "asc"));
-        
-        unsubscribeComments = window.fbOps.onSnapshot(q, (snapshot) => {
+        try {
+            const resposta = await fetch(`${API_COMENTARIOS}/ler_comentarios`);
+            const todosComentarios = await resposta.json();
+            
+            // Filtra para mostrar APENAS os comentários deste filme específico
+            const comentariosDoFilme = todosComentarios.filter(c => c.filmeId === movieId);
+            
             lista.innerHTML = '';
-            if(snapshot.empty) {
+            if(comentariosDoFilme.length === 0) {
                 lista.innerHTML = '<div style="color: var(--text-muted); text-align: center; font-size: 0.85rem;">Seja o primeiro a comentar!</div>';
             }
-            snapshot.forEach((doc) => {
-                const c = doc.data();
+            
+            comentariosDoFilme.forEach((c) => {
                 lista.innerHTML += `
                     <div class="comment-item">
                         <img src="${c.userPhoto || 'https://via.placeholder.com/35'}" class="comment-avatar">
@@ -1190,8 +1235,12 @@ setTimeout(() => {
                     </div>
                 `;
             });
-            lista.scrollTop = lista.scrollHeight; // Rola para o final
-        });
+            lista.scrollTop = lista.scrollHeight; // Rola para a última mensagem
+            
+        } catch (error) {
+            console.error("Erro ao carregar:", error);
+            lista.innerHTML = '<div style="color: var(--accent); text-align: center; font-size: 0.85rem;">Os satélites perderam a conexão com os comentários.</div>';
+        }
         
         renderizarAreaDeComentario();
     }
@@ -1210,27 +1259,8 @@ setTimeout(() => {
         }
     }
 
-        async function enviarComentario() {
-        const input = document.getElementById('comentarioInput');
-        if (!input) return;
-        const text = input.value.trim();
-        if (!text || !currentUser || !currentMovieIdForComments || !window.fbOps) return;
-        
-        input.value = ''; // Limpa o campo na hora
-        try {
-            await window.fbOps.addDoc(window.fbOps.collection(window.db, `movies/${currentMovieIdForComments}/comments`), {
-                text: text,
-                userId: currentUser.uid,
-                userName: currentUser.displayName.split(' ')[0],
-                userPhoto: currentUser.photoURL,
-                timestamp: window.fbOps.serverTimestamp()
-            });
-            userProgress.addXP(5); // Ganha XP
-        } catch (error) {
-            console.error("Erro Firebase:", error);
-            ToastSystem.show('Erro de permissão! O Google bloqueou o envio.', 'error');
-        }
-    }
+            // VARIÁVEL PARA O LINK DA SUA API (Usando o Proxy CORS)
+
 
     // ==========================================
     // SISTEMA DE CHAT GLOBAL (TAVERNA)
@@ -1554,8 +1584,7 @@ setTimeout(() => {
                 }, { merge: true }).catch(err => {
                     // O RAIO-X DE ERRO DE GRAVAÇÃO
                     console.error("ERRO AO SALVAR NA NUVEM:", err);
-                    alert("ERRO AO SALVAR NUVEM: " + err.code + " | " + err.message);
-                    ToastSystem.show("Erro ao fazer upload do seu progresso pro Google!", "error");
+                    
                 });
 
             }
