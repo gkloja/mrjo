@@ -1094,9 +1094,12 @@ setTimeout(() => {
                             ToastSystem.show("Conta salva na nuvem pela primeira vez!", "success");
                         }
                     } catch (err) {
+                        // O RAIO-X DE ERRO: Vai mostrar na sua tela o motivo exato!
                         console.error("Erro de sincronização: ", err);
+                        alert("ERRO AO LER NUVEM: " + err.code + " | " + err.message);
                         ToastSystem.show("Erro ao buscar seu save na nuvem.", "error");
                     }
+
                     userProgress.save(); // Pega o que baixou e salva no celular
                 } else {
                     // SE FOR VISITANTE
@@ -1549,9 +1552,12 @@ setTimeout(() => {
                     history: this.history,
                     lastUpdate: window.fbOps.serverTimestamp()
                 }, { merge: true }).catch(err => {
+                    // O RAIO-X DE ERRO DE GRAVAÇÃO
                     console.error("ERRO AO SALVAR NA NUVEM:", err);
+                    alert("ERRO AO SALVAR NUVEM: " + err.code + " | " + err.message);
                     ToastSystem.show("Erro ao fazer upload do seu progresso pro Google!", "error");
                 });
+
             }
         },
 
