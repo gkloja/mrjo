@@ -731,7 +731,7 @@
         .chat-input-container { padding: 15px; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.3); border-radius: 0 0 20px 20px; }
 
         @media (max-width: 768px) { 
-            .btn-floating-chat { bottom: 160px; right: 20px; } 
+            .btn-floating-chat { bottom: 90px; right: 20px; } 
             .chat-panel { width: 90%; right: 5%; bottom: 80px; height: 60vh; }
         }
                 /* --- CONTADOR ONLINE --- */
@@ -800,66 +800,7 @@
         .btn-send-msg { background: rgba(0, 136, 255, 0.1); border: 1px solid var(--blue); color: white; }
         .btn-send-msg:hover { background: var(--blue); color: white; }
 
-        /* --- ESTILOS DA CENTRAL SOCIAL (HUB) --- */
-        .social-hub-panel {
-            position: fixed;
-            bottom: 110px; /* Fica acima da barra inferior */
-            right: 30px;
-            width: 380px;
-            height: 550px;
-            background: var(--gradient-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-            z-index: 991;
-            display: flex;
-            flex-direction: column;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px) scale(0.9);
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            overflow: hidden;
-        }
-        .social-hub-panel.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
-        
-        .social-tabs { display: flex; background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--border-color); }
-        .social-tab { flex: 1; padding: 15px; background: none; border: none; color: var(--text-muted); font-weight: bold; cursor: pointer; transition: 0.3s; border-bottom: 2px solid transparent; font-size: 0.9rem;}
-        .social-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); background: rgba(0, 255, 179, 0.05); }
-        
-        .social-view { flex: 1; display: none; flex-direction: column; overflow-y: hidden; }
-        .social-view.active { display: flex; }
-
-        @media (max-width: 768px) { 
-            .btn-floating-chat { display: none; } /* Esconde a bolinha no celular */
-            /* No celular, o painel vira uma tela quase cheia anexada na barra inferior */
-            .social-hub-panel { width: 100%; right: 0; bottom: 70px; height: calc(100vh - 70px); border-radius: 20px 20px 0 0; }
-        }
-
-/* MELHORIAS NA ÁREA SOCIAL */
-.social-hub-panel {
-    background: rgba(10, 10, 26, 0.98);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 255, 179, 0.2);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-}
-
-.social-tabs {
-    background: rgba(0, 0, 0, 0.4);
-    padding: 5px;
-    gap: 5px;
-}
-
-.social-tab {
-    border-radius: 30px;
-    margin: 0 5px;
-    transition: all 0.3s;
-}
-
-.social-tab.active {
-    background: var(--gradient-primary);
-    color: black;
-    border-bottom: none;
-}
+     
 
 #globalChatMessages, #privadoChatMessages {
     scrollbar-width: thin;
@@ -906,6 +847,156 @@
     transform: scale(1.02);
     box-shadow: 0 5px 15px rgba(255,255,255,0.3);
 }
+/* ===== CHAT REDESIGN & RANKING ===== */
+.social-hub-panel {
+    position: fixed;
+    top: 80px;
+    right: 30px;
+    width: 380px;
+    height: calc(100vh - 100px);
+    max-height: 700px;
+    background: rgba(10, 10, 26, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--primary);
+    border-radius: 20px;
+    box-shadow: 0 10px 50px rgba(0, 255, 179, 0.2);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.9);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow: hidden;
+}
+
+.social-hub-panel.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+        .social-tabs { display: flex; background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--border-color); }
+        .social-tab { flex: 1; padding: 15px; background: none; border: none; color: var(--text-muted); font-weight: bold; cursor: pointer; transition: 0.3s; border-bottom: 2px solid transparent; font-size: 0.9rem;}
+        .social-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); background: rgba(0, 255, 179, 0.05); }
+        
+        .social-view { flex: 1; display: none; flex-direction: column; overflow-y: hidden; }
+        .social-view.active { display: flex; }
+
+/* CENTRALIZAR O CHAT PERFEITAMENTE NO MOBILE */
+@media (max-width: 768px) {
+    .social-hub-panel {
+        top: 75px;
+        left: 50%;
+        right: auto;
+        width: 95%;
+        height: calc(100vh - 150px); /* Encaixa entre o topo e o menu inferior */
+        max-height: none;
+        transform: translateX(-50%) translateY(20px) scale(0.9);
+    }
+    .social-hub-panel.active {
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+}
+
+/* Cabeçalho do Hub */
+.hub-main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border-bottom: 1px solid var(--border-color);
+}
+.hub-title {
+    color: var(--primary);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    margin: 0;
+    text-shadow: 0 0 10px var(--primary-glow);
+}
+
+/* Botão de Fechar e Botão Share no Topo do Chat */
+.hub-actions-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.hub-close-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hub-close-btn:hover {
+    background: var(--accent);
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 0 15px var(--accent);
+}
+
+/* O NOVO BOTÃO DE RECOMPENSA (DENTRO DO CHAT) */
+.hub-share-btn {
+    background: linear-gradient(135deg, #ff0077, var(--secondary));
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse-reward 2s infinite;
+    box-shadow: 0 0 10px rgba(255, 0, 119, 0.5);
+}
+.hub-share-btn.inactive {
+    background: rgba(255,255,255,0.1);
+    color: var(--text-muted);
+    animation: none;
+    box-shadow: none;
+}
+@keyframes pulse-reward {
+    0% { box-shadow: 0 0 0 0 rgba(255, 0, 119, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(255, 0, 119, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 0, 119, 0); }
+}
+
+/* TOP 3 PODIUM */
+.top3-podium {
+    background: linear-gradient(180deg, rgba(15, 15, 42, 0.9), rgba(10, 10, 26, 0.95));
+    padding: 25px 15px 15px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+}
+.podium-item { display: flex; flex-direction: column; align-items: center; gap: 5px; position: relative; transition: transform 0.3s ease; cursor: pointer; }
+.podium-item:hover { transform: translateY(-5px); }
+.podium-1 { order: 2; z-index: 3; }
+.podium-2 { order: 1; z-index: 2; }
+.podium-3 { order: 3; z-index: 1; }
+.podium-avatar { border-radius: 50%; object-fit: cover; background: var(--bg-darker); }
+.podium-1 .podium-avatar { width: 80px; height: 80px; border: 4px solid gold; box-shadow: 0 0 25px gold; }
+.podium-2 .podium-avatar { width: 60px; height: 60px; border: 3px solid silver; box-shadow: 0 0 15px silver; }
+.podium-3 .podium-avatar { width: 60px; height: 60px; border: 3px solid #cd7f32; box-shadow: 0 0 15px #cd7f32; }
+.podium-crown { position: absolute; top: -25px; font-size: 1.8rem; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8)); animation: floatCrown 3s infinite ease-in-out; }
+@keyframes floatCrown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.podium-name { font-weight: 900; font-size: 0.85rem; color: white; margin-top: 5px; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+.podium-1 .podium-name { color: gold; font-size: 1rem; }
+.podium-2 .podium-name { color: silver; }
+.podium-3 .podium-name { color: #cd7f32; }
+.podium-level { font-size: 0.75rem; color: black; background: var(--gradient-primary); padding: 2px 10px; border-radius: 12px; font-weight: bold; }
+.message-bubble.vip-bubble { border: 1px solid gold; box-shadow: 0 0 10px rgba(255,215,0,0.2); background: rgba(255, 215, 0, 0.05); }
+.vip-bubble .message-sender { color: gold !important; text-shadow: 0 0 5px rgba(255,215,0,0.5); }
+
     </style>
 </head>
 <body>
@@ -1085,14 +1176,10 @@
         </div>
         
         <!-- VISUALIZAÇÕES GLOBAIS (MENOR) -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 20px; margin-bottom: 20px;">
-            <i class="fas fa-eye" style="color: var(--blue);"></i>
-            <span style="color: white; font-weight: bold;" id="statGlobalViews">0</span>
-            <span style="color: var(--text-muted); font-size: 0.8rem;">Views no Site</span>
-        </div>
+      
 
-        <button onclick="IPTVSystem.acessarFavoritosLateral()" style="width: 100%; padding: 15px; background: var(--gradient-primary); border: none; color: black; font-weight: bold; border-radius: 30px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px;">
-            <i class="fas fa-heart" style="color: black;"></i> Acessar Meus Favoritos
+        <button onclick="toggleSocialHub()" style="width: 100%; padding: 15px; background: var(--gradient-primary); border: none; color: black; font-weight: bold; border-radius: 30px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <i class="fas fa-crown" style="color: black;"></i> Ver Rank
         </button>
     </div>
 </div>
@@ -1316,30 +1403,148 @@ function atualizarSidebarProgresso() {
     let unreadChatCount = 0;
     let isFirstChatLoad = true;
 
-    // --- 1. ABRIR E FECHAR HUB SOCIAL ---
-    function toggleSocialHub() {
-        const panel = document.getElementById('socialHubPanel');
-        isGlobalChatOpen = !isGlobalChatOpen;
+// ==========================================
+// CHAT REDESIGN - TOP 3 E COMUNIDADE
+// ==========================================
+
+let todosUsuarios = []; // Guarda todos os usuários da comunidade
+
+// Função para carregar comunidade e top 3
+async function carregarComunidade() {
+    try {
+        const resposta = await fetch(`${API_BASE}/comunidade`, { mode: 'cors' });
+        if (resposta.ok) {
+            todosUsuarios = await resposta.json();
+            
+            // Ordena por nível (do maior para o menor)
+            todosUsuarios.sort((a, b) => b.nivel - a.nivel);
+            
+            // Atualiza o pódium (top 3)
+            atualizarPodium(todosUsuarios.slice(0, 3));
+            
+            // Renderiza a lista completa
+            renderizarListaComunidade(todosUsuarios);
+        }
+    } catch (e) {
+        console.error("Erro ao carregar comunidade:", e);
+    }
+}
+
+// Atualiza os 3 maiores
+function atualizarPodium(top3) {
+    const posicoes = ['podium1', 'podium2', 'podium3'];
+    
+    for (let i = 0; i < 3; i++) {
+        const usuario = top3[i] || { nome: '---', foto: 'imagens/1772133683485~2.png', nivel: 0, patente: 'Visitante' };
+        document.getElementById(`${posicoes[i]}Avatar`).src = usuario.foto;
+        document.getElementById(`${posicoes[i]}Name`).textContent = usuario.nome.substring(0, 10) + (usuario.nome.length > 10 ? '...' : '');
+        document.getElementById(`${posicoes[i]}Level`).textContent = `Nv. ${usuario.nivel}`;
         
-        if (isGlobalChatOpen) {
-            panel.classList.add('active');
-            document.body.style.overflow = 'hidden'; // TRAVA A TELA DE FUNDO
-            unreadChatCount = 0; atualizarBadgeChat();
-            if(document.getElementById('tabTripulacao').classList.contains('active')) carregarTripulacao();
-            else { const msgList = document.getElementById('globalChatMessages'); msgList.scrollTop = msgList.scrollHeight; }
-        } else {
-            panel.classList.remove('active');
-            document.body.style.overflow = ''; // DESTRAVA A TELA
-            fecharChatPrivado(); 
+        // Torna o pódio clicável
+        if(usuario.id) {
+            const el = document.getElementById(posicoes[i]);
+            el.onclick = () => abrirPerfilUsuario(usuario.id, usuario.nome, usuario.foto, usuario.nivel, usuario.patente || getRankTitle(usuario.nivel));
         }
     }
+}
 
-    function mudarAbaSocial(aba) {
-        document.getElementById('tabTaverna').classList.remove('active'); document.getElementById('tabTripulacao').classList.remove('active');
-        document.getElementById('viewTaverna').classList.remove('active'); document.getElementById('viewTripulacao').classList.remove('active');
-        if (aba === 'taverna') { document.getElementById('tabTaverna').classList.add('active'); document.getElementById('viewTaverna').classList.add('active'); const msgList = document.getElementById('globalChatMessages'); msgList.scrollTop = msgList.scrollHeight; } 
-        else { document.getElementById('tabTripulacao').classList.add('active'); document.getElementById('viewTripulacao').classList.add('active'); carregarTripulacao(); }
+function mudarAbaSocial(aba) {
+    document.querySelectorAll('.social-tab').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.social-view').forEach(view => view.classList.remove('active'));
+    
+    if (aba === 'comunidade') {
+        document.getElementById('tabComunidade').classList.add('active');
+        document.getElementById('viewComunidade').classList.add('active');
+        carregarComunidade();
+    } else {
+        document.getElementById('tabTaverna').classList.add('active');
+        document.getElementById('viewTaverna').classList.add('active');
+        carregarMensagensGlobais();
     }
+}
+
+
+// Renderiza lista completa da comunidade
+function renderizarListaComunidade(usuarios) {
+    const lista = document.getElementById('comunidadeList');
+    
+    if (!currentUser) {
+        lista.innerHTML = `
+            <div style="text-align: center; padding: 40px 20px;">
+                <i class="fas fa-lock" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 15px;"></i>
+                <p style="color: white; font-weight: bold;">Faça login para ver a comunidade</p>
+                <button onclick="fazerLoginGoogle()" style="background: white; color: #333; border: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; margin-top: 15px; cursor: pointer;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 18px;"> Entrar com Google
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    lista.innerHTML = usuarios.map(user => {
+        const isMe = currentUser && currentUser.uid === user.id;
+        const nivel = user.nivel || 1;
+        const patente = user.patente || getRankTitle(nivel);
+        
+        return `
+            <div class="user-item ${isMe ? 'me' : ''}" onclick="abrirPerfilUsuario('${user.id}', '${user.nome}', '${user.foto}', '${nivel}', '${patente}')">
+                <div class="user-info">
+                    <img src="${user.foto}" class="user-avatar-small" onerror="this.src='imagens/1772133683485~2.png'">
+                    <div class="user-details">
+                        <span class="user-name">${user.nome} ${isMe ? '(Você)' : ''}</span>
+                        <span class="user-rank">${patente}</span>
+                    </div>
+                </div>
+                <div class="user-stats">
+                    <span class="user-level-badge">Nv. ${nivel}</span>
+                    <span class="user-xp"><i class="fas fa-star"></i> ${user.xp || 0}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Função toggle do hub social (agora respeita o header)
+function toggleSocialHub() {
+    const panel = document.getElementById('socialHubPanel');
+    isGlobalChatOpen = !isGlobalChatOpen;
+    
+    if (isGlobalChatOpen) {
+        panel.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        unreadChatCount = 0;
+        atualizarBadgeChat();
+        
+        // Carrega dados da comunidade
+        carregarComunidade();
+        
+        // Se estiver na aba taverna, carrega mensagens
+        if (document.getElementById('tabTaverna').classList.contains('active')) {
+            carregarMensagensGlobais();
+        }
+    } else {
+        panel.classList.remove('active');
+        document.body.style.overflow = '';
+        fecharChatPrivado();
+    }
+}
+
+// Nova função para mudar abas (comunidade/taverna)
+function mudarAbaSocial(aba) {
+    document.querySelectorAll('.social-tab').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.social-view').forEach(view => view.classList.remove('active'));
+    
+    if (aba === 'comunidade') {
+        document.querySelectorAll('.social-tab')[0].classList.add('active');
+        document.getElementById('viewComunidade').classList.add('active');
+        carregarComunidade();
+    } else {
+        document.querySelectorAll('.social-tab')[1].classList.add('active');
+        document.getElementById('viewTaverna').classList.add('active');
+        carregarMensagensGlobais();
+    }
+}
+
 
     // --- 2. PERFIL E ADICIONAR MARUJO ---
 function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
@@ -1568,15 +1773,23 @@ function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
                         const msgList = document.getElementById('globalChatMessages');
                         msgList.innerHTML = '';
                         msgs.forEach(m => {
-                            const isMe = currentUser && currentUser.uid === m.userId; 
-                            msgList.innerHTML += `
-                                <div style="display:flex;gap:8px;${isMe ? 'flex-direction:row-reverse;' : ''};margin-bottom:15px;">
-                                    <img src="${m.userPhoto}" style="width:30px;height:30px;border-radius:50%;border:1px solid ${isMe?'var(--blue)':'var(--primary)'};cursor:pointer;" onclick="abrirPerfilUsuario('${m.userId}','${m.userName}','${m.userPhoto}','${m.level}','${m.rank}')">
-                                    <div style="background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:12px;max-width:80%;${isMe ? 'border:1px solid var(--blue);background:rgba(0,136,255,0.1);' : ''}">
-                                        <div style="font-size:0.7rem;font-weight:bold;color:${isMe?'var(--blue)':'var(--primary)'};margin-bottom:2px;cursor:pointer;" onclick="abrirPerfilUsuario('${m.userId}','${m.userName}','${m.userPhoto}','${m.level}','${m.rank}')">${m.userName}</div>
-                                        <div style="font-size:0.85rem;color:white;word-break:break-word;">${m.text}</div>
-                                    </div>
-                                </div>`;
+               // Dentro do forEach(m => ...) de iniciarChatGlobalSilencioso:
+const isMe = currentUser && currentUser.uid === m.userId; 
+const isVip = m.level >= 50; // Jogadores NV 50+ recebem bordas e tags Douradas!
+const bubbleClass = isVip ? 'message-bubble vip-bubble' : 'message-bubble';
+const senderColor = isVip ? 'gold' : (isMe ? 'var(--blue)' : 'var(--primary)');
+
+msgList.innerHTML += `
+    <div style="display:flex;gap:8px;${isMe ? 'flex-direction:row-reverse;' : ''};margin-bottom:15px;">
+        <img src="${m.userPhoto}" style="width:35px;height:35px;border-radius:50%;border:2px solid ${senderColor};cursor:pointer; box-shadow: ${isVip ? '0 0 10px gold' : 'none'}" onclick="abrirPerfilUsuario('${m.userId}','${m.userName}','${m.userPhoto}','${m.level}','${m.rank}')">
+        <div class="${bubbleClass}" style="padding:10px 15px;border-radius:18px;max-width:80%;${isMe && !isVip ? 'border:1px solid var(--blue);background:rgba(0,136,255,0.1);' : ''}">
+            <div class="message-sender" style="font-size:0.75rem;font-weight:bold;color:${senderColor};margin-bottom:3px;cursor:pointer; ${isMe ? 'text-align:right;' : ''}" onclick="abrirPerfilUsuario('${m.userId}','${m.userName}','${m.userPhoto}','${m.level}','${m.rank}')">
+                ${isVip ? '<i class="fas fa-crown"></i> ' : ''}${m.userName} <span style="font-size: 0.65rem; color: gray;">Nv.${m.level}</span>
+            </div>
+            <div class="message-text" style="font-size:0.9rem;color:white;word-break:break-word;">${m.text}</div>
+        </div>
+    </div>`;
+
                         });
                         msgList.scrollTop = msgList.scrollHeight;
                     }
@@ -2268,35 +2481,87 @@ function verificarAmbienteNavegacao() {
 
         // --- NOVO SISTEMA DE RECOMPENSA FLUTUANTE ---
 
-        renderFloatingButton: function() {
-            const container = document.getElementById('floatingRewardContainer');
-            if(!container) return;
+                // --- NOVO SISTEMA DE RECOMPENSA INTERNA ---
+        renderShareBanner: function() {
+            const btn = document.getElementById('btnShareChat');
+            if(!btn) return;
 
             const today = new Date().toDateString();
             const lastShare = localStorage.getItem('marujoflix_last_share');
-            // Se a data de hoje for diferente da última data salva, pode ganhar
             const canEarn = (lastShare !== today);
 
-            let html = '';
             if(canEarn) {
                 // ESTADO ATIVO: Presente pulsando
-                html = `
-                    <div class="reward-tooltip">🎁 Recompensa Diária: +50 XP!</div>
-                    <button class="btn-floating-reward active" onclick="IPTVSystem.executarCompartilhamentoDiario()">
-                        <div class="xp-badge-float">+50</div>
-                        <i class="fas fa-gift fa-bounce"></i> </button>
-                `;
+                btn.className = 'hub-share-btn';
+                btn.innerHTML = '<i class="fas fa-gift"></i>';
+                btn.title = "Compartilhar e Ganhar XP!";
+                btn.onclick = () => IPTVSystem.executarCompartilhamentoDiario();
             } else {
                 // ESTADO INATIVO: Checkmark cinza
-                html = `
-                     <div class="reward-tooltip">Volte amanhã para mais XP!</div>
-                    <button class="btn-floating-reward inactive" onclick="ToastSystem.show('Você já coletou sua recompensa de hoje! Volte amanhã.', 'info')">
-                        <i class="fas fa-check-circle"></i>
-                    </button>
-                `;
+                btn.className = 'hub-share-btn inactive';
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                btn.title = "Recompensa diária já coletada!";
+                btn.onclick = () => ToastSystem.show('Você já coletou sua recompensa de hoje! Volte amanhã.', 'info');
             }
-            container.innerHTML = html;
         },
+
+        executarCompartilhamentoDiario: async function() {
+            const shareData = {
+                title: 'Marujo Flix',
+                text: 'Venha assistir a filmes, séries e TV online grátis no Marujo Flix! Ganhe XP e suba de patente!',
+                url: window.location.origin
+            };
+            
+            const textoParaCopiar = `${shareData.text} ${shareData.url}`;
+            const today = new Date().toDateString();
+
+            const entregarRecompensa = () => {
+                userProgress.addXP(50);
+                localStorage.setItem('marujoflix_last_share', today);
+                ToastSystem.show('🎉 Recompensa Coletada! +50 XP!', 'success');
+                IPTVSystem.renderShareBanner(); // Atualiza o botão no cabeçalho do chat
+            };
+
+            // 1. Tenta API Nativa do celular
+            if (navigator.share && window.isSecureContext) {
+                try {
+                    await navigator.share(shareData);
+                    entregarRecompensa(); 
+                    return; 
+                } catch (error) {
+                    if (error.name === 'AbortError') return; // Cancelou
+                }
+            }
+
+            // 2. Área de transferência (Cópia Direta)
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textoParaCopiar).then(() => {
+                    ToastSystem.show('Link copiado! Cole para seus amigos. 🚀', 'success');
+                    entregarRecompensa();
+                }).catch(() => tentarCopiaExtrema(textoParaCopiar, entregarRecompensa));
+            } else {
+                tentarCopiaExtrema(textoParaCopiar, entregarRecompensa);
+            }
+
+            function tentarCopiaExtrema(texto, callbackSucesso) {
+                try {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = texto;
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-9999px";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    const funcionou = document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    if (funcionou) {
+                        ToastSystem.show('Link copiado! Cole para seus amigos. 🚀', 'success');
+                        callbackSucesso();
+                    }
+                } catch (err) {}
+            }
+        },
+
 
                 executarCompartilhamentoDiario: async function() {
             const shareData = {
@@ -2313,7 +2578,7 @@ function verificarAmbienteNavegacao() {
                 userProgress.addXP(50);
                 localStorage.setItem('marujoflix_last_share', today);
                 ToastSystem.show('🎉 Recompensa Coletada! +50 XP!', 'success');
-                IPTVSystem.renderFloatingButton();
+                IPTVSystem.renderShareBanner();
             };
 
             // 1. Tenta abrir o menu nativo de compartilhamento do celular (Precisa de HTTPS)
@@ -2379,7 +2644,8 @@ userProgress.updateUI();
             this.gerarSkeleton();
             this.carregarDados();
             this.carregarEstatisticas(); 
-            this.renderFloatingButton(); // <--- ADICIONE ESTA LINHA AQUI
+            this.renderShareBanner();
+ // <--- ADICIONE ESTA LINHA AQUI
             
             document.getElementById('searchInput').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') this.executarBusca();
@@ -2968,6 +3234,10 @@ if (typeof atualizarTodaAInterface === 'function') {
       }
 
       userProgress.save(); // Salva localmente
+      // Se a comunidade estiver aberta, recarrega
+if (document.getElementById('socialHubPanel').classList.contains('active')) {
+    carregarComunidade();
+}
     } else {
       // Se deslogou ou é visitante, carrega do localStorage
       userProgress.xp = parseInt(localStorage.getItem('marujoflix_xp')) || 0;
@@ -3016,46 +3286,86 @@ if (typeof atualizarTodaAInterface === 'function') {
 
 
 
-    <button class="btn-floating-chat" onclick="toggleSocialHub()">
-        <i class="fas fa-users"></i>
-        <div class="chat-badge" id="chatBadgeDesktop">0</div>
-    </button>
-    <div class="social-hub-panel" id="socialHubPanel">
-        <div class="chat-header" id="hubHeaderPadrao">
-            <h3 style="font-size: 1.1rem; color: var(--primary); margin: 0;"><i class="fas fa-compass"></i> Área Social</h3>
-            <button onclick="toggleSocialHub()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;"><i class="fas fa-times"></i></button>
-        </div>
-        
-        <div class="chat-header" id="hubHeaderPrivado" style="display: none; background: rgba(0, 136, 255, 0.2); border-bottom: 1px solid var(--blue);">
-            <button onclick="fecharChatPrivado()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;"><i class="fas fa-arrow-left"></i></button>
-            <h3 id="nomeChatPrivado" style="font-size: 1rem; color: white; margin: 0; display: flex; align-items: center; gap: 10px;">
-                <img id="fotoChatPrivado" src="" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;"> Nome
-            </h3>
-            <button onclick="toggleSocialHub()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;"><i class="fas fa-times"></i></button>
-        </div>
-        
-        <div class="social-tabs" id="hubTabs">
-            <button class="social-tab active" id="tabTaverna" onclick="mudarAbaSocial('taverna')"><i class="fas fa-comments"></i> Taverna</button>
-            <button class="social-tab" id="tabTripulacao" onclick="mudarAbaSocial('tripulacao')"><i class="fas fa-user-friends"></i> Tripulação</button>
-        </div>
 
-        <div id="viewTaverna" class="social-view active">
-            <div class="chat-messages" id="globalChatMessages" style="flex: 1; overflow-y: auto;"></div>
-            <div class="chat-input-container" id="globalChatInputArea"></div>
-        </div>
-
-        <div id="viewTripulacao" class="social-view">
-            <div id="listaAmigos" style="padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; height: 100%;"></div>
-        </div>
-
-        <div id="viewPrivado" class="social-view">
-            <div class="chat-messages" id="privadoChatMessages" style="flex: 1; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 15px;"></div>
-            <div class="chat-input-container" style="display: flex; gap: 10px; background: rgba(0,0,0,0.5); padding: 15px; border-top: 1px solid var(--border-color);">
-                <input type="text" id="inputChatPrivado" style="flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--blue); background: rgba(0,0,0,0.5); color: white; outline: none; font-size: 0.9rem;" placeholder="Mensagem secreta..." onkeypress="if(event.key === 'Enter') enviarMensagemPrivada()">
-                <button onclick="enviarMensagemPrivada()" style="background: var(--blue); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-paper-plane"></i></button>
-            </div>
+<div class="social-hub-panel" id="socialHubPanel">
+    
+    <div class="hub-main-header" id="hubHeaderPadrao">
+        <h3 class="hub-title"><i class="fas fa-trophy"></i> Rankings & Taverna</h3>
+        <div class="hub-actions-top">
+            <button id="btnShareChat" class="hub-share-btn" title="Compartilhar e Ganhar XP!" onclick="IPTVSystem.executarCompartilhamentoDiario()">
+                <i class="fas fa-gift"></i>
+            </button>
+            <button class="hub-close-btn" onclick="toggleSocialHub()"><i class="fas fa-times"></i></button>
         </div>
     </div>
+
+    <div class="chat-header" id="hubHeaderPrivado" style="display: none; padding: 15px; background: rgba(0, 136, 255, 0.2); align-items: center; gap: 10px; border-bottom: 1px solid var(--blue);">
+        <button onclick="fecharChatPrivado()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <img id="fotoChatPrivado" src="" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+        <span id="nomeChatPrivado" style="font-weight: bold; color: white;"></span>
+    </div>
+
+    <div class="social-tabs" id="hubTabs">
+        <button class="social-tab active" id="tabComunidade" onclick="mudarAbaSocial('comunidade')">
+            <i class="fas fa-crown"></i> Rankings
+        </button>
+        <button class="social-tab" id="tabTaverna" onclick="mudarAbaSocial('taverna')">
+            <i class="fas fa-comments"></i> Taverna
+        </button>
+    </div>
+
+    <div id="viewComunidade" class="social-view active">
+        <div class="top3-podium" id="podiumContainer">
+            <div class="podium-item podium-2" id="podium2">
+                <div class="podium-crown">🥈</div>
+                <img src="https://via.placeholder.com/70" class="podium-avatar" id="podium2Avatar">
+                <div class="podium-name" id="podium2Name">---</div>
+                <div class="podium-level" id="podium2Level">Nv. 0</div>
+            </div>
+            <div class="podium-item podium-1" id="podium1">
+                <div class="podium-crown">👑</div>
+                <img src="https://via.placeholder.com/70" class="podium-avatar" id="podium1Avatar">
+                <div class="podium-name" id="podium1Name">---</div>
+                <div class="podium-level" id="podium1Level">Nv. 0</div>
+            </div>
+            <div class="podium-item podium-3" id="podium3">
+                <div class="podium-crown">🥉</div>
+                <img src="https://via.placeholder.com/70" class="podium-avatar" id="podium3Avatar">
+                <div class="podium-name" id="podium3Name">---</div>
+                <div class="podium-level" id="podium3Level">Nv. 0</div>
+            </div>
+        </div>
+        <div class="users-list" id="comunidadeList"></div>
+    </div>
+
+    <div id="viewTaverna" class="social-view">
+        <div class="chat-messages" id="globalChatMessages"></div>
+        <div class="chat-input-container" id="globalChatInputArea" style="padding: 15px; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.3);"></div>
+    </div>
+
+    <div id="viewPrivado" class="social-view">
+        <div class="chat-messages" id="privadoChatMessages"></div>
+        <div class="chat-input-container" style="display: flex; gap: 10px; padding: 15px; border-top: 1px solid var(--border-color);">
+            <input type="text" id="inputChatPrivado" style="flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--blue); background: rgba(0,0,0,0.5); color: white; outline: none;" placeholder="Mensagem secreta..." onkeypress="if(event.key === 'Enter') enviarMensagemPrivada()">
+            <button onclick="enviarMensagemPrivada()" style="background: var(--blue); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; cursor: pointer;">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+<a href="marujoflix.apk" download id="btnDownloadApp" class="btn-download-app" style="display: none;">
+    <i class="fas fa-download"></i> Instalar App
+</a>
+
+
+
+
+
 
 
 
