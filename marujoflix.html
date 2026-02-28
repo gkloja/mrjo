@@ -1,6 +1,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -1446,148 +1447,202 @@ function atualizarSidebarProgresso() {
         // ==========================================
     // ⚓ MOTOR SOCIAL (TAVERNA, AMIGOS E DMS)
     // ==========================================
-        // ==========================================
-    // ⚓ MOTOR SOCIAL UNIFICADO (TAVERNA, AMIGOS E DMS)
-    // ==========================================
-    
-    // Substitua pelo IP/Link do seu servidor. Sem o proxy do cors.eu.org!
-    const API_BASE = 'https://cors.eu.org/http://br2.bronxyshost.com:4009'; 
-    
+    const API_BASE = 'https://cors.eu.org/br2.bronxyshost.com:4009';
     let marujoEmFoco = null; 
     let amigoPrivadoAtual = null; 
     let timerChatPrivado = null; 
-    let timerChatGlobal = null; // Poller da Taverna
     let isGlobalChatOpen = false;
     let unreadChatCount = 0;
-    let todosUsuarios = []; 
+    let isFirstChatLoad = true;
 
-    // --- 1. COMUNIDADE E PODIUM ---
-    async function carregarComunidade() {
-        try {
-            const resposta = await fetch(`${API_BASE}/comunidade`);
-            if (resposta.ok) {
-                todosUsuarios = await resposta.json();
-                todosUsuarios.sort((a, b) => b.nivel - a.nivel);
-                atualizarPodium(todosUsuarios.slice(0, 3));
-                renderizarListaComunidade(todosUsuarios);
-            }
-        } catch (e) { console.error("Erro ao carregar comunidade:", e); }
-    }
+// ==========================================
+// CHAT REDESIGN - TOP 3 E COMUNIDADE
+// ==========================================
 
-    function atualizarPodium(top3) {
-        const posicoes = ['podium1', 'podium2', 'podium3'];
-        for (let i = 0; i < 3; i++) {
-            const usuario = top3[i] || { nome: '---', foto: 'imagens/1772133683485~2.png', nivel: 0, patente: 'Visitante' };
-            document.getElementById(`${posicoes[i]}Avatar`).src = usuario.foto;
-            document.getElementById(`${posicoes[i]}Name`).textContent = usuario.nome.substring(0, 10);
-            document.getElementById(`${posicoes[i]}Level`).textContent = `Nv. ${usuario.nivel}`;
+let todosUsuarios = []; // Guarda todos os usuários da comunidade
+
+// Função para carregar comunidade e top 3
+async function carregarComunidade() {
+    try {
+        const resposta = await fetch(`${API_BASE}/comunidade`, { mode: 'cors' });
+        if (resposta.ok) {
+            todosUsuarios = await resposta.json();
             
-            if(usuario.id) {
-                document.getElementById(posicoes[i]).onclick = () => abrirPerfilUsuario(usuario.id, usuario.nome, usuario.foto, usuario.nivel, usuario.patente || getRankTitle(usuario.nivel));
-            }
+            // Ordena por nível (do maior para o menor)
+            todosUsuarios.sort((a, b) => b.nivel - a.nivel);
+            
+            // Atualiza o pódium (top 3)
+            atualizarPodium(todosUsuarios.slice(0, 3));
+            
+            // Renderiza a lista completa
+            renderizarListaComunidade(todosUsuarios);
+        }
+    } catch (e) {
+        console.error("Erro ao carregar comunidade:", e);
+    }
+}
+
+// Atualiza os 3 maiores
+function atualizarPodium(top3) {
+    const posicoes = ['podium1', 'podium2', 'podium3'];
+    
+    for (let i = 0; i < 3; i++) {
+        const usuario = top3[i] || { nome: '---', foto: 'imagens/1772133683485~2.png', nivel: 0, patente: 'Visitante' };
+        document.getElementById(`${posicoes[i]}Avatar`).src = usuario.foto;
+        document.getElementById(`${posicoes[i]}Name`).textContent = usuario.nome.substring(0, 10) + (usuario.nome.length > 10 ? '...' : '');
+        document.getElementById(`${posicoes[i]}Level`).textContent = `Nv. ${usuario.nivel}`;
+        
+        // Torna o pódio clicável
+        if(usuario.id) {
+            const el = document.getElementById(posicoes[i]);
+            el.onclick = () => abrirPerfilUsuario(usuario.id, usuario.nome, usuario.foto, usuario.nivel, usuario.patente || getRankTitle(usuario.nivel));
         }
     }
+}
 
-    function renderizarListaComunidade(usuarios) {
-        const lista = document.getElementById('comunidadeList');
-        if (!currentUser) {
-            lista.innerHTML = `<div style="text-align:center; padding: 40px;"><p style="color:white;">Faça login para ver a comunidade</p></div>`;
-            return;
-        }
+function mudarAbaSocial(aba) {
+    document.querySelectorAll('.social-tab').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.social-view').forEach(view => view.classList.remove('active'));
+    
+    if (aba === 'comunidade') {
+        document.getElementById('tabComunidade').classList.add('active');
+        document.getElementById('viewComunidade').classList.add('active');
+        carregarComunidade();
+    } else {
+        document.getElementById('tabTaverna').classList.add('active');
+        document.getElementById('viewTaverna').classList.add('active');
+        carregarMensagensGlobais();
+    }
+}
+
+
+// Renderiza lista completa da comunidade
+// Renderiza lista completa da comunidade
+function renderizarListaComunidade(usuarios) {
+    const lista = document.getElementById('comunidadeList');
+    
+    if (!currentUser) {
+        lista.innerHTML = `
+            <div style="text-align: center; padding: 40px 20px;">
+                <i class="fas fa-lock" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 15px;"></i>
+                <p style="color: white; font-weight: bold;">Faça login para ver a comunidade e o ranking</p>
+                <button onclick="fazerLoginGoogle()" style="background: white; color: #333; border: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; margin-top: 15px; cursor: pointer;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 18px;"> Entrar com Google
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    lista.innerHTML = usuarios.map((user, index) => {
+        const isMe = currentUser && currentUser.uid === user.id;
+        const nivel = user.nivel || 1;
+        const patente = user.patente || getRankTitle(nivel);
+        const posicao = index + 1; // Calcula a posição no ranking
+        const isTop = posicao <= 3; // Destaca os 3 primeiros
         
-        lista.innerHTML = usuarios.map((user, index) => {
-            const isMe = currentUser && currentUser.uid === user.id;
-            return `
-                <div class="user-item ${isMe ? 'me' : ''}" onclick="abrirPerfilUsuario('${user.id}', '${user.nome}', '${user.foto}', '${user.nivel || 1}', '${user.patente || 'Recruta'}')">
-                    <div class="user-info">
-                        <span class="ranking-position">#${index + 1}</span>
-                        <img src="${user.foto}" class="user-avatar-small" onerror="this.src='imagens/1772133683485~2.png'">
-                        <div class="user-details">
-                            <span class="user-name">${user.nome} ${isMe ? '(Você)' : ''}</span>
-                            <span class="user-rank">${user.patente || 'Recruta'}</span>
-                        </div>
+        return `
+            <div class="user-item ${isMe ? 'me' : ''}" onclick="abrirPerfilUsuario('${user.id}', '${user.nome}', '${user.foto}', '${nivel}', '${patente}')">
+                <div class="user-info">
+                    <span class="ranking-position ${isTop ? 'top' : ''}">#${posicao}</span>
+                    <img src="${user.foto}" class="user-avatar-small" onerror="this.src='imagens/1772133683485~2.png'">
+                    <div class="user-details">
+                        <span class="user-name">${user.nome} ${isMe ? '(Você)' : ''}</span>
+                        <span class="user-rank">${patente}</span>
                     </div>
-                </div>`;
-        }).join('');
-    }
+                </div>
+                <div class="user-stats">
+                    <span class="user-level-badge">Nv. ${nivel}</span>
+                    <span class="user-xp"><i class="fas fa-star"></i> ${user.xp || 0} XP</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
 
-    // --- 2. CONTROLE DE ABAS E HUB SOCIAL ---
-    function toggleSocialHub() {
-        const panel = document.getElementById('socialHubPanel');
-        isGlobalChatOpen = !isGlobalChatOpen;
-        
-        if (isGlobalChatOpen) {
-            panel.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            unreadChatCount = 0;
-            atualizarBadgeChat();
-            carregarComunidade();
-            
-            if (document.getElementById('tabTaverna').classList.contains('active')) {
-                carregarMensagensGlobais();
-            }
-        } else {
-            panel.classList.remove('active');
-            document.body.style.overflow = '';
-            fecharChatPrivado();
-        }
-    }
 
-    function mudarAbaSocial(aba) {
-        document.querySelectorAll('.social-tab').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.social-view').forEach(view => view.classList.remove('active'));
+// Função toggle do hub social (agora respeita o header)
+function toggleSocialHub() {
+    const panel = document.getElementById('socialHubPanel');
+    isGlobalChatOpen = !isGlobalChatOpen;
+    
+    if (isGlobalChatOpen) {
+        panel.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        unreadChatCount = 0;
+        atualizarBadgeChat();
         
-        if (aba === 'comunidade') {
-            document.getElementById('tabComunidade').classList.add('active');
-            document.getElementById('viewComunidade').classList.add('active');
-            carregarComunidade();
-        } else {
-            document.getElementById('tabTaverna').classList.add('active');
-            document.getElementById('viewTaverna').classList.add('active');
+        // Carrega dados da comunidade
+        carregarComunidade();
+        
+        // Se estiver na aba taverna, carrega mensagens
+        if (document.getElementById('tabTaverna').classList.contains('active')) {
             carregarMensagensGlobais();
         }
+    } else {
+        panel.classList.remove('active');
+        document.body.style.overflow = '';
+        fecharChatPrivado();
     }
+}
 
-    // --- 3. PERFIL E AMIZADES ---
-    function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
-        marujoEmFoco = { id, nome, foto, nivel, patente };
-        document.getElementById('perfilFoto').src = foto;
-        document.getElementById('perfilNome').textContent = nome;
-        document.getElementById('perfilPatente').innerHTML = `<i class="fas fa-anchor"></i> ${patente}`;
-        document.getElementById('perfilNivel').textContent = `Nível ${nivel}`;
-        
-        if (window.renderizarAcoesPerfil) renderizarAcoesPerfil();
-        document.getElementById('perfilModal').classList.add('active');
+// Nova função para mudar abas (comunidade/taverna)
+function mudarAbaSocial(aba) {
+    document.querySelectorAll('.social-tab').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.social-view').forEach(view => view.classList.remove('active'));
+    
+    if (aba === 'comunidade') {
+        document.querySelectorAll('.social-tab')[0].classList.add('active');
+        document.getElementById('viewComunidade').classList.add('active');
+        carregarComunidade();
+    } else {
+        document.querySelectorAll('.social-tab')[1].classList.add('active');
+        document.getElementById('viewTaverna').classList.add('active');
+        carregarMensagensGlobais();
     }
+}
+
+
+    // --- 2. PERFIL E ADICIONAR MARUJO ---
+function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
+    // Guarda os dados para usar no botão de adicionar
+    marujoEmFoco = { id, nome, foto, nivel, patente };
+    
+    document.getElementById('perfilFoto').src = foto;
+    document.getElementById('perfilNome').textContent = nome;
+    document.getElementById('perfilPatente').innerHTML = `<i class="fas fa-anchor"></i> ${patente}`;
+    document.getElementById('perfilNivel').textContent = `Nível ${nivel}`;
+    
+    // Renderiza as ações (botão de login ou adicionar)
+    renderizarAcoesPerfil();
+    
+    document.getElementById('perfilModal').classList.add('active');
+}
 
     function fecharPerfilUsuario() { document.getElementById('perfilModal').classList.remove('active'); }
 
     async function recrutarMarujo() {
         if (!currentUser) return ToastSystem.show('Logue para enviar solicitações!', 'error');
-        if (!marujoEmFoco || currentUser.uid === marujoEmFoco.id) return ToastSystem.show('Não pode adicionar a si mesmo!', 'info');
+        if (!marujoEmFoco || currentUser.uid === marujoEmFoco.id) return;
 
         const btnAdd = document.querySelector('.btn-add-friend');
         btnAdd.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
         const pacote = {
             deId: currentUser.uid,
-            deDados: { nome: currentUser.displayName.split(' ')[0], foto: currentUser.photoURL, nivel: userProgress.level, patente: getRankTitle(userProgress.level) },
+            deDados: { nome: currentUser.displayName.split(' ')[0], foto: currentUser.photoURL.replace('s96-c', 's200-c'), nivel: userProgress.level, patente: getRankTitle(userProgress.level) },
             paraId: marujoEmFoco.id,
-            paraDados: marujoEmFoco
+            paraDados: { nome: marujoEmFoco.nome, foto: marujoEmFoco.foto, nivel: marujoEmFoco.nivel, patente: marujoEmFoco.patente }
         };
 
         try {
-            const res = await fetch(`${API_BASE}/amizade/solicitar`, { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify(pacote) 
-            });
+            const res = await fetch(`${API_BASE}/amizade/solicitar`, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pacote) });
             const result = await res.json();
-            
             if (result.sucesso) {
                 ToastSystem.show('Convite enviado!', 'success');
                 btnAdd.innerHTML = '<i class="fas fa-clock"></i> Pendente';
                 btnAdd.style.background = 'transparent'; btnAdd.style.color = 'var(--text-muted)';
+                if(isGlobalChatOpen) carregarTripulacao(); // Recarrega se o hub estiver aberto
             } else {
                 ToastSystem.show(result.mensagem, 'info');
                 btnAdd.innerHTML = '<i class="fas fa-check"></i>';
@@ -1595,101 +1650,144 @@ function atualizarSidebarProgresso() {
         } catch (e) { ToastSystem.show('Erro ao enviar.', 'error'); btnAdd.innerHTML = 'Erro'; }
     }
 
-    // --- 4. TAVERNA (CHAT GLOBAL) ---
-    async function carregarMensagensGlobais() {
-        try {
-            const res = await fetch(`${API_BASE}/ler_chat`);
-            if (res.ok) {
-                const msgs = await res.json();
-                renderizarListaChatGlobal(msgs);
-            }
-        } catch (e) { console.error("Erro ao carregar chat:", e); }
-        renderizarInputChatGlobal();
+    // --- 3. TRIPULAÇÃO E COMUNIDADE MUNDIAL ---
+    async function carregarTripulacao() {
+    const lista = document.getElementById('listaAmigos');
+    if (!currentUser) { 
+        lista.innerHTML = `
+            <div style="text-align:center; color:var(--accent); margin-top:30px; padding: 20px;">
+                <i class="fas fa-lock" style="font-size: 2rem; margin-bottom: 15px; display: block; color: var(--text-muted);"></i>
+                <p style="color: white; font-weight: bold;">Área Restrita</p>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Faça login para ver a tripulação</p>
+                <button onclick="fazerLoginGoogle()" style="background: white; color: #333; border: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 18px;"> Entrar com Google
+                </button>
+            </div>
+        `;
+        return; 
     }
+    
+    lista.innerHTML = '<div style="text-align:center; color:gray; margin-top:30px;"><i class="fas fa-compass fa-spin" style="font-size: 2rem; margin-bottom: 15px; display: block;"></i>Lendo radar...</div>';
 
-    function renderizarListaChatGlobal(msgs) {
-        const msgList = document.getElementById('globalChatMessages');
-        if(!msgList) return;
-        msgList.innerHTML = '';
-        
-        msgs.forEach(m => {
-            const isMe = currentUser && currentUser.uid === m.userId; 
-            const isVip = m.level >= 50;
-            const bubbleClass = isVip ? 'message-bubble vip-bubble' : 'message-bubble';
-            const senderColor = isVip ? 'gold' : (isMe ? 'var(--blue)' : 'var(--primary)');
+    try {
+        const [resAmizades, resComunidade] = await Promise.all([
+            fetch(`${API_BASE}/amizades/${currentUser.uid}`, { mode: 'cors' }),
+            fetch(`${API_BASE}/comunidade`, { mode: 'cors' })
+        ]);
 
-            msgList.innerHTML += `
-                <div style="display:flex;gap:8px;${isMe ? 'flex-direction:row-reverse;' : ''};margin-bottom:15px;">
-                    <img src="${m.userPhoto}" style="width:35px;height:35px;border-radius:50%;border:2px solid ${senderColor};cursor:pointer;" onclick="abrirPerfilUsuario('${m.userId}','${m.userName}','${m.userPhoto}','${m.level}','${m.rank}')">
-                    <div class="${bubbleClass}" style="padding:10px 15px;border-radius:18px;max-width:80%;${isMe && !isVip ? 'border:1px solid var(--blue);background:rgba(0,136,255,0.1);' : ''}">
-                        <div class="message-sender" style="font-size:0.75rem;font-weight:bold;color:${senderColor};margin-bottom:3px;cursor:pointer; ${isMe ? 'text-align:right;' : ''}">
-                            ${isVip ? '<i class="fas fa-crown"></i> ' : ''}${m.userName}
+        const amizades = resAmizades.ok ? await resAmizades.json() : [];
+        const comunidade = resComunidade.ok ? await resComunidade.json() : [];
+
+        const recebidas = amizades.filter(a => a.paraId === currentUser.uid && a.status === 'pendente');
+        const enviadas = amizades.filter(a => a.deId === currentUser.uid && a.status === 'pendente');
+        const amigos = amizades.filter(a => a.status === 'aceito');
+
+        const idsConectados = [...amigos.map(a => a.deId===currentUser.uid ? a.paraId : a.deId), ...enviadas.map(a=>a.paraId), ...recebidas.map(a=>a.deId)];
+        const explorar = comunidade.filter(u => u.id !== currentUser.uid && !idsConectados.includes(u.id));
+
+        lista.innerHTML = '';
+
+        // SESSÃO: PENDENTES (Aprovar/Recusar)
+        if (recebidas.length > 0) {
+            lista.innerHTML += `<div style="color:var(--accent); font-weight:bold; font-size:0.8rem; margin-bottom:10px;"><i class="fas fa-hourglass-half"></i> SOLICITAÇÕES PENDENTES</div>`;
+            recebidas.forEach(req => {
+                lista.innerHTML += `
+                    <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,77,77,0.1); padding:12px; border-radius:15px; border:1px dashed var(--accent); margin-bottom:12px;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <img src="${req.deDados.foto}" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--accent);" onerror="this.src='imagens/1772133683485~2.png'">
+                            <div>
+                                <div style="color:white; font-weight:bold; font-size:0.95rem;">${req.deDados.nome}</div>
+                                <div style="color:var(--text-muted); font-size:0.7rem;">Nv. ${req.deDados.nivel} • ${req.deDados.patente}</div>
+                            </div>
                         </div>
-                        <div class="message-text" style="font-size:0.9rem;color:white;word-break:break-word;">${m.text}</div>
+                        <div style="display:flex; gap:8px;">
+                            <button onclick="responderSolicitacao('${req.idUnico}', 'aceitar')" style="background:var(--primary); color:black; border:none; border-radius:50%; width:38px; height:38px; cursor:pointer; font-size:1rem;"><i class="fas fa-check"></i></button>
+                            <button onclick="responderSolicitacao('${req.idUnico}', 'recusar')" style="background:transparent; color:var(--accent); border:1px solid var(--accent); border-radius:50%; width:38px; height:38px; cursor:pointer; font-size:1rem;"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // SESSÃO: MEUS AMIGOS
+        lista.innerHTML += `<div style="color:var(--primary); font-weight:bold; font-size:0.8rem; margin:15px 0 10px;"><i class="fas fa-user-friends"></i> MEUS MARUJOS (${amigos.length})</div>`;
+        if(amigos.length === 0) {
+            lista.innerHTML += '<div style="color:gray; font-size:0.85rem; background:rgba(255,255,255,0.02); padding:15px; border-radius:12px; text-align:center;">Você ainda não tem amigos a bordo. Explore a comunidade abaixo!</div>';
+        }
+        amigos.forEach(amigo => {
+            const outro = amigo.deId === currentUser.uid ? amigo.paraDados : amigo.deDados;
+            const outroId = amigo.deId === currentUser.uid ? amigo.paraId : amigo.deId;
+            lista.innerHTML += `
+                <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.05); padding:12px; border-radius:15px; border:1px solid rgba(255,255,255,0.1); margin-bottom:10px;">
+                    <div style="display:flex; align-items:center; gap:12px; cursor:pointer; flex:1;" onclick="abrirPerfilUsuario('${outroId}','${outro.nome}','${outro.foto}','${outro.nivel}','${outro.patente}')">
+                        <img src="${outro.foto}" style="width:45px; height:45px; border-radius:50%; border:2px solid var(--primary); object-fit:cover;" onerror="this.src='imagens/1772133683485~2.png'">
+                        <div>
+                            <div style="font-weight:bold; color:white; font-size:0.95rem;">${outro.nome}</div>
+                            <div style="color:var(--primary); font-size:0.7rem;">Nv. ${outro.nivel} • ${outro.patente}</div>
+                        </div>
                     </div>
+                    <button onclick="abrirChatPrivado('${outroId}','${outro.nome}','${outro.foto}')" style="background:rgba(0,136,255,0.2); color:var(--blue); border:1px solid var(--blue); width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:1.1rem;"><i class="fas fa-comment-dots"></i></button>
                 </div>`;
         });
-        msgList.scrollTop = msgList.scrollHeight;
-    }
 
-    function renderizarInputChatGlobal() {
-        const area = document.getElementById('globalChatInputArea');
-        if(!area) return;
-        area.innerHTML = currentUser 
-            ? `<div style="display:flex;gap:10px;"><input type="text" id="globalChatInput" style="flex:1;padding:10px;border-radius:20px;border:none;background:rgba(255,255,255,0.1);color:white;" placeholder="Fale na Taverna..." onkeypress="if(event.key==='Enter') enviarMsgGlobal()"><button onclick="enviarMsgGlobal()" style="background:var(--blue);border:none;width:40px;height:40px;border-radius:50%;color:white;cursor:pointer;"><i class="fas fa-paper-plane"></i></button></div>`
-            : `<button onclick="fazerLoginGoogle()" style="width:100%;padding:10px;background:white;color:#333;font-weight:bold;border-radius:12px;border:none;">Entrar para Falar</button>`;
-    }
-
-    async function enviarMsgGlobal() {
-        const input = document.getElementById('globalChatInput');
-        if (!input || !input.value.trim() || !currentUser) return;
-        const pacote = { userId: currentUser.uid, userName: currentUser.displayName.split(' ')[0], userPhoto: currentUser.photoURL, level: userProgress.level, rank: getRankTitle(userProgress.level), text: input.value.trim(), timestamp: new Date().toISOString() };
-        input.value = ''; 
-        try { 
-            await fetch(`${API_BASE}/salvar_chat`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(pacote) }); 
-            userProgress.addXP(2); 
-            carregarMensagensGlobais(); // Recarrega após enviar
-        } catch (e) { ToastSystem.show('Falha ao enviar!', 'error'); }
-    }
-
-    function atualizarBadgeChat() {
-        const bdgM = document.getElementById('chatBadge');
-        if (unreadChatCount > 0) { 
-            if (bdgM){ bdgM.textContent = unreadChatCount > 9 ? '9+' : unreadChatCount; bdgM.classList.add('show'); }
-        } else { 
-            if(bdgM) bdgM.classList.remove('show'); 
+        // SESSÃO: COMUNIDADE
+        lista.innerHTML += `<div style="color:white; font-weight:bold; font-size:0.8rem; margin:15px 0 10px;"><i class="fas fa-globe-americas"></i> COMUNIDADE (${explorar.length})</div>`;
+        if(explorar.length === 0) {
+            lista.innerHTML += '<div style="color:gray; font-size:0.85rem; background:rgba(255,255,255,0.02); padding:15px; border-radius:12px; text-align:center;">Você já conectou com todos os marujos ativos!</div>';
         }
+        explorar.forEach(u => {
+            lista.innerHTML += `
+                <div style="display:flex; align-items:center; justify-content:space-between; background:transparent; padding:10px 5px; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:5px;">
+                    <div style="display:flex; align-items:center; gap:12px; cursor:pointer; flex:1;" onclick="abrirPerfilUsuario('${u.id}','${u.nome}','${u.foto}','${u.nivel}','${u.patente}')">
+                        <img src="${u.foto}" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:1px solid var(--primary);" onerror="this.src='imagens/1772133683485~2.png'">
+                        <div>
+                            <div style="font-weight:bold; color:white; font-size:0.9rem;">${u.nome}</div>
+                            <div style="color:gray; font-size:0.65rem;">Nv. ${u.nivel} • ${u.patente}</div>
+                        </div>
+                    </div>
+                    <button onclick="marujoEmFoco={id:'${u.id}', nome:'${u.nome}', foto:'${u.foto}', nivel:'${u.nivel}', patente:'${u.patente}'}; recrutarMarujo()" style="background:rgba(0,255,179,0.1); color:var(--primary); border:1px solid var(--primary); border-radius:12px; padding:8px 12px; font-size:0.8rem; font-weight:bold; cursor:pointer;">
+                        <i class="fas fa-plus"></i> Adicionar
+                    </button>
+                </div>`;
+        });
+
+    } catch (e) { 
+        console.error(e);
+        lista.innerHTML = '<div style="color:var(--accent); text-align:center; padding:30px;"><i class="fas fa-exclamation-triangle" style="font-size:2rem; margin-bottom:15px;"></i><br>Erro ao carregar radar.</div>'; 
+    }
+}
+
+    async function responderSolicitacao(idUnico, acao) {
+        try {
+            await fetch(`${API_BASE}/amizade/responder`, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idUnico, acao }) });
+            ToastSystem.show(acao === 'aceitar' ? 'Tripulante Aceito!' : 'Recusado.', acao === 'aceitar' ? 'success' : 'info');
+            carregarTripulacao(); 
+        } catch(e) {}
     }
 
-    // --- 5. CHAT PRIVADO (DMs) ---
+    // --- 4. CHAT PRIVADO (DMs) ---
     function abrirChatPrivado(id, nome, foto) {
         amigoPrivadoAtual = { id, nome, foto };
-        document.getElementById('hubHeaderPadrao').style.display = 'none'; 
-        document.getElementById('hubTabs').style.display = 'none';
+        document.getElementById('hubHeaderPadrao').style.display = 'none'; document.getElementById('hubTabs').style.display = 'none';
         document.getElementById('hubHeaderPrivado').style.display = 'flex';
-        document.getElementById('nomeChatPrivado').innerHTML = nome;
-        document.getElementById('fotoChatPrivado').src = foto;
+        document.getElementById('nomeChatPrivado').innerHTML = `<img src="${foto}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;"> ${nome}`;
         document.querySelectorAll('.social-view').forEach(v => v.classList.remove('active'));
         document.getElementById('viewPrivado').classList.add('active');
         
-        fecharPerfilUsuario(); 
-        carregarMensagensPrivadas();
-        timerChatPrivado = setInterval(carregarMensagensPrivadas, 3000); // Polling DMs
+        fecharPerfilUsuario(); carregarMensagensPrivadas();
+        timerChatPrivado = setInterval(carregarMensagensPrivadas, 3000);
     }
 
     function fecharChatPrivado() {
         clearInterval(timerChatPrivado); amigoPrivadoAtual = null;
-        document.getElementById('hubHeaderPrivado').style.display = 'none'; 
-        document.getElementById('hubHeaderPadrao').style.display = 'flex';
-        document.getElementById('hubTabs').style.display = 'flex'; 
-        mudarAbaSocial('comunidade');
+        document.getElementById('hubHeaderPrivado').style.display = 'none'; document.getElementById('hubHeaderPadrao').style.display = 'flex';
+        document.getElementById('hubTabs').style.display = 'flex'; mudarAbaSocial('tripulacao');
     }
 
     let qtdDMsAntigas = 0;
     async function carregarMensagensPrivadas() {
         if(!amigoPrivadoAtual || !currentUser) return;
         try {
-            const res = await fetch(`${API_BASE}/dm/ler/${currentUser.uid}/${amigoPrivadoAtual.id}`);
+            const res = await fetch(`${API_BASE}/dm/ler/${currentUser.uid}/${amigoPrivadoAtual.id}`, { method: 'GET', mode: 'cors' });
             if (res.ok) {
                 const mensagens = await res.json();
                 const container = document.getElementById('privadoChatMessages');
@@ -1699,13 +1797,12 @@ function atualizarSidebarProgresso() {
                         const isMe = m.deId === currentUser.uid;
                         container.innerHTML += `
                             <div style="display:flex;gap:8px;margin-bottom:10px;${isMe ? 'flex-direction:row-reverse;' : ''}">
-                                <div style="padding:10px 15px;border-radius:${isMe ? '20px 20px 0 20px' : '20px 20px 20px 0'};max-width:80%;${isMe ? 'background:var(--blue);color:white;' : 'background:rgba(255,255,255,0.1);color:white;'}">
+                                <div style="padding:10px 15px;border-radius:${isMe ? '20px 20px 0 20px' : '20px 20px 20px 0'};max-width:80%;${isMe ? 'background:var(--blue);color:white;' : 'background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.2);'}">
                                     <div style="font-size:0.9rem;word-break:break-word;">${m.texto}</div>
                                 </div>
                             </div>`;
                     });
-                    container.scrollTop = container.scrollHeight; 
-                    qtdDMsAntigas = mensagens.length;
+                    container.scrollTop = container.scrollHeight; qtdDMsAntigas = mensagens.length;
                 }
             }
         } catch (e) {}
@@ -1716,31 +1813,157 @@ function atualizarSidebarProgresso() {
         if(!input.value.trim() || !amigoPrivadoAtual || !currentUser) return;
         const pacote = { deId: currentUser.uid, paraId: amigoPrivadoAtual.id, texto: input.value.trim(), timestamp: new Date().toISOString() };
         input.value = '';
-        try { 
-            await fetch(`${API_BASE}/dm/enviar`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(pacote) }); 
-            carregarMensagensPrivadas(); 
-        } catch(e) {}
+        try { await fetch(`${API_BASE}/dm/enviar`, { method: 'POST', mode: 'cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify(pacote) }); carregarMensagensPrivadas(); } catch(e) {}
     }
 
-    // --- 6. ATUALIZAÇÃO EM TEMPO REAL (POLLING DA TAVERNA) ---
-    // Ativa o poller assim que a página carrega para checar mensagens novas
-    setInterval(async () => {
-        try {
-            const res = await fetch(`${API_BASE}/ler_chat`);
-            if(res.ok) {
-                const msgs = await res.json();
-                if (!isGlobalChatOpen && msgs.length > unreadChatCount) {
-                    unreadChatCount = msgs.length; 
-                    atualizarBadgeChat();
-                }
-                if (isGlobalChatOpen && document.getElementById('tabTaverna').classList.contains('active')) {
-                    renderizarListaChatGlobal(msgs);
-                }
-            }
-        } catch(e){}
-    }, 4000); // Atualiza de 4 em 4 segundos
+    // --- 5. TAVERNA E NOTIFICAÇÕES (Sem Firebase DB) ---
+    function iniciarChatGlobalSilencioso() {
+        setInterval(async () => {
+            try {
+                const res = await fetch(`${API_BASE}/ler_chat`, { mode: 'cors' });
+                if(res.ok) {
+                    const msgs = await res.json();
+                    if (!isGlobalChatOpen && msgs.length > unreadChatCount && !isFirstChatLoad) {
+                        unreadChatCount = msgs.length; atualizarBadgeChat();
+                    }
+                    if(isGlobalChatOpen && document.getElementById('tabTaverna').classList.contains('active')){
+                        const msgList = document.getElementById('globalChatMessages');
+                        msgList.innerHTML = '';
+                        msgs.forEach(m => {
+               // Dentro do forEach(m => ...) de iniciarChatGlobalSilencioso:
+const isMe = currentUser && currentUser.uid === m.userId; 
+const isVip = m.level >= 50; // Jogadores NV 50+ recebem bordas e tags Douradas!
+const bubbleClass = isVip ? 'message-bubble vip-bubble' : 'message-bubble';
+const senderColor = isVip ? 'gold' : (isMe ? 'var(--blue)' : 'var(--primary)');
 
-// Função para carregar e exibir os comentários
+msgList.innerHTML += `
+    <div style="display:flex;gap:8px;${isMe ? 'flex-direction:row-reverse;' : ''};margin-bottom:15px;">
+        <img src="${m.userPhoto}" style="width:35px;height:35px;border-radius:50%;border:2px solid ${senderColor};cursor:pointer; box-shadow: ${isVip ? '0 0 10px gold' : 'none'}" onclick="abrirPerfilUsuario('${m.userId}','${m.userName}','${m.userPhoto}','${m.level}','${m.rank}')">
+        <div class="${bubbleClass}" style="padding:10px 15px;border-radius:18px;max-width:80%;${isMe && !isVip ? 'border:1px solid var(--blue);background:rgba(0,136,255,0.1);' : ''}">
+            <div class="message-sender" style="font-size:0.75rem;font-weight:bold;color:${senderColor};margin-bottom:3px;cursor:pointer; ${isMe ? 'text-align:right;' : ''}" onclick="abrirPerfilUsuario('${m.userId}','${m.userName}','${m.userPhoto}','${m.level}','${m.rank}')">
+                ${isVip ? '<i class="fas fa-crown"></i> ' : ''}${m.userName} <span style="font-size: 0.65rem; color: gray;">Nv.${m.level}</span>
+            </div>
+            <div class="message-text" style="font-size:0.9rem;color:white;word-break:break-word;">${m.text}</div>
+        </div>
+    </div>`;
+
+                        });
+                        msgList.scrollTop = msgList.scrollHeight;
+                    }
+                    isFirstChatLoad = false;
+                }
+            } catch(e){}
+        }, 3000);
+        renderizarInputChatGlobal();
+    }
+
+    function atualizarBadgeChat() {
+        const bdgM = document.getElementById('chatBadge'); const bdgD = document.getElementById('chatBadgeDesktop');
+        if (unreadChatCount > 0) { const txt = unreadChatCount > 9 ? '9+' : unreadChatCount; if (bdgM){bdgM.textContent=txt; bdgM.classList.add('show');} if(bdgD){bdgD.textContent=txt; bdgD.classList.add('show');} } 
+        else { if(bdgM)bdgM.classList.remove('show'); if(bdgD)bdgD.classList.remove('show'); }
+    }
+
+    function renderizarInputChatGlobal() {
+        document.getElementById('globalChatInputArea').innerHTML = currentUser 
+            ? `<div style="display:flex;gap:10px;"><input type="text" id="globalChatInput" style="flex:1;padding:10px 15px;border-radius:20px;border:1px solid var(--border-color);background:rgba(0,0,0,0.5);color:white;outline:none;" placeholder="Fale na Taverna..." onkeypress="if(event.key==='Enter') enviarMsgGlobal()"><button onclick="enviarMsgGlobal()" style="background:var(--blue);border:none;width:40px;height:40px;border-radius:50%;color:white;cursor:pointer;"><i class="fas fa-paper-plane"></i></button></div>`
+            : `<button onclick="fazerLoginGoogle()" style="width:100%;padding:10px;background:white;color:#333;font-weight:bold;border-radius:12px;border:none;"><i class="fab fa-google"></i> Entrar para Falar</button>`;
+    }
+
+    async function enviarMsgGlobal() {
+        const input = document.getElementById('globalChatInput');
+        if (!input || !input.value.trim() || !currentUser) return;
+        const pacote = { userId: currentUser.uid, userName: currentUser.displayName.split(' ')[0], userPhoto: currentUser.photoURL.replace('s96-c', 's200-c'), level: userProgress.level, rank: getRankTitle(userProgress.level), text: input.value.trim(), timestamp: new Date().toISOString() };
+        input.value = ''; 
+        try { await fetch(`${API_BASE}/salvar_chat`, { method: 'POST', mode: 'cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify(pacote) }); userProgress.addXP(2); } catch (e) {}
+    }
+
+        // O link da sua API
+    // O link da sua API
+    const API_COMENTARIOS = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+  
+
+            function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
+        // Guarda os dados para usar no botão de adicionar
+        marujoEmFoco = { id, nome, foto, nivel, patente };
+        
+        document.getElementById('perfilFoto').src = foto;
+        document.getElementById('perfilNome').textContent = nome;
+        document.getElementById('perfilPatente').innerHTML = `<i class="fas fa-anchor"></i> ${patente}`;
+        document.getElementById('perfilNivel').textContent = `Nível ${nivel}`;
+        
+        // Reseta o botão visualmente
+        const btnAdd = document.querySelector('.btn-add-friend');
+        btnAdd.innerHTML = '<i class="fas fa-user-plus"></i> Adicionar à Tripulação';
+        
+        // CORRIGIDO O ERRO DOS DOIS PONTOS AQUI:
+        btnAdd.style.background = 'rgba(0, 255, 179, 0.1)';
+        btnAdd.style.color = 'var(--primary)';
+        
+        document.getElementById('perfilModal').classList.add('active');
+    }
+
+    async function recrutarMarujo() {
+        if (!currentUser) {
+            ToastSystem.show('Você precisa estar logado para recrutar!', 'error');
+            return;
+        }
+        if (!marujoEmFoco) return;
+        
+        // Impede a pessoa de adicionar ela mesma
+        if (currentUser.uid === marujoEmFoco.id) {
+            ToastSystem.show('Você é o Capitão, não pode recrutar a si mesmo!', 'info');
+            return;
+        }
+
+        const btnAdd = document.querySelector('.btn-add-friend');
+        btnAdd.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Recrutando...';
+
+        // O pacote que vai para o servidor
+        const pacote = {
+            usuarioId: currentUser.uid,
+            amigoId: marujoEmFoco.id,
+            amigoNome: marujoEmFoco.nome,
+            amigoFoto: marujoEmFoco.foto,
+            amigoNivel: marujoEmFoco.nivel,
+            amigoPatente: marujoEmFoco.patente,
+            timestamp: new Date().toISOString()
+        };
+
+        // Usa o mesmo link da API que você já tem
+        const linkApi = 'https://cors.eu.org/http://br2.bronxyshost.com:4009';
+
+        try {
+            const resposta = await fetch(`${linkApi}/adicionar_amigo`, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                body: JSON.stringify(pacote)
+            });
+            
+            const resultado = await resposta.json();
+
+            if (resultado.sucesso) {
+                ToastSystem.show(resultado.mensagem, 'success');
+                btnAdd.innerHTML = '<i class="fas fa-check"></i> Recrutado!';
+                btnAdd.style.background = 'var(--primary)';
+                btnAdd.style.color = 'black';
+                userProgress.addXP(10); // Ganha XP por fazer amigos!
+            } else {
+                ToastSystem.show(resultado.mensagem, 'info');
+                btnAdd.innerHTML = '<i class="fas fa-user-check"></i> Já na Tripulação';
+            }
+        } catch (error) {
+            ToastSystem.show('Erro de conexão com os satélites.', 'error');
+            btnAdd.innerHTML = '<i class="fas fa-user-plus"></i> Tentar Novamente';
+        }
+    }
+
+
+    function fecharPerfilUsuario() {
+        document.getElementById('perfilModal').classList.remove('active');
+    }
+
+    // 1. CARREGAR COMENTÁRIOS (Download)
     async function carregarComentarios(movieId) {
         currentMovieIdForComments = movieId;
         document.getElementById('commentsSection').style.display = 'block';
@@ -1749,7 +1972,7 @@ function atualizarSidebarProgresso() {
         lista.innerHTML = '<div style="color: var(--text-muted); text-align: center; font-size: 0.85rem;"><i class="fas fa-compass fa-spin"></i> Buscando pergaminhos no servidor...</div>';
 
         try {
-            const response = await fetch(`${API_BASE}/ler_comentarios`, {
+            const response = await fetch(`${API_COMENTARIOS}/ler_comentarios`, {
                 method: 'GET',
                 mode: 'cors',
                 headers: { 'Accept': 'application/json' }
@@ -1800,50 +2023,77 @@ function atualizarSidebarProgresso() {
         renderizarAreaDeComentario();
     }
 
-// Função para mostrar o campo de texto ou o botão de login
-function renderizarAreaDeComentario() {
-    const area = document.getElementById('commentActionArea');
-    if (!area) return;
-
-    if (currentUser) {
-        area.innerHTML = `
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <input type="text" id="inputComentario" placeholder="Escreva seu comentário..." style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #333; background: #111; color: white;">
-                <button onclick="enviarComentario()" style="background: var(--primary); border: none; padding: 0 15px; border-radius: 8px; cursor: pointer;"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        `;
-    } else {
-        area.innerHTML = `
-            <button onclick="fazerLoginGoogle()" style="width: 100%; padding: 10px; margin-top: 15px; background: white; color: black; font-weight: bold; border-radius: 8px; border: none; cursor: pointer;">
-                Faça login para comentar
-            </button>
-        `;
-    }
-}
-
-// Função para salvar o comentário no Firebase
-async function enviarComentario() {
-    const input = document.getElementById('inputComentario');
-    if (!input || !input.value.trim() || !currentUser || !currentMovieIdForComments) return;
-
-    try {
-        await window.fbOps.addDoc(window.fbOps.collection(window.db, `comentarios_${currentMovieIdForComments}`), {
+    // 2. ENVIAR COMENTÁRIO (Upload)
+    async function enviarComentario() {
+        const input = document.getElementById('comentarioInput');
+        if (!input) return;
+        const text = input.value.trim();
+        
+        if (!text || !currentUser || !currentMovieIdForComments) return;
+        
+        input.value = ''; // Limpa a caixinha rápido
+        
+        // 📦 O PACOTE DE DADOS: Aqui vai tudo da conta do Google do usuário!
+        const pacote = {
+            filmeId: currentMovieIdForComments,
             userId: currentUser.uid,
-            userName: currentUser.displayName,
-            userPhoto: currentUser.photoURL,
-            text: input.value.trim(),
-            timestamp: window.fbOps.serverTimestamp()
-        });
-        input.value = '';
-        userProgress.addXP(5); // Dá 5 de XP por comentar!
-        ToastSystem.show("Comentário enviado!", "success");
-    } catch (e) {
-        ToastSystem.show("Erro ao enviar comentário", "error");
+            userName: currentUser.displayName.split(' ')[0], // Pega só o primeiro nome
+            userPhoto: currentUser.photoURL.replace('s96-c', 's200-c'), // Foto em alta qualidade
+            level: userProgress.level, // Pega o nível atual do site
+            rank: getRankTitle(userProgress.level), // Pega a patente atual
+            text: text,
+            timestamp: new Date().toISOString()
+        };
+
+        try {
+            const response = await fetch(`${API_COMENTARIOS}/salvar_comentario`, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(pacote)
+            });
+
+            if (response.ok) {
+                userProgress.addXP(5); // Ganha o XP
+                carregarComentarios(currentMovieIdForComments); // Atualiza a tela puxando o comentário novo
+            } else {
+                ToastSystem.show('O servidor recusou a mensagem.', 'error');
+            }
+        } catch (error) {
+            ToastSystem.show('Erro de comunicação com o servidor.', 'error');
+        }
     }
-}
+
+    function renderizarAreaDeComentario() {
+        const area = document.getElementById('commentActionArea');
+        if (currentUser) {
+            area.innerHTML = `
+                <div class="comment-input-area">
+                    <input type="text" id="comentarioInput" class="comment-input" placeholder="Escreva um comentário..." onkeypress="if(event.key === 'Enter') enviarComentario()">
+                    <button class="comment-send-btn" onclick="enviarComentario()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            `;
+        } else {
+            area.innerHTML = `<button class="btn-google-login" onclick="fazerLoginGoogle()"><i class="fab fa-google"></i> Faça login com o Google para comentar</button>`;
+        }
+    }
+
+            // VARIÁVEL PARA O LINK DA SUA API (Usando o Proxy CORS)
 
 
+    // ==========================================
+    // SISTEMA DE CHAT GLOBAL (TAVERNA)
+    // ==========================================
+    // ==========================================
+    // SISTEMA DE CHAT GLOBAL (TAVERNA COM NOTIFICAÇÃO)
+    // ==========================================
 
+      // ⚓ SISTEMA TMDB (Trailers e Sinopses)
+        // ⚓ SISTEMA TMDB (Trailers e Sinopses)
+        
       
     const TMDBSystem = {
         apiKey: '05d9219b08b6af53612ea63272f4484a', // Sua chave real do TMDB
@@ -3166,8 +3416,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
 
 
 <a href="marujoflix.apk" download id="btnDownloadApp" class="btn-download-app" style="display: none;">
-    <i class="fas fa-download"></i> Instalar App
-</a>
+    <i class="fas fa-download"></i></a>
 
 
 
@@ -3202,6 +3451,123 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
 
 </body>
 </html>
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
 
 
  
