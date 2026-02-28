@@ -2435,8 +2435,8 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
   
-  // MUDANÇA AQUI: Importamos o 'initializeFirestore' para configurar a conexão especial
-  import { initializeFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+  // ADICIONADO O 'memoryLocalCache' AQUI NO IMPORT
+  import { initializeFirestore, memoryLocalCache, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDruRISw56lL0dZpnKpFv2COaJkUmamgoc",
@@ -2451,11 +2451,11 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
   window.auth = getAuth(app);
   
   // ========================================================
-  // O ANTÍDOTO PARA O ERRO "CLIENT IS OFFLINE"
-  // Isso força o Firebase a usar a internet normal do App,
-  // passando por cima de qualquer bloqueio do celular!
+  // A SOLUÇÃO FINAL: Força o uso exclusivo de Memória RAM 
+  // Ignora completamente o cache corrompido do Aplicativo
   // ========================================================
   window.db = initializeFirestore(app, {
+      localCache: memoryLocalCache(),
       experimentalForceLongPolling: true
   });
 
@@ -2464,6 +2464,7 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
 
   window.fbOps = { signInWithPopup, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc };
 </script>
+
 
 
 
