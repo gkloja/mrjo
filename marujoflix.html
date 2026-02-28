@@ -1994,36 +1994,37 @@ function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
         },
 
                 async save() {
-            // 1. Backup local rápido (para não piscar a tela)
-            localStorage.setItem('marujoflix_xp', this.xp);
-            localStorage.setItem('marujoflix_level', this.level);
-            localStorage.setItem('marujoflix_favorites', JSON.stringify(this.favorites));
-            localStorage.setItem('marujoflix_history', JSON.stringify(this.history));
+    // Backup local
+    localStorage.setItem('marujoflix_xp', this.xp);
+    localStorage.setletem('marujoflix_level', this.level);
+    localStorage.setItem('marujoflix_favorites', JSON.stringify(this.favorites));
+    localStorage.setItem('marujoflix_history', JSON.stringify(this.history));
 
-            // 2. UPLOAD PARA O SEU SERVIDOR! (Sem Firebase)
-            if (typeof currentUser !== 'undefined' && currentUser) {
-                const pacoteSave = {
-                    userId: currentUser.uid,
-                    xp: this.xp,
-                    level: this.level,
-                    favorites: this.favorites,
-                    history: this.history
-                };
+    // Envio para o servidor com nome e foto
+    if (typeof currentUser !== 'undefined' && currentUser) {
+        const pacoteSave = {
+            userId: currentUser.uid,
+            nome: currentUser.displayName || 'Marujo',
+            foto: currentUser.photoURL ? currentUser.photoURL.replace('s96-c', 's200-c') : 'https://via.placeholder.com/150',
+            xp: this.xp,
+            level: this.level,
+            favorites: this.favorites,
+            history: this.history
+        };
 
-                const linkApi = 'https://cors.eu.org/http://br2.bronxyshost.com:4009';
-                
-                try {
-                    await fetch(`${linkApi}/salvar_progresso`, {
-                        method: 'POST', mode: 'cors',
-                        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                        body: JSON.stringify(pacoteSave)
-                    });
-                    // Salvou silenciosamente no seu JSON!
-                } catch (e) {
-                    console.log("Erro ao salvar no servidor principal.");
-                }
-            }
-        },
+        const linkApi = 'https://cors.eu.org/http://br2.bronxyshost.com:4009';
+        try {
+            await fetch(`${linkApi}/salvar_progresso`, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                body: JSON.stringify(pacoteSave)
+            });
+        } catch (e) {
+            console.log("Erro ao salvar no servidor principal:", e);
+        }
+    }
+},
 
 
 
