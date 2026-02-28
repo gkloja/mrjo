@@ -1993,14 +1993,12 @@ function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
             ToastSystem.show('Diário de bordo limpo!', 'success');
         },
 
-                async save() {
-    // Backup local
+async save() {
     localStorage.setItem('marujoflix_xp', this.xp);
-    localStorage.setletem('marujoflix_level', this.level);
+    localStorage.setItem('marujoflix_level', this.level);
     localStorage.setItem('marujoflix_favorites', JSON.stringify(this.favorites));
     localStorage.setItem('marujoflix_history', JSON.stringify(this.history));
 
-    // Envio para o servidor com nome e foto
     if (typeof currentUser !== 'undefined' && currentUser) {
         const pacoteSave = {
             userId: currentUser.uid,
