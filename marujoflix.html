@@ -997,6 +997,57 @@
 .message-bubble.vip-bubble { border: 1px solid gold; box-shadow: 0 0 10px rgba(255,215,0,0.2); background: rgba(255, 215, 0, 0.05); }
 .vip-bubble .message-sender { color: gold !important; text-shadow: 0 0 5px rgba(255,215,0,0.5); }
 
+/* ===== ESTILOS DA LISTA DE RANKING ===== */
+.users-list { 
+    flex: 1; 
+    overflow-y: auto; 
+    padding: 15px; 
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.users-list::-webkit-scrollbar { width: 4px; }
+.users-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+.user-item { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 12px 15px; 
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    cursor: pointer; 
+    transition: var(--transition); 
+}
+.user-item:hover { 
+    background: rgba(0, 255, 179, 0.1); 
+    border-color: var(--primary);
+    transform: translateX(5px);
+}
+.user-item.me {
+    background: rgba(0, 136, 255, 0.1);
+    border-color: var(--blue);
+}
+.ranking-position {
+    font-weight: 900;
+    font-size: 1.1rem;
+    width: 35px;
+    color: var(--text-muted);
+}
+.ranking-position.top { color: var(--primary); }
+.user-info { display: flex; align-items: center; gap: 10px; }
+.user-avatar-small { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; }
+.user-item.me .user-avatar-small { border-color: var(--blue); }
+.user-details { display: flex; flex-direction: column; }
+.user-name { font-weight: bold; color: white; font-size: 0.95rem; }
+.user-item.me .user-name { color: var(--blue); }
+.user-rank { font-size: 0.75rem; color: var(--text-muted); }
+.user-stats { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+.user-level-badge { font-weight: bold; color: var(--primary); font-size: 0.9rem; }
+.user-xp { font-size: 0.75rem; color: gold; margin-top: 2px; }
+
+
     </style>
 </head>
 <body>
@@ -1465,6 +1516,7 @@ function mudarAbaSocial(aba) {
 
 
 // Renderiza lista completa da comunidade
+// Renderiza lista completa da comunidade
 function renderizarListaComunidade(usuarios) {
     const lista = document.getElementById('comunidadeList');
     
@@ -1472,7 +1524,7 @@ function renderizarListaComunidade(usuarios) {
         lista.innerHTML = `
             <div style="text-align: center; padding: 40px 20px;">
                 <i class="fas fa-lock" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 15px;"></i>
-                <p style="color: white; font-weight: bold;">Faça login para ver a comunidade</p>
+                <p style="color: white; font-weight: bold;">Faça login para ver a comunidade e o ranking</p>
                 <button onclick="fazerLoginGoogle()" style="background: white; color: #333; border: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; margin-top: 15px; cursor: pointer;">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 18px;"> Entrar com Google
                 </button>
@@ -1481,14 +1533,17 @@ function renderizarListaComunidade(usuarios) {
         return;
     }
     
-    lista.innerHTML = usuarios.map(user => {
+    lista.innerHTML = usuarios.map((user, index) => {
         const isMe = currentUser && currentUser.uid === user.id;
         const nivel = user.nivel || 1;
         const patente = user.patente || getRankTitle(nivel);
+        const posicao = index + 1; // Calcula a posição no ranking
+        const isTop = posicao <= 3; // Destaca os 3 primeiros
         
         return `
             <div class="user-item ${isMe ? 'me' : ''}" onclick="abrirPerfilUsuario('${user.id}', '${user.nome}', '${user.foto}', '${nivel}', '${patente}')">
                 <div class="user-info">
+                    <span class="ranking-position ${isTop ? 'top' : ''}">#${posicao}</span>
                     <img src="${user.foto}" class="user-avatar-small" onerror="this.src='imagens/1772133683485~2.png'">
                     <div class="user-details">
                         <span class="user-name">${user.nome} ${isMe ? '(Você)' : ''}</span>
@@ -1497,12 +1552,13 @@ function renderizarListaComunidade(usuarios) {
                 </div>
                 <div class="user-stats">
                     <span class="user-level-badge">Nv. ${nivel}</span>
-                    <span class="user-xp"><i class="fas fa-star"></i> ${user.xp || 0}</span>
+                    <span class="user-xp"><i class="fas fa-star"></i> ${user.xp || 0} XP</span>
                 </div>
             </div>
         `;
     }).join('');
 }
+
 
 // Função toggle do hub social (agora respeita o header)
 function toggleSocialHub() {
