@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -1018,8 +1019,7 @@ setTimeout(() => {
     let unsubscribeComments = null;
 
     // Função Inteligente de Login (Resolve o erro do Median.co e Navegador)
-    // Substitua sua function fazerLoginGoogle() por esta versão otimizada
-function fazerLoginGoogle() {
+    function fazerLoginGoogle() {
         if(!window.fbOps) return;
         ToastSystem.show('Conectando ao Google...', 'info');
         
@@ -1043,7 +1043,6 @@ function fazerLoginGoogle() {
                 });
         }
     }
-
 
     function fazerLogout() {
         if(!window.fbOps) return;
@@ -2467,7 +2466,6 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
 
 </body>
 </html>
-
 
 
  
