@@ -778,6 +778,25 @@
             transform: scale(1);
         }
 
+        /* --- MODAL DE PERFIL DO MARUJO --- */
+        .perfil-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 20005; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s; backdrop-filter: blur(5px); }
+        .perfil-modal.active { opacity: 1; visibility: visible; }
+        .perfil-modal-content { background: var(--gradient-card); width: 90%; max-width: 350px; border-radius: 20px; padding: 30px; text-align: center; border: 1px solid var(--border-color); position: relative; transform: translateY(20px); transition: transform 0.3s; box-shadow: 0 15px 50px rgba(0,0,0,0.8); }
+        .perfil-modal.active .perfil-modal-content { transform: translateY(0); }
+        .perfil-fechar { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.1); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; transition: var(--transition); }
+        .perfil-fechar:hover { background: var(--accent); transform: rotate(90deg); }
+        
+        .perfil-header img { width: 110px; height: 110px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 15px; object-fit: cover; box-shadow: 0 0 20px var(--primary-glow); }
+        .perfil-nome { font-size: 1.5rem; font-weight: 900; margin-bottom: 5px; }
+        .perfil-patente { color: var(--primary); font-weight: bold; font-size: 1rem; margin-bottom: 2px; }
+        .perfil-nivel { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px; }
+        
+        .perfil-actions { display: flex; flex-direction: column; gap: 10px; }
+        .perfil-btn { padding: 12px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: var(--transition); }
+        .btn-add-friend { background: rgba(0, 255, 179, 0.1); border: 1px solid var(--primary); color: var(--primary); }
+        .btn-add-friend:hover { background: var(--primary); color: black; }
+        .btn-send-msg { background: rgba(0, 136, 255, 0.1); border: 1px solid var(--blue); color: white; }
+        .btn-send-msg:hover { background: var(--blue); color: white; }
 
     </style>
 </head>
@@ -1018,27 +1037,29 @@ setTimeout(() => {
     let currentMovieIdForComments = null;
     let unsubscribeComments = null;
 
-    function fazerLoginGoogle() {
-        if(!window.fbOps) {
-            ToastSystem.show('Preparando os motores, aguarde um segundo...', 'info');
-            return;
+        function fazerLoginGoogle() {
+        if(!window.fbOps) return;
+        
+        // 1. Detecta se está rodando dentro do Aplicativo (WebView)
+        const isWebView = /wv|Android.*Version\/[\d.]+.*Chrome\/[\d.]+.*Mobile/i.test(navigator.userAgent);
+        
+        if (isWebView) {
+            // Se estiver no APP, o Google bloqueia, então avisamos o marujo!
+            alert("Capitão! O Google não permite login direto por dentro de aplicativos por questões de segurança.\n\nPara fazer o login e poder comentar, abra o Chrome no seu celular e pesquise: Marujo Flix");
+            return; // Para o código aqui
         }
-        
+
+        // 2. Se for navegador normal (Chrome/PC), segue o fluxo!
         ToastSystem.show('Abrindo porta de embarque...', 'info');
-        
-        // Vamos usar APENAS POPUP. Evita o erro de "missing initial state".
         window.fbOps.signInWithPopup(window.auth, window.googleProvider)
             .then((result) => ToastSystem.show(`Bem-vindo, ${result.user.displayName.split(' ')[0]}!`, 'success'))
             .catch((error) => {
-                console.error("ERRO GOOGLE POPUP: ", error);
-                if(error.code === 'auth/popup-closed-by-user') {
-                    ToastSystem.show("Embarque cancelado.", "info");
-                } else {
-                    // O alerta abaixo avisa caso o seu APK esteja bloqueando o popup
-                    alert("Erro ao logar. Se estiver no App, ative a opção de 'Múltiplas Janelas / Popups' no criador do aplicativo. Detalhe: " + error.message);
+                if(error.code !== 'auth/popup-closed-by-user') {
+                    alert("Erro ao logar: " + error.message);
                 }
             });
     }
+
 
         function fazerLogout() {
         if(!window.fbOps) return;
@@ -1163,6 +1184,85 @@ setTimeout(() => {
         // O link da sua API
     // O link da sua API
     const API_COMENTARIOS = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+    let marujoEmFoco = null; // Guarda quem está no modal agora
+
+        function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
+        // Guarda os dados para usar no botão de adicionar
+        marujoEmFoco = { id, nome, foto, nivel, patente };
+        
+        document.getElementById('perfilFoto').src = foto;
+        document.getElementById('perfilNome').textContent = nome;
+        document.getElementById('perfilPatente').innerHTML = `<i class="fas fa-anchor"></i> ${patente}`;
+        document.getElementById('perfilNivel').textContent = `Nível ${nivel}`;
+        
+        // Reseta o botão visualmente
+        const btnAdd = document.querySelector('.btn-add-friend');
+        btnAdd.innerHTML = '<i class="fas fa-user-plus"></i> Adicionar à Tripulação';
+        btnAdd.style.background = 'rgba(0, 255, 179, 0.1)';
+        btnAdd.style.color = 'var(--primary)';
+        
+        document.getElementById('perfilModal').classList.add('active');
+    }
+    async function recrutarMarujo() {
+        if (!currentUser) {
+            ToastSystem.show('Você precisa estar logado para recrutar!', 'error');
+            return;
+        }
+        if (!marujoEmFoco) return;
+        
+        // Impede a pessoa de adicionar ela mesma
+        if (currentUser.uid === marujoEmFoco.id) {
+            ToastSystem.show('Você é o Capitão, não pode recrutar a si mesmo!', 'info');
+            return;
+        }
+
+        const btnAdd = document.querySelector('.btn-add-friend');
+        btnAdd.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Recrutando...';
+
+        // O pacote que vai para o servidor
+        const pacote = {
+            usuarioId: currentUser.uid,
+            amigoId: marujoEmFoco.id,
+            amigoNome: marujoEmFoco.nome,
+            amigoFoto: marujoEmFoco.foto,
+            amigoNivel: marujoEmFoco.nivel,
+            amigoPatente: marujoEmFoco.patente,
+            timestamp: new Date().toISOString()
+        };
+
+        // Usa o mesmo link da API que você já tem
+        const linkApi = 'https://cors.eu.org/http://br2.bronxyshost.com:4009';
+
+        try {
+            const resposta = await fetch(`${linkApi}/adicionar_amigo`, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                body: JSON.stringify(pacote)
+            });
+            
+            const resultado = await resposta.json();
+
+            if (resultado.sucesso) {
+                ToastSystem.show(resultado.mensagem, 'success');
+                btnAdd.innerHTML = '<i class="fas fa-check"></i> Recrutado!';
+                btnAdd.style.background = 'var(--primary)';
+                btnAdd.style.color = 'black';
+                userProgress.addXP(10); // Ganha XP por fazer amigos!
+            } else {
+                ToastSystem.show(resultado.mensagem, 'info');
+                btnAdd.innerHTML = '<i class="fas fa-user-check"></i> Já na Tripulação';
+            }
+        } catch (error) {
+            ToastSystem.show('Erro de conexão com os satélites.', 'error');
+            btnAdd.innerHTML = '<i class="fas fa-user-plus"></i> Tentar Novamente';
+        }
+    }
+
+
+    function fecharPerfilUsuario() {
+        document.getElementById('perfilModal').classList.remove('active');
+    }
 
     // 1. CARREGAR COMENTÁRIOS (Download)
     async function carregarComentarios(movieId) {
@@ -1190,18 +1290,28 @@ setTimeout(() => {
                     lista.innerHTML = '<div style="color: var(--text-muted); text-align: center; font-size: 0.85rem;">Seja o primeiro a comentar!</div>';
                 }
                 
-                comentariosDoFilme.forEach((c) => {
-                    // Monta o comentário com a Foto, Nome e Patente que vieram do servidor
+                                comentariosDoFilme.forEach((c) => {
+                    // Prepara as variáveis (caso o json antigo não tenha nivel, usa 1)
+                    const userNvl = c.level || 1;
+                    const userPat = c.rank || 'Visitante';
+                    const userFt = c.userPhoto || 'https://via.placeholder.com/35';
+                    
                     lista.innerHTML += `
                         <div class="comment-item">
-                            <img src="${c.userPhoto || 'https://via.placeholder.com/35'}" class="comment-avatar">
+                            <img src="${userFt}" class="comment-avatar" style="cursor: pointer; border: 2px solid var(--primary);" 
+                                 onclick="abrirPerfilUsuario('${c.userId}', '${c.userName}', '${userFt}', '${userNvl}', '${userPat}')" title="Ver Perfil">
+                            
                             <div class="comment-content">
-                                <div class="comment-author">${c.userName} <span style="color:var(--primary); font-size:0.7rem;">• Nv. ${c.level || 1} (${c.rank || 'Visitante'})</span></div>
+                                <div class="comment-author" style="cursor: pointer;" 
+                                     onclick="abrirPerfilUsuario('${c.userId}', '${c.userName}', '${userFt}', '${userNvl}', '${userPat}')">
+                                    ${c.userName} <span style="color:var(--primary); font-size:0.7rem;">• Nv. ${userNvl} (${userPat})</span>
+                                </div>
                                 <div class="comment-text">${c.text}</div>
                             </div>
                         </div>
                     `;
                 });
+
                 lista.scrollTop = lista.scrollHeight; // Rola pra baixo
             } else {
                 throw new Error('Servidor não respondeu com OK');
@@ -2533,6 +2643,23 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
 <a href="marujoflix.apk" download id="btnDownloadApp" class="btn-download-app" style="display: none;">
     <i class="fas fa-download"></i> Instalar App
 </a>
+    <div class="perfil-modal" id="perfilModal">
+        <div class="perfil-modal-content">
+            <button class="perfil-fechar" onclick="fecharPerfilUsuario()"><i class="fas fa-times"></i></button>
+            <div class="perfil-header">
+                <img id="perfilFoto" src="https://via.placeholder.com/150" alt="Avatar do Marujo">
+                <div class="perfil-nome" id="perfilNome">Carregando...</div>
+                <div class="perfil-patente" id="perfilPatente"><i class="fas fa-anchor"></i> Patente</div>
+                <div class="perfil-nivel" id="perfilNivel">Nível 0</div>
+            </div>
+            
+            <div class="perfil-actions">
+            <button class="perfil-btn btn-add-friend" onclick="recrutarMarujo()"><i class="fas fa-user-plus"></i> Adicionar à Tripulação</button>
+
+                <button class="perfil-btn btn-send-msg" onclick="ToastSystem.show('Correio por garrafas em construção!', 'info')"><i class="fas fa-envelope"></i> Enviar Mensagem</button>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
