@@ -668,6 +668,20 @@
             transform: translateY(-3px); 
         }
 
+        /* --- ESTILO DOS COMENTÁRIOS --- */
+        .comments-section { padding: 20px; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.3); }
+        .comments-header { font-size: 1.1rem; font-weight: bold; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .comments-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; padding-right: 5px; }
+        .comment-item { display: flex; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; }
+        .comment-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid var(--primary); }
+        .comment-content { flex: 1; }
+        .comment-author { font-size: 0.8rem; font-weight: bold; color: var(--text-secondary); margin-bottom: 3px; }
+        .comment-text { font-size: 0.9rem; color: white; line-height: 1.4; word-break: break-word; }
+        .comment-input-area { display: flex; gap: 10px; }
+        .comment-input { flex: 1; padding: 12px; border-radius: 20px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.5); color: white; outline: none; }
+        .comment-input:focus { border-color: var(--primary); }
+        .comment-send-btn { background: var(--gradient-primary); border: none; width: 42px; height: 42px; border-radius: 50%; color: black; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .btn-google-login { width: 100%; padding: 12px; background: white; color: #333; font-weight: bold; border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; margin-top: 10px; }
 
     </style>
 </head>
@@ -792,11 +806,16 @@
     <div class="sidebar-menu" id="sidebarMenu">
         <div class="sidebar-header">
             <button class="sidebar-close-btn" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
-<div class="sidebar-avatar"><img src="imagens/1772133683485~2.png" alt="Logo do Usuário"></div>
-
-<h2 style="color: white;"><span id="sidebarRank">Marinheiro</span> <span style="color: var(--primary);" id="sidebarLevel">Nv. 1</span></h2>
-
+            <div class="sidebar-avatar"><img src="imagens/1772133683485~2.png" alt="Logo do Usuário"></div>
+            
+            <h2 style="color: white; margin-top: 10px;">
+                <span id="sidebarRank">Visitante</span> <br>
+                <span style="color: var(--primary); font-size: 0.9rem;" id="sidebarLevel">Nv. 1</span>
+            </h2>
+            
+            <div id="sidebarAuthArea" style="margin-top: 15px;"></div>
         </div>
+        
         <div style="padding: 20px; text-align: center;">
             <p style="color: var(--text-muted); margin-bottom: 20px;">A sua base de operações. Tudo que você favorita fica salvo no cache da sua embarcação!</p>
             
@@ -815,7 +834,6 @@
                 </div>
             </div>
 
-
             <button onclick="IPTVSystem.acessarFavoritosLateral()" style="width: 100%; padding: 15px; background: var(--gradient-primary); border: none; color: black; font-weight: bold; border-radius: 12px; cursor: pointer; transition: var(--transition);">
                 <i class="fas fa-heart"></i> Acessar Meus Favoritos
             </button>
@@ -828,14 +846,29 @@
             <button class="episodes-close" onclick="closeEpisodesModal()"><i class="fas fa-times"></i></button>
         </div>
         
-        <div id="tmdbContainer" style="display: none; padding: 20px; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.2);">
-            <div id="tmdbTrailer" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: none;">
-                </div>
-            <p id="tmdbSinopse" style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; text-align: justify; margin: 0;"></p>
+        <div class="modal-body-scroll" style="overflow-y: auto; flex: 1; padding-bottom: 20px; display: flex; flex-direction: column;">
+            
+            <div id="tmdbContainer" style="display: none; padding: 20px; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.2);">
+                <div id="tmdbTrailer" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: none;"></div>
+                <p id="tmdbSinopse" style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; text-align: justify; margin: 0;"></p>
+            </div>
+            
+            <div class="episodes-list" id="episodesList" style="padding: 20px; display: flex; flex-direction: column; gap: 10px; overflow: visible;"></div>
+
+            <div class="comments-section" id="commentsSection" style="display: none;">
+                <div class="comments-header"><i class="fas fa-comments"></i> Tripulação Comentou</div>
+                
+                <div class="comments-list" id="commentsList" style="max-height: none; overflow-y: visible;">
+                    </div>
+                
+                <div id="commentActionArea">
+                    </div>
+            </div>
+            
         </div>
-        
-        <div class="episodes-list" id="episodesList"></div>
     </div>
+
+
 
 
 <script>
@@ -875,8 +908,167 @@ setTimeout(() => {
 
 
   
+  
+  
+      // ⚓ SISTEMA DE LOGIN E COMENTÁRIOS (FIREBASE)
+    let currentUser = null;
+    let currentMovieIdForComments = null;
+    let unsubscribeComments = null;
+
+    // Inicia a vigilância de Login
+    // Força o botão a aparecer na tela IMEDIATAMENTE como visitante
+    setTimeout(() => { atualizarMenuLateral(null); }, 200);
+
+    // Fica vigiando até o Google carregar com sucesso (não desiste mais)
+    let timerFirebase = setInterval(() => {
+        if(window.fbOps && window.auth) {
+            clearInterval(timerFirebase); // Carregou! Pode parar de procurar.
+            
+            window.fbOps.onAuthStateChanged(window.auth, (user) => {
+                currentUser = user;
+                atualizarMenuLateral(user);
+                if(currentMovieIdForComments) renderizarAreaDeComentario();
+            });
+        }
+    }, 500); // Tenta a cada meio segundo
+
+
+    function fazerLoginGoogle() {
+        if(!window.fbOps) return;
+        window.fbOps.signInWithPopup(window.auth, window.googleProvider)
+            .then((result) => ToastSystem.show(`Bem-vindo, ${result.user.displayName}!`, 'success'))
+            .catch((error) => ToastSystem.show('Erro ao conectar ao Google.', 'error'));
+    }
+
+    function fazerLogout() {
+        if(!window.fbOps) return;
+        window.fbOps.signOut(window.auth).then(() => ToastSystem.show('Você deslogou da embarcação.', 'info'));
+    }
+
+    function atualizarMenuLateral(user) {
+        // 1. Pega as imagens que precisam ser trocadas
+        const avatarImgSidebar = document.querySelector('.sidebar-avatar img');
+        const headerAvatar = document.querySelector('.user-avatar'); // O botãozinho lá no topo
+        
+        // 2. Pega os textos e a área do botão
+        const nameElement = document.getElementById('sidebarRank');
+        const authArea = document.getElementById('sidebarAuthArea');
+
+        if (user) {
+            // ==========================================
+            // QUANDO A PESSOA ESTÁ LOGADA
+            // ==========================================
+            
+            // Troca a logo grande pela foto do Google em alta qualidade
+            avatarImgSidebar.src = user.photoURL.replace("s96-c", "s200-c"); 
+            
+            // Troca o ícone no topo do site pela mini foto da pessoa
+            headerAvatar.innerHTML = `<img src="${user.photoURL}" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
+            
+            // Coloca o primeiro nome da pessoa
+            let primeiroNome = user.displayName.split(' ')[0];
+            nameElement.innerHTML = primeiroNome;
+            
+            // Cria o botão de "Sair" vermelhinho
+            if(authArea) {
+                authArea.innerHTML = `
+                    <button onclick="fazerLogout()" style="background: rgba(255,0,0,0.1); border: 1px solid var(--accent); color: var(--accent); padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.8rem; transition: all 0.3s;">
+                        <i class="fas fa-sign-out-alt"></i> Deslogar
+                    </button>
+                `;
+            }
+            
+        } else {
+            // ==========================================
+            // QUANDO É UM VISITANTE
+            // ==========================================
+            
+            // Volta para a sua logo padrão
+            avatarImgSidebar.src = 'imagens/1772133683485~2.png'; 
+            
+            // Volta pro ícone de bonequinho no topo
+            headerAvatar.innerHTML = `<i class="fas fa-user"></i>`;
+            
+            nameElement.innerHTML = "Visitante";
+            
+            // Mostra o botão bonitão do Google
+            if(authArea) {
+                authArea.innerHTML = `
+                    <button onclick="fazerLoginGoogle()" style="width: 85%; margin: 0 auto; padding: 12px; background: white; color: #333; font-weight: bold; border-radius: 30px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 5px 15px rgba(255,255,255,0.2); transition: all 0.3s;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 20px; height: 20px;">
+                        Entrar com Google
+                    </button>
+                `;
+            }
+        }
+    }
+    function carregarComentarios(movieId) {
+        currentMovieIdForComments = movieId;
+        document.getElementById('commentsSection').style.display = 'block';
+        const lista = document.getElementById('commentsList');
+        
+        if(unsubscribeComments) unsubscribeComments(); // Para de ouvir o filme anterior
+
+        if(!window.fbOps) return;
+        const q = window.fbOps.query(window.fbOps.collection(window.db, `movies/${movieId}/comments`), window.fbOps.orderBy("timestamp", "asc"));
+        
+        unsubscribeComments = window.fbOps.onSnapshot(q, (snapshot) => {
+            lista.innerHTML = '';
+            if(snapshot.empty) {
+                lista.innerHTML = '<div style="color: var(--text-muted); text-align: center; font-size: 0.85rem;">Seja o primeiro a comentar!</div>';
+            }
+            snapshot.forEach((doc) => {
+                const c = doc.data();
+                lista.innerHTML += `
+                    <div class="comment-item">
+                        <img src="${c.userPhoto || 'https://via.placeholder.com/35'}" class="comment-avatar">
+                        <div class="comment-content">
+                            <div class="comment-author">${c.userName}</div>
+                            <div class="comment-text">${c.text}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            lista.scrollTop = lista.scrollHeight; // Rola para o final
+        });
+        
+        renderizarAreaDeComentario();
+    }
+
+    function renderizarAreaDeComentario() {
+        const area = document.getElementById('commentActionArea');
+        if (currentUser) {
+            area.innerHTML = `
+                <div class="comment-input-area">
+                    <input type="text" id="comentarioInput" class="comment-input" placeholder="Escreva um comentário..." onkeypress="if(event.key === 'Enter') enviarComentario()">
+                    <button class="comment-send-btn" onclick="enviarComentario()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            `;
+        } else {
+            area.innerHTML = `<button class="btn-google-login" onclick="fazerLoginGoogle()"><i class="fab fa-google"></i> Faça login com o Google para comentar</button>`;
+        }
+    }
+
+    async function enviarComentario() {
+        const input = document.getElementById('comentarioInput');
+        const text = input.value.trim();
+        if (!text || !currentUser || !currentMovieIdForComments || !window.fbOps) return;
+        
+        input.value = ''; // Limpa o campo na hora
+        await window.fbOps.addDoc(window.fbOps.collection(window.db, `movies/${currentMovieIdForComments}/comments`), {
+            text: text,
+            userId: currentUser.uid,
+            userName: currentUser.displayName,
+            userPhoto: currentUser.photoURL,
+            timestamp: window.fbOps.serverTimestamp()
+        });
+        userProgress.addXP(5); // Dá 5 de XP por comentar!
+    }
+
       // ⚓ SISTEMA TMDB (Trailers e Sinopses)
         // ⚓ SISTEMA TMDB (Trailers e Sinopses)
+        
+      
     const TMDBSystem = {
         apiKey: '05d9219b08b6af53612ea63272f4484a', // Sua chave real do TMDB
         
@@ -1051,14 +1243,29 @@ setTimeout(() => {
             localStorage.setItem('marujoflix_favorites', JSON.stringify(this.favorites));
             localStorage.setItem('marujoflix_history', JSON.stringify(this.history));
         },
-        updateUI() {
+                        updateUI() {
             const elRank = document.getElementById('sidebarRank');
-            if(elRank) elRank.textContent = getRankTitle(this.level);
             
-            document.getElementById('sidebarLevel').textContent = `Nv. ${this.level}`;
-            document.getElementById('statFavs').textContent = this.favorites.length;
-            document.getElementById('statXP').textContent = this.xp;
+            // Se estiver logado, mantém o nome da pessoa. Se for visitante, mostra a Patente Naval.
+            if(elRank) {
+                if (typeof currentUser !== 'undefined' && currentUser) {
+                    elRank.innerHTML = currentUser.displayName.split(' ')[0] + `<br><small style="font-size:0.7rem; color:var(--text-muted); cursor:pointer;" onclick="fazerLogout()">Sair da Conta</small>`;
+                } else {
+                    elRank.textContent = getRankTitle(this.level);
+                }
+            }
+            
+            const elLevel = document.getElementById('sidebarLevel');
+            if(elLevel) elLevel.textContent = `Nv. ${this.level}`;
+            
+            const elFavs = document.getElementById('statFavs');
+            if(elFavs) elFavs.textContent = this.favorites.length;
+            
+            const elXP = document.getElementById('statXP');
+            if(elXP) elXP.textContent = this.xp;
         }
+
+
     };
 
 function updateLoadingScreen() {
@@ -1106,7 +1313,7 @@ updateLoadingScreen();
     }
     function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('active'); }
     
-        async function openEpisodesModal(title, children, tipo) {
+        async function openEpisodesModal(title, children, tipo, id_main) {
         document.getElementById('episodesTitle').textContent = title;
         const list = document.getElementById('episodesList');
         const tmdbContainer = document.getElementById('tmdbContainer');
@@ -1219,6 +1426,8 @@ updateLoadingScreen();
             </div>
             `;
         }).join('');
+        
+        carregarComentarios(id_main)
     }
 
 
@@ -1837,7 +2046,7 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
                 this.irParaVideo(grupo.children[0].id);
             } else {
                 // Filmes e Séries abrem o modal para exibir Trailer e Sinopse!
-                openEpisodesModal(grupo.titulo, grupo.children, grupo.tipo);
+                openEpisodesModal(grupo.titulo, grupo.children, grupo.tipo, id_main);
             }
         },
 
@@ -1865,8 +2074,7 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
 
     };
 
-    document.addEventListener('DOMContentLoaded', () => IPTVSystem.init());
-        // Deixamos apenas UM evento DOMContentLoaded para iniciar tudo
+    // Deixamos apenas UM evento DOMContentLoaded para iniciar tudo
     document.addEventListener('DOMContentLoaded', () => {
         // Agora userProgress e getRankTitle já existem
         const tipEl = document.getElementById('loadingTip');
@@ -1879,7 +2087,32 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
         
         IPTVSystem.init(); // O sistema agora inicia apenas UMA vez de forma limpa
     });
+
 </script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDruRISw56lL0dZpnKpFv2COaJkUmamgoc",
+    authDomain: "marujoflix.firebaseapp.com",
+    projectId: "marujoflix",
+    storageBucket: "marujoflix.firebasestorage.app",
+    messagingSenderId: "258606436715",
+    appId: "1:258606436715:web:42a46b19321138a15cfc2e"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  window.auth = getAuth(app);
+  window.db = getFirestore(app);
+  window.googleProvider = new GoogleAuthProvider();
+  
+  // Exporta as funções para o seu script principal poder usar
+  window.fbOps = { signInWithPopup, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc };
+</script>
+
 
     <div id="floatingRewardContainer" class="floating-reward-container">
         </div>
