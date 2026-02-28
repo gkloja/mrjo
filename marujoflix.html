@@ -2435,8 +2435,8 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
   
-  // ADICIONADO O 'memoryLocalCache' AQUI NO IMPORT
-  import { initializeFirestore, memoryLocalCache, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+  // Voltamos para o getFirestore normal e trouxemos o "clearIndexedDbPersistence" (O Desentupidor)
+  import { getFirestore, clearIndexedDbPersistence, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDruRISw56lL0dZpnKpFv2COaJkUmamgoc",
@@ -2449,14 +2449,13 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
 
   const app = initializeApp(firebaseConfig);
   window.auth = getAuth(app);
-  
-  // ========================================================
-  // A SOLUÇÃO FINAL: Força o uso exclusivo de Memória RAM 
-  // Ignora completamente o cache corrompido do Aplicativo
-  // ========================================================
-  window.db = initializeFirestore(app, {
-      localCache: memoryLocalCache(),
-      experimentalForceLongPolling: true
+  window.db = getFirestore(app);
+
+  // MÁGICA: Força o navegador a destruir qualquer lixo antigo salvo que esteja travando a internet do banco
+  clearIndexedDbPersistence(window.db).then(() => {
+      console.log("Memória velha do Firebase destruída com sucesso. Via livre!");
+  }).catch((err) => {
+      console.log("A memória já estava limpa.", err);
   });
 
   window.googleProvider = new GoogleAuthProvider();
@@ -2464,6 +2463,7 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
 
   window.fbOps = { signInWithPopup, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc };
 </script>
+
 
 
 
