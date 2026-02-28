@@ -835,6 +835,77 @@
             .social-hub-panel { width: 100%; right: 0; bottom: 70px; height: calc(100vh - 70px); border-radius: 20px 20px 0 0; }
         }
 
+/* MELHORIAS NA ÁREA SOCIAL */
+.social-hub-panel {
+    background: rgba(10, 10, 26, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 255, 179, 0.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.social-tabs {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 5px;
+    gap: 5px;
+}
+
+.social-tab {
+    border-radius: 30px;
+    margin: 0 5px;
+    transition: all 0.3s;
+}
+
+.social-tab.active {
+    background: var(--gradient-primary);
+    color: black;
+    border-bottom: none;
+}
+
+#globalChatMessages, #privadoChatMessages {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) rgba(255,255,255,0.1);
+}
+
+#globalChatMessages::-webkit-scrollbar, #privadoChatMessages::-webkit-scrollbar {
+    width: 4px;
+}
+#globalChatMessages::-webkit-scrollbar-thumb, #privadoChatMessages::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+/* MELHORIAS NO MODAL DE PERFIL */
+.perfil-modal-content {
+    background: linear-gradient(145deg, #121230, #1a1a3a);
+    border: 1px solid var(--primary);
+    box-shadow: 0 20px 60px rgba(0, 255, 179, 0.3);
+}
+
+.perfil-header img {
+    border: 4px solid var(--primary);
+    box-shadow: 0 0 30px var(--primary-glow);
+}
+
+.btn-add-friend, .btn-send-msg {
+    border-radius: 30px;
+    font-weight: bold;
+    padding: 14px;
+    transition: all 0.3s;
+}
+
+.btn-add-friend:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 255, 179, 0.3);
+}
+
+/* ANIMAÇÃO PARA O BOTÃO DE LOGIN NO SIDEBAR */
+#sidebarAuthArea button {
+    transition: all 0.3s;
+}
+#sidebarAuthArea button:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(255,255,255,0.3);
+}
     </style>
 </head>
 <body>
@@ -966,42 +1037,65 @@
 
     <section class="content-grid" id="contentGrid" style="display: none;"></section>
 
-    <div class="sidebar-menu" id="sidebarMenu">
-        <div class="sidebar-header">
-            <button class="sidebar-close-btn" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
-            <div class="sidebar-avatar"><img src="imagens/1772133683485~2.png" alt="Logo do Usuário"></div>
-            
-            <h2 style="color: white; margin-top: 10px;">
-                <span id="sidebarRank">Visitante</span> <br>
-                <span style="color: var(--primary); font-size: 0.9rem;" id="sidebarLevel">Nv. 1</span>
-            </h2>
-            
-            <div id="sidebarAuthArea" style="margin-top: 15px;"></div>
+<div class="sidebar-menu" id="sidebarMenu">
+    <div class="sidebar-header">
+        <button class="sidebar-close-btn" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        <div class="sidebar-avatar" id="sidebarAvatarContainer">
+            <img src="imagens/1772133683485~2.png" alt="Avatar" id="sidebarAvatarImg" onerror="this.src='imagens/1772133683485~2.png'">
         </div>
         
-        <div style="padding: 20px; text-align: center;">
-            <p style="color: var(--text-muted); margin-bottom: 20px;">A sua base de operações. Tudo que você favorita fica salvo no cache da sua embarcação!</p>
-            
-            <div style="display: flex; justify-content: space-around; margin-bottom: 30px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px;">
-                <div>
-                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);" id="statFavs">0</div>
-                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Favoritos</div>
-                </div>
-                <div>
-                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);" id="statXP">0</div>
-                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Seu XP</div>
-                </div>
-                <div>
-                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--blue);" id="statGlobalViews">0</div>
-                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Views no Site</div>
-                </div>
-            </div>
-
-            <button onclick="IPTVSystem.acessarFavoritosLateral()" style="width: 100%; padding: 15px; background: var(--gradient-primary); border: none; color: black; font-weight: bold; border-radius: 12px; cursor: pointer; transition: var(--transition);">
-                <i class="fas fa-heart"></i> Acessar Meus Favoritos
-            </button>
-        </div>
+        <h2 style="color: white; margin-top: 10px; font-size: 1.1rem;">
+            <span id="sidebarRank">Visitante</span>
+        </h2>
+        <div style="color: var(--primary); font-size: 0.9rem; margin-bottom: 15px;" id="sidebarLevel">Nv. 1</div>
+        
+        <!-- ÁREA DE LOGIN/LOGOUT MELHORADA -->
+        <div id="sidebarAuthArea" style="margin-top: 5px; width: 100%;"></div>
     </div>
+    
+    <div style="padding: 20px; text-align: center;">
+        <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">
+            <i class="fas fa-ship" style="color: var(--primary);"></i> 
+            Sua base de operações. Tudo que você favorita fica salvo no cache da sua embarcação!
+        </p>
+        
+        <!-- ESTATÍSTICAS EM CARDS MAIS BONITOS -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+            <div style="background: rgba(0, 255, 179, 0.1); border-radius: 15px; padding: 15px 5px; border: 1px solid rgba(0, 255, 179, 0.3);">
+                <div style="font-size: 1.8rem; font-weight: bold; color: var(--primary);" id="statFavs">0</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Favoritos</div>
+                <i class="fas fa-heart" style="color: var(--accent); margin-top: 5px;"></i>
+            </div>
+            <div style="background: rgba(138, 43, 226, 0.1); border-radius: 15px; padding: 15px 5px; border: 1px solid rgba(138, 43, 226, 0.3);">
+                <div style="font-size: 1.8rem; font-weight: bold; color: var(--secondary);" id="statXP">0</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Seu XP</div>
+                <i class="fas fa-star" style="color: gold; margin-top: 5px;"></i>
+            </div>
+        </div>
+        
+        <!-- BARRA DE PROGRESSO DO NÍVEL (VISUAL) -->
+        <div style="margin-bottom: 25px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 12px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;">
+                <span><i class="fas fa-anchor"></i> Próximo nível</span>
+                <span id="sidebarProgressText">0/100 XP</span>
+            </div>
+            <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+                <div id="sidebarProgressFill" style="width: 0%; height: 100%; background: var(--gradient-primary); border-radius: 3px;"></div>
+            </div>
+        </div>
+        
+        <!-- VISUALIZAÇÕES GLOBAIS (MENOR) -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 20px; margin-bottom: 20px;">
+            <i class="fas fa-eye" style="color: var(--blue);"></i>
+            <span style="color: white; font-weight: bold;" id="statGlobalViews">0</span>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Views no Site</span>
+        </div>
+
+        <button onclick="IPTVSystem.acessarFavoritosLateral()" style="width: 100%; padding: 15px; background: var(--gradient-primary); border: none; color: black; font-weight: bold; border-radius: 30px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <i class="fas fa-heart" style="color: black;"></i> Acessar Meus Favoritos
+        </button>
+    </div>
+</div>
 
     <div class="episodes-modal" id="episodesModal">
         <div class="episodes-header">
@@ -1131,49 +1225,84 @@ setTimeout(() => {
     const loadingImg = document.querySelector('.rank-icon');
     const loadingName = document.getElementById('rankTitle');
     const headerAvatar = document.querySelector('.user-avatar');
-    const sidebarAvatar = document.querySelector('.sidebar-avatar img');
+    const sidebarAvatar = document.getElementById('sidebarAvatarImg');
     const sidebarRank = document.getElementById('sidebarRank');
+    const sidebarLevel = document.getElementById('sidebarLevel');
     const authArea = document.getElementById('sidebarAuthArea');
 
     if (user) {
-        let fotoUser = user.photoURL ? user.photoURL : 'https://via.placeholder.com/150';
-        if(fotoUser.includes('s96-c')) fotoUser = fotoUser.replace('s96-c', 's200-c'); // Melhora a qualidade
-        
+        let fotoUser = user.photoURL || 'https://via.placeholder.com/150';
+        if (fotoUser.includes('s96-c')) fotoUser = fotoUser.replace('s96-c', 's200-c');
         let primeiroNome = user.displayName ? user.displayName.split(' ')[0] : 'Marujo';
+        let nomeCompleto = user.displayName || 'Marujo';
 
-        // 1. FOTO NA PATENTE (CARREGAMENTO) - com fallback
-        if(loadingImg) {
-            loadingImg.innerHTML = `<img src="${fotoUser}" onerror="this.src='imagens/1772133683485~2.png'" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
-        }
-        if(loadingName) loadingName.textContent = primeiroNome;
+        // Atualiza loading
+        if (loadingImg) loadingImg.innerHTML = `<img src="${fotoUser}" onerror="this.src='imagens/1772133683485~2.png'" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">`;
+        if (loadingName) loadingName.textContent = primeiroNome;
 
-        // 2. FOTO NO EMOJI DE USER (TOPO DA TELA) - com fallback
-        if(headerAvatar) {
-            headerAvatar.innerHTML = `<img src="${fotoUser}" onerror="this.src='imagens/1772133683485~2.png'" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border: 2px solid var(--primary);">`;
-        }
+        // Header
+        if (headerAvatar) headerAvatar.innerHTML = `<img src="${fotoUser}" onerror="this.src='imagens/1772133683485~2.png'" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">`;
 
-        // 3. FOTO E NOME NO MENU LATERAL - com fallback
-        if(sidebarAvatar) {
+        // Sidebar avatar
+        if (sidebarAvatar) {
             sidebarAvatar.src = fotoUser;
             sidebarAvatar.onerror = () => { sidebarAvatar.src = 'imagens/1772133683485~2.png'; };
         }
-        if(sidebarRank) sidebarRank.innerHTML = `${primeiroNome} <br><small style="font-size:0.7rem; color:var(--text-muted); cursor:pointer;" onclick="fazerLogout()">Sair da Conta</small>`;
-        
-        if(authArea) authArea.innerHTML = `<button onclick="fazerLogout()" style="background: rgba(255,0,0,0.1); border: 1px solid var(--accent); color: var(--accent); padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.8rem; transition: all 0.3s;"><i class="fas fa-sign-out-alt"></i> Deslogar</button>`;
+        if (sidebarRank) sidebarRank.innerHTML = `${nomeCompleto} <span style="display:block; font-size:0.7rem; color:var(--text-muted);">${getRankTitle(userProgress.level)}</span>`;
+        if (sidebarLevel) sidebarLevel.innerHTML = `<i class="fas fa-anchor" style="color:var(--primary);"></i> Nível ${userProgress.level}`;
 
+        // Área de auth (logado)
+        if (authArea) {
+            authArea.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                    <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 8px; font-size: 0.8rem; color: var(--text-muted);">
+                        <i class="fas fa-envelope" style="color: var(--primary);"></i> ${user.email}
+                    </div>
+                    <button onclick="fazerLogout()" style="background: rgba(255,0,0,0.1); border: 1px solid var(--accent); color: var(--accent); padding: 10px; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <i class="fas fa-sign-out-alt"></i> Deslogar
+                    </button>
+                </div>
+            `;
+        }
     } else {
-        // RESTAURA PARA VISITANTE SE DESLOGAR
-        if(loadingImg) loadingImg.innerHTML = `<i class="fas fa-anchor" id="rankIcon"></i>`;
-        if(headerAvatar) headerAvatar.innerHTML = `<i class="fas fa-user"></i>`;
-        if(sidebarAvatar) sidebarAvatar.src = 'imagens/1772133683485~2.png'; 
-        if(sidebarRank) sidebarRank.textContent = getRankTitle(userProgress.level);
-        
-        if(authArea) authArea.innerHTML = `<button onclick="fazerLoginGoogle()" style="width: 85%; margin: 0 auto; padding: 12px; background: white; color: #333; font-weight: bold; border-radius: 30px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 5px 15px rgba(255,255,255,0.2); transition: all 0.3s;"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 20px; height: 20px;"> Entrar com Google</button>`;
+        // Visitante
+        if (loadingImg) loadingImg.innerHTML = `<i class="fas fa-anchor" id="rankIcon"></i>`;
+        if (headerAvatar) headerAvatar.innerHTML = `<i class="fas fa-user"></i>`;
+        if (sidebarAvatar) sidebarAvatar.src = 'imagens/1772133683485~2.png';
+        if (sidebarRank) sidebarRank.textContent = 'Visitante';
+        if (sidebarLevel) sidebarLevel.innerHTML = `<i class="fas fa-anchor" style="color:var(--primary);"></i> Nível 1`;
+
+        // BOTÃO DE LOGIN NO SIDEBAR (ESSENCIAL)
+        if (authArea) {
+            authArea.innerHTML = `
+                <button onclick="fazerLoginGoogle()" style="width: 100%; padding: 14px; background: white; color: #333; font-weight: bold; border-radius: 30px; border: none; display: flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer; box-shadow: 0 5px 20px rgba(255,255,255,0.2); font-size: 0.95rem;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 22px; height: 22px;">
+                    Entrar com Google
+                </button>
+                <p style="color: var(--text-muted); font-size: 0.7rem; margin-top: 10px;">
+                    <i class="fas fa-info-circle" style="color: var(--primary);"></i> Faça login para sincronizar seus dados na nuvem!
+                </p>
+            `;
+        }
     }
 
-    // Atualiza os Chats para reconhecer a conta imediatamente
-    if(typeof renderizarInputChatGlobal === 'function') renderizarInputChatGlobal();
-    if(typeof currentMovieIdForComments !== 'undefined' && currentMovieIdForComments) renderizarAreaDeComentario();
+    // Atualiza barra de progresso e chats
+    if (typeof atualizarSidebarProgresso === 'function') atualizarSidebarProgresso();
+    if (typeof renderizarInputChatGlobal === 'function') renderizarInputChatGlobal();
+    if (currentMovieIdForComments) renderizarAreaDeComentario();
+}
+
+// NOVA FUNÇÃO: Atualiza a barra de progresso no sidebar
+function atualizarSidebarProgresso() {
+    const xpAtual = userProgress.xp;
+    const xpProximo = userProgress.getNextLevelXP();
+    const percentual = Math.min(100, Math.floor((xpAtual / xpProximo) * 100));
+    
+    const fill = document.getElementById('sidebarProgressFill');
+    const text = document.getElementById('sidebarProgressText');
+    
+    if (fill) fill.style.width = percentual + '%';
+    if (text) text.textContent = `${xpAtual}/${xpProximo} XP`;
 }
     
         // ==========================================
@@ -1261,79 +1390,109 @@ function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
 
     // --- 3. TRIPULAÇÃO E COMUNIDADE MUNDIAL ---
     async function carregarTripulacao() {
-        const lista = document.getElementById('listaAmigos');
-        if (!currentUser) { lista.innerHTML = '<div style="text-align:center;color:var(--accent);margin-top:20px;"><i class="fas fa-lock"></i> Faça login no Google.</div>'; return; }
-        lista.innerHTML = '<div style="text-align:center;color:gray;margin-top:20px;"><i class="fas fa-compass fa-spin"></i> Lendo radar...</div>';
-
-        try {
-            // Puxa amizades e comunidade ao mesmo tempo usando a sua API Node.js!
-            const [resAmizades, resComunidade] = await Promise.all([
-                fetch(`${API_BASE}/amizades/${currentUser.uid}`, { mode: 'cors' }),
-                fetch(`${API_BASE}/comunidade`, { mode: 'cors' })
-            ]);
-
-            const amizades = resAmizades.ok ? await resAmizades.json() : [];
-            const comunidade = resComunidade.ok ? await resComunidade.json() : [];
-
-            const recebidas = amizades.filter(a => a.paraId === currentUser.uid && a.status === 'pendente');
-            const enviadas = amizades.filter(a => a.deId === currentUser.uid && a.status === 'pendente');
-            const amigos = amizades.filter(a => a.status === 'aceito');
-
-            const idsConectados = [...amigos.map(a => a.deId===currentUser.uid ? a.paraId : a.deId), ...enviadas.map(a=>a.paraId), ...recebidas.map(a=>a.deId)];
-            const explorar = comunidade.filter(u => u.id !== currentUser.uid && !idsConectados.includes(u.id));
-
-            lista.innerHTML = '';
-
-            // SESSÃO: PENDENTES (Aprovar/Recusar)
-            if (recebidas.length > 0) {
-                lista.innerHTML += `<div style="color:var(--accent);font-weight:bold;font-size:0.8rem;">📋 PENDENTES</div>`;
-                recebidas.forEach(req => {
-                    lista.innerHTML += `
-                        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,77,77,0.1);padding:10px;border-radius:12px;border:1px dashed var(--accent);margin-bottom:10px;">
-                            <div style="display:flex;align-items:center;gap:10px;">
-                                <img src="${req.deDados.foto}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
-                                <div><div style="color:white;font-weight:bold;font-size:0.9rem;">${req.deDados.nome}</div></div>
-                            </div>
-                            <div style="display:flex;gap:5px;">
-                                <button onclick="responderSolicitacao('${req.idUnico}', 'aceitar')" style="background:var(--primary);color:black;border:none;border-radius:50%;width:35px;height:35px;cursor:pointer;"><i class="fas fa-check"></i></button>
-                                <button onclick="responderSolicitacao('${req.idUnico}', 'recusar')" style="background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:50%;width:35px;height:35px;cursor:pointer;"><i class="fas fa-times"></i></button>
-                            </div>
-                        </div>`;
-                });
-            }
-
-            // SESSÃO: MEUS AMIGOS
-            lista.innerHTML += `<div style="color:var(--primary);font-weight:bold;font-size:0.8rem;margin-top:15px;">🤝 MEUS MARUJOS</div>`;
-            if(amigos.length === 0) lista.innerHTML += '<div style="color:gray;font-size:0.8rem;margin-bottom:10px;">Ainda não há ninguém.</div>';
-            amigos.forEach(amigo => {
-                const outro = amigo.deId === currentUser.uid ? amigo.paraDados : amigo.deDados;
-                const outroId = amigo.deId === currentUser.uid ? amigo.paraId : amigo.deId;
-                lista.innerHTML += `
-                    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.05);padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);margin-bottom:10px;">
-                        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="abrirPerfilUsuario('${outroId}','${outro.nome}','${outro.foto}','${outro.nivel}','${outro.patente}')">
-                            <img src="${outro.foto}" style="width:40px;height:40px;border-radius:50%;border:2px solid var(--primary);object-fit:cover;">
-                            <div><div style="font-weight:bold;color:white;font-size:0.9rem;">${outro.nome}</div><div style="color:var(--primary);font-size:0.7rem;">Nv. ${outro.nivel}</div></div>
-                        </div>
-                        <button onclick="abrirChatPrivado('${outroId}','${outro.nome}','${outro.foto}')" style="background:rgba(0,136,255,0.2);color:var(--blue);border:1px solid var(--blue);width:35px;height:35px;border-radius:50%;cursor:pointer;"><i class="fas fa-comment-dots"></i></button>
-                    </div>`;
-            });
-
-            // SESSÃO: COMUNIDADE DO SITE
-            lista.innerHTML += `<div style="color:white;font-weight:bold;font-size:0.8rem;margin-top:15px;">🌎 COMUNIDADE</div>`;
-            if(explorar.length === 0) lista.innerHTML += '<div style="color:gray;font-size:0.8rem;">Você já adicionou todos os ativos!</div>';
-            explorar.forEach(u => {
-                lista.innerHTML += `
-                    <div style="display:flex;align-items:center;justify-content:space-between;background:transparent;padding:10px;border-radius:12px;margin-bottom:5px;">
-                        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="abrirPerfilUsuario('${u.id}','${u.nome}','${u.foto}','${u.nivel}','${u.patente}')">
-                            <img src="${u.foto}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
-                            <div><div style="font-weight:bold;color:white;font-size:0.9rem;">${u.nome}</div><div style="color:gray;font-size:0.7rem;">Nv. ${u.nivel}</div></div>
-                        </div>
-                        <button onclick="marujoEmFoco={id:'${u.id}',nome:'${u.nome}',foto:'${u.foto}',nivel:'${u.nivel}',patente:'${u.patente}'}; recrutarMarujo(this)" style="background:rgba(0,255,179,0.1);color:var(--primary);border:1px solid var(--primary);border-radius:12px;padding:8px 12px;font-size:0.8rem;font-weight:bold;cursor:pointer;"><i class="fas fa-plus"></i></button>
-                    </div>`;
-            });
-
-        } catch (e) { lista.innerHTML = '<div style="color:var(--accent);">Erro ao carregar radar.</div>'; }
+    const lista = document.getElementById('listaAmigos');
+    if (!currentUser) { 
+        lista.innerHTML = `
+            <div style="text-align:center; color:var(--accent); margin-top:30px; padding: 20px;">
+                <i class="fas fa-lock" style="font-size: 2rem; margin-bottom: 15px; display: block; color: var(--text-muted);"></i>
+                <p style="color: white; font-weight: bold;">Área Restrita</p>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Faça login para ver a tripulação</p>
+                <button onclick="fazerLoginGoogle()" style="background: white; color: #333; border: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 18px;"> Entrar com Google
+                </button>
+            </div>
+        `;
+        return; 
     }
+    
+    lista.innerHTML = '<div style="text-align:center; color:gray; margin-top:30px;"><i class="fas fa-compass fa-spin" style="font-size: 2rem; margin-bottom: 15px; display: block;"></i>Lendo radar...</div>';
+
+    try {
+        const [resAmizades, resComunidade] = await Promise.all([
+            fetch(`${API_BASE}/amizades/${currentUser.uid}`, { mode: 'cors' }),
+            fetch(`${API_BASE}/comunidade`, { mode: 'cors' })
+        ]);
+
+        const amizades = resAmizades.ok ? await resAmizades.json() : [];
+        const comunidade = resComunidade.ok ? await resComunidade.json() : [];
+
+        const recebidas = amizades.filter(a => a.paraId === currentUser.uid && a.status === 'pendente');
+        const enviadas = amizades.filter(a => a.deId === currentUser.uid && a.status === 'pendente');
+        const amigos = amizades.filter(a => a.status === 'aceito');
+
+        const idsConectados = [...amigos.map(a => a.deId===currentUser.uid ? a.paraId : a.deId), ...enviadas.map(a=>a.paraId), ...recebidas.map(a=>a.deId)];
+        const explorar = comunidade.filter(u => u.id !== currentUser.uid && !idsConectados.includes(u.id));
+
+        lista.innerHTML = '';
+
+        // SESSÃO: PENDENTES (Aprovar/Recusar)
+        if (recebidas.length > 0) {
+            lista.innerHTML += `<div style="color:var(--accent); font-weight:bold; font-size:0.8rem; margin-bottom:10px;"><i class="fas fa-hourglass-half"></i> SOLICITAÇÕES PENDENTES</div>`;
+            recebidas.forEach(req => {
+                lista.innerHTML += `
+                    <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,77,77,0.1); padding:12px; border-radius:15px; border:1px dashed var(--accent); margin-bottom:12px;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <img src="${req.deDados.foto}" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--accent);" onerror="this.src='imagens/1772133683485~2.png'">
+                            <div>
+                                <div style="color:white; font-weight:bold; font-size:0.95rem;">${req.deDados.nome}</div>
+                                <div style="color:var(--text-muted); font-size:0.7rem;">Nv. ${req.deDados.nivel} • ${req.deDados.patente}</div>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button onclick="responderSolicitacao('${req.idUnico}', 'aceitar')" style="background:var(--primary); color:black; border:none; border-radius:50%; width:38px; height:38px; cursor:pointer; font-size:1rem;"><i class="fas fa-check"></i></button>
+                            <button onclick="responderSolicitacao('${req.idUnico}', 'recusar')" style="background:transparent; color:var(--accent); border:1px solid var(--accent); border-radius:50%; width:38px; height:38px; cursor:pointer; font-size:1rem;"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // SESSÃO: MEUS AMIGOS
+        lista.innerHTML += `<div style="color:var(--primary); font-weight:bold; font-size:0.8rem; margin:15px 0 10px;"><i class="fas fa-user-friends"></i> MEUS MARUJOS (${amigos.length})</div>`;
+        if(amigos.length === 0) {
+            lista.innerHTML += '<div style="color:gray; font-size:0.85rem; background:rgba(255,255,255,0.02); padding:15px; border-radius:12px; text-align:center;">Você ainda não tem amigos a bordo. Explore a comunidade abaixo!</div>';
+        }
+        amigos.forEach(amigo => {
+            const outro = amigo.deId === currentUser.uid ? amigo.paraDados : amigo.deDados;
+            const outroId = amigo.deId === currentUser.uid ? amigo.paraId : amigo.deId;
+            lista.innerHTML += `
+                <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.05); padding:12px; border-radius:15px; border:1px solid rgba(255,255,255,0.1); margin-bottom:10px;">
+                    <div style="display:flex; align-items:center; gap:12px; cursor:pointer; flex:1;" onclick="abrirPerfilUsuario('${outroId}','${outro.nome}','${outro.foto}','${outro.nivel}','${outro.patente}')">
+                        <img src="${outro.foto}" style="width:45px; height:45px; border-radius:50%; border:2px solid var(--primary); object-fit:cover;" onerror="this.src='imagens/1772133683485~2.png'">
+                        <div>
+                            <div style="font-weight:bold; color:white; font-size:0.95rem;">${outro.nome}</div>
+                            <div style="color:var(--primary); font-size:0.7rem;">Nv. ${outro.nivel} • ${outro.patente}</div>
+                        </div>
+                    </div>
+                    <button onclick="abrirChatPrivado('${outroId}','${outro.nome}','${outro.foto}')" style="background:rgba(0,136,255,0.2); color:var(--blue); border:1px solid var(--blue); width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:1.1rem;"><i class="fas fa-comment-dots"></i></button>
+                </div>`;
+        });
+
+        // SESSÃO: COMUNIDADE
+        lista.innerHTML += `<div style="color:white; font-weight:bold; font-size:0.8rem; margin:15px 0 10px;"><i class="fas fa-globe-americas"></i> COMUNIDADE (${explorar.length})</div>`;
+        if(explorar.length === 0) {
+            lista.innerHTML += '<div style="color:gray; font-size:0.85rem; background:rgba(255,255,255,0.02); padding:15px; border-radius:12px; text-align:center;">Você já conectou com todos os marujos ativos!</div>';
+        }
+        explorar.forEach(u => {
+            lista.innerHTML += `
+                <div style="display:flex; align-items:center; justify-content:space-between; background:transparent; padding:10px 5px; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:5px;">
+                    <div style="display:flex; align-items:center; gap:12px; cursor:pointer; flex:1;" onclick="abrirPerfilUsuario('${u.id}','${u.nome}','${u.foto}','${u.nivel}','${u.patente}')">
+                        <img src="${u.foto}" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:1px solid var(--primary);" onerror="this.src='imagens/1772133683485~2.png'">
+                        <div>
+                            <div style="font-weight:bold; color:white; font-size:0.9rem;">${u.nome}</div>
+                            <div style="color:gray; font-size:0.65rem;">Nv. ${u.nivel} • ${u.patente}</div>
+                        </div>
+                    </div>
+                    <button onclick="marujoEmFoco={id:'${u.id}', nome:'${u.nome}', foto:'${u.foto}', nivel:'${u.nivel}', patente:'${u.patente}'}; recrutarMarujo()" style="background:rgba(0,255,179,0.1); color:var(--primary); border:1px solid var(--primary); border-radius:12px; padding:8px 12px; font-size:0.8rem; font-weight:bold; cursor:pointer;">
+                        <i class="fas fa-plus"></i> Adicionar
+                    </button>
+                </div>`;
+        });
+
+    } catch (e) { 
+        console.error(e);
+        lista.innerHTML = '<div style="color:var(--accent); text-align:center; padding:30px;"><i class="fas fa-exclamation-triangle" style="font-size:2rem; margin-bottom:15px;"></i><br>Erro ao carregar radar.</div>'; 
+    }
+}
 
     async function responderSolicitacao(idUnico, acao) {
         try {
@@ -1868,16 +2027,21 @@ function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
 
 
 
-                                updateUI() {
-            const elLevel = document.getElementById('sidebarLevel');
-            if(elLevel) elLevel.textContent = `Nv. ${this.level}`;
-            
-            const elFavs = document.getElementById('statFavs');
-            if(elFavs) elFavs.textContent = this.favorites.length;
-            
-            const elXP = document.getElementById('statXP');
-            if(elXP) elXP.textContent = this.xp;
-        }
+updateUI() {
+    const elLevel = document.getElementById('sidebarLevel');
+    if(elLevel) elLevel.textContent = `Nv. ${this.level}`;
+    
+    const elFavs = document.getElementById('statFavs');
+    if(elFavs) elFavs.textContent = this.favorites.length;
+    
+    const elXP = document.getElementById('statXP');
+    if(elXP) elXP.textContent = this.xp;
+
+    // NOVO: Atualiza barra de progresso no sidebar
+    if (typeof atualizarSidebarProgresso === 'function') {
+        atualizarSidebarProgresso();
+    }
+}
 
 
     };
@@ -2734,7 +2898,10 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
         
         IPTVSystem.init(); // O sistema agora inicia apenas UMA vez de forma limpa
     });
-
+// Força a renderização da interface mesmo sem usuário logado
+if (typeof atualizarTodaAInterface === 'function') {
+    atualizarTodaAInterface(null);
+}
 </script>
 
 <script type="module">
