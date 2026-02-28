@@ -1040,14 +1040,21 @@ setTimeout(() => {
             });
     }
 
-    function fazerLogout() {
+        function fazerLogout() {
         if(!window.fbOps) return;
         window.fbOps.signOut(window.auth).then(() => {
+            // APAGA A MEMÓRIA LOCAL PARA NÃO MISTURAR AS CONTAS!
+            localStorage.removeItem('marujoflix_xp');
+            localStorage.removeItem('marujoflix_level');
+            localStorage.removeItem('marujoflix_favorites');
+            localStorage.removeItem('marujoflix_history');
+            
             ToastSystem.show('Você deslogou da embarcação.', 'info');
-            // MÁGICA: Recarrega a página em 1 segundo para limpar a memória do navegador!
+            // Recarrega a página para limpar tudo
             setTimeout(() => { window.location.reload(); }, 1000);
         });
     }
+
 
 
     // Fica vigiando até o Firebase carregar com sucesso
@@ -1061,56 +1068,49 @@ setTimeout(() => {
             if(typeof iniciarChatGlobalSilencioso === 'function' && !unsubscribeGlobalChat) iniciarChatGlobalSilencioso();
 
             // Vigia o status do login constantemente
+                        // Vigia o status do login constantemente
             window.fbOps.onAuthStateChanged(window.auth, async (user) => {
                 currentUser = user;
-                
-                // Atualiza as fotos e botões na tela imediatamente
                 atualizarTodaAInterface(user);
                 
                 if (user) {
+                    ToastSystem.show("Buscando dados nos satélites...", "info"); // Feedback visual
                     try {
-                        // 1. VAI NA NUVEM BUSCAR A CAIXA DO TESOURO DESTE USUÁRIO
                         const userRef = window.fbOps.doc(window.db, "users", user.uid);
                         const docSnap = await window.fbOps.getDoc(userRef);
                         
                         if (docSnap.exists()) {
                             const dados = docSnap.data();
                             
-                            // 2. NUVEM É SOBERANA: Pega o XP salvo no Google
-                            if ((dados.xp || 0) > userProgress.xp) {
-                                userProgress.xp = dados.xp || 0;
-                                userProgress.level = dados.level || 1;
-                            }
+                            // A NUVEM MANDA EM TUDO: Substitui o celular pelo que está no Google
+                            userProgress.xp = dados.xp || 0;
+                            userProgress.level = dados.level || 1;
+                            userProgress.favorites = dados.favorites || [];
+                            userProgress.history = dados.history || [];
                             
-                            // 3. RECUPERA OS FAVORITOS E HISTÓRICO (Mescla caso tenha favoritado algo offline)
-                            userProgress.favorites = [...new Set([...userProgress.favorites, ...(dados.favorites || [])])];
-                            userProgress.history = [...new Set([...userProgress.history, ...(dados.history || [])])];
+                            ToastSystem.show("Dados da nuvem baixados com sucesso!", "success");
+                        } else {
+                            // Se a conta for virgem, avisa que criou o save
+                            ToastSystem.show("Conta salva na nuvem pela primeira vez!", "success");
                         }
                     } catch (err) {
-                        console.log("Aviso: Sincronização na nuvem com lentidão.", err);
+                        console.error("Erro de sincronização: ", err);
+                        ToastSystem.show("Erro ao buscar seu save na nuvem.", "error");
                     }
-                    
-                    // 4. Salva no celular novo para garantir
-                    userProgress.save(); 
+                    userProgress.save(); // Pega o que baixou e salva no celular
                 } else {
-                    // SE NÃO TIVER LOGADO, Carrega apenas do Celular (Visitante)
+                    // SE FOR VISITANTE
                     userProgress.xp = parseInt(localStorage.getItem('marujoflix_xp')) || 0;
                     userProgress.level = parseInt(localStorage.getItem('marujoflix_level')) || 1;
                     userProgress.favorites = JSON.parse(localStorage.getItem('marujoflix_favorites')) || [];
                     userProgress.history = JSON.parse(localStorage.getItem('marujoflix_history')) || [];
                 }
 
-                // Atualiza os números no menu lateral
+                // Atualiza tudo visualmente na hora
                 userProgress.updateUI();
-                
-                // ========================================================
-                // A MÁGICA ESTÁ AQUI: Atualiza TUDO na tela imediatamente!
-                // Isso acende os corações vermelhos e atualiza o histórico.
-                // ========================================================
-                if (typeof IPTVSystem !== 'undefined') {
-                    IPTVSystem.aplicarFiltros(); 
-                }
+                if (typeof IPTVSystem !== 'undefined') IPTVSystem.aplicarFiltros(); 
             });
+
         }
     }, 500);
 
@@ -1532,15 +1532,15 @@ setTimeout(() => {
             ToastSystem.show('Diário de bordo limpo!', 'success');
         },
 
-                save() {
-            // 1. Salva localmente (como backup para visitantes sem conta)
+        save() {
+            // 1. Faz o backup local no celular
             localStorage.setItem('marujoflix_xp', this.xp);
             localStorage.setItem('marujoflix_level', this.level);
             localStorage.setItem('marujoflix_favorites', JSON.stringify(this.favorites));
             localStorage.setItem('marujoflix_history', JSON.stringify(this.history));
 
-            // 2. Salva na Nuvem do Google (se estiver logado)
-            if (typeof currentUser !== 'undefined' && currentUser && window.fbOps) {
+            // 2. Faz o UPLOAD obrigatório para a nuvem
+            if (currentUser && window.fbOps && window.db) {
                 const userRef = window.fbOps.doc(window.db, "users", currentUser.uid);
                 window.fbOps.setDoc(userRef, {
                     xp: this.xp,
@@ -1548,9 +1548,13 @@ setTimeout(() => {
                     favorites: this.favorites,
                     history: this.history,
                     lastUpdate: window.fbOps.serverTimestamp()
-                }, { merge: true }); // O merge:true não apaga outros dados que possam existir lá
+                }, { merge: true }).catch(err => {
+                    console.error("ERRO AO SALVAR NA NUVEM:", err);
+                    ToastSystem.show("Erro ao fazer upload do seu progresso pro Google!", "error");
+                });
             }
         },
+
 
                                 updateUI() {
             const elLevel = document.getElementById('sidebarLevel');
