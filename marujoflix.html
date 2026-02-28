@@ -1022,38 +1022,55 @@ setTimeout(() => {
 
     // Fica vigiando até o Google carregar com sucesso (não desiste mais)
         // Fica vigiando até o Google carregar com sucesso
+        // Fica vigiando até o Google carregar com sucesso
     let timerFirebase = setInterval(() => {
         if(window.fbOps && window.auth) {
             clearInterval(timerFirebase); 
-                        // LIGA O RADAR SILENCIOSO DO CHAT
+            
+            // LIGA O RADAR SILENCIOSO DO CHAT
             if(!unsubscribeGlobalChat) iniciarChatGlobalSilencioso();
 
             window.fbOps.onAuthStateChanged(window.auth, async (user) => {
                 currentUser = user;
                 
                 if (user) {
-                    // --- DOWNLOAD DOS DADOS DA NUVEM ---
+                    // ==========================================
+                    // 1. ATUALIZA A TELA DE CARREGAMENTO IMEDIATAMENTE
+                    // ==========================================
+                    const loadingImg = document.querySelector('.loading-logo img');
+                    if(loadingImg) loadingImg.src = user.photoURL.replace("s96-c", "s200-c");
+                    
+                    const loadingRank = document.getElementById('rankTitle');
+                    if(loadingRank) loadingRank.textContent = user.displayName.split(' ')[0];
+
+                    // ==========================================
+                    // 2. SINCRONIZAÇÃO INTELIGENTE DE XP (NUVEM + CELULAR)
+                    // ==========================================
                     const userRef = window.fbOps.doc(window.db, "users", user.uid);
                     const docSnap = await window.fbOps.getDoc(userRef);
                     
                     if (docSnap.exists()) {
-                        // Se a pessoa já tem conta, puxa da nuvem para o site!
                         const dados = docSnap.data();
-                        userProgress.xp = dados.xp || 0;
-                        userProgress.level = dados.level || 1;
-                        userProgress.favorites = dados.favorites || [];
-                        userProgress.history = dados.history || [];
                         
-                        // Salva no celular pra ficar igual à nuvem
+                        // Mantém o maior XP (Nunca perde progresso)
+                        if ((dados.xp || 0) > userProgress.xp) {
+                            userProgress.xp = dados.xp || 0;
+                            userProgress.level = dados.level || 1;
+                        }
+                        
+                        // Junta os favoritos da nuvem com os do celular sem duplicar
+                        userProgress.favorites = [...new Set([...userProgress.favorites, ...(dados.favorites || [])])];
+                        userProgress.history = [...new Set([...userProgress.history, ...(dados.history || [])])];
+                        
                         userProgress.save(); 
                     } else {
-                        // Se é a primeira vez dela logando, sobe os dados do celular pra nuvem!
+                        // Primeira vez logando: sobe os dados do celular pra nuvem!
                         userProgress.save();
                     }
                     
-                    ToastSystem.show(`Conectado à nuvem!`, 'success');
+                    ToastSystem.show(`Bem-vindo a bordo, ${user.displayName.split(' ')[0]}!`, 'success');
                 } else {
-                    // --- SE DESLOGOU, CARREGA COMO VISITANTE ---
+                    // MODO VISITANTE
                     userProgress.xp = parseInt(localStorage.getItem('marujoflix_xp')) || 0;
                     userProgress.level = parseInt(localStorage.getItem('marujoflix_level')) || 1;
                     userProgress.favorites = JSON.parse(localStorage.getItem('marujoflix_favorites')) || [];
@@ -1061,20 +1078,18 @@ setTimeout(() => {
                 }
 
                 atualizarMenuLateral(user);
-                userProgress.updateUI(); // Atualiza os números no menu
+                userProgress.updateUI();
                 
-                // Se a pessoa deslogar enquanto olha a aba de favoritos, recarrega a tela
-                                // Se a pessoa deslogar enquanto olha a aba de favoritos...
                 if(IPTVSystem.abaAtual === 'favoritos' || IPTVSystem.abaAtual === 'historico') {
                     IPTVSystem.aplicarFiltros(); 
                 }
                 
+                // ATUALIZA OS CHATS SEMPRE (Corrigindo o bug do botão travado)
                 if(currentMovieIdForComments) renderizarAreaDeComentario();
-                if(isGlobalChatOpen) renderizarInputChatGlobal(); // <--- ADICIONE ESTA LINHA AQUI
-
+                renderizarInputChatGlobal(); 
             });
         }
-    }, 500); 
+    }, 500);
 
 
 
@@ -1194,20 +1209,26 @@ setTimeout(() => {
         }
     }
 
-    async function enviarComentario() {
+        async function enviarComentario() {
         const input = document.getElementById('comentarioInput');
+        if (!input) return;
         const text = input.value.trim();
         if (!text || !currentUser || !currentMovieIdForComments || !window.fbOps) return;
         
         input.value = ''; // Limpa o campo na hora
-        await window.fbOps.addDoc(window.fbOps.collection(window.db, `movies/${currentMovieIdForComments}/comments`), {
-            text: text,
-            userId: currentUser.uid,
-            userName: currentUser.displayName,
-            userPhoto: currentUser.photoURL,
-            timestamp: window.fbOps.serverTimestamp()
-        });
-        userProgress.addXP(5); // Dá 5 de XP por comentar!
+        try {
+            await window.fbOps.addDoc(window.fbOps.collection(window.db, `movies/${currentMovieIdForComments}/comments`), {
+                text: text,
+                userId: currentUser.uid,
+                userName: currentUser.displayName.split(' ')[0],
+                userPhoto: currentUser.photoURL,
+                timestamp: window.fbOps.serverTimestamp()
+            });
+            userProgress.addXP(5); // Ganha XP
+        } catch (error) {
+            console.error("Erro Firebase:", error);
+            ToastSystem.show('Erro de permissão! O Google bloqueou o envio.', 'error');
+        }
     }
 
     // ==========================================
@@ -1319,21 +1340,26 @@ setTimeout(() => {
         }
     }
 
-    async function enviarMsgGlobal() {
+        async function enviarMsgGlobal() {
         const input = document.getElementById('globalChatInput');
         if (!input) return;
         const text = input.value.trim();
         if (!text || !currentUser || !window.fbOps) return;
         
         input.value = ''; 
-        await window.fbOps.addDoc(window.fbOps.collection(window.db, "global_chat"), {
-            text: text,
-            userId: currentUser.uid,
-            userName: currentUser.displayName.split(' ')[0], 
-            userPhoto: currentUser.photoURL,
-            timestamp: window.fbOps.serverTimestamp()
-        });
-        userProgress.addXP(2);
+        try {
+            await window.fbOps.addDoc(window.fbOps.collection(window.db, "global_chat"), {
+                text: text,
+                userId: currentUser.uid,
+                userName: currentUser.displayName.split(' ')[0], 
+                userPhoto: currentUser.photoURL,
+                timestamp: window.fbOps.serverTimestamp()
+            });
+            userProgress.addXP(2);
+        } catch (error) {
+            console.error("Erro Firebase:", error);
+            ToastSystem.show('Erro ao enviar mensagem na Taverna!', 'error');
+        }
     }
 
       // ⚓ SISTEMA TMDB (Trailers e Sinopses)
