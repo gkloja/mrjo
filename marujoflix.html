@@ -1048,6 +1048,26 @@
 .user-level-badge { font-weight: bold; color: var(--primary); font-size: 0.9rem; }
 .user-xp { font-size: 0.75rem; color: gold; margin-top: 2px; }
 
+.episodes-share-btn {
+    background: rgba(0, 136, 255, 0.2);
+    border: 1px solid var(--blue);
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    color: var(--blue);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+.episodes-share-btn:hover {
+    background: var(--blue);
+    color: white;
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 0 15px rgba(0, 136, 255, 0.5);
+}
+
 
     </style>
 </head>
@@ -1236,10 +1256,30 @@
     </div>
 </div>
 
-    <div class="episodes-modal" id="episodesModal">
+     <div class="episodes-modal" id="episodesModal">
         <div class="episodes-header">
             <h3 id="episodesTitle">Escolha uma Opção</h3>
-            <button class="episodes-close" onclick="closeEpisodesModal()"><i class="fas fa-times"></i></button>
+<div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+    <!-- WhatsApp -->
+    <button class="episodes-share-btn" title="Compartilhar no WhatsApp" onclick="compartilharFilmeAtivo()">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+    <!-- Facebook -->
+    <button class="episodes-share-btn" title="Compartilhar no Facebook" onclick="compartilharFilmeAtivo()">
+        <i class="fab fa-facebook-f"></i>
+    </button>
+
+    <!-- Telegram -->
+    <button class="episodes-share-btn" title="Compartilhar no Telegram" onclick="compartilharFilmeAtivo()">
+        <i class="fab fa-telegram-plane"></i>
+    </button>
+    <!-- Copiar Link -->
+    <button class="episodes-share-btn" title="Copiar link" onclick="compartilharFilmeAtivo()">
+        <i class="fas fa-link"></i>
+    </button>
+    <!-- Fechar -->
+    <button class="episodes-close" onclick="closeEpisodesModal()"><i class="fas fa-times"></i></button>
+</div>
         </div>
         
         <div class="modal-body-scroll" style="overflow-y: auto; flex: 1; padding-bottom: 20px; display: flex; flex-direction: column;">
@@ -1253,16 +1293,13 @@
 
             <div class="comments-section" id="commentsSection" style="display: none;">
                 <div class="comments-header"><i class="fas fa-comments"></i> Tripulação Comentou</div>
-                
-                <div class="comments-list" id="commentsList" style="max-height: none; overflow-y: visible;">
-                    </div>
-                
-                <div id="commentActionArea">
-                    </div>
+                <div class="comments-list" id="commentsList" style="max-height: none; overflow-y: visible;"></div>
+                <div id="commentActionArea"></div>
             </div>
             
         </div>
     </div>
+
 
 
 
@@ -2714,17 +2751,29 @@ userProgress.updateUI();
 
     // ========== NOVO CÓDIGO PARA BUSCAR PELA URL ==========
     // Pega os parâmetros da URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const searchQuery = urlParams.get('q'); // 'q' é o nome do parâmetro (pode mudar)
+    // ... (parte inicial do init fica igual) ...
 
-    // Se existir o parâmetro 'q', preenche o campo e executa a busca
+    // ========== NOVO CÓDIGO PARA BUSCAR PELA URL E ABRIR SOZINHO ==========
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('q'); 
+
     if (searchQuery) {
-        // Pequeno atraso para garantir que os dados já carregaram
+        // Pequeno atraso para garantir que os dados do site já carregaram
         setTimeout(() => {
             document.getElementById('searchInput').value = decodeURIComponent(searchQuery);
-            this.executarBusca(); // Executa a busca automaticamente
-        }, 1500); // Ajuste o tempo se necessário (1500ms = 1.5 segundos)
+            this.executarBusca(); // Executa a busca
+            
+            // Depois de pesquisar, abre o primeiro filme automaticamente!
+            setTimeout(() => {
+                if (this.filtrados && this.filtrados.length > 0) {
+                    this.abrirPlayerOuModal(this.filtrados[0].id_main);
+                }
+            }, 500); // 0.5s para dar tempo de renderizar os cartazes
+            
+        }, 1500); 
     }
+    // ========== FIM DO NOVO CÓDIGO ==========
+
     // ========== FIM DO NOVO CÓDIGO ==========
 },
 // ... (resto do código do IPTVSystem acima) ...
@@ -3173,6 +3222,78 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
                 
 
     };
+    
+    
+    // ==========================================
+    // SISTEMA DE COMPARTILHAMENTO DE FILME/SÉRIE
+    // ==========================================
+    window.compartilharFilmeAtivo = async function() {
+        // Pega o título do filme que está aberto no modal no momento
+        const title = document.getElementById('episodesTitle').textContent;
+        
+        // Monta o link que fará a pessoa cair direto na pesquisa do site
+        const baseUrl = window.location.origin + window.location.pathname;
+        const shareUrl = baseUrl + '?q=' + encodeURIComponent(title);
+        
+        const shareData = {
+            title: 'Marujo Flix - ' + title,
+            text: 'Vem assistir "' + title + '" de graça comigo no Marujo Flix! 🍿📺\n\n',
+            url: shareUrl
+        };
+
+        const sucessoAoCompartilhar = () => {
+            ToastSystem.show('Link de convite gerado! +20 XP', 'success');
+            if (userProgress) userProgress.addXP(20);
+        };
+
+        // 1. Tenta abrir o menu nativo do celular (WhatsApp, Insta, etc)
+        if (navigator.share && window.isSecureContext) {
+            try {
+                await navigator.share(shareData);
+                sucessoAoCompartilhar();
+                return;
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    forcarCopia(shareUrl, sucessoAoCompartilhar);
+                }
+            }
+        } else {
+            // 2. Se for PC ou o navegador não suportar share, copia para a área de transferência
+            forcarCopia(shareUrl, sucessoAoCompartilhar);
+        }
+    };
+
+    function forcarCopia(texto, callback) {
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(texto).then(() => {
+                ToastSystem.show('Link do filme copiado! Cole para seus amigos. 🚀', 'success');
+                callback();
+            }).catch(() => fallbackCopia(texto, callback));
+        } else {
+            fallbackCopia(texto, callback);
+        }
+    }
+
+    function fallbackCopia(texto, callback) {
+        try {
+            const textArea = document.createElement("textarea");
+            textArea.value = texto;
+            textArea.style.position = "fixed";
+            textArea.style.opacity = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            const funcionou = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            if (funcionou) {
+                ToastSystem.show('Link do filme copiado! Cole para seus amigos. 🚀', 'success');
+                callback();
+            }
+        } catch (e) {
+            ToastSystem.show('Erro ao copiar link.', 'error');
+        }
+    }
+
     
         // ==========================================
     // SISTEMA DE RADAR (Pessoas Online)
