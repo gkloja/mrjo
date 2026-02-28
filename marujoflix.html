@@ -798,6 +798,41 @@
         .btn-send-msg { background: rgba(0, 136, 255, 0.1); border: 1px solid var(--blue); color: white; }
         .btn-send-msg:hover { background: var(--blue); color: white; }
 
+        /* --- ESTILOS DA CENTRAL SOCIAL (HUB) --- */
+        .social-hub-panel {
+            position: fixed;
+            bottom: 110px; /* Fica acima da barra inferior */
+            right: 30px;
+            width: 380px;
+            height: 550px;
+            background: var(--gradient-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            z-index: 991;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.9);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+        }
+        .social-hub-panel.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        
+        .social-tabs { display: flex; background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--border-color); }
+        .social-tab { flex: 1; padding: 15px; background: none; border: none; color: var(--text-muted); font-weight: bold; cursor: pointer; transition: 0.3s; border-bottom: 2px solid transparent; font-size: 0.9rem;}
+        .social-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); background: rgba(0, 255, 179, 0.05); }
+        
+        .social-view { flex: 1; display: none; flex-direction: column; overflow-y: hidden; }
+        .social-view.active { display: flex; }
+
+        @media (max-width: 768px) { 
+            .btn-floating-chat { display: none; } /* Esconde a bolinha no celular */
+            /* No celular, o painel vira uma tela quase cheia anexada na barra inferior */
+            .social-hub-panel { width: 100%; right: 0; bottom: 70px; height: calc(100vh - 70px); border-radius: 20px 20px 0 0; }
+        }
+
     </style>
 </head>
 <body>
@@ -903,8 +938,13 @@
     <nav class="mobile-bottom-nav">
         <button class="nav-item active" onclick="window.scrollTo(0,0)"><i class="fas fa-home"></i></button>
         <button class="nav-item" onclick="toggleSearchBar()"><i class="fas fa-search"></i></button>
+        <button class="nav-item" style="position: relative;" onclick="toggleSocialHub()">
+            <i class="fas fa-users"></i>
+            <div class="chat-badge" id="chatBadge" style="top: -10px; right: -5px;">0</div>
+        </button>
         <button class="nav-item" onclick="toggleSidebar()"><i class="fas fa-user"></i></button>
     </nav>
+
 
 <section class="categories-section" id="catalogo">
         <div class="main-tabs">
@@ -1200,7 +1240,7 @@ setTimeout(() => {
         // Reseta o botão visualmente
         const btnAdd = document.querySelector('.btn-add-friend');
         btnAdd.innerHTML = '<i class="fas fa-user-plus"></i> Adicionar à Tripulação';
-        btnAdd.style.background = 'rgba(0, 255, 179, 0.1)';
+        btnAdd..background = 'rgba(0, 255, 179, 0.1)';
         btnAdd.style.color = 'var(--primary)';
         
         document.getElementById('perfilModal').classList.add('active');
@@ -1398,24 +1438,98 @@ setTimeout(() => {
     let unreadChatCount = 0;
     let isFirstChatLoad = true;
 
-    function toggleGlobalChat() {
-        const panel = document.getElementById('globalChatPanel');
+        // ==========================================
+    // NOVA CENTRAL SOCIAL (HUB)
+    // ==========================================
+    function toggleSocialHub() {
+        const panel = document.getElementById('socialHubPanel');
         isGlobalChatOpen = !isGlobalChatOpen;
         
         if (isGlobalChatOpen) {
             panel.classList.add('active');
-            
-            // Zera o contador e esconde a bolinha
             unreadChatCount = 0;
             atualizarBadgeChat();
             
-            // Rola as mensagens para o final
-            const msgList = document.getElementById('globalChatMessages');
-            msgList.scrollTop = msgList.scrollHeight;
+            // Verifica qual aba está aberta para rolar o chat ou carregar os amigos
+            if(document.getElementById('tabTripulacao').classList.contains('active')) {
+                carregarTripulacao();
+            } else {
+                const msgList = document.getElementById('globalChatMessages');
+                msgList.scrollTop = msgList.scrollHeight;
+            }
         } else {
             panel.classList.remove('active');
         }
     }
+
+    function mudarAbaSocial(aba) {
+        document.getElementById('tabTaverna').classList.remove('active');
+        document.getElementById('tabTripulacao').classList.remove('active');
+        document.getElementById('viewTaverna').classList.remove('active');
+        document.getElementById('viewTripulacao').classList.remove('active');
+        
+        if (aba === 'taverna') {
+            document.getElementById('tabTaverna').classList.add('active');
+            document.getElementById('viewTaverna').classList.add('active');
+            const msgList = document.getElementById('globalChatMessages');
+            msgList.scrollTop = msgList.scrollHeight;
+        } else {
+            document.getElementById('tabTripulacao').classList.add('active');
+            document.getElementById('viewTripulacao').classList.add('active');
+            carregarTripulacao(); // Puxa do servidor na hora que abre a aba!
+        }
+    }
+
+    async function carregarTripulacao() {
+        const lista = document.getElementById('listaAmigos');
+        if (!currentUser) {
+            lista.innerHTML = '<div style="text-align: center; color: var(--accent); margin-top: 20px;"><i class="fas fa-lock" style="font-size: 2rem; margin-bottom:10px; display:block;"></i>Faça login no Google para ver sua tripulação.</div>';
+            return;
+        }
+
+        lista.innerHTML = '<div style="text-align: center; color: var(--text-muted); margin-top: 20px;"><i class="fas fa-compass fa-spin"></i> Buscando marujos no servidor...</div>';
+
+        try {
+            // Como seu servidor é estático, podemos ler o JSON de amizades diretamente!
+            const url = 'https://cors.eu.org/http://br2.bronxyshost.com:4009/amizades.json';
+            const res = await fetch(url + '?t=' + new Date().getTime()); // O '?t=' evita que o navegador decore a página
+            
+            if (res.ok) {
+                const todasAmizades = await res.json();
+                // Filtra as amizades para mostrar só quem o usuário atual recrutou
+                const meusAmigos = todasAmizades.filter(a => a.usuarioId === currentUser.uid);
+                
+                if (meusAmigos.length === 0) {
+                    lista.innerHTML = '<div style="text-align: center; color: var(--text-muted); margin-top: 20px;"><i class="fas fa-ghost" style="font-size: 2rem; margin-bottom:10px; display:block;"></i>Você ainda navega sozinho.<br>Adicione marujos clicando na foto deles nos comentários!</div>';
+                    return;
+                }
+
+                lista.innerHTML = '';
+                meusAmigos.forEach(amigo => {
+                    // Desenha o Card do amigo na lista
+                    lista.innerHTML += `
+                        <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;" onclick="abrirPerfilUsuario('${amigo.amigoId}', '${amigo.amigoNome}', '${amigo.amigoFoto}', '${amigo.amigoNivel}', '${amigo.amigoPatente}')">
+                                <img src="${amigo.amigoFoto}" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover;">
+                                <div>
+                                    <div style="font-weight: bold; color: white; font-size: 0.95rem;">${amigo.amigoNome}</div>
+                                    <div style="color: var(--primary); font-size: 0.75rem;">Nv. ${amigo.amigoNivel} • ${amigo.amigoPatente}</div>
+                                </div>
+                            </div>
+                            <button onclick="ToastSystem.show('O Correio Particular chega na Fase 3!', 'info')" style="background: rgba(0, 136, 255, 0.2); color: var(--blue); border: 1px solid var(--blue); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.3s;" title="Enviar Mensagem">
+                                <i class="fas fa-comment-dots"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+            } else {
+                throw new Error('Sem resposta');
+            }
+        } catch (e) {
+            lista.innerHTML = '<div style="text-align: center; color: var(--text-muted); margin-top: 20px;">Nenhuma aliança registrada ainda.</div>';
+        }
+    }
+
 
     function iniciarChatGlobalSilencioso() {
         if(!window.fbOps) return;
@@ -2636,16 +2750,35 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
 
 
 
-    <div class="chat-panel" id="globalChatPanel">
+    <button class="btn-floating-chat" onclick="toggleSocialHub()">
+        <i class="fas fa-users"></i>
+        <div class="chat-badge" id="chatBadgeDesktop">0</div>
+    </button>
+
+    <div class="social-hub-panel" id="socialHubPanel">
         <div class="chat-header">
-            <h3 style="font-size: 1.1rem; color: var(--blue); margin: 0;"><i class="fas fa-ship"></i> Taverna Marujo</h3>
-            <button onclick="toggleGlobalChat()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;"><i class="fas fa-times"></i></button>
+            <h3 style="font-size: 1.1rem; color: var(--primary); margin: 0;"><i class="fas fa-compass"></i> Área Social</h3>
+            <button onclick="toggleSocialHub()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;"><i class="fas fa-times"></i></button>
         </div>
-        <div class="chat-messages" id="globalChatMessages">
-            <div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 20px;">Carregando mensagens na garrafa...</div>
+        
+        <div class="social-tabs">
+            <button class="social-tab active" id="tabTaverna" onclick="mudarAbaSocial('taverna')"><i class="fas fa-comments"></i> Taverna</button>
+            <button class="social-tab" id="tabTripulacao" onclick="mudarAbaSocial('tripulacao')"><i class="fas fa-user-friends"></i> Tripulação</button>
         </div>
-        <div class="chat-input-container" id="globalChatInputArea"></div>
+
+        <div id="viewTaverna" class="social-view active">
+            <div class="chat-messages" id="globalChatMessages" style="flex: 1; overflow-y: auto;">
+                <div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 20px;">Carregando mensagens na garrafa...</div>
+            </div>
+            <div class="chat-input-container" id="globalChatInputArea"></div>
+        </div>
+
+        <div id="viewTripulacao" class="social-view">
+            <div id="listaAmigos" style="padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; height: 100%;">
+                </div>
+        </div>
     </div>
+
 
 
     <div id="floatingRewardContainer" class="floating-reward-container">
