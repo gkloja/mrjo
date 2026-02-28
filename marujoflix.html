@@ -1090,37 +1090,40 @@ setTimeout(() => {
 
             // Vigia o status do login constantemente
                         // Vigia o status do login constantemente
+                        // Vigia o status do login constantemente
             window.fbOps.onAuthStateChanged(window.auth, async (user) => {
                 currentUser = user;
                 atualizarTodaAInterface(user);
                 
                 if (user) {
-                    ToastSystem.show("Buscando dados nos satélites...", "info"); // Feedback visual
+                    ToastSystem.show("Sincronizando com o Navio Principal...", "info"); 
+                    
+                    const linkApi = 'https://cors.eu.org/http://br2.bronxyshost.com:4009';
+                    
                     try {
-                        const userRef = window.fbOps.doc(window.db, "users", user.uid);
-                        const docSnap = await window.fbOps.getDoc(userRef);
+                        // FAZ O DOWNLOAD DO SEU ARQUIVO JSON!
+                        const resposta = await fetch(`${linkApi}/ler_progresso/${user.uid}`, { method: 'GET', mode: 'cors' });
                         
-                        if (docSnap.exists()) {
-                            const dados = docSnap.data();
+                        if (resposta.ok) {
+                            const dadosNuvem = await resposta.json();
                             
-                            // A NUVEM MANDA EM TUDO: Substitui o celular pelo que está no Google
-                            userProgress.xp = dados.xp || 0;
-                            userProgress.level = dados.level || 1;
-                            userProgress.favorites = dados.favorites || [];
-                            userProgress.history = dados.history || [];
-                            
-                            ToastSystem.show("Dados da nuvem baixados com sucesso!", "success");
-                        } else {
-                            // Se a conta for virgem, avisa que criou o save
-                            ToastSystem.show("Conta salva na nuvem pela primeira vez!", "success");
+                            // Se a gaveta dele não estiver vazia, puxa os dados!
+                            if (dadosNuvem.level) {
+                                userProgress.xp = dadosNuvem.xp || 0;
+                                userProgress.level = dadosNuvem.level || 1;
+                                userProgress.favorites = dadosNuvem.favorites || [];
+                                userProgress.history = dadosNuvem.history || [];
+                                ToastSystem.show("Dados restaurados com sucesso!", "success");
+                            } else {
+                                ToastSystem.show("Nova conta registrada nos mares!", "success");
+                            }
                         }
                     } catch (err) {
-                        // O RAIO-X DE ERRO: Vai mostrar na sua tela o motivo exato!
-                        console.error("Erro de sincronização: ", err);
-                      
+                        console.error("Falha ao puxar save: ", err);
+                        ToastSystem.show("Erro ao ler dados do servidor.", "error");
                     }
-
-                    userProgress.save(); // Pega o que baixou e salva no celular
+                    
+                    userProgress.save(); // Salva no celular o que puxou da nuvem
                 } else {
                     // SE FOR VISITANTE
                     userProgress.xp = parseInt(localStorage.getItem('marujoflix_xp')) || 0;
@@ -1129,7 +1132,6 @@ setTimeout(() => {
                     userProgress.history = JSON.parse(localStorage.getItem('marujoflix_history')) || [];
                 }
 
-                // Atualiza tudo visualmente na hora
                 userProgress.updateUI();
                 if (typeof IPTVSystem !== 'undefined') IPTVSystem.aplicarFiltros(); 
             });
@@ -1688,30 +1690,38 @@ setTimeout(() => {
             ToastSystem.show('Diário de bordo limpo!', 'success');
         },
 
-        save() {
-            // 1. Faz o backup local no celular
+                async save() {
+            // 1. Backup local rápido (para não piscar a tela)
             localStorage.setItem('marujoflix_xp', this.xp);
             localStorage.setItem('marujoflix_level', this.level);
             localStorage.setItem('marujoflix_favorites', JSON.stringify(this.favorites));
             localStorage.setItem('marujoflix_history', JSON.stringify(this.history));
 
-            // 2. Faz o UPLOAD obrigatório para a nuvem
-            if (currentUser && window.fbOps && window.db) {
-                const userRef = window.fbOps.doc(window.db, "users", currentUser.uid);
-                window.fbOps.setDoc(userRef, {
+            // 2. UPLOAD PARA O SEU SERVIDOR! (Sem Firebase)
+            if (typeof currentUser !== 'undefined' && currentUser) {
+                const pacoteSave = {
+                    userId: currentUser.uid,
                     xp: this.xp,
                     level: this.level,
                     favorites: this.favorites,
-                    history: this.history,
-                    lastUpdate: window.fbOps.serverTimestamp()
-                }, { merge: true }).catch(err => {
-                    // O RAIO-X DE ERRO DE GRAVAÇÃO
-                    console.error("ERRO AO SALVAR NA NUVEM:", err);
-                    
-                });
+                    history: this.history
+                };
 
+                const linkApi = 'https://cors.eu.org/http://br2.bronxyshost.com:4009';
+                
+                try {
+                    await fetch(`${linkApi}/salvar_progresso`, {
+                        method: 'POST', mode: 'cors',
+                        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                        body: JSON.stringify(pacoteSave)
+                    });
+                    // Salvou silenciosamente no seu JSON!
+                } catch (e) {
+                    console.log("Erro ao salvar no servidor principal.");
+                }
             }
         },
+
 
 
                                 updateUI() {
