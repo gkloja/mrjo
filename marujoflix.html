@@ -3128,117 +3128,268 @@ msgList.innerHTML += `
     }
 
     // ⚓ SISTEMA DE PROGRESSO ATUALIZADO
-    const userProgress = {
-        xp: parseInt(localStorage.getItem('marujoflix_xp')) || 0,
-        level: parseInt(localStorage.getItem('marujoflix_level')) || 1,
-        favorites: JSON.parse(localStorage.getItem('marujoflix_favorites')) || [], 
-        history: JSON.parse(localStorage.getItem('marujoflix_history')) || [], 
+// ==========================================
+// SISTEMA DE PROGRESSO - VERSÃO CORRIGIDA
+// ==========================================
+const userProgress = {
+    xp: parseInt(localStorage.getItem('marujoflix_xp')) || 0,
+    level: parseInt(localStorage.getItem('marujoflix_level')) || 1,
+    favorites: JSON.parse(localStorage.getItem('marujoflix_favorites')) || [], 
+    history: JSON.parse(localStorage.getItem('marujoflix_history')) || [], 
+    
+    getNextLevelXP() { return Math.floor(100 * Math.pow(1.5, this.level - 1)); },
+    
+    addXP(amount) {
+        this.xp += amount;
+        let subiuDeNivel = false;
+        let nivelAnterior = this.level;
         
-        getNextLevelXP() { return Math.floor(100 * Math.pow(1.5, this.level - 1)); },
+        while (this.xp >= this.getNextLevelXP()) {
+            this.xp -= this.getNextLevelXP();
+            this.level++;
+            subiuDeNivel = true;
+        }
         
-        addXP(amount) {
-            this.xp += amount;
-            let subiuDeNivel = false;
-            
-            while (this.xp >= this.getNextLevelXP()) {
-                this.xp -= this.getNextLevelXP();
-                this.level++;
-                subiuDeNivel = true;
+        // SALVA OS DADOS
+        this.save();
+        
+        // ATUALIZA TODA A INTERFACE (isso vai resolver seu problema!)
+        this.updateUI();
+        
+        // Se subiu de nível, mostra notificação
+        if (subiuDeNivel) {
+            const novaPatente = getRankTitle(this.level);
+            ToastSystem.show(`🚀 Nível ${this.level} Alcançado! Você agora é um ${novaPatente}!`, 'success');
+        }
+    },
+    
+    // NOVO MÉTODO: Atualiza TUDO na interface
+    updateUI() {
+        // 1. Sidebar
+        const sidebarLevel = document.getElementById('sidebarLevel');
+        if (sidebarLevel) sidebarLevel.innerHTML = `<i class="fas fa-anchor" style="color:var(--primary);"></i> Nível ${this.level}`;
+        
+        const sidebarRank = document.getElementById('sidebarRank');
+        if (sidebarRank) {
+            const nome = currentUser ? currentUser.displayName.split(' ')[0] : 'Visitante';
+            sidebarRank.innerHTML = `${nome} <span style="display:block; font-size:0.7rem; color:var(--text-muted);">${getRankTitle(this.level)}</span>`;
+        }
+        
+        // 2. Estatísticas
+        const statFavs = document.getElementById('statFavs');
+        if (statFavs) statFavs.textContent = this.favorites.length;
+        
+        const statXP = document.getElementById('statXP');
+        if (statXP) statXP.textContent = this.xp;
+        
+        // 3. Barra de progresso no sidebar
+        this.atualizarBarraProgresso();
+        
+        // 4. Se o chat global estiver aberto, atualiza o input (para mostrar nível)
+        if (document.getElementById('socialHubPanel')?.classList.contains('active')) {
+            if (typeof renderizarInputChatGlobal === 'function') {
+                renderizarInputChatGlobal();
             }
-            
-            if (subiuDeNivel) {
-                const novaPatente = getRankTitle(this.level);
-                // Notificação épica de subida de nível e mudança de patente
-                ToastSystem.show(`🚀 Nível ${this.level} Alcançado! Você agora é um ${novaPatente}!`, 'success');
-            }
-            
-            this.save();
-            this.updateUI();
-        },
+        }
         
-        toggleFavorite(itemId) {
-            const index = this.favorites.indexOf(itemId);
-            if (index === -1) {
-                this.favorites.push(itemId);
-                this.addXP(10);
-                ToastSystem.show('Adicionado aos Favoritos! ❤️', 'success');
-            } else {
-                this.favorites.splice(index, 1);
-                ToastSystem.show('Removido dos Favoritos 💔', 'error');
+        // 5. Se o modal de perfil estiver aberto, atualiza a patente
+        if (document.getElementById('perfilModal')?.classList.contains('active')) {
+            const perfilPatente = document.getElementById('perfilPatente');
+            if (perfilPatente) {
+                perfilPatente.innerHTML = `<i class="fas fa-anchor"></i> ${getRankTitle(this.level)}`;
             }
-            this.save();
-            this.updateUI();
-        },
-        isFavorite(itemId) { return this.favorites.includes(itemId); },
+            const perfilNivel = document.getElementById('perfilNivel');
+            if (perfilNivel) {
+                perfilNivel.textContent = `Nível ${this.level}`;
+            }
+        }
+    },
+    
+    // NOVO MÉTODO: Atualiza a barra de progresso
+    atualizarBarraProgresso() {
+        const xpAtual = this.xp;
+        const xpProximo = this.getNextLevelXP();
+        const percentual = Math.min(100, Math.floor((xpAtual / xpProximo) * 100));
         
-        addToHistory(itemId) {
-            this.history = this.history.filter(id => id !== itemId);
-            this.history.unshift(itemId);
-            if (this.history.length > 60) this.history.pop();
-            this.save();
-        },
-        removeFromHistory(itemId) {
-            this.history = this.history.filter(id => id !== itemId);
-            this.save();
-            ToastSystem.show('Apagado do diário de bordo.', 'success');
-        },
-        clearHistory() {
-            this.history = [];
-            this.save();
-            ToastSystem.show('Diário de bordo limpo!', 'success');
-        },
+        // Barra no sidebar
+        const fill = document.getElementById('sidebarProgressFill');
+        const text = document.getElementById('sidebarProgressText');
+        
+        if (fill) fill.style.width = percentual + '%';
+        if (text) text.textContent = `${xpAtual}/${xpProximo} XP`;
+        
+        // Se a tela de loading estiver visível, atualiza ela também
+        if (!document.getElementById('loadingScreen')?.classList.contains('hidden')) {
+            this.updateLoadingScreen();
+        }
+    },
+    
+    // NOVO MÉTODO: Atualiza a tela de loading
+    updateLoadingScreen() {
+        const rankTitle = document.getElementById('rankTitle');
+        const rankLevel = document.getElementById('rankLevel');
+        const statWatched = document.getElementById('statWatched');
+        const statFavsLoading = document.getElementById('statFavsLoading');
+        const statXPLoading = document.getElementById('statXPLoading');
+        const progressText = document.getElementById('progressText');
+        const progressFill = document.getElementById('progressFill');
+        
+        if (rankTitle) {
+            rankTitle.textContent = getRankTitle(this.level);
+            rankLevel.textContent = `Nv. ${this.level}`;
+            statWatched.textContent = this.history.length;
+            statFavsLoading.textContent = this.favorites.length;
+            statXPLoading.textContent = this.xp;
+            
+            const xpProximo = this.getNextLevelXP();
+            const percentual = Math.min(100, Math.floor((this.xp / xpProximo) * 100));
+            progressFill.style.width = percentual + '%';
+            progressText.textContent = `${this.xp}/${xpProximo} XP`;
+        }
+    },
+    
+    toggleFavorite(itemId) {
+        const index = this.favorites.indexOf(itemId);
+        if (index === -1) {
+            this.favorites.push(itemId);
+            this.addXP(10);
+            ToastSystem.show('Adicionado aos Favoritos! ❤️', 'success');
+        } else {
+            this.favorites.splice(index, 1);
+            ToastSystem.show('Removido dos Favoritos 💔', 'error');
+        }
+        this.save();
+        this.updateUI(); // Atualiza contador de favoritos
+    },
+    
+    isFavorite(itemId) { return this.favorites.includes(itemId); },
+    
+    addToHistory(itemId) {
+        this.history = this.history.filter(id => id !== itemId);
+        this.history.unshift(itemId);
+        if (this.history.length > 60) this.history.pop();
+        this.save();
+    },
+    
+    removeFromHistory(itemId) {
+        this.history = this.history.filter(id => id !== itemId);
+        this.save();
+        ToastSystem.show('Apagado do diário de bordo.', 'success');
+    },
+    
+    clearHistory() {
+        this.history = [];
+        this.save();
+        ToastSystem.show('Diário de bordo limpo!', 'success');
+    },
 
-async save() {
-    localStorage.setItem('marujoflix_xp', this.xp);
-    localStorage.setItem('marujoflix_level', this.level);
-    localStorage.setItem('marujoflix_favorites', JSON.stringify(this.favorites));
-    localStorage.setItem('marujoflix_history', JSON.stringify(this.history));
+    async save() {
+        localStorage.setItem('marujoflix_xp', this.xp);
+        localStorage.setItem('marujoflix_level', this.level);
+        localStorage.setItem('marujoflix_favorites', JSON.stringify(this.favorites));
+        localStorage.setItem('marujoflix_history', JSON.stringify(this.history));
 
-    if (typeof currentUser !== 'undefined' && currentUser) {
-        const pacoteSave = {
-            userId: currentUser.uid,
-            nome: currentUser.displayName || 'Marujo',
-            foto: currentUser.photoURL ? currentUser.photoURL.replace('s96-c', 's200-c') : 'https://via.placeholder.com/150',
-            xp: this.xp,
-            level: this.level,
-            favorites: this.favorites,
-            history: this.history
-        };
+        if (typeof currentUser !== 'undefined' && currentUser) {
+            const pacoteSave = {
+                userId: currentUser.uid,
+                nome: currentUser.displayName || 'Marujo',
+                foto: currentUser.photoURL ? currentUser.photoURL.replace('s96-c', 's200-c') : 'https://via.placeholder.com/150',
+                xp: this.xp,
+                level: this.level,
+                favorites: this.favorites,
+                history: this.history
+            };
 
-        const linkApi = 'https://cors.eu.org/http://br2.bronxyshost.com:4009';
-        try {
-            await fetch(`${linkApi}/salvar_progresso`, {
-                method: 'POST',
-                mode: 'cors',
-                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                body: JSON.stringify(pacoteSave)
-            });
-        } catch (e) {
-            console.log("Erro ao salvar no servidor principal:", e);
+            const linkApi = 'https://cors.eu.org/http://br2.bronxyshost.com:4009';
+            try {
+                await fetch(`${linkApi}/salvar_progresso`, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                    body: JSON.stringify(pacoteSave)
+                });
+            } catch (e) {
+                console.log("Erro ao salvar no servidor principal:", e);
+            }
         }
     }
-},
+};
 
+// ==========================================
+// VERIFICAÇÃO DE PIX - VERSÃO CORRIGIDA
+// ==========================================
 
-
-updateUI() {
-    const elLevel = document.getElementById('sidebarLevel');
-    if(elLevel) elLevel.textContent = `Nv. ${this.level}`;
-    
-    const elFavs = document.getElementById('statFavs');
-    if(elFavs) elFavs.textContent = this.favorites.length;
-    
-    const elXP = document.getElementById('statXP');
-    if(elXP) elXP.textContent = this.xp;
-
-    // NOVO: Atualiza barra de progresso no sidebar
-    if (typeof atualizarSidebarProgresso === 'function') {
-        atualizarSidebarProgresso();
+// Na função de verificação, quando o pagamento for confirmado:
+async function verificarStatus() {
+    try {
+        const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+        const response = await fetch(`${linkApi}/api/doacoes/verificar/${transactionId}`);
+        const data = await response.json();
+        
+        if (data.status === 'pago') {
+            // ✅ PAGAMENTO CONFIRMADO!
+            clearInterval(pixInterval);
+            
+            // ANTES de atualizar o status, força a UI a atualizar
+            const xpGanho = data.xp;
+            
+            // 1. Primeiro mostra que foi confirmado
+            statusElement.innerHTML = `
+                <i class="fas fa-check-circle" style="color: var(--primary);"></i> 
+                Pagamento confirmado! +${xpGanho.toLocaleString('pt-BR')} XP creditados!
+            `;
+            
+            // 2. DEPOIS adiciona o XP (isso já vai chamar updateUI internamente)
+            userProgress.addXP(xpGanho);
+            
+            // 3. Mostra toast de sucesso
+            ToastSystem.show(`🎉 PIX recebido! +${xpGanho.toLocaleString('pt-BR')} XP!`, 'success');
+            
+            // 4. ATUALIZA O SIDEBAR IMEDIATAMENTE (reforço)
+            const statXP = document.getElementById('statXP');
+            if (statXP) statXP.textContent = userProgress.xp;
+            
+            const sidebarLevel = document.getElementById('sidebarLevel');
+            if (sidebarLevel) sidebarLevel.innerHTML = `<i class="fas fa-anchor" style="color:var(--primary);"></i> Nível ${userProgress.level}`;
+            
+            // 5. Atualiza a barra de progresso
+            userProgress.atualizarBarraProgresso();
+            
+            // Limpa o sessionStorage
+            sessionStorage.removeItem('pixTransactionId');
+            
+            // Fecha o modal após 3 segundos
+            setTimeout(() => {
+                fecharModalPix();
+            }, 3000);
+        }
+    } catch (error) {
+        console.error('Erro na verificação:', error);
     }
 }
 
+// ==========================================
+// FUNÇÃO PARA ATUALIZAR TUDO (chame quando necessário)
+// ==========================================
+function atualizarTudo() {
+    // Atualiza sidebar
+    if (currentUser) {
+        document.getElementById('sidebarRank').innerHTML = 
+            `${currentUser.displayName.split(' ')[0]} <span style="display:block; font-size:0.7rem; color:var(--text-muted);">${getRankTitle(userProgress.level)}</span>`;
+    }
+    
+    document.getElementById('sidebarLevel').innerHTML = `<i class="fas fa-anchor" style="color:var(--primary);"></i> Nível ${userProgress.level}`;
+    document.getElementById('statFavs').textContent = userProgress.favorites.length;
+    document.getElementById('statXP').textContent = userProgress.xp;
+    
+    // Barra de progresso
+    const xpProximo = userProgress.getNextLevelXP();
+    const percentual = Math.min(100, Math.floor((userProgress.xp / xpProximo) * 100));
+    document.getElementById('sidebarProgressFill').style.width = percentual + '%';
+    document.getElementById('sidebarProgressText').textContent = `${userProgress.xp}/${xpProximo} XP`;
+}
 
-    };
+// Chame esta função sempre que quiser forçar atualização
 
 function updateLoadingScreen() {
   const rankTitle = document.getElementById('rankTitle');
@@ -4185,8 +4336,12 @@ let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|
     // ==========================================
 // SISTEMA PIX - COLOQUE ISSO NO FINAL DO SCRIPT
 // ==========================================
+// ==========================================
+// SISTEMA PIX - VERIFICAÇÃO ROBUSTA
+// ==========================================
 let transactionIdAtual = null;
 let pixInterval = null;
+let ultimaVerificacao = null;
 
 function abrirModalPix() {
     if (!currentUser) {
@@ -4195,21 +4350,28 @@ function abrirModalPix() {
         return;
     }
     document.getElementById('pixModal').classList.add('active');
-    document.getElementById('pixValorInput').value = 10;
-    atualizarXPPreview(10);
+    document.getElementById('pixValorInput').value = 5;
+    atualizarXPPreview(5);
+    
+    // Reseta o estado do modal
+    document.getElementById('pixQrArea').style.display = 'none';
+    if (pixInterval) clearInterval(pixInterval);
 }
 
 function fecharModalPix() {
     document.getElementById('pixModal').classList.remove('active');
     document.getElementById('pixQrArea').style.display = 'none';
-    if (pixInterval) clearInterval(pixInterval);
+    if (pixInterval) {
+        clearInterval(pixInterval);
+        pixInterval = null;
+    }
     transactionIdAtual = null;
 }
 
 function atualizarXPPreview(valor) {
     valor = parseFloat(valor) || 0;
     if (valor < 1) valor = 1;
-    const xp = Math.floor(valor * 100);
+    const xp = Math.floor(valor * 1000);
     document.getElementById('xpPreviewValue').textContent = xp.toLocaleString('pt-BR');
 }
 
@@ -4242,7 +4404,7 @@ async function gerarPix() {
             body: JSON.stringify({ 
                 valor: valor,
                 userId: currentUser.uid,
-                expiraEm: 10 // 👈 DIZ AO BACKEND QUE EXPIRA EM 10 MINUTOS
+                expiraEm: 10
             })
         });
         
@@ -4260,6 +4422,10 @@ async function gerarPix() {
                 <i class="fas fa-copy pix-copy-icon"></i>
             `;
             
+            // Reativa a área de cópia
+            copyContainer.style.opacity = '1';
+            copyContainer.style.pointerEvents = 'auto';
+            
             // Mostra a área do QR Code
             document.getElementById('pixQrArea').style.display = 'block';
             
@@ -4269,6 +4435,10 @@ async function gerarPix() {
             
             // INICIA A VERIFICAÇÃO AUTOMÁTICA
             iniciarVerificacaoPix(data.transactionId, data.expiracao);
+            
+            // SALVA NO SESSIONSTORAGE para recuperar se a página recarregar
+            sessionStorage.setItem('pixTransactionId', data.transactionId);
+            sessionStorage.setItem('pixExpiracao', data.expiracao);
         }
     } catch (error) {
         ToastSystem.show('Erro ao gerar PIX', 'error');
@@ -4277,102 +4447,6 @@ async function gerarPix() {
         btn.innerHTML = textoOriginal;
         btn.disabled = false;
     }
-}
-
-// Função para verificar o status do pagamento (10 MINUTOS)
-function iniciarVerificacaoPix(transactionId, dataExpiracao) {
-    if (pixInterval) clearInterval(pixInterval);
-    
-    const statusElement = document.getElementById('pixStatus');
-    let tentativas = 0;
-    const maxTentativas = 120; // 10 minutos (120 tentativas a cada 5 segundos)
-    
-    // Converte a data de expiração para timestamp
-    const expiraEm = new Date(dataExpiracao).getTime();
-    
-    pixInterval = setInterval(async () => {
-        tentativas++;
-        
-        // Verifica se já expirou pelo tempo local
-        const agora = new Date().getTime();
-        const tempoRestante = Math.max(0, Math.floor((expiraEm - agora) / 1000)); // em segundos
-        
-        if (tempoRestante <= 0) {
-            // ⏰ PIX EXPIRADO!
-            clearInterval(pixInterval);
-            statusElement.innerHTML = `
-                <i class="fas fa-clock" style="color: var(--accent);"></i> 
-                PIX expirado (10 minutos). Gere um novo QR Code.
-            `;
-            
-            // Desabilita o botão de copiar
-            document.getElementById('pixCopyPaste').style.opacity = '0.5';
-            document.getElementById('pixCopyPaste').style.pointerEvents = 'none';
-            
-            ToastSystem.show('⏰ Tempo esgotado! Gere um novo PIX.', 'info');
-            return;
-        }
-        
-        try {
-            const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
-            const response = await fetch(`${linkApi}/api/doacoes/verificar/${transactionId}`);
-            const data = await response.json();
-            
-            if (data.status === 'pago') {
-                // ✅ PAGAMENTO CONFIRMADO!
-                clearInterval(pixInterval);
-                statusElement.innerHTML = `
-                    <i class="fas fa-check-circle" style="color: var(--primary);"></i> 
-                    Pagamento confirmado! +${data.xp} XP creditados!
-                `;
-                
-                // Atualiza o XP do usuário
-                userProgress.addXP(data.xp);
-                
-                // Mostra toast de sucesso
-                ToastSystem.show(`🎉 PIX recebido! +${data.xp} XP!`, 'success');
-                
-                // Fecha o modal após 3 segundos
-                setTimeout(() => {
-                    fecharModalPix();
-                }, 3000);
-                
-            } else if (data.status === 'expired') {
-                // ⏰ PIX EXPIRADO (pelo backend)
-                clearInterval(pixInterval);
-                statusElement.innerHTML = `
-                    <i class="fas fa-clock" style="color: var(--accent);"></i> 
-                    PIX expirado (10 minutos). Gere um novo QR Code.
-                `;
-                
-            } else if (data.status === 'pending') {
-                // Mostra o tempo restante em minutos e segundos
-                const minutos = Math.floor(tempoRestante / 60);
-                const segundos = tempoRestante % 60;
-                
-                statusElement.innerHTML = `
-                    <i class="fas fa-spinner fa-spin"></i> 
-                    Aguardando pagamento... Expira em ${minutos}:${segundos.toString().padStart(2, '0')}
-                `;
-            }
-            
-            // Se passou do limite de tentativas, para a verificação
-            if (tentativas >= maxTentativas) {
-                clearInterval(pixInterval);
-                statusElement.innerHTML = `
-                    <i class="fas fa-clock"></i> 
-                    Tempo esgotado (10 minutos). Gere um novo PIX.
-                `;
-            }
-            
-        } catch (error) {
-            console.error('Erro ao verificar PIX:', error);
-            statusElement.innerHTML = `
-                <i class="fas fa-exclamation-triangle" style="color: var(--accent);"></i> 
-                Erro ao verificar. Tentando novamente... (${minutos}:${segundos.toString().padStart(2, '0')})
-            `;
-        }
-    }, 5000); // Verifica a cada 5 segundos
 }
 
 function copiarPix() {
@@ -4391,6 +4465,221 @@ function copiarPix() {
     });
 }
 
+// VERIFICAÇÃO MELHORADA
+function iniciarVerificacaoPix(transactionId, dataExpiracao) {
+    if (pixInterval) clearInterval(pixInterval);
+    
+    const statusElement = document.getElementById('pixStatus');
+    const copyArea = document.getElementById('pixCopyPaste');
+    let tentativas = 0;
+    const maxTentativas = 120; // 10 minutos
+    
+    // Converte a data de expiração para timestamp
+    const expiraEm = new Date(dataExpiracao).getTime();
+    
+    // Função para verificar status
+    const verificarStatus = async () => {
+        tentativas++;
+        
+        try {
+            // Verifica se já expirou
+            const agora = new Date().getTime();
+            const tempoRestante = Math.max(0, Math.floor((expiraEm - agora) / 1000));
+            
+            if (tempoRestante <= 0) {
+                // PIX EXPIRADO
+                clearInterval(pixInterval);
+                statusElement.innerHTML = `
+                    <i class="fas fa-clock" style="color: var(--accent);"></i> 
+                    PIX expirado (10 minutos). Gere um novo QR Code.
+                `;
+                copyArea.style.opacity = '0.5';
+                copyArea.style.pointerEvents = 'none';
+                sessionStorage.removeItem('pixTransactionId');
+                return;
+            }
+            
+            // Faz a verificação no servidor
+            const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+            const response = await fetch(`${linkApi}/api/doacoes/verificar/${transactionId}`);
+            const data = await response.json();
+            
+            if (data.status === 'pago') {
+                // PAGAMENTO CONFIRMADO!
+                clearInterval(pixInterval);
+                statusElement.innerHTML = `
+                    <i class="fas fa-check-circle" style="color: var(--primary);"></i> 
+                    Pagamento confirmado! +${data.xp.toLocaleString('pt-BR')} XP creditados!
+                `;
+                
+                // Atualiza o XP do usuário
+                userProgress.addXP(data.xp);
+                
+                // Mostra toast de sucesso
+                ToastSystem.show(`🎉 PIX recebido! +${data.xp.toLocaleString('pt-BR')} XP!`, 'success');
+                
+                // Limpa o sessionStorage
+                sessionStorage.removeItem('pixTransactionId');
+                
+                // Fecha o modal após 3 segundos
+                setTimeout(() => {
+                    fecharModalPix();
+                }, 3000);
+                
+            } else if (data.status === 'expired') {
+                // PIX EXPIRADO
+                clearInterval(pixInterval);
+                statusElement.innerHTML = `
+                    <i class="fas fa-clock" style="color: var(--accent);"></i> 
+                    PIX expirado (10 minutos). Gere um novo QR Code.
+                `;
+                copyArea.style.opacity = '0.5';
+                copyArea.style.pointerEvents = 'none';
+                sessionStorage.removeItem('pixTransactionId');
+                
+            } else if (data.status === 'pending') {
+                // AINDA PENDENTE - mostra tempo restante
+                const minutos = Math.floor(tempoRestante / 60);
+                const segundos = tempoRestante % 60;
+                
+                statusElement.innerHTML = `
+                    <i class="fas fa-spinner fa-spin"></i> 
+                    Aguardando pagamento... Expira em ${minutos}:${segundos.toString().padStart(2, '0')}
+                `;
+            }
+            
+            // Se passou do limite de tentativas, para a verificação
+            if (tentativas >= maxTentativas) {
+                clearInterval(pixInterval);
+                statusElement.innerHTML = `
+                    <i class="fas fa-clock"></i> 
+                    Tempo esgotado (10 minutos). Gere um novo PIX.
+                `;
+                sessionStorage.removeItem('pixTransactionId');
+            }
+            
+        } catch (error) {
+            console.error('Erro ao verificar PIX:', error);
+            
+            // Mesmo com erro, tenta calcular o tempo restante
+            const agora = new Date().getTime();
+            const tempoRestante = Math.max(0, Math.floor((expiraEm - agora) / 1000));
+            const minutos = Math.floor(tempoRestante / 60);
+            const segundos = tempoRestante % 60;
+            
+            statusElement.innerHTML = `
+                <i class="fas fa-exclamation-triangle" style="color: var(--accent);"></i> 
+                Erro na verificação. Tentando novamente... (${minutos}:${segundos.toString().padStart(2, '0')})
+            `;
+        }
+    };
+    
+    // Executa imediatamente
+    verificarStatus();
+    
+    // Configura o intervalo
+    pixInterval = setInterval(verificarStatus, 3000); // A cada 3 segundos (mais rápido)
+}
+
+// VERIFICAÇÃO QUANDO A PÁGINA VOLTA A TER FOCO
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && transactionIdAtual) {
+        // A página voltou a ter foco! Verifica imediatamente
+        console.log('Página voltou! Verificando PIX...');
+        
+        const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+        fetch(`${linkApi}/api/doacoes/verificar/${transactionIdAtual}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'pago') {
+                    // Pagamento confirmado!
+                    userProgress.addXP(data.xp);
+                    ToastSystem.show(`🎉 PIX confirmado! +${data.xp.toLocaleString('pt-BR')} XP!`, 'success');
+                    
+                    // Atualiza o modal
+                    const statusElement = document.getElementById('pixStatus');
+                    statusElement.innerHTML = `
+                        <i class="fas fa-check-circle" style="color: var(--primary);"></i> 
+                        Pagamento confirmado! +${data.xp.toLocaleString('pt-BR')} XP creditados!
+                    `;
+                    
+                    // Fecha após 3 segundos
+                    setTimeout(() => {
+                        fecharModalPix();
+                    }, 3000);
+                }
+            })
+            .catch(err => console.error('Erro na verificação pós-foco:', err));
+    }
+});
+
+// RECUPERA TRANSAÇÃO SE A PÁGINA RECARREGAR
+window.addEventListener('load', () => {
+    const savedTransactionId = sessionStorage.getItem('pixTransactionId');
+    const savedExpiracao = sessionStorage.getItem('pixExpiracao');
+    
+    if (savedTransactionId && savedExpiracao) {
+        // Verifica se ainda não expirou
+        const agora = new Date().getTime();
+        const expiraEm = new Date(savedExpiracao).getTime();
+        
+        if (agora < expiraEm) {
+            // Ainda não expirou - reabre o modal
+            setTimeout(() => {
+                abrirModalPix();
+                
+                // Tenta recuperar os dados da transação
+                setTimeout(() => {
+                    transactionIdAtual = savedTransactionId;
+                    iniciarVerificacaoPix(savedTransactionId, savedExpiracao);
+                    
+                    // Tenta buscar o QR Code novamente
+                    const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+                    fetch(`${linkApi}/api/doacoes/recuperar/${savedTransactionId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                document.getElementById('pixQrCode').innerHTML = 
+                                    `<img src="data:image/png;base64,${data.qrCode}" alt="QR Code PIX">`;
+                                document.getElementById('pixCopyText').innerText = data.copyPaste;
+                                document.getElementById('pixQrArea').style.display = 'block';
+                            }
+                        })
+                        .catch(err => console.error('Erro ao recuperar PIX:', err));
+                }, 500);
+            }, 1000);
+        } else {
+            sessionStorage.removeItem('pixTransactionId');
+        }
+    }
+});
+
+// BOTÃO MANUAL DE VERIFICAÇÃO (opcional)
+function verificarPagamentoAgora() {
+    if (!transactionIdAtual) return;
+    
+    const statusElement = document.getElementById('pixStatus');
+    statusElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+    
+    const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+    fetch(`${linkApi}/api/doacoes/verificar/${transactionIdAtual}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'pago') {
+                userProgress.addXP(data.xp);
+                ToastSystem.show(`🎉 PIX confirmado! +${data.xp.toLocaleString('pt-BR')} XP!`, 'success');
+                statusElement.innerHTML = `
+                    <i class="fas fa-check-circle" style="color: var(--primary);"></i> 
+                    Pagamento confirmado! +${data.xp.toLocaleString('pt-BR')} XP!
+                `;
+                setTimeout(fecharModalPix, 3000);
+            } else if (data.status === 'pending') {
+                ToastSystem.show('Pagamento ainda não identificado.', 'info');
+            } else if (data.status === 'expired') {
+                ToastSystem.show('PIX expirado. Gere um novo.', 'error');
+            }
+        });
+}
 // CSS adicional (pode colocar no <style> existente)
 const style = document.createElement('style');
 style.innerHTML = `
@@ -4762,7 +5051,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         <div class="pix-header">
             <i class="fas fa-coins" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
             <div class="pix-title">Apoie o Marujo Flix</div>
-            <div class="pix-subtitle">R$ 1 = 100 XP</div>
+            <div class="pix-subtitle">R$ 1 = <span style="color: gold; font-size: 1.3rem;">1000 XP</span></div>
         </div>
 
         <div class="pix-body">
@@ -4773,26 +5062,26 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
                 </label>
                 <div class="pix-input-wrapper">
                     <span class="pix-currency">R$</span>
-                    <input type="number" id="pixValorInput" min="1" step="0.01" value="10" 
+                    <input type="number" id="pixValorInput" min="1" step="0.01" value="5" 
                            oninput="atualizarXPPreview(this.value)">
                 </div>
                 
                 <!-- PREVIEW DO XP -->
                 <div class="pix-xp-preview" id="xpPreview">
                     <span>Você ganhará:</span>
-                    <span class="pix-xp-value" id="xpPreviewValue">1000</span>
+                    <span class="pix-xp-value" id="xpPreviewValue">5000</span>
                     <span>XP</span>
                 </div>
             </div>
 
-            <!-- SUGESTÕES RÁPIDAS -->
+            <!-- SUGESTÕES RÁPIDAS (atualizadas) -->
             <div class="pix-sugestoes-grid">
-                <button class="pix-sugestao-btn" onclick="definirValorSugestao(5)">R$ 5<br><small>500 XP</small></button>
-                <button class="pix-sugestao-btn" onclick="definirValorSugestao(10)">R$ 10<br><small>1000 XP</small></button>
-                <button class="pix-sugestao-btn" onclick="definirValorSugestao(20)">R$ 20<br><small>2000 XP</small></button>
-                <button class="pix-sugestao-btn" onclick="definirValorSugestao(50)">R$ 50<br><small>5000 XP</small></button>
-                <button class="pix-sugestao-btn" onclick="definirValorSugestao(100)">R$ 100<br><small>10000 XP</small></button>
-                <button class="pix-sugestao-btn" onclick="definirValorSugestao(200)">R$ 200<br><small>20000 XP</small></button>
+                <button class="pix-sugestao-btn" onclick="definirValorSugestao(1)">R$ 1<br><small>1000 XP</small></button>
+                <button class="pix-sugestao-btn" onclick="definirValorSugestao(3)">R$ 3<br><small>3000 XP</small></button>
+                <button class="pix-sugestao-btn" onclick="definirValorSugestao(5)">R$ 5<br><small>5000 XP</small></button>
+                <button class="pix-sugestao-btn" onclick="definirValorSugestao(10)">R$ 10<br><small>10.000 XP</small></button>
+                <button class="pix-sugestao-btn" onclick="definirValorSugestao(20)">R$ 20<br><small>20.000 XP</small></button>
+                <button class="pix-sugestao-btn" onclick="definirValorSugestao(50)">R$ 50<br><small>50.000 XP</small></button>
             </div>
 
             <!-- Botão gerar PIX -->
@@ -4800,7 +5089,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
                 <i class="fas fa-qrcode"></i> Gerar QR Code PIX
             </button>
 
-            <!-- Área do QR Code (inicialmente oculta) -->
+            <!-- Área do QR Code -->
             <div id="pixQrArea" class="pix-qr-area" style="display: none;">
                 <div class="pix-qr-container" id="pixQrCode"></div>
                 
@@ -4810,7 +5099,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
                     <i class="fas fa-copy pix-copy-icon"></i>
                 </div>
                 
-                <!-- Status com instruções -->
+                <!-- Status com instruções e contador -->
                 <div class="pix-status" id="pixStatus">
                     <i class="fas fa-spinner fa-spin"></i> Aguardando pagamento...
                 </div>
@@ -4818,7 +5107,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
                 <!-- Instruções adicionais -->
                 <p class="pix-help-text">
                     <i class="fas fa-info-circle"></i> 
-                    Após o pagamento, o XP será creditado automaticamente em até 1 minuto.
+                    Após o pagamento, o XP será creditado automaticamente! ⏱️ Expira em 10 minutos.
                 </p>
             </div>
         </div>
