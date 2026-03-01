@@ -4239,7 +4239,11 @@ async function gerarPix() {
             method: 'POST',
             mode: 'cors',
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-            body: JSON.stringify({ valor: valor })
+            body: JSON.stringify({ 
+                valor: valor,
+                userId: currentUser.uid,
+                expiraEm: 10 // 👈 DIZ AO BACKEND QUE EXPIRA EM 10 MINUTOS
+            })
         });
         
         const data = await response.json();
@@ -4263,13 +4267,8 @@ async function gerarPix() {
             
             ToastSystem.show(`PIX gerado! Ganhe ${data.xp.toLocaleString('pt-BR')} XP`, 'success');
             
-            // Rola automaticamente para o QR Code
-            setTimeout(() => {
-                document.querySelector('.pix-qr-area').scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
-            }, 100);
+            // INICIA A VERIFICAÇÃO AUTOMÁTICA
+            iniciarVerificacaoPix(data.transactionId, data.expiracao);
         }
     } catch (error) {
         ToastSystem.show('Erro ao gerar PIX', 'error');
@@ -4278,6 +4277,102 @@ async function gerarPix() {
         btn.innerHTML = textoOriginal;
         btn.disabled = false;
     }
+}
+
+// Função para verificar o status do pagamento (10 MINUTOS)
+function iniciarVerificacaoPix(transactionId, dataExpiracao) {
+    if (pixInterval) clearInterval(pixInterval);
+    
+    const statusElement = document.getElementById('pixStatus');
+    let tentativas = 0;
+    const maxTentativas = 120; // 10 minutos (120 tentativas a cada 5 segundos)
+    
+    // Converte a data de expiração para timestamp
+    const expiraEm = new Date(dataExpiracao).getTime();
+    
+    pixInterval = setInterval(async () => {
+        tentativas++;
+        
+        // Verifica se já expirou pelo tempo local
+        const agora = new Date().getTime();
+        const tempoRestante = Math.max(0, Math.floor((expiraEm - agora) / 1000)); // em segundos
+        
+        if (tempoRestante <= 0) {
+            // ⏰ PIX EXPIRADO!
+            clearInterval(pixInterval);
+            statusElement.innerHTML = `
+                <i class="fas fa-clock" style="color: var(--accent);"></i> 
+                PIX expirado (10 minutos). Gere um novo QR Code.
+            `;
+            
+            // Desabilita o botão de copiar
+            document.getElementById('pixCopyPaste').style.opacity = '0.5';
+            document.getElementById('pixCopyPaste').style.pointerEvents = 'none';
+            
+            ToastSystem.show('⏰ Tempo esgotado! Gere um novo PIX.', 'info');
+            return;
+        }
+        
+        try {
+            const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+            const response = await fetch(`${linkApi}/api/doacoes/verificar/${transactionId}`);
+            const data = await response.json();
+            
+            if (data.status === 'pago') {
+                // ✅ PAGAMENTO CONFIRMADO!
+                clearInterval(pixInterval);
+                statusElement.innerHTML = `
+                    <i class="fas fa-check-circle" style="color: var(--primary);"></i> 
+                    Pagamento confirmado! +${data.xp} XP creditados!
+                `;
+                
+                // Atualiza o XP do usuário
+                userProgress.addXP(data.xp);
+                
+                // Mostra toast de sucesso
+                ToastSystem.show(`🎉 PIX recebido! +${data.xp} XP!`, 'success');
+                
+                // Fecha o modal após 3 segundos
+                setTimeout(() => {
+                    fecharModalPix();
+                }, 3000);
+                
+            } else if (data.status === 'expired') {
+                // ⏰ PIX EXPIRADO (pelo backend)
+                clearInterval(pixInterval);
+                statusElement.innerHTML = `
+                    <i class="fas fa-clock" style="color: var(--accent);"></i> 
+                    PIX expirado (10 minutos). Gere um novo QR Code.
+                `;
+                
+            } else if (data.status === 'pending') {
+                // Mostra o tempo restante em minutos e segundos
+                const minutos = Math.floor(tempoRestante / 60);
+                const segundos = tempoRestante % 60;
+                
+                statusElement.innerHTML = `
+                    <i class="fas fa-spinner fa-spin"></i> 
+                    Aguardando pagamento... Expira em ${minutos}:${segundos.toString().padStart(2, '0')}
+                `;
+            }
+            
+            // Se passou do limite de tentativas, para a verificação
+            if (tentativas >= maxTentativas) {
+                clearInterval(pixInterval);
+                statusElement.innerHTML = `
+                    <i class="fas fa-clock"></i> 
+                    Tempo esgotado (10 minutos). Gere um novo PIX.
+                `;
+            }
+            
+        } catch (error) {
+            console.error('Erro ao verificar PIX:', error);
+            statusElement.innerHTML = `
+                <i class="fas fa-exclamation-triangle" style="color: var(--accent);"></i> 
+                Erro ao verificar. Tentando novamente... (${minutos}:${segundos.toString().padStart(2, '0')})
+            `;
+        }
+    }, 5000); // Verifica a cada 5 segundos
 }
 
 function copiarPix() {
