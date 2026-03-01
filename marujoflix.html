@@ -299,6 +299,10 @@
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: var(--text-muted); background: none; border: none; cursor: pointer; flex: 1; font-size: 0.75rem; }
         .nav-item.active { color: var(--primary); }
         .nav-item i { font-size: 1.4rem; }
+        
+        
+        
+        
 
         .sidebar-menu { position: fixed; top: 0; right: -100%; width: 90%; max-width: 350px; height: 100%; background: var(--gradient-card); z-index: 10002; transition: right 0.4s ease; border-left: 1px solid var(--border-color); overflow-y: auto; }
         .sidebar-menu.active { right: 0; }
@@ -1067,8 +1071,840 @@
     transform: scale(1.1) rotate(15deg);
     box-shadow: 0 0 15px rgba(0, 136, 255, 0.5);
 }
+/* ===== MODAL PIX DEDICADO ===== */
+.pix-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 20000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
 
+.pix-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
 
+.pix-modal-content {
+    background: linear-gradient(145deg, #121230, #1a1a3a);
+    width: 90%;
+    max-width: 450px;
+    border-radius: 24px;
+    border: 2px solid var(--primary);
+    box-shadow: 0 20px 60px rgba(0, 255, 179, 0.3);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.pix-modal.active .pix-modal-content {
+    transform: translateY(0);
+}
+
+/* Botão X SEMPRE visível e funcional */
+.pix-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--primary);
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 20001;
+}
+
+.pix-modal-close:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: rotate(90deg) scale(1.1);
+}
+
+.pix-header {
+    text-align: center;
+    padding: 30px 20px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.pix-title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.pix-subtitle {
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.pix-body {
+    padding: 20px;
+}
+
+.pix-input-group {
+    margin-bottom: 20px;
+}
+
+.pix-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.pix-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 5px;
+    transition: all 0.3s ease;
+}
+
+.pix-input-wrapper:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.pix-currency {
+    padding: 0 10px;
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.pix-input-wrapper input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 12px 5px;
+    color: white;
+    font-size: 1.2rem;
+    outline: none;
+}
+
+.pix-input-wrapper input[type="number"]::-webkit-inner-spin-button,
+.pix-input-wrapper input[type="number"]::-webkit-outer-spin-button {
+    opacity: 0.5;
+    height: 20px;
+}
+
+.pix-xp-preview {
+    margin-top: 10px;
+    text-align: center;
+    background: rgba(0, 255, 179, 0.1);
+    padding: 15px;
+    border-radius: 12px;
+    border: 2px solid var(--primary);
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+.pix-xp-value {
+    color: gold;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin: 0 5px;
+}
+
+.pix-sugestoes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.pix-sugestao-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px 3px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pix-sugestao-btn:hover {
+    border-color: var(--primary);
+    background: rgba(0, 255, 179, 0.1);
+    transform: translateY(-2px);
+}
+
+.pix-sugestao-btn small {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--primary);
+    margin-top: 3px;
+}
+
+.pix-gerar-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border: none;
+    border-radius: 30px;
+    color: black;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.pix-gerar-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px var(--primary-glow);
+}
+
+.pix-gerar-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.pix-qr-area {
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+.pix-qr-container {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 15px;
+    display: inline-block;
+    border: 2px solid var(--primary);
+}
+
+.pix-qr-container img {
+    width: 200px;
+    height: 200px;
+    display: block;
+}
+
+.pix-copy-area {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px dashed var(--primary);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    position: relative;
+    word-break: break-all;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.pix-copy-area:hover {
+    background: rgba(0, 255, 179, 0.1);
+    border-color: var(--primary);
+}
+
+.pix-copy-icon {
+    color: var(--primary);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.pix-status {
+    margin: 15px 0;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.pix-help-text {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ajustes para mobile */
+@media (max-width: 480px) {
+    .pix-modal-content {
+        width: 95%;
+        max-height: 85vh;
+    }
+    
+    .pix-sugestoes-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .pix-qr-container img {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .pix-modal-close {
+        width: 35px;
+        height: 35px;
+        top: 10px;
+        right: 10px;
+    }
+}
+/* ===== BOTÃO FLUTUANTE PIX - BAÚ DO TESOURO ===== */
+.floating-pix-container {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    z-index: 999;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.5));
+}
+
+.pix-treasure-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #8B4513, #654321);
+    border: 4px solid #FFD700;
+    cursor: pointer;
+    position: relative;
+    overflow: visible;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    animation: treasureFloat 3s ease-in-out infinite;
+}
+
+.pix-treasure-btn:hover {
+    transform: scale(1.15) rotate(5deg);
+    border-color: #FFA500;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.6);
+    animation: treasureShake 0.5s ease-in-out;
+}
+
+.treasure-chest {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.treasure-lid {
+    position: absolute;
+    font-size: 2.2rem;
+    color: #FFD700;
+    transform: rotate(0deg);
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+}
+
+.pix-treasure-btn:hover .treasure-lid {
+    transform: rotate(-15deg) translateY(-5px);
+    color: #FFA500;
+}
+
+.treasure-coins {
+    position: absolute;
+    font-size: 1.8rem;
+    color: #FFD700;
+    opacity: 0;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.pix-treasure-btn:hover .treasure-coins {
+    opacity: 1;
+    animation: coinsBounce 0.6s ease infinite;
+}
+
+/* Múltiplas moedas com delay diferente */
+.pix-treasure-btn:hover .treasure-coins:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.pix-sparkle {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 1.2rem;
+    color: gold;
+    animation: sparkleRotate 2s linear infinite;
+    filter: drop-shadow(0 0 5px gold);
+}
+
+.xp-badge-treasure {
+    position: absolute;
+    bottom: -5px;
+    left: -5px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    font-size: 0.8rem;
+    font-weight: 900;
+    padding: 4px 8px;
+    border-radius: 20px;
+    border: 2px solid white;
+    box-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+    animation: xpPulse 2s infinite;
+    white-space: nowrap;
+}
+
+.pix-tooltip {
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    white-space: nowrap;
+    margin-right: 15px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    border: 2px solid #FFD700;
+    pointer-events: none;
+}
+
+.pix-treasure-btn:hover .pix-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(-5px);
+}
+
+/* Animações */
+@keyframes treasureFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes treasureShake {
+    0%, 100% { transform: scale(1.15) rotate(5deg); }
+    25% { transform: scale(1.15) rotate(10deg); }
+    75% { transform: scale(1.15) rotate(0deg); }
+}
+
+@keyframes coinsBounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+    50% { transform: translateY(-5px) rotate(15deg); opacity: 1; }
+}
+
+@keyframes sparkleRotate {
+    0% { transform: rotate(0deg) scale(1); opacity: 1; }
+    50% { transform: rotate(180deg) scale(1.2); opacity: 0.8; }
+    100% { transform: rotate(360deg) scale(1); opacity: 1; }
+}
+
+@keyframes xpPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Efeito de brilho ao redor */
+.pix-treasure-btn::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, transparent 70%);
+    animation: glowPulse 2s infinite;
+    z-index: -1;
+}
+
+@keyframes glowPulse {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+    .floating-pix-container {
+        bottom: 90px;
+        right: 20px;
+    }
+    
+    .pix-treasure-btn {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .treasure-lid {
+        font-size: 1.8rem;
+    }
+    
+    .treasure-coins {
+        font-size: 1.5rem;
+    }
+    
+    .xp-badge-treasure {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+    }
+    
+    .pix-tooltip {
+        display: none; /* Esconde tooltip no mobile */
+    }
+}
+
+/* Animação de partículas ao clicar */
+.pix-treasure-btn:active {
+    transform: scale(0.95);
+}
+
+.pix-treasure-btn:active::after {
+    content: '✨';
+    position: absolute;
+    font-size: 1.5rem;
+    animation: particleBurst 0.5s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes particleBurst {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--tx, 20px), var(--ty, -20px)) scale(0);
+    }
+}
+
+/* ===== SIDEBAR MENU - VERSÃO SIMPLIFICADA ===== */
+.sidebar-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 85%;
+    max-width: 320px;
+    height: 100%;
+    background: linear-gradient(165deg, #0a0a1f 0%, #1a1a3a 100%);
+    border-left: 2px solid var(--primary);
+    z-index: 10002;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    padding: 20px 15px;
+}
+
+.sidebar-menu.active {
+    right: 0;
+}
+
+/* CABEÇALHO */
+.sidebar-header {
+    position: relative;
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(0, 255, 179, 0.2);
+}
+
+.sidebar-close-btn {
+    position: absolute;
+    top: -10px;
+    right: -5px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 179, 0.3);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.sidebar-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    overflow: hidden;
+    margin: 0 auto 10px;
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.sidebar-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sidebar-rank {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 900;
+    margin-bottom: 3px;
+}
+
+.sidebar-level {
+    color: var(--primary);
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+/* BARRA DE PROGRESSO */
+.progress-container {
+    margin: 15px 0 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), gold);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    display: block;
+    text-align: right;
+}
+
+/* ÁREA DE LOGIN */
+.auth-area {
+    margin-top: 15px;
+}
+
+/* ESTATÍSTICAS */
+.stats-row {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(0, 255, 179, 0.2);
+}
+
+.stat-item {
+    text-align: center;
+    flex: 1;
+}
+
+.stat-item i {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.stat-number {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: white;
+    display: block;
+}
+
+.stat-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+/* BOTÕES DE AÇÃO */
+.action-buttons {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0, 255, 179, 0.2);
+}
+
+.pix-button, .rank-button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    transition: transform 0.2s ease;
+}
+
+.pix-button {
+    background: linear-gradient(135deg, #00ffb3, #00cc99);
+}
+
+.rank-button {
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+}
+
+.pix-button:active, .rank-button:active {
+    transform: scale(0.98);
+}
+
+.pix-button i, .rank-button i {
+    font-size: 1.3rem;
+    color: black;
+    width: 30px;
+}
+
+.button-text {
+    flex: 1;
+    text-align: left;
+}
+
+.button-text strong {
+    display: block;
+    color: black;
+    font-size: 0.9rem;
+}
+
+.button-text small {
+    display: block;
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 0.7rem;
+}
+
+.xp-badge {
+    background: white;
+    color: black;
+    font-size: 0.7rem;
+    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* NAVEGAÇÃO RÁPIDA */
+.quick-nav {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0, 255, 179, 0.2);
+}
+
+.nav-item {
+    width: 100%;
+    padding: 12px 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-item:active {
+    background: rgba(0, 255, 179, 0.1);
+    color: var(--primary);
+}
+
+.nav-item i {
+    width: 20px;
+    font-size: 1rem;
+}
+
+.nav-item span {
+    font-size: 0.9rem;
+}
+
+/* RODAPÉ */
+.sidebar-footer {
+    padding: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.online-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.online-info i {
+    color: var(--primary);
+    font-size: 0.8rem;
+}
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.social-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 179, 0.3);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.social-icon:active {
+    background: var(--primary);
+    color: black;
+    border-color: var(--primary);
+}
     </style>
 </head>
 <body>
@@ -1201,69 +2037,111 @@
     <section class="content-grid" id="contentGrid" style="display: none;"></section>
 
 <div class="sidebar-menu" id="sidebarMenu">
+    <!-- CABEÇALHO SIMPLIFICADO (MANTÉM TODOS OS IDS ORIGINAIS) -->
     <div class="sidebar-header">
-        <button class="sidebar-close-btn" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        <button class="sidebar-close-btn" onclick="toggleSidebar()">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <!-- AVATAR (MESMO ID) -->
         <div class="sidebar-avatar" id="sidebarAvatarContainer">
             <img src="imagens/1772133683485~2.png" alt="Avatar" id="sidebarAvatarImg" onerror="this.src='imagens/1772133683485~2.png'">
         </div>
         
-        <h2 style="color: white; margin-top: 10px; font-size: 1.1rem;">
-            <span id="sidebarRank">Visitante</span>
-        </h2>
-        <div style="color: var(--primary); font-size: 0.9rem; margin-bottom: 15px;" id="sidebarLevel">Nv. 1</div>
+        <!-- TÍTULOS (MESMOS IDS) -->
+        <h2 class="sidebar-rank" id="sidebarRank">Visitante</h2>
+        <div class="sidebar-level" id="sidebarLevel">Nv. 1</div>
         
-        <!-- ÁREA DE LOGIN/LOGOUT MELHORADA -->
-        <div id="sidebarAuthArea" style="margin-top: 5px; width: 100%;"></div>
+        <!-- BARRA DE PROGRESSO (IDS ORIGINAIS) -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="sidebarProgressFill" style="width: 0%;"></div>
+            </div>
+            <span class="progress-text" id="sidebarProgressText">0/100 XP</span>
+        </div>
+        
+        <!-- ÁREA DE LOGIN (MESMO ID) -->
+        <div id="sidebarAuthArea" class="auth-area"></div>
     </div>
-    
-    <div style="padding: 20px; text-align: center;">
-        <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">
-            <i class="fas fa-ship" style="color: var(--primary);"></i> 
-            Sua base de operações. Tudo que você favorita fica salvo no cache da sua embarcação!
-        </p>
-        
-        <!-- ESTATÍSTICAS EM CARDS MAIS BONITOS -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
-            <div style="background: rgba(0, 255, 179, 0.1); border-radius: 15px; padding: 15px 5px; border: 1px solid rgba(0, 255, 179, 0.3);">
-                <div style="font-size: 1.8rem; font-weight: bold; color: var(--primary);" id="statFavs">0</div>
-                <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Favoritos</div>
-                <i class="fas fa-heart" style="color: var(--accent); margin-top: 5px;"></i>
-            </div>
-            <div style="background: rgba(138, 43, 226, 0.1); border-radius: 15px; padding: 15px 5px; border: 1px solid rgba(138, 43, 226, 0.3);">
-                <div style="font-size: 1.8rem; font-weight: bold; color: var(--secondary);" id="statXP">0</div>
-                <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Seu XP</div>
-                <i class="fas fa-star" style="color: gold; margin-top: 5px;"></i>
-            </div>
-        </div>
-        
-        <!-- BARRA DE PROGRESSO DO NÍVEL (VISUAL) -->
-        <div style="margin-bottom: 25px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 12px;">
-            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;">
-                <span><i class="fas fa-anchor"></i> Próximo nível</span>
-                <span id="sidebarProgressText">0/100 XP</span>
-            </div>
-            <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
-                <div id="sidebarProgressFill" style="width: 0%; height: 100%; background: var(--gradient-primary); border-radius: 3px;"></div>
-            </div>
-        </div>
-        
-        <!-- VISUALIZAÇÕES GLOBAIS (MENOR) -->
-      
 
-        <button onclick="toggleSocialHub()" style="width: 100%; padding: 15px; background: var(--gradient-primary); border: none; color: black; font-weight: bold; border-radius: 30px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px;">
-            <i class="fas fa-crown" style="color: black;"></i> Ver Rank
+    <!-- ESTATÍSTICAS (MANTÉM IDS ORIGINAIS) -->
+    <div class="stats-row">
+        <div class="stat-item">
+            <i class="fas fa-heart" style="color: #ff4d4d;"></i>
+            <span class="stat-number" id="statFavs">0</span>
+            <span class="stat-label">Favoritos</span>
+        </div>
+        
+        <div class="stat-item">
+            <i class="fas fa-star" style="color: gold;"></i>
+            <span class="stat-number" id="statXP">0</span>
+            <span class="stat-label">XP</span>
+        </div>
+        
+        <div class="stat-item">
+            <i class="fas fa-eye" style="color: var(--primary);"></i>
+            <span class="stat-number" id="statWatched">0</span>
+            <span class="stat-label">Vistos</span>
+        </div>
+    </div>
+
+    <!-- BOTÕES DE AÇÃO (MANTÉM FUNÇÕES ORIGINAIS) -->
+    <div class="action-buttons">
+        <!-- BOTÃO PIX (MESMA FUNÇÃO) -->
+        <button class="pix-button" onclick="abrirModalPix()">
+            <i class="fas fa-coins"></i>
+            <div class="button-text">
+                <strong>Apoiar com PIX</strong>
+                <small>Ganhe XP</small>
+            </div>
+            <span class="xp-badge">+XP</span>
+        </button>
+        
+        <!-- BOTÃO RANK (MESMA FUNÇÃO) -->
+        <button class="rank-button" onclick="toggleSocialHub(); toggleSidebar()">
+            <i class="fas fa-crown"></i>
+            <div class="button-text">
+                <strong>Ranking Global</strong>
+                <small>Veja os melhores</small>
+            </div>
         </button>
     </div>
-    <!-- Dentro do sidebar-menu, depois das estatísticas -->
-<div style="padding: 20px;">
-    <button onclick="abrirModalPix()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #00ffb3, #00cc99); border: none; color: black; font-weight: bold; border-radius: 30px; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px;">
-        <i class="fas fa-pix"></i> Apoiar com PIX
-    </button>
-    
-    <button onclick="toggleSocialHub()" style="width: 100%; padding: 15px; background: var(--gradient-primary); border: none; color: black; font-weight: bold; border-radius: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
-        <i class="fas fa-crown"></i> Ver Rank
-    </button>
-</div>
+
+    <!-- MENU DE NAVEGAÇÃO RÁPIDO -->
+    <div class="quick-nav">
+        <button class="nav-item" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); toggleSidebar()">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </button>
+        
+        <button class="nav-item" onclick="IPTVSystem.mudarAba('em_alta'); toggleSidebar()">
+            <i class="fas fa-fire"></i>
+            <span>Em Alta</span>
+        </button>
+        
+        <button class="nav-item" onclick="IPTVSystem.mudarAba('favoritos'); toggleSidebar()">
+            <i class="fas fa-heart"></i>
+            <span>Favoritos</span>
+        </button>
+        
+        <button class="nav-item" onclick="IPTVSystem.mudarAba('historico'); toggleSidebar()">
+            <i class="fas fa-history"></i>
+            <span>Histórico</span>
+        </button>
+    </div>
+
+    <!-- RODAPÉ SIMPLES -->
+    <div class="sidebar-footer">
+        <div class="online-info">
+            <i class="fas fa-users"></i>
+            <span id="onlineCountNumber">1</span> online
+        </div>
+        
+        <div class="social-icons">
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+        </div>
+    </div>
 </div>
 
      <div class="episodes-modal" id="episodesModal">
@@ -3355,76 +4233,66 @@ async function gerarPix() {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gerando...';
     btn.disabled = true;
     
-    
     try {
-      const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
-    
+        const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
         const response = await fetch(`${linkApi}/api/doacoes/gerar-pix`, {
             method: 'POST',
             mode: 'cors',
-                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             body: JSON.stringify({ valor: valor })
         });
         
         const data = await response.json();
         
         if (data.success) {
-            document.getElementById('pixQrCode').innerHTML = `<img src="data:image/png;base64,${data.qrCode}" style="width: 200px;">`;
-            document.getElementById('pixCopyPaste').innerHTML = data.copyPaste;
+            // Limpa e insere o QR Code
+            const qrContainer = document.getElementById('pixQrCode');
+            qrContainer.innerHTML = `<img src="data:image/png;base64,${data.qrCode}" alt="QR Code PIX">`;
+            
+            // Insere o código copiável
+            const copyContainer = document.getElementById('pixCopyPaste');
+            copyContainer.innerHTML = `
+                <span id="pixCopyText">${data.copyPaste}</span>
+                <i class="fas fa-copy pix-copy-icon"></i>
+            `;
+            
+            // Mostra a área do QR Code
             document.getElementById('pixQrArea').style.display = 'block';
             
             transactionIdAtual = data.transactionId;
             
             ToastSystem.show(`PIX gerado! Ganhe ${data.xp.toLocaleString('pt-BR')} XP`, 'success');
             
-           // iniciarVerificacaoPix();
+            // Rola automaticamente para o QR Code
+            setTimeout(() => {
+                document.querySelector('.pix-qr-area').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 100);
         }
     } catch (error) {
         ToastSystem.show('Erro ao gerar PIX', 'error');
+        console.error('Erro PIX:', error);
     } finally {
         btn.innerHTML = textoOriginal;
         btn.disabled = false;
     }
 }
 
-/*function iniciarVerificacaoPix() {
-    if (pixInterval) clearInterval(pixInterval);
-    
-    pixInterval = setInterval(async () => {
-        if (!transactionIdAtual) return;
-        
-        try {
-            const response = await fetch(`/api/doacoes/verificar-pagamento/${transactionIdAtual}`);
-            const data = await response.json();
-            
-            if (data.status === 'approved') {
-                clearInterval(pixInterval);
-                
-                document.getElementById('pixStatus').innerHTML = `
-                    <i class="fas fa-check-circle" style="color: var(--primary);"></i> 
-                    Pagamento confirmado! +${data.xp.toLocaleString('pt-BR')} XP
-                `;
-                
-                if (userProgress) {
-                    userProgress.addXP(data.xp);
-                }
-                
-                userProgress.updateUI();
-                
-                ToastSystem.show(`🎉 ${data.xp.toLocaleString('pt-BR')} XP creditado!`, 'success');
-                
-                setTimeout(fecharModalPix, 3000);
-            }
-        } catch (error) {
-            console.log('Erro ao verificar:', error);
-        }
-    }, 3000);
-}
-*/
 function copiarPix() {
-    const texto = document.getElementById('pixCopyPaste').innerText;
+    const texto = document.getElementById('pixCopyText').innerText;
     navigator.clipboard.writeText(texto).then(() => {
         ToastSystem.show('Código PIX copiado!', 'success');
+        
+        // Feedback visual
+        const copyArea = document.getElementById('pixCopyPaste');
+        copyArea.style.background = 'rgba(0, 255, 179, 0.2)';
+        setTimeout(() => {
+            copyArea.style.background = 'rgba(0, 0, 0, 0.3)';
+        }, 300);
+    }).catch(() => {
+        ToastSystem.show('Erro ao copiar', 'error');
     });
 }
 
@@ -3459,39 +4327,85 @@ document.head.appendChild(style);
         // ==========================================
     // SISTEMA DE RADAR (Pessoas Online)
     // ==========================================
-    let mySessionId = 'sessao_' + Math.random().toString(36).substr(2, 9);
+    // ==========================================
+// SISTEMA DE RADAR (Pessoas Online) - CORRIGIDO
+// ==========================================
+let mySessionId = null;
+let unsubscribeOnline = null;
 
-    let radarTimer = setInterval(() => {
-        if(window.fbOps && window.db) {
-            clearInterval(radarTimer);
-            
-            // 1. Pega um "Bilhete de Entrada"
-            const sessionRef = window.fbOps.doc(window.db, "online_users", mySessionId);
-            window.fbOps.setDoc(sessionRef, { active: true });
+/**
+ * Inicia o sistema de radar de usuários online.
+ * Deve ser chamado APÓS o Firebase estar pronto.
+ */
+function iniciarRadar() {
+    // Se já existe uma sessão, não inicia novamente
+    if (mySessionId) {
+        return;
+    }
 
-            // 2. Fica observando quantos bilhetes existem na mesa
-            const qOnline = window.fbOps.collection(window.db, "online_users");
-            window.fbOps.onSnapshot(qOnline, (snapshot) => {
-                const count = snapshot.size;
-                const contadorElemento = document.getElementById('onlineCountNumber');
-                if(contadorElemento) contadorElemento.textContent = count;
-            });
-            
-            // 3. Rasga o bilhete se a pessoa fechar a aba do navegador
-            window.addEventListener("beforeunload", () => {
-                window.fbOps.deleteDoc(sessionRef);
-            });
-            // Tenta rasgar o bilhete caso ela mude de aplicativo no celular
-            window.addEventListener("pagehide", () => {
-                window.fbOps.deleteDoc(sessionRef);
-            });
+    // Verifica se o Firebase e o Firestore estão disponíveis
+    if (!window.fbOps || !window.db) {
+        // Tenta novamente em 1 segundo se o Firebase não estiver pronto
+        setTimeout(iniciarRadar, 1000);
+        return;
+    }
+
+    console.log("⚓ Radar: Iniciando...");
+    mySessionId = 'sessao_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+
+    const sessionRef = window.fbOps.doc(window.db, "online_users", mySessionId);
+
+    // 1. Registra a presença do usuário atual
+    window.fbOps.setDoc(sessionRef, { 
+        active: true, 
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent.substring(0, 100) // info opcional
+    }).catch(error => {
+        console.error("Erro ao registrar presença:", error);
+        mySessionId = null; // Permite uma nova tentativa
+    });
+
+    // 2. Cria um listener para contar todos os documentos na coleção
+    const qOnline = window.fbOps.collection(window.db, "online_users");
+    unsubscribeOnline = window.fbOps.onSnapshot(qOnline, (snapshot) => {
+        const count = snapshot.size;
+        const contadorElemento = document.getElementById('onlineCountNumber');
+        if (contadorElemento) {
+            contadorElemento.textContent = count;
         }
-    }, 1000);
+        // Atualiza também o contador no sidebar, se ele existir (já tem um com o mesmo ID)
+    }, (error) => {
+        console.error("Erro no listener de online:", error);
+    });
+
+    // 3. Remove a própria presença quando a página for fechada ou recarregada
+    const removePresence = () => {
+        if (mySessionId && window.fbOps) {
+            const sessionRef = window.fbOps.doc(window.db, "online_users", mySessionId);
+            window.fbOps.deleteDoc(sessionRef).catch(error => {
+                // Se o erro for 'permission-denied' ou 'not-found', ignoramos.
+                if (error.code !== 'permission-denied' && error.code !== 'not-found') {
+                    console.error("Erro ao remover presença:", error);
+                }
+            });
+            if (unsubscribeOnline) {
+                unsubscribeOnline();
+            }
+        }
+    };
+
+    window.addEventListener("beforeunload", removePresence);
+    window.addEventListener("pagehide", removePresence);
+}
+
+// Inicia o radar assim que o DOM estiver pronto.
+// O Firebase já foi carregado no final do 
 
 
     // Deixamos apenas UM evento DOMContentLoaded para iniciar tudo
     document.addEventListener('DOMContentLoaded', () => {
         // Agora userProgress e getRankTitle já existem
+        iniciarRadar();
         const tipEl = document.getElementById('loadingTip');
         if (tipEl) {
             const patenteAtual = getRankTitle(userProgress.level);
@@ -3706,11 +4620,16 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
 
 
 
-<!-- BOTÃO FLUTUANTE PIX -->
-<div class="floating-reward-container" style="bottom: 100px;">
-    <button class="btn-floating-reward active" onclick="abrirModalPix()" title="Apoiar com PIX">
-        <i class="fas fa-pix"></i>
-        <span class="xp-badge-float">+XP</span>
+<!-- BOTÃO FLUTUANTE PIX - BAÚ DO TESOURO -->
+<div class="floating-pix-container" style="bottom: 100px;">
+    <button class="pix-treasure-btn" onclick="abrirModalPix()" title="Apoie o Marujo Flix e ganhe XP">
+        <div class="treasure-chest">
+            <i class="fas fa-crown treasure-lid"></i>
+            <i class="fas fa-coins treasure-coins"></i>
+        </div>
+        <span class="pix-sparkle">✦</span>
+        <span class="pix-tooltip">Apoiar com PIX</span>
+        <span class="xp-badge-treasure">+XP</span>
     </button>
 </div>
 
@@ -3737,39 +4656,42 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         </div>
     </div>
 <!-- ===== MODAL PIX - COLOQUE AQUI ===== -->
-<div id="pixModal" class="perfil-modal">
-    <div class="perfil-modal-content" style="max-width: 400px;">
-        <button class="perfil-fechar" onclick="fecharModalPix()"><i class="fas fa-times"></i></button>
+<!-- ===== MODAL PIX - VERSÃO CORRIGIDA E OTIMIZADA ===== -->
+<div id="pixModal" class="pix-modal">
+    <div class="pix-modal-content">
+        <!-- Botão X SEMPRE visível no topo direito -->
+        <button class="pix-modal-close" onclick="fecharModalPix()">
+            <i class="fas fa-times"></i>
+        </button>
         
-        <div class="perfil-header">
-            <i class="fas fa-pix" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
-            <div class="perfil-nome">Apoie o Marujo Flix</div>
-            <div class="perfil-patente">R$ 1 = 100 XP</div>
+        <div class="pix-header">
+            <i class="fas fa-coins" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+            <div class="pix-title">Apoie o Marujo Flix</div>
+            <div class="pix-subtitle">R$ 1 = 100 XP</div>
         </div>
 
-        <div style="padding: 20px;">
+        <div class="pix-body">
             <!-- INPUT DE VALOR -->
-            <div style="margin-bottom: 20px;">
-                <label style="color: var(--text-muted); font-size: 0.9rem; display: block; margin-bottom: 8px;">
+            <div class="pix-input-group">
+                <label class="pix-label">
                     <i class="fas fa-coins" style="color: gold;"></i> Valor da doação (R$)
                 </label>
-                <div style="display: flex; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 12px; padding: 5px;">
-                    <span style="padding: 0 10px; color: var(--primary); font-weight: bold; font-size: 1.2rem;">R$</span>
+                <div class="pix-input-wrapper">
+                    <span class="pix-currency">R$</span>
                     <input type="number" id="pixValorInput" min="1" step="0.01" value="10" 
-                           style="flex: 1; background: transparent; border: none; padding: 12px 5px; color: white; font-size: 1.2rem; outline: none;"
                            oninput="atualizarXPPreview(this.value)">
                 </div>
                 
                 <!-- PREVIEW DO XP -->
-                <div id="xpPreview" style="margin-top: 10px; text-align: center; background: rgba(0,255,179,0.1); padding: 10px; border-radius: 8px; border: 1px solid var(--primary);">
-                    <span style="color: var(--text-muted);">Você ganhará:</span>
-                    <span style="color: gold; font-weight: bold; font-size: 1.3rem; margin-left: 10px;" id="xpPreviewValue">1000</span>
-                    <span style="color: var(--text-muted);"> XP</span>
+                <div class="pix-xp-preview" id="xpPreview">
+                    <span>Você ganhará:</span>
+                    <span class="pix-xp-value" id="xpPreviewValue">1000</span>
+                    <span>XP</span>
                 </div>
             </div>
 
             <!-- SUGESTÕES RÁPIDAS -->
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px;">
+            <div class="pix-sugestoes-grid">
                 <button class="pix-sugestao-btn" onclick="definirValorSugestao(5)">R$ 5<br><small>500 XP</small></button>
                 <button class="pix-sugestao-btn" onclick="definirValorSugestao(10)">R$ 10<br><small>1000 XP</small></button>
                 <button class="pix-sugestao-btn" onclick="definirValorSugestao(20)">R$ 20<br><small>2000 XP</small></button>
@@ -3779,16 +4701,29 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
             </div>
 
             <!-- Botão gerar PIX -->
-            <button id="gerarPixBtn" class="perfil-btn" style="width: 100%; background: var(--gradient-primary); color: black;" onclick="gerarPix()">
+            <button id="gerarPixBtn" class="pix-gerar-btn" onclick="gerarPix()">
                 <i class="fas fa-qrcode"></i> Gerar QR Code PIX
             </button>
 
-            <!-- Área do QR Code -->
-            <div id="pixQrArea" style="display: none; margin-top: 20px; text-align: center;">
-                <div id="pixQrCode" style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 10px;"></div>
-                <div id="pixCopyPaste" style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; font-size: 0.8rem; word-break: break-all; margin-bottom: 10px; cursor: pointer;" onclick="copiarPix()"></div>
-                <p id="pixStatus" style="margin-top: 15px; color: var(--text-muted); font-size: 0.85rem;">
+            <!-- Área do QR Code (inicialmente oculta) -->
+            <div id="pixQrArea" class="pix-qr-area" style="display: none;">
+                <div class="pix-qr-container" id="pixQrCode"></div>
+                
+                <!-- Código PIX copiável -->
+                <div class="pix-copy-area" id="pixCopyPaste" onclick="copiarPix()">
+                    <span id="pixCopyText"></span>
+                    <i class="fas fa-copy pix-copy-icon"></i>
+                </div>
+                
+                <!-- Status com instruções -->
+                <div class="pix-status" id="pixStatus">
                     <i class="fas fa-spinner fa-spin"></i> Aguardando pagamento...
+                </div>
+                
+                <!-- Instruções adicionais -->
+                <p class="pix-help-text">
+                    <i class="fas fa-info-circle"></i> 
+                    Após o pagamento, o XP será creditado automaticamente em até 1 minuto.
                 </p>
             </div>
         </div>
