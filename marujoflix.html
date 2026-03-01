@@ -3320,53 +3320,105 @@ const userProgress = {
 // ==========================================
 
 // Na função de verificação, quando o pagamento for confirmado:
-async function verificarStatus() {
+// ==========================================
+// FRONTEND - Chamando a rota de verificação
+// ==========================================
+
+async function verificarStatus(transactionId) {
     try {
+        // 1. MONTA A URL COM O ID DA TRANSAÇÃO
         const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
-        const response = await fetch(`${linkApi}/api/doacoes/verificar/${transactionId}`);
+        const url = `${linkApi}/api/doacoes/verificar/${transactionId}`;
+        
+        console.log(`📡 Chamando: ${url}`);
+        
+        // 2. FAZ A REQUISIÇÃO GET
+        const response = await fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            headers: { 
+                'Accept': 'application/json' 
+            }
+        });
+        
+        // 3. CONVERTE A RESPOSTA PARA JSON
         const data = await response.json();
         
-        if (data.status === 'pago') {
-            // ✅ PAGAMENTO CONFIRMADO!
-            clearInterval(pixInterval);
-            
-            // ANTES de atualizar o status, força a UI a atualizar
-            const xpGanho = data.xp;
-            
-            // 1. Primeiro mostra que foi confirmado
-            statusElement.innerHTML = `
-                <i class="fas fa-check-circle" style="color: var(--primary);"></i> 
-                Pagamento confirmado! +${xpGanho.toLocaleString('pt-BR')} XP creditados!
-            `;
-            
-            // 2. DEPOIS adiciona o XP (isso já vai chamar updateUI internamente)
-            userProgress.addXP(xpGanho);
-            
-            // 3. Mostra toast de sucesso
-            ToastSystem.show(`🎉 PIX recebido! +${xpGanho.toLocaleString('pt-BR')} XP!`, 'success');
-            
-            // 4. ATUALIZA O SIDEBAR IMEDIATAMENTE (reforço)
-            const statXP = document.getElementById('statXP');
-            if (statXP) statXP.textContent = userProgress.xp;
-            
-            const sidebarLevel = document.getElementById('sidebarLevel');
-            if (sidebarLevel) sidebarLevel.innerHTML = `<i class="fas fa-anchor" style="color:var(--primary);"></i> Nível ${userProgress.level}`;
-            
-            // 5. Atualiza a barra de progresso
-            userProgress.atualizarBarraProgresso();
-            
-            // Limpa o sessionStorage
-            sessionStorage.removeItem('pixTransactionId');
-            
-            // Fecha o modal após 3 segundos
-            setTimeout(() => {
-                fecharModalPix();
-            }, 3000);
+        console.log('📦 Resposta do servidor:', data);
+        
+        // 4. TRATA OS DIFERENTES STATUS
+        switch(data.status) {
+            case 'pago':
+                // ✅ PAGAMENTO CONFIRMADO!
+                console.log('🎉 PIX PAGO! XP:', data.xp);
+                // Atualiza o XP do usuário
+                userProgress.addXP(data.xp);
+                // Mostra mensagem de sucesso
+                ToastSystem.show(`✅ PIX confirmado! +${data.xp} XP!`, 'success');
+                break;
+                
+            case 'expired':
+                // ⏰ PIX EXPIRADO
+                console.log('⏰ PIX expirado');
+                ToastSystem.show('⏰ Tempo esgotado. Gere um novo PIX.', 'info');
+                break;
+                
+            case 'pending':
+                // ⏳ AINDA AGUARDANDO
+                console.log('⏳ Aguardando pagamento...');
+                break;
+                
+            default:
+                console.log('Status desconhecido:', data.status);
         }
+        
+        return data;
+        
     } catch (error) {
-        console.error('Erro na verificação:', error);
+        console.error('❌ Erro na verificação:', error);
+        ToastSystem.show('Erro ao verificar pagamento', 'error');
+        return null;
     }
 }
+
+// ==========================================
+// EXEMPLO DE USO COM INTERVALO
+// ==========================================
+
+let pixInterval = null;
+
+function iniciarVerificacaoAutomatica(transactionId) {
+    // Limpa intervalo anterior se existir
+    if (pixInterval) clearInterval(pixInterval);
+    
+    console.log('🔄 Iniciando verificação automática a cada 3 segundos');
+    
+    // Verifica a cada 3 segundos
+    pixInterval = setInterval(async () => {
+        // Chama a rota de verificação
+        const resultado = await verificarStatus(transactionId);
+        
+        // Se pagamento confirmado ou expirado, para o intervalo
+        if (resultado && (resultado.status === 'pago' || resultado.status === 'expired')) {
+            console.log('🛑 Parando verificação automática');
+            clearInterval(pixInterval);
+            pixInterval = null;
+        }
+        
+        // Se expirou, desabilita o QR Code
+        if (resultado && resultado.status === 'expired') {
+            document.getElementById('pixCopyPaste').style.opacity = '0.5';
+            document.getElementById('pixCopyPaste').style.pointerEvents = 'none';
+        }
+        
+    }, 3000); // 3 segundos
+}
+
+// ==========================================
+// VERIFICAÇÃO QUANDO A PÁGINA VOLTA AO FOCO
+// ==========================================
+
+
 
 // ==========================================
 // FUNÇÃO PARA ATUALIZAR TUDO (chame quando necessário)
@@ -4584,32 +4636,9 @@ function iniciarVerificacaoPix(transactionId, dataExpiracao) {
 // VERIFICAÇÃO QUANDO A PÁGINA VOLTA A TER FOCO
 document.addEventListener('visibilitychange', () => {
     if (!document.hidden && transactionIdAtual) {
-        // A página voltou a ter foco! Verifica imediatamente
-        console.log('Página voltou! Verificando PIX...');
-        
-        const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
-        fetch(`${linkApi}/api/doacoes/verificar/${transactionIdAtual}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'pago') {
-                    // Pagamento confirmado!
-                    userProgress.addXP(data.xp);
-                    ToastSystem.show(`🎉 PIX confirmado! +${data.xp.toLocaleString('pt-BR')} XP!`, 'success');
-                    
-                    // Atualiza o modal
-                    const statusElement = document.getElementById('pixStatus');
-                    statusElement.innerHTML = `
-                        <i class="fas fa-check-circle" style="color: var(--primary);"></i> 
-                        Pagamento confirmado! +${data.xp.toLocaleString('pt-BR')} XP creditados!
-                    `;
-                    
-                    // Fecha após 3 segundos
-                    setTimeout(() => {
-                        fecharModalPix();
-                    }, 3000);
-                }
-            })
-            .catch(err => console.error('Erro na verificação pós-foco:', err));
+        // Página voltou a ter foco! Verifica imediatamente
+        console.log('👁️ Página visível novamente! Verificando PIX...');
+        verificarStatus(transactionIdAtual);
     }
 });
 
