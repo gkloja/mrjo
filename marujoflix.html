@@ -6,6 +6,14 @@
 
 
 
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -4741,82 +4749,92 @@ document.head.appendChild(style);
     // ==========================================
 // SISTEMA DE RADAR (Pessoas Online) - CORRIGIDO
 // ==========================================
-let mySessionId = null;
-let unsubscribeOnline = null;
+// ==========================================
+// SISTEMA DE RADAR (Pessoas Online) - BASEADO EM IP
+// ==========================================
+let heartbeatInterval = null;
+let lastHeartbeat = 0;
 
-/**
- * Inicia o sistema de radar de usuários online.
- * Deve ser chamado APÓS o Firebase estar pronto.
- */
-function iniciarRadar() {
-    // Se já existe uma sessão, não inicia novamente
-    if (mySessionId) {
-        return;
-    }
+// Use o ID específico que você mencionou: idx_53901
+const RADAR_CHANNEL_ID = 'idx_53901';
 
-    // Verifica se o Firebase e o Firestore estão disponíveis
-    if (!window.fbOps || !window.db) {
-        // Tenta novamente em 1 segundo se o Firebase não estiver pronto
-        setTimeout(iniciarRadar, 1000);
-        return;
-    }
-
-    console.log("⚓ Radar: Iniciando...");
-    mySessionId = 'sessao_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-
-    const sessionRef = window.fbOps.doc(window.db, "online_users", mySessionId);
-
-    // 1. Registra a presença do usuário atual
-    window.fbOps.setDoc(sessionRef, { 
-        active: true, 
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent.substring(0, 100) // info opcional
-    }).catch(error => {
-        console.error("Erro ao registrar presença:", error);
-        mySessionId = null; // Permite uma nova tentativa
-    });
-
-    // 2. Cria um listener para contar todos os documentos na coleção
-    const qOnline = window.fbOps.collection(window.db, "online_users");
-    unsubscribeOnline = window.fbOps.onSnapshot(qOnline, (snapshot) => {
-        const count = snapshot.size;
-        const contadorElemento = document.getElementById('onlineCountNumber');
-        if (contadorElemento) {
-            contadorElemento.textContent = count;
-        }
-        // Atualiza também o contador no sidebar, se ele existir (já tem um com o mesmo ID)
-    }, (error) => {
-        console.error("Erro no listener de online:", error);
-    });
-
-    // 3. Remove a própria presença quando a página for fechada ou recarregada
-    const removePresence = () => {
-        if (mySessionId && window.fbOps) {
-            const sessionRef = window.fbOps.doc(window.db, "online_users", mySessionId);
-            window.fbOps.deleteDoc(sessionRef).catch(error => {
-                // Se o erro for 'permission-denied' ou 'not-found', ignoramos.
-                if (error.code !== 'permission-denied' && error.code !== 'not-found') {
-                    console.error("Erro ao remover presença:", error);
-                }
-            });
-            if (unsubscribeOnline) {
-                unsubscribeOnline();
+function atualizarContadorEspectadores() {
+    const agora = Date.now();
+    
+    // Evita chamadas muito frequentes (mínimo 5 segundos entre chamadas)
+    if (agora - lastHeartbeat < 5000) return;
+    lastHeartbeat = agora;
+    
+    // Faz a requisição para o backend
+const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+    fetch(`${linkApi}/api/viewers/${RADAR_CHANNEL_ID}`)
+        .then(resposta => {
+            if (!resposta.ok) {
+                throw new Error('Erro no servidor');
             }
-        }
-    };
-
-    window.addEventListener("beforeunload", removePresence);
-    window.addEventListener("pagehide", removePresence);
+            return resposta.json();
+        })
+        .then(dados => {
+            // Atualiza o número na tela
+            const contadorElemento = document.getElementById('onlineCountNumber');
+            if (contadorElemento) {
+                contadorElemento.innerText = dados.total;
+                
+                // Muda a cor se tiver mais de 5 pessoas (opcional)
+                if (dados.total >= 5) {
+                    contadorElemento.style.color = '#00ffb3';
+                } else {
+                    contadorElemento.style.color = 'white';
+                }
+            }
+            
+            // Atualiza também o contador no sidebar
+            const sidebarOnline = document.querySelector('.sidebar-footer .online-info span');
+            if (sidebarOnline) {
+                sidebarOnline.textContent = dados.total;
+            }
+        })
+        .catch(erro => {
+            console.log("Erro ao buscar contador:", erro);
+        });
 }
 
-// Inicia o radar assim que o DOM estiver pronto.
-// O Firebase já foi carregado no final do 
+// Inicia o heartbeat quando a página carrega
+function iniciarHeartbeat() {
+    // Primeira chamada imediata
+    atualizarContadorEspectadores();
+    
+    // Configura o intervalo a cada 10 segundos
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+    heartbeatInterval = setInterval(atualizarContadorEspectadores, 10000);
+}
 
+// Quando o usuário sair da página, não precisa fazer nada
+// O backend remove automaticamente após 15 segundos
+
+// Remove o radar antigo (Firebase)
+// Apague a função iniciarRadar() e todas as variáveis relacionadas (mySessionId, unsubscribeOnline)
+
+// Inicia o novo sistema de radar
+
+// Se quiser ser ainda mais preciso, pode adicionar um heartbeat
+// quando o usuário interage com a página
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+        // Página voltou a ter foco, atualiza imediatamente
+        atualizarContadorEspectadores();
+    }
+});
+
+// Quando o usuário clicar em qualquer lugar, atualiza (opcional)
+document.addEventListener('click', () => {
+    atualizarContadorEspectadores();
+}, { passive: true });
 
     // Deixamos apenas UM evento DOMContentLoaded para iniciar tudo
     document.addEventListener('DOMContentLoaded', () => {
         // Agora userProgress e getRankTitle já existem
-        iniciarRadar();
+            setTimeout(iniciarHeartbeat, 2000);
         const tipEl = document.getElementById('loadingTip');
         if (tipEl) {
             const patenteAtual = getRankTitle(userProgress.level);
@@ -5132,6 +5150,474 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
 </div>
 </body>
 </html>
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
 
 
  
