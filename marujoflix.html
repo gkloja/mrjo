@@ -1568,13 +1568,13 @@
 /* Responsividade para mobile */
 @media (max-width: 768px) {
     .floating-pix-container {
-        bottom: 90px;
+        bottom: 60px;
         right: 20px;
     }
     
     .pix-treasure-btn {
-        width: 65px;
-        height: 65px;
+        width: 45px;
+        height: 45px;
     }
     
     .treasure-lid {
@@ -2096,9 +2096,9 @@
             <i class="fas fa-coins"></i>
             <div class="button-text">
                 <strong>Apoiar com PIX</strong>
-                <small>Ganhe XP</small>
+                <small></small>
             </div>
-            <span class="xp-badge">+XP</span>
+            <span class="xp-badge">R$</span>
         </button>
         
         <!-- BOTÃO RANK (MESMA FUNÇÃO) -->
@@ -4398,30 +4398,25 @@ let transactionIdAtual = null;
 let pixInterval = null;
 let ultimaVerificacao = null;
 
+// ==========================================
+// SISTEMA PIX SIMPLIFICADO - LIVEPIX
+// ==========================================
+
 function abrirModalPix() {
-    if (!currentUser) {
-        ToastSystem.show('Faça login para doar', 'error');
-        fazerLoginGoogle();
-        return;
-    }
+    // (Opcional) Se quiser exigir login, descomente as linhas abaixo:
+    // if (!currentUser) {
+    //     ToastSystem.show('Faça login para apoiar', 'info');
+    //     fazerLoginGoogle();
+    //     return;
+    // }
     document.getElementById('pixModal').classList.add('active');
-    document.getElementById('pixValorInput').value = 5;
-    atualizarXPPreview(5);
-    
-    // Reseta o estado do modal
-    document.getElementById('pixQrArea').style.display = 'none';
-    if (pixInterval) clearInterval(pixInterval);
 }
 
 function fecharModalPix() {
     document.getElementById('pixModal').classList.remove('active');
-    document.getElementById('pixQrArea').style.display = 'none';
-    if (pixInterval) {
-        clearInterval(pixInterval);
-        pixInterval = null;
-    }
-    transactionIdAtual = null;
 }
+
+// As funções antigas (gerarPix, atualizarXPPreview, etc.) podem ser apagadas ou comentadas.
 
 function atualizarXPPreview(valor) {
     valor = parseFloat(valor) || 0;
@@ -5037,15 +5032,14 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
 
 
 <!-- BOTÃO FLUTUANTE PIX - BAÚ DO TESOURO -->
-<div class="floating-pix-container" style="bottom: 100px;">
-    <button class="pix-treasure-btn" onclick="abrirModalPix()" title="Apoie o Marujo Flix e ganhe XP">
+<div class="floating-pix-container" style="bottom: 70px;">
+    <button class="pix-treasure-btn" onclick="abrirModalPix()" title="Apoie o Marujo Flix"> 
         <div class="treasure-chest">
             <i class="fas fa-crown treasure-lid"></i>
             <i class="fas fa-coins treasure-coins"></i>
         </div>
         <span class="pix-sparkle">✦</span>
         <span class="pix-tooltip">Apoiar com PIX</span>
-        <span class="xp-badge-treasure">+XP</span>
     </button>
 </div>
 
@@ -5073,76 +5067,67 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
     </div>
 <!-- ===== MODAL PIX - COLOQUE AQUI ===== -->
 <!-- ===== MODAL PIX - VERSÃO CORRIGIDA E OTIMIZADA ===== -->
+<!-- ===== MODAL PIX - LIVEPIX WIDGET ===== -->
 <div id="pixModal" class="pix-modal">
-    <div class="pix-modal-content">
-        <!-- Botão X SEMPRE visível no topo direito -->
-        <button class="pix-modal-close" onclick="fecharModalPix()">
+    <div class="pix-modal-content" style="max-width: 550px; background: transparent; border: none; box-shadow: none;">
+        
+        <!-- Botão de fechar (X) -->
+        <button class="pix-modal-close" onclick="fecharModalPix()" style="position: absolute; top: 10px; right: 10px; z-index: 20001; background: rgba(255,255,255,0.2); border: none; border-radius: 50%; width: 32px; height: 32px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;">
             <i class="fas fa-times"></i>
         </button>
-        
-        <div class="pix-header">
-            <i class="fas fa-coins" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
-            <div class="pix-title">Apoie o Marujo Flix</div>
-            <div class="pix-subtitle">R$ 1 = <span style="color: gold; font-size: 1.3rem;">1000 XP</span></div>
+
+        <!-- Área de interação e segurança -->
+        <div style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 16px; padding: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1);">
+            
+            <!-- Mensagem para doadores -->
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                <div style="background: var(--primary, #ff6b6b); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                    💬
+                </div>
+                <div style="flex: 1;">
+                    <p style="margin: 0; color: white; font-weight: 500;">Quer sugerir um título?</p>
+                    <p style="margin: 5px 0 0 0; color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                        Ao contribuir, deixe seu pedido de série, filme ou dorama na mensagem!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Links e segurança -->
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <span style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">
+                        <i class="fas fa-lock" style="color: #4CAF50;"></i> Pagamento seguro
+                    </span>
+                    <span style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">
+                        <i class="fas fa-credit-card"></i> Pix, cartão e mais
+                    </span>
+                </div>
+                
+                <!-- Link clicável para o perfil -->
+                <a href="https://livepix.gg/marujoflix" target="_blank" rel="noopener noreferrer" 
+                   style="color: var(--primary, #ff6b6b); text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 50px; transition: all 0.3s;">
+                    <i class="fas fa-external-link-alt"></i>
+                    Ver perfil no LivePix
+                    <span style="font-size: 0.8rem; opacity: 0.7;">(clique aqui)</span>
+                </a>
+            </div>
+
+            <!-- Mensagem de impacto final -->
+            <p style="text-align: center; color: rgba(255,255,255,0.8); font-size: 0.9rem; margin: 15px 0 0 0; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2);">
+                <i class="fas fa-heart" style="color: var(--primary, #ff6b6b);"></i> 
+                Qualquer valor ajuda o Marujo Flix a continuar navegando!
+            </p>
         </div>
 
-        <div class="pix-body">
-            <!-- INPUT DE VALOR -->
-            <div class="pix-input-group">
-                <label class="pix-label">
-                    <i class="fas fa-coins" style="color: gold;"></i> Valor da doação (R$)
-                </label>
-                <div class="pix-input-wrapper">
-                    <span class="pix-currency">R$</span>
-                    <input type="number" id="pixValorInput" min="1" step="0.01" value="5" 
-                           oninput="atualizarXPPreview(this.value)">
-                </div>
-                
-                <!-- PREVIEW DO XP -->
-                <div class="pix-xp-preview" id="xpPreview">
-                    <span>Você ganhará:</span>
-                    <span class="pix-xp-value" id="xpPreviewValue">5000</span>
-                    <span>XP</span>
-                </div>
-            </div>
+        <!-- Widget do LivePix incorporado -->
+        <iframe 
+            src="https://widget.livepix.gg/embed/0dc4c8d0-ad9e-4522-9e1f-77eb571a5e9a" 
+            style="width: 100%; height: 550px; border: none; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" 
+            scrolling="no"
+            title="Apoie o Marujo Flix com LivePix">
+        </iframe>
 
-            <!-- SUGESTÕES RÁPIDAS (atualizadas) -->
-            <div class="pix-sugestoes-grid">
-                <button class="pix-sugestao-btn" onclick="definirValorSugestao(1)">R$ 1<br><small>1000 XP</small></button>
-                <button class="pix-sugestao-btn" onclick="definirValorSugestao(3)">R$ 3<br><small>3000 XP</small></button>
-                <button class="pix-sugestao-btn" onclick="definirValorSugestao(5)">R$ 5<br><small>5000 XP</small></button>
-                <button class="pix-sugestao-btn" onclick="definirValorSugestao(10)">R$ 10<br><small>10.000 XP</small></button>
-                <button class="pix-sugestao-btn" onclick="definirValorSugestao(20)">R$ 20<br><small>20.000 XP</small></button>
-                <button class="pix-sugestao-btn" onclick="definirValorSugestao(50)">R$ 50<br><small>50.000 XP</small></button>
-            </div>
 
-            <!-- Botão gerar PIX -->
-            <button id="gerarPixBtn" class="pix-gerar-btn" onclick="gerarPix()">
-                <i class="fas fa-qrcode"></i> Gerar QR Code PIX
-            </button>
-
-            <!-- Área do QR Code -->
-            <div id="pixQrArea" class="pix-qr-area" style="display: none;">
-                <div class="pix-qr-container" id="pixQrCode"></div>
-                
-                <!-- Código PIX copiável -->
-                <div class="pix-copy-area" id="pixCopyPaste" onclick="copiarPix()">
-                    <span id="pixCopyText"></span>
-                    <i class="fas fa-copy pix-copy-icon"></i>
-                </div>
-                
-                <!-- Status com instruções e contador -->
-                <div class="pix-status" id="pixStatus">
-                    <i class="fas fa-spinner fa-spin"></i> Aguardando pagamento...
-                </div>
-                
-                <!-- Instruções adicionais -->
-                <p class="pix-help-text">
-                    <i class="fas fa-info-circle"></i> 
-                    Após o pagamento, o XP será creditado automaticamente! ⏱️ Expira em 10 minutos.
-                </p>
-            </div>
-        </div>
     </div>
 </div>
 </body>
