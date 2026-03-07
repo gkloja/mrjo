@@ -4550,6 +4550,9 @@ window.compartilharFilmeAtivo = async function() {
         const logoComCors = `https://cors.eu.org/${logoUrl.replace(/^https?:\/\//, '')}`;
         console.log('4️⃣ Logo com CORS:', logoComCors);
         
+        // 🔥 LINK DA PESQUISA NO MARUJO DIGITAL (SEMPRE ESSE NO FINAL)
+        const linkPesquisa = `https://marujodigital.onrender.com/marujoflix?q=${encodeURIComponent(title)}`;
+        
         const linkApi = 'https://fabibot.vercel.app';
         console.log('5️⃣ Chamando API:', `${linkApi}/gerar-link`);
         
@@ -4576,14 +4579,13 @@ window.compartilharFilmeAtivo = async function() {
                 if (dados.sucesso) {
                     const shareUrl = dados.shareUrl;
                     
-                    // ✅ AGORA SEM LINK DUPLICADO!
-                    const textoCompartilhamento = `${shareUrl}\n\n🏴‍☠️ ARRR, MARUJO! O baú do "${title}" foi encontrado!\n🎬 Qualidade 4K • Dublado • Legendado\n⚓ Vem navegar nessa aventura no Marujo Flix! 🍿`;
+                    // ✅ TEXTO COM O LINK DO FABIBOT (para preview bonito) E LINK DA PESQUISA NO FINAL
+                    const textoCompartilhamento = `${shareUrl}\n\n🏴‍☠️ ARRR, MARUJO! O baú do "${title}" foi encontrado!\n🎬 Qualidade 4K • Dublado • Legendado\n⚓ Vem navegar nessa aventura no Marujo Flix!\n\n👉 ${linkPesquisa}`;
                     
                     if (navigator.share) {
                         await navigator.share({
                             title: '🏴‍☠️ ' + title + ' - Marujo Flix',
                             text: textoCompartilhamento,
-                            // url: shareUrl  // 🔴 REMOVIDO! Não passa URL separada
                         });
                         
                         ToastSystem.show('⚓ Tesouro compartilhado! +20 XP', 'success');
@@ -4603,14 +4605,13 @@ window.compartilharFilmeAtivo = async function() {
         // 🔥 GERAR LINK MANUAL (caso a API falhe)
         const shareUrlManual = `https://fabibot.vercel.app/compartilhar?logo=${encodeURIComponent(logoComCors)}&titulo=${encodeURIComponent(title)}&desc=${encodeURIComponent('⚓ ARR! Este tesouro cinematográfico te espera!')}`;
         
-        // ✅ AGORA SEM LINK DUPLICADO!
-        const textoCompartilhamento = `${shareUrlManual}\n\n🏴‍☠️ ARRR, MARUJO! O baú do "${title}" foi encontrado!\n🎬 Qualidade 4K • Dublado • Legendado\n⚓ Vem navegar nessa aventura no Marujo Flix! 🍿`;
+        // ✅ TEXTO COM LINK DA PESQUISA NO FINAL
+        const textoCompartilhamento = `${shareUrlManual}\n\n🏴‍☠️ ARRR, MARUJO! O baú do "${title}" foi encontrado!\n🎬 Qualidade 4K • Dublado • Legendado\n⚓ Vem navegar nessa aventura no Marujo Flix!\n\n👉 ${linkPesquisa}`;
         
         if (navigator.share) {
             await navigator.share({
                 title: '🏴‍☠️ ' + title + ' - Marujo Flix',
                 text: textoCompartilhamento,
-                // url: shareUrlManual  // 🔴 REMOVIDO! Não passa URL separada
             });
             
             ToastSystem.show('⚓ Tesouro compartilhado! +20 XP', 'success');
