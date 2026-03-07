@@ -4152,7 +4152,7 @@ userProgress.updateUI();
         const isLeg = /\([Ll]\)|\[[Ll]\]|\blegendado\b/i.test(nomeOriginal);
         const isDublado = /\([Dd]\)|\[[Dd]\]|\bdublado\b/i.test(nomeOriginal);
         const is4K = /\b4K\b|\bFHD\b/i.test(nomeOriginal) || catStr.toUpperCase().includes('4K');
-        const isLancamento = catLower.includes('lancamento') || catLower.includes('lançamento');
+        const isLancamento = catLower.includes('cinema') || catLower.includes('lancamento') || catLower.includes('lançamento');
         const isAdulto = catLower.includes('xxx') || catLower.includes('adulto');
         
         // --- CHAVE DE AGRUPAMENTO (nomeBase + tipo) ---
@@ -4526,40 +4526,62 @@ userProgress.updateUI();
     // SISTEMA DE COMPARTILHAMENTO DE FILME/SÉRIE
     // ==========================================
     window.compartilharFilmeAtivo = async function() {
-        // Pega o título do filme que está aberto no modal no momento
-        const title = document.getElementById('episodesTitle').textContent;
+    const title = document.getElementById('episodesTitle').textContent;
+    
+    let logoUrl = '';
+    if (IPTVSystem && IPTVSystem.todosItens) {
+        const filmeAtual = IPTVSystem.todosItens.find(item => item.titulo === title);
+        if (filmeAtual && filmeAtual.poster) {
+            logoUrl = filmeAtual.poster;
+        }
+    }
+    
+    if (!logoUrl) {
+        logoUrl = window.location.origin + '/imagens/1772133683485~2.png';
+    }
+    
+    const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+    
+    try {
+        const resposta = await fetch(`${linkApi}/gerar-link`, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                logo: logoUrl,
+                titulo: title,
+                desc: 'Vem assistir "' + title + '" de graça comigo no Marujo Flix! 🍿📺'
+            })
+        });
         
-        // Monta o link que fará a pessoa cair direto na pesquisa do site
-        const baseUrl = window.location.origin + window.location.pathname;
-        const shareUrl = baseUrl + '?q=' + encodeURIComponent(title);
-        
-        const shareData = {
-            title: 'Marujo Flix - ' + title,
-            text: 'Vem assistir "' + title + '" de graça comigo no Marujo Flix! 🍿📺\n\n',
-            url: shareUrl
-        };
-
-        const sucessoAoCompartilhar = () => {
-            ToastSystem.show('Link de convite gerado! +20 XP', 'success');
-            if (userProgress) userProgress.addXP(20);
-        };
-
-        // 1. Tenta abrir o menu nativo do celular (WhatsApp, Insta, etc)
-        if (navigator.share && window.isSecureContext) {
-            try {
-                await navigator.share(shareData);
-                sucessoAoCompartilhar();
-                return;
-            } catch (err) {
-                if (err.name !== 'AbortError') {
-                    forcarCopia(shareUrl, sucessoAoCompartilhar);
+        if (resposta.ok) {
+            const dados = await resposta.json();
+            
+            if (dados.sucesso) {  // Verifica 'sucesso' igual seu padrão
+                if (navigator.share) {
+                    await navigator.share({
+                        title: 'Marujo Flix - ' + title,
+                        text: 'Vem assistir "' + title + '" de graça!',
+                        url: dados.shareUrl
+                    });
+                    
+                    ToastSystem.show('Compartilhado com sucesso! +20 XP', 'success');
+                    if (userProgress) userProgress.addXP(20);
+                } else {
+                    navigator.clipboard.writeText(dados.shareUrl);
+                    ToastSystem.show('Link copiado! +20 XP', 'success');
+                    if (userProgress) userProgress.addXP(20);
                 }
             }
-        } else {
-            // 2. Se for PC ou o navegador não suportar share, copia para a área de transferência
-            forcarCopia(shareUrl, sucessoAoCompartilhar);
         }
-    };
+    } catch (err) {
+        console.error("Erro ao gerar link:", err);
+        ToastSystem.show("Erro ao gerar link para compartilhar.", "error");
+    }
+};
 
     function forcarCopia(texto, callback) {
         if (navigator.clipboard && window.isSecureContext) {
