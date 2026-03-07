@@ -4540,7 +4540,10 @@ userProgress.updateUI();
         logoUrl = window.location.origin + '/imagens/1772133683485~2.png';
     }
     
-    const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+    // ✅ ADICIONA O CORS NA URL DA LOGO (igual você faz no ler_progresso)
+    const logoComCors = `https://cors.eu.org/${logoUrl.replace(/^https?:\/\//, '')}`;
+    
+    const linkApi = 'https://fabibot.vercel.app';
     
     try {
         const resposta = await fetch(`${linkApi}/gerar-link`, {
@@ -4551,7 +4554,7 @@ userProgress.updateUI();
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                logo: logoUrl,
+                logo: logoComCors,  // <-- AGORA USA A LOGO COM CORS!
                 titulo: title,
                 desc: 'Vem assistir "' + title + '" de graça comigo no Marujo Flix! 🍿📺'
             })
@@ -4560,18 +4563,20 @@ userProgress.updateUI();
         if (resposta.ok) {
             const dados = await resposta.json();
             
-            if (dados.sucesso) {  // Verifica 'sucesso' igual seu padrão
+            if (dados.sucesso) {
+                const shareUrl = dados.shareUrl;
+                
                 if (navigator.share) {
                     await navigator.share({
                         title: 'Marujo Flix - ' + title,
                         text: 'Vem assistir "' + title + '" de graça!',
-                        url: dados.shareUrl
+                        url: shareUrl
                     });
                     
                     ToastSystem.show('Compartilhado com sucesso! +20 XP', 'success');
                     if (userProgress) userProgress.addXP(20);
                 } else {
-                    navigator.clipboard.writeText(dados.shareUrl);
+                    navigator.clipboard.writeText(shareUrl);
                     ToastSystem.show('Link copiado! +20 XP', 'success');
                     if (userProgress) userProgress.addXP(20);
                 }
