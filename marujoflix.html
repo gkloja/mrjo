@@ -1,19 +1,5 @@
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -3932,17 +3918,132 @@ userProgress.updateUI();
 
         
         carregarDados: async function() {
-            try {
-                const response = await fetch(this.config.apiUrl);
-                if(response.ok) {
-                    const data = await response.json();
-                    this.processarDados(data);
-                } else throw new Error();
-            } catch (error) {
-                clearInterval(loadingTipTimer);
-                ToastSystem.show("Modo offline ativado.", "error");
-            }
-        },
+    try {
+        const response = await fetch(this.config.apiUrl);
+        console.log('Resposta da API:', response.status);
+        
+        if(response.ok) {
+            const data = await response.json();
+            console.log('Dados carregados:', data.length, 'itens');
+            this.processarDados(data);
+        } else {
+            console.error('Erro HTTP:', response.status);
+            
+            // Cria um elemento de erro visível na tela
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(255, 0, 0, 0.9);
+                color: white;
+                padding: 30px;
+                border-radius: 20px;
+                z-index: 99999;
+                text-align: center;
+                font-family: monospace;
+                font-size: 16px;
+                border: 3px solid white;
+                box-shadow: 0 0 50px rgba(255,0,0,0.5);
+                max-width: 90%;
+            `;
+            errorDiv.innerHTML = `
+                <h2 style="color: white; margin-bottom: 20px;">🚨 ERRO CRÍTICO 🚨</h2>
+                <p><strong>Status HTTP:</strong> ${response.status}</p>
+                <p><strong>URL tentada:</strong> ${this.config.apiUrl}</p>
+                <p><strong>Mensagem:</strong> O servidor respondeu com erro ${response.status}</p>
+                <p style="margin-top: 20px; font-size: 14px;">Verifique se o arquivo lista.json existe no servidor</p>
+                <button onclick="this.parentElement.remove()" style="
+                    background: white;
+                    color: red;
+                    border: none;
+                    padding: 10px 30px;
+                    border-radius: 30px;
+                    font-weight: bold;
+                    margin-top: 20px;
+                    cursor: pointer;
+                ">Fechar</button>
+            `;
+            document.body.appendChild(errorDiv);
+            
+            throw new Error('Resposta não OK');
+        }
+    } catch (error) {
+        console.error('Erro no fetch:', error);
+        
+        // Mostra o erro também na tela
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 0, 0, 0.95);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            z-index: 99999;
+            text-align: left;
+            font-family: monospace;
+            font-size: 14px;
+            border: 3px solid white;
+            box-shadow: 0 0 50px rgba(255,0,0,0.5);
+            max-width: 90%;
+            max-height: 80vh;
+            overflow: auto;
+        `;
+        errorDiv.innerHTML = `
+            <h2 style="color: white; margin-bottom: 20px; text-align: center;">🔥 ERRO NO CARREGAMENTO 🔥</h2>
+            
+            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <p><strong>📍 URL:</strong> ${this.config.apiUrl}</p>
+                <p><strong>⚠️ Erro:</strong> ${error.message}</p>
+                <p><strong>🕐 Horário:</strong> ${new Date().toLocaleString()}</p>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <p><strong>🔍 Possíveis causas:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li>Arquivo lista.json não encontrado na pasta public/</li>
+                    <li>Servidor está offline ou bloqueando o acesso</li>
+                    <li>Erro de CORS (Cross-Origin Resource Sharing)</li>
+                    <li>A URL configurada está incorreta</li>
+                </ul>
+            </div>
+            
+            <div style="background: #00ffb3; color: black; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <p><strong>✅ SOLUÇÃO RÁPIDA:</strong></p>
+                <p>1. Execute no terminal do servidor:</p>
+                <code style="display: block; background: black; color: #00ffb3; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                curl -s https://fabibot.vercel.app/lista.m3u | awk '...' > ./public/lista.json
+                </code>
+                <p>2. Verifique se o arquivo foi criado:</p>
+                <code style="display: block; background: black; color: #00ffb3; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                ls -la public/lista.json
+                </code>
+                <p>3. Reinicie o servidor</p>
+            </div>
+            
+            <button onclick="this.parentElement.remove()" style="
+                background: white;
+                color: red;
+                border: none;
+                padding: 15px 40px;
+                border-radius: 30px;
+                font-weight: bold;
+                font-size: 16px;
+                cursor: pointer;
+                width: 100%;
+                margin-top: 10px;
+            ">TENTAR NOVAMENTE (F5)</button>
+        `;
+        document.body.appendChild(errorDiv);
+        
+        // Também mostra o Toast original
+        ToastSystem.show("Modo offline ativado. Verifique o erro na tela!", "error");
+    }
+},
 
         detectarTipo: function(catStr) {
             const cat = catStr.toLowerCase();
@@ -3957,103 +4058,198 @@ userProgress.updateUI();
         },
         
                         processarDados: function(data) {
-            const mapaAgrupado = new Map();
+    console.log('📦 Processando', data.length, 'itens do JSON');
+    const mapaAgrupado = new Map();
+    
+    // Função auxiliar para limpar título (VERSÃO PROFISSIONAL)
+    function limparTitulo(titulo) {
+        if (!titulo) return '';
+        
+        let t = titulo;
+        
+        // 1. Remove "Novela - " do início (prioridade máxima)
+        t = t.replace(/^Novela\s*[-–—]\s*/i, '');
+        
+        // 2. Remove (L), (D), [L], [D] de forma agressiva
+        t = t.replace(/\s*\([Ll]\)\s*/g, ' ');
+        t = t.replace(/\s*\([Dd]\)\s*/g, ' ');
+        t = t.replace(/\s*\[[Ll]\]\s*/g, ' ');
+        t = t.replace(/\s*\[[Dd]\]\s*/g, ' ');
+        
+        // 3. Remove ano no final (com ou sem hífen, parênteses, colchetes)
+        t = t.replace(/\s*[-–—]?\s*\d{4}\s*$/, '');
+        t = t.replace(/\s*\(\d{4}\)\s*$/, '');
+        t = t.replace(/\s*\[\d{4}\]\s*$/, '');
+        
+        // 4. Remove TODOS os padrões de episódio possíveis (INCLUINDO COM ESPAÇO)
+        t = t.replace(/\b[Ss]\d{2}\s*[Ee]\d{2,3}\b/g, '');      // S01 E184 ou S01E184
+        t = t.replace(/\b[Ss]\d{2}\s*Ep\s*\d{2,3}\b/g, '');     // S01 Ep 184
+        t = t.replace(/\bTemporada\s*\d+\b/gi, '');
+        t = t.replace(/\bEpis[oó]dio\s*\d+\b/gi, '');
+        t = t.replace(/\bEp\s*\d+\b/gi, '');
+        t = t.replace(/\b\d{1,2}x\d{2,3}\b/g, '');              // 1x184
+        
+        // 5. Remove palavras de versão/qualidade
+        t = t.replace(/\bLegendado\b/gi, '');
+        t = t.replace(/\bDublado\b/gi, '');
+        t = t.replace(/\b4K\b/gi, '');
+        t = t.replace(/\bFHD\b/gi, '');
+        t = t.replace(/\bHD\b/gi, '');
+        t = t.replace(/\b720p\b/gi, '');
+        t = t.replace(/\b1080p\b/gi, '');
+        t = t.replace(/\bLANCAMENTOS?\b/gi, '');                // Remove "LANÇAMENTOS" do título
+        
+        // 6. Remove caracteres especiais e normaliza espaços
+        t = t.replace(/[^\w\sÀ-ÿ]/g, ' ')                         // Mantém acentos
+              .replace(/\s+/g, ' ')
+              .trim()
+              .toLowerCase();
+        
+        // Se ficou vazio, usa versão simplificada do original
+        if (!t || t.length < 3) {
+            t = titulo
+                .replace(/^Novela\s*[-–—]\s*/i, '')
+                .replace(/\s*\([Ll]\)\s*/g, ' ')
+                .replace(/\s*\([Dd]\)\s*/g, ' ')
+                .replace(/\s*\[[Ll]\]\s*/g, ' ')
+                .replace(/\s*\[[Dd]\]\s*/g, ' ')
+                .replace(/[^\w\sÀ-ÿ]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .toLowerCase();
+        }
+        
+        return t;
+    }
+    
+    data.forEach((item, index) => {
+        const catStr = item.categoria || 'Geral';
+        const nomeOriginal = item.nome || 'Sem título';
+        
+        // Limpa o título usando a função profissional
+        const nomeBase = limparTitulo(nomeOriginal);
+        
+        // --- DETECÇÃO DE TIPO PROFISSIONAL ---
+        let tipo = 'Filme'; // padrão
+        
+        const catLower = catStr.toLowerCase();
+        const nomeLower = nomeOriginal.toLowerCase();
+        
+        // 1. Detecta CANAL
+        if (catLower.includes('canais') || catLower === 'nacional' || 
+            catLower.includes('esporte') || catLower.includes('documentario')) {
+            tipo = 'Canal';
+        }
+        
+        // 2. Detecta SÉRIE (qualquer padrão de episódio OU categoria de série/novela)
+        if (/\b(s\d{2}\s*e\d{2,3}|temporada\s*\d+|epis[oó]dio\s*\d+|\d{1,2}x\d{2,3})\b/i.test(nomeOriginal) ||
+            catLower.includes('série') || catLower.includes('novela') || 
+            catLower.includes('anime') || catLower.includes('dorama')) {
+            tipo = 'Série';
+        }
+        
+        // --- DETECÇÃO DE FLAGS ESPECÍFICAS (MAIS PRECISA) ---
+        const isLeg = /\([Ll]\)|\[[Ll]\]|\blegendado\b/i.test(nomeOriginal);
+        const isDublado = /\([Dd]\)|\[[Dd]\]|\bdublado\b/i.test(nomeOriginal);
+        const is4K = /\b4K\b|\bFHD\b/i.test(nomeOriginal) || catStr.toUpperCase().includes('4K');
+        const isLancamento = catLower.includes('lancamento') || catLower.includes('lançamento');
+        const isAdulto = catLower.includes('xxx') || catLower.includes('adulto');
+        
+        // --- CHAVE DE AGRUPAMENTO (nomeBase + tipo) ---
+        // Garantimos que a chave seja consistente
+        const chaveUnica = `${nomeBase}|${tipo}`;
+        
+        // --- CRIA O FILHO ---
+        const filhoObj = {
+            id: item.id || `idx_${index}`,
+            nomeOriginal: nomeOriginal,
+            videoUrl: item.link || '',
+            isLeg: isLeg,
+            isDublado: isDublado
+        };
+        
+        // --- AGRUPA USANDO A CHAVE ---
+        if (mapaAgrupado.has(chaveUnica)) {
+            const grupoExistente = mapaAgrupado.get(chaveUnica);
+            grupoExistente.children.push(filhoObj);
             
-            data.forEach((item, index) => {
-                const catStr = item.categoria || 'Geral';
-                const tipo = this.detectarTipo(catStr);
-                const nomeOriginal = item.nome || 'Sem título';
-                
-                const isAdulto = catStr.toLowerCase().includes('xxx') || catStr.toLowerCase().includes('adulto');
-                const is4K = (nomeOriginal.toUpperCase().includes('4K') || catStr.toUpperCase().includes('4K') || nomeOriginal.toUpperCase().includes('FHD'));
-                
-                // 🚀 Detecta se é lançamento baseado na sua lista
-                const isLancamento = catStr.toLowerCase().includes('lancamento') || catStr.toLowerCase().includes('lançamento') || nomeOriginal.toLowerCase().includes('lançamento');
-                
-let nomeGrupo = nomeOriginal.replace(/(S\d{2}E\d{2}|Episódio \d+|Temporada \d+|\(Legendado\)|\(Dublado\)|\[4K\]|\[FHD\]|\(4K\)|\[720p\]|\[L\]|\[D\]|\[HDR\]|\[HDR10\]).*/gi, '').trim();
-
-                if(tipo === 'Canal') nomeGrupo = nomeOriginal;
-
-                const chaveUnica = nomeGrupo.toLowerCase() + '-' + tipo;
-                const isLeg = (item.nome || '').toLowerCase().includes('legend') || catStr.toLowerCase().includes('legend');
-                
-                const filhoObj = {
-                    id: `idx_${index}`, // ID Ninja perfeito contra bugs!
-                    nomeOriginal: nomeOriginal,
-                    videoUrl: item.link || ''
-                };
-
-                if (mapaAgrupado.has(chaveUnica)) {
-                    const grupoExistente = mapaAgrupado.get(chaveUnica);
-                    grupoExistente.children.push(filhoObj);
-                    if (!grupoExistente.poster && item.logo) grupoExistente.poster = item.logo;
-                    if (isLeg) grupoExistente.isLeg = true;
-                    if (is4K) grupoExistente.is4K = true;
-                    if (isAdulto) grupoExistente.isAdulto = true;
-                    if (isLancamento) grupoExistente.isLancamento = true;
-                } else {
-                    mapaAgrupado.set(chaveUnica, {
-                        id_main: filhoObj.id, 
-                        titulo: nomeGrupo,
-                        categoriaLimpa: this.simplificarCategoria(catStr),
-                        tipo: tipo,
-                        poster: item.logo || '',
-                        isLeg: isLeg,
-                        is4K: is4K,
-                        isAdulto: isAdulto,
-                        isLancamento: isLancamento,
-                        children: [filhoObj] 
-                    });
-                }
+            // Mantém a melhor logo
+            if (!grupoExistente.poster && item.logo) {
+                grupoExistente.poster = item.logo;
+            }
+            
+            // Atualiza flags do grupo (se qualquer filho tiver a flag, o grupo tem)
+            if (isLeg) grupoExistente.isLeg = true;
+            if (isDublado) grupoExistente.isDublado = true;
+            if (is4K) grupoExistente.is4K = true;
+            if (isLancamento) grupoExistente.isLancamento = true;
+            if (isAdulto) grupoExistente.isAdulto = true;
+            
+        } else {
+            // Cria novo grupo
+            mapaAgrupado.set(chaveUnica, {
+                id_main: filhoObj.id,
+                titulo: nomeOriginal, // mantém o título original para exibição
+                categoriaLimpa: this.simplificarCategoria(catStr),
+                tipo: tipo,
+                poster: item.logo || '',
+                isLeg: isLeg,
+                isDublado: isDublado,
+                is4K: is4K,
+                isLancamento: isLancamento,
+                isAdulto: isAdulto,
+                children: [filhoObj]
             });
-
-            const itensAgrupados = Array.from(mapaAgrupado.values());
-
-            let lancamentosTop = []; 
-            let premiumMix = [];     
-            let regularVod = [];     
-            let canais = [];
-            let adultos = [];
-            let resto = [];
-
-            itensAgrupados.forEach(item => {
-                if (item.isAdulto) {
-                    adultos.push(item);
-                } else if (item.tipo === 'Canal') {
-                    canais.push(item);
-                } else if (!item.poster || item.poster.trim() === '') {
-                    resto.push(item);
-                } else if (item.isLancamento) {
-                    lancamentosTop.push(item); // Lançamentos ganham prioridade máxima
-                } else if (item.tipo === 'Série' || item.categoriaLimpa.toLowerCase().includes('anime')) {
-                    premiumMix.push(item);
-                } else {
-                    regularVod.push(item);
-                }
-            });
-
-            lancamentosTop = shuffleArray(lancamentosTop);
-            premiumMix = shuffleArray(premiumMix);
-            regularVod = shuffleArray(regularVod);
-            canais = shuffleArray(canais);
-            adultos = shuffleArray(adultos);
-
-            this.todosItens = [...lancamentosTop, ...premiumMix, ...regularVod, ...resto, ...canais, ...adultos];
-            
-            const destaque = lancamentosTop.length > 0 ? lancamentosTop[0] : (premiumMix.length > 0 ? premiumMix[0] : regularVod.length > 0 ? regularVod[0] : null);
-            if(destaque) this.renderizarDestaque(destaque);
-            
-            clearInterval(loadingTipTimer);
-            document.getElementById('loadingScreen').classList.add('hidden');
-            document.getElementById('skeletonContainer').style.display = 'none';
-            document.getElementById('contentGrid').style.display = 'grid';
-            
-            // 🚀 A CORREÇÃO ESTÁ AQUI: Isso faz as categorias aparecerem imediatamente!
-            this.renderizarGêneros(); 
-            this.aplicarFiltros();
-        },
-
-
+        }
+    });
+    
+    const itensAgrupados = Array.from(mapaAgrupado.values());
+    console.log('🔗 Grupos formados:', itensAgrupados.length);
+    
+    // --- ORGANIZA POR PRIORIDADE ---
+    let lancamentosTop = [], premiumMix = [], regularVod = [], 
+        canais = [], adultos = [], resto = [];
+    
+    itensAgrupados.forEach(item => {
+        if (item.isAdulto) adultos.push(item);
+        else if (item.tipo === 'Canal') canais.push(item);
+        else if (!item.poster || item.poster.trim() === '') resto.push(item);
+        else if (item.isLancamento) lancamentosTop.push(item);
+        else if (item.tipo === 'Série') premiumMix.push(item);
+        else regularVod.push(item);
+    });
+    
+    // Embaralha para variedade
+    const shuffle = (arr) => {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    };
+    
+    this.todosItens = [
+        ...shuffle(lancamentosTop),
+        ...shuffle(premiumMix),
+        ...shuffle(regularVod),
+        ...shuffle(resto),
+        ...shuffle(canais),
+        ...shuffle(adultos)
+    ];
+    
+    // --- DESTAQUE ---
+    const destaque = lancamentosTop[0] || premiumMix[0] || regularVod[0];
+    if (destaque) this.renderizarDestaque(destaque);
+    
+    // --- FINALIZA ---
+    clearInterval(loadingTipTimer);
+    document.getElementById('loadingScreen').classList.add('hidden');
+    document.getElementById('skeletonContainer').style.display = 'none';
+    document.getElementById('contentGrid').style.display = 'grid';
+    
+    this.renderizarGêneros();
+    this.aplicarFiltros();
+},
 
         ajustarLayoutTopo: function(ocultarBanner) {
             const catalogo = document.getElementById('catalogo');
@@ -5150,11 +5346,6 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
 </div>
 </body>
 </html>
-
-
- 
-
-
 
 
 
