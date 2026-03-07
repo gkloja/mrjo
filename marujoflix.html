@@ -4576,14 +4576,14 @@ window.compartilharFilmeAtivo = async function() {
                 if (dados.sucesso) {
                     const shareUrl = dados.shareUrl;
                     
-                    // 🏴‍☠️ TEXTO CRIATIVO COM O LINK NO INÍCIO
+                    // ✅ AGORA SEM LINK DUPLICADO!
                     const textoCompartilhamento = `${shareUrl}\n\n🏴‍☠️ ARRR, MARUJO! O baú do "${title}" foi encontrado!\n🎬 Qualidade 4K • Dublado • Legendado\n⚓ Vem navegar nessa aventura no Marujo Flix! 🍿`;
                     
                     if (navigator.share) {
                         await navigator.share({
                             title: '🏴‍☠️ ' + title + ' - Marujo Flix',
                             text: textoCompartilhamento,
-                            url: shareUrl
+                            // url: shareUrl  // 🔴 REMOVIDO! Não passa URL separada
                         });
                         
                         ToastSystem.show('⚓ Tesouro compartilhado! +20 XP', 'success');
@@ -4603,14 +4603,14 @@ window.compartilharFilmeAtivo = async function() {
         // 🔥 GERAR LINK MANUAL (caso a API falhe)
         const shareUrlManual = `https://fabibot.vercel.app/compartilhar?logo=${encodeURIComponent(logoComCors)}&titulo=${encodeURIComponent(title)}&desc=${encodeURIComponent('⚓ ARR! Este tesouro cinematográfico te espera!')}`;
         
-        // 🏴‍☠️ TEXTO CRIATIVO COM O LINK NO INÍCIO
+        // ✅ AGORA SEM LINK DUPLICADO!
         const textoCompartilhamento = `${shareUrlManual}\n\n🏴‍☠️ ARRR, MARUJO! O baú do "${title}" foi encontrado!\n🎬 Qualidade 4K • Dublado • Legendado\n⚓ Vem navegar nessa aventura no Marujo Flix! 🍿`;
         
         if (navigator.share) {
             await navigator.share({
                 title: '🏴‍☠️ ' + title + ' - Marujo Flix',
                 text: textoCompartilhamento,
-                url: shareUrlManual
+                // url: shareUrlManual  // 🔴 REMOVIDO! Não passa URL separada
             });
             
             ToastSystem.show('⚓ Tesouro compartilhado! +20 XP', 'success');
