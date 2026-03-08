@@ -4603,10 +4603,10 @@ window.compartilharFilmeAtivo = async function() {
         }
         
         // 🔥 GERAR LINK MANUAL (caso a API falhe)
-        const shareUrlManual = `https://fabibot.vercel.app/compartilhar?logo=${encodeURIComponent(logoComCors)}&titulo=${encodeURIComponent(title)}&desc=${encodeURIComponent('⚓ ARR! Este tesouro cinematográfico te espera!')}`;
+        const shareUrlManual = `https://fabibot.vercel.app/compartilhar?logo=${encodeURIComponent(logoComCors)}&titulo=${encodeURIComponent(title)}&desc=${encodeURIComponent('📽️ FULL HD • 4K')}`;
         
         // ✅ TEXTO COM LINK DA PESQUISA NO FINAL
-        const textoCompartilhamento = `${shareUrlManual}\n\n🏴‍☠️ ARRR, MARUJO! O baú do "${title}" foi encontrado!\n🎬 Qualidade 4K • Dublado • Legendado\n⚓ Vem navegar nessa aventura no Marujo Flix!\n\n👉 ${linkPesquisa}`;
+        const textoCompartilhamento = `${shareUrlManual}\n\n\n🏴‍☠️ ARRR, MARUJO! O baú do "*${title}*" foi encontrado!\n_🎬 Qualidade 4K • Dublado • Legendado_\n> ⚓ Vem navegar nessa aventura no Marujo Flix!`;
         
         if (navigator.share) {
             await navigator.share({
