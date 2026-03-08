@@ -4580,7 +4580,7 @@ window.compartilharFilmeAtivo = async function() {
                     const shareUrl = dados.shareUrl;
                     
                     // ✅ TEXTO COM O LINK DO FABIBOT (para preview bonito) E LINK DA PESQUISA NO FINAL
-                    const textoCompartilhamento = `${shareUrl}\n\n🏴‍☠️ ARRR, MARUJO! O baú do "${title}" foi encontrado!\n🎬 Qualidade 4K • Dublado • Legendado\n⚓ Vem navegar nessa aventura no Marujo Flix!\n\n👉 ${linkPesquisa}`;
+                    const textoCompartilhamento = `${shareUrl}\n🏴‍☠️ ARRR, MARUJO! O baú do "*${title}*" foi encontrado!\n_🎬 Qualidade 4K • Dublado • Legendado_\n> ⚓ Vem navegar nessa aventura no Marujo Flix!`;
                     
                     if (navigator.share) {
                         await navigator.share({
