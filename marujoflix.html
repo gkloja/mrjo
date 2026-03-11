@@ -1903,6 +1903,12 @@
     color: black;
     border-color: var(--primary);
 }
+/* Animação pulsante para o badge AO VIVO */
+@keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); background: #ff3333; }
+    100% { opacity: 1; transform: scale(1); }
+}
     </style>
 </head>
 <body>
@@ -4155,37 +4161,37 @@ userProgress.updateUI();
             return catStr.replace(/^(Canais \| |Filmes \| |Series \| |\[XXX\] )/i, '').replace(/\[24H\] /i, '').trim();
         },
         
-                        processarDados: function(data) {
+processarDados: function(data) {
     console.log('📦 Processando', data.length, 'itens do JSON');
     const mapaAgrupado = new Map();
     
-    // Função auxiliar para limpar título (VERSÃO PROFISSIONAL)
+    // Função auxiliar para limpar título
     function limparTitulo(titulo) {
         if (!titulo) return '';
         
         let t = titulo;
         
-        // 1. Remove "Novela - " do início (prioridade máxima)
+        // 1. Remove "Novela - " do início
         t = t.replace(/^Novela\s*[-–—]\s*/i, '');
         
-        // 2. Remove (L), (D), [L], [D] de forma agressiva
+        // 2. Remove (L), (D), [L], [D]
         t = t.replace(/\s*\([Ll]\)\s*/g, ' ');
         t = t.replace(/\s*\([Dd]\)\s*/g, ' ');
         t = t.replace(/\s*\[[Ll]\]\s*/g, ' ');
         t = t.replace(/\s*\[[Dd]\]\s*/g, ' ');
         
-        // 3. Remove ano no final (com ou sem hífen, parênteses, colchetes)
+        // 3. Remove ano no final
         t = t.replace(/\s*[-–—]?\s*\d{4}\s*$/, '');
         t = t.replace(/\s*\(\d{4}\)\s*$/, '');
         t = t.replace(/\s*\[\d{4}\]\s*$/, '');
         
-        // 4. Remove TODOS os padrões de episódio possíveis (INCLUINDO COM ESPAÇO)
-        t = t.replace(/\b[Ss]\d{2}\s*[Ee]\d{2,3}\b/g, '');      // S01 E184 ou S01E184
-        t = t.replace(/\b[Ss]\d{2}\s*Ep\s*\d{2,3}\b/g, '');     // S01 Ep 184
+        // 4. Remove padrões de episódio
+        t = t.replace(/\b[Ss]\d{2}\s*[Ee]\d{2,3}\b/g, '');
+        t = t.replace(/\b[Ss]\d{2}\s*Ep\s*\d{2,3}\b/g, '');
         t = t.replace(/\bTemporada\s*\d+\b/gi, '');
         t = t.replace(/\bEpis[oó]dio\s*\d+\b/gi, '');
         t = t.replace(/\bEp\s*\d+\b/gi, '');
-        t = t.replace(/\b\d{1,2}x\d{2,3}\b/g, '');              // 1x184
+        t = t.replace(/\b\d{1,2}x\d{2,3}\b/g, '');
         
         // 5. Remove palavras de versão/qualidade
         t = t.replace(/\bLegendado\b/gi, '');
@@ -4195,15 +4201,14 @@ userProgress.updateUI();
         t = t.replace(/\bHD\b/gi, '');
         t = t.replace(/\b720p\b/gi, '');
         t = t.replace(/\b1080p\b/gi, '');
-        t = t.replace(/\bLANCAMENTOS?\b/gi, '');                // Remove "LANÇAMENTOS" do título
+        t = t.replace(/\bLANCAMENTOS?\b/gi, '');
         
-        // 6. Remove caracteres especiais e normaliza espaços
-        t = t.replace(/[^\w\sÀ-ÿ]/g, ' ')                         // Mantém acentos
+        // 6. Remove caracteres especiais
+        t = t.replace(/[^\w\sÀ-ÿ]/g, ' ')
               .replace(/\s+/g, ' ')
               .trim()
               .toLowerCase();
         
-        // Se ficou vazio, usa versão simplificada do original
         if (!t || t.length < 3) {
             t = titulo
                 .replace(/^Novela\s*[-–—]\s*/i, '')
@@ -4219,51 +4224,94 @@ userProgress.updateUI();
         
         return t;
     }
-    
+
     data.forEach((item, index) => {
         const catStr = item.categoria || 'Geral';
         const nomeOriginal = item.nome || 'Sem título';
+        const link = item.link || '';
         
-        // Limpa o título usando a função profissional
-        const nomeBase = limparTitulo(nomeOriginal);
-        
-        // --- DETECÇÃO DE TIPO PROFISSIONAL ---
+        // ============================================
+        // DETECÇÃO DE TIPO - PRIORIDADE MÁXIMA
+        // ============================================
         let tipo = 'Filme'; // padrão
         
         const catLower = catStr.toLowerCase();
         const nomeLower = nomeOriginal.toLowerCase();
+
+        // 🔥 PRIORIDADE 1: SE TERMINA COM .m3u8 É LIVE/CANAL
+        const ehM3U8 = link.toLowerCase().endsWith('.m3u8');
         
-        // 1. Detecta CANAL
-        if (catLower.includes('canais') || catLower === 'nacional' || 
-            catLower.includes('esporte') || catLower.includes('documentario')) {
+        // 🔥 PRIORIDADE 2: DETECTAR CANAL DE TV
+        if (ehM3U8 || 
+            catLower.includes('canais') || 
+            catLower === 'nacional' || 
+            catLower.includes('esporte') || 
+            catLower.includes('documentario') ||
+            catLower.includes('notícias') ||
+            catLower.includes('variedades') ||
+            catLower.includes('infantil') ||
+            catLower.includes('musica') ||
+            catLower.includes('tv ') ||
+            catLower.includes('aberta') ||
+            catLower.includes('pago')) {
             tipo = 'Canal';
         }
-        
-        // 2. Detecta SÉRIE (qualquer padrão de episódio OU categoria de série/novela)
+
+        // 🔥 PRIORIDADE 3: Detectar SÉRIE (tem padrão de episódio)
         if (/\b(s\d{2}\s*e\d{2,3}|temporada\s*\d+|epis[oó]dio\s*\d+|\d{1,2}x\d{2,3})\b/i.test(nomeOriginal) ||
-            catLower.includes('série') || catLower.includes('novela') || 
-            catLower.includes('anime') || catLower.includes('dorama')) {
+            catLower.includes('série') || 
+            catLower.includes('novela') || 
+            catLower.includes('anime') || 
+            catLower.includes('dorama')) {
             tipo = 'Série';
         }
-        
-        // --- DETECÇÃO DE FLAGS ESPECÍFICAS (MAIS PRECISA) ---
+
+        // 🔥 PRIORIDADE 4: Se for explicitamente "Filmes" na categoria
+        if (catLower.includes('filmes') || catLower.includes('cinema')) {
+            tipo = 'Filme';
+        }
+
+        // ============================================
+        // DETECÇÃO DE LIVE (AO VIVO)
+        // ============================================
+        const ehLive = ehM3U8 && (
+            nomeLower.includes('ao vivo') || 
+            nomeLower.includes('live') || 
+            nomeLower.includes('agora') ||
+            catLower.includes('esporte') ||
+            catLower.includes('futebol') ||
+            catLower.includes('notícia') ||
+            catLower.includes('jornal')
+        );
+
+        // --- DETECÇÃO DE FLAGS ESPECÍFICAS ---
         const isLeg = /\([Ll]\)|\[[Ll]\]|\blegendado\b/i.test(nomeOriginal);
         const isDublado = /\([Dd]\)|\[[Dd]\]|\bdublado\b/i.test(nomeOriginal);
         const is4K = /\b4K\b|\bFHD\b/i.test(nomeOriginal) || catStr.toUpperCase().includes('4K');
         const isLancamento = catLower.includes('cinema') || catLower.includes('lancamento') || catLower.includes('lançamento');
         const isAdulto = catLower.includes('xxx') || catLower.includes('adulto');
         
-        // --- CHAVE DE AGRUPAMENTO (nomeBase + tipo) ---
-        // Garantimos que a chave seja consistente
-        const chaveUnica = `${nomeBase}|${tipo}`;
+        // ============================================
+        // CHAVE DE AGRUPAMENTO
+        // ============================================
+        let chaveUnica;
+        if (tipo === 'Canal') {
+            // Para canais, usa o nomeOriginal como chave (não limpa)
+            chaveUnica = `${nomeOriginal}|CANAL`;
+        } else {
+            const nomeBase = limparTitulo(nomeOriginal);
+            chaveUnica = `${nomeBase}|${tipo}`;
+        }
         
         // --- CRIA O FILHO ---
         const filhoObj = {
             id: item.id || `idx_${index}`,
             nomeOriginal: nomeOriginal,
-            videoUrl: item.link || '',
+            videoUrl: link,
             isLeg: isLeg,
-            isDublado: isDublado
+            isDublado: isDublado,
+            isLive: ehLive, // NOVO: Marca se é live
+            isM3U8: ehM3U8  // NOVO: Marca se é stream
         };
         
         // --- AGRUPA USANDO A CHAVE ---
@@ -4271,23 +4319,22 @@ userProgress.updateUI();
             const grupoExistente = mapaAgrupado.get(chaveUnica);
             grupoExistente.children.push(filhoObj);
             
-            // Mantém a melhor logo
             if (!grupoExistente.poster && item.logo) {
                 grupoExistente.poster = item.logo;
             }
             
-            // Atualiza flags do grupo (se qualquer filho tiver a flag, o grupo tem)
             if (isLeg) grupoExistente.isLeg = true;
             if (isDublado) grupoExistente.isDublado = true;
             if (is4K) grupoExistente.is4K = true;
             if (isLancamento) grupoExistente.isLancamento = true;
             if (isAdulto) grupoExistente.isAdulto = true;
+            if (ehLive) grupoExistente.isLive = true; // NOVO: Grupo tem live
+            if (ehM3U8) grupoExistente.isM3U8 = true; // NOVO: Grupo tem stream
             
         } else {
-            // Cria novo grupo
             mapaAgrupado.set(chaveUnica, {
                 id_main: filhoObj.id,
-                titulo: nomeOriginal, // mantém o título original para exibição
+                titulo: tipo === 'Canal' ? nomeOriginal : nomeOriginal,
                 categoriaLimpa: this.simplificarCategoria(catStr),
                 tipo: tipo,
                 poster: item.logo || '',
@@ -4296,6 +4343,8 @@ userProgress.updateUI();
                 is4K: is4K,
                 isLancamento: isLancamento,
                 isAdulto: isAdulto,
+                isLive: ehLive, // NOVO
+                isM3U8: ehM3U8, // NOVO
                 children: [filhoObj]
             });
         }
@@ -4304,12 +4353,16 @@ userProgress.updateUI();
     const itensAgrupados = Array.from(mapaAgrupado.values());
     console.log('🔗 Grupos formados:', itensAgrupados.length);
     
-    // --- ORGANIZA POR PRIORIDADE ---
+    // --- SEPARA POR CATEGORIA ---
     let lancamentosTop = [], premiumMix = [], regularVod = [], 
-        canais = [], adultos = [], resto = [];
+        canais = [], adultos = [], lives = [], resto = [];
     
     itensAgrupados.forEach(item => {
-        if (item.isAdulto) adultos.push(item);
+        // NOVO: Separa LIVES em categoria especial
+        if (item.isLive) {
+            lives.push(item);
+        }
+        else if (item.isAdulto) adultos.push(item);
         else if (item.tipo === 'Canal') canais.push(item);
         else if (!item.poster || item.poster.trim() === '') resto.push(item);
         else if (item.isLancamento) lancamentosTop.push(item);
@@ -4326,17 +4379,19 @@ userProgress.updateUI();
         return arr;
     };
     
+    // NOVO: Coloca as LIVES no topo!
     this.todosItens = [
         ...shuffle(lancamentosTop),
         ...shuffle(premiumMix),
+        ...shuffle(lives),       
         ...shuffle(regularVod),
         ...shuffle(resto),
         ...shuffle(canais),
         ...shuffle(adultos)
     ];
     
-    // --- DESTAQUE ---
-    const destaque = lancamentosTop[0] || premiumMix[0] || regularVod[0];
+    // --- DESTAQUE (prioriza LIVES) ---
+    const destaque = lives[0] || lancamentosTop[0] || premiumMix[0] || regularVod[0];
     if (destaque) this.renderizarDestaque(destaque);
     
     // --- FINALIZA ---
@@ -4529,6 +4584,8 @@ userProgress.updateUI();
                 let viewsHtml = visualizacoes > 0 ? `<div class="content-views"><i class="fas fa-eye"></i> ${visualizacoes}</div>` : '';
                 
                 let badgesHtml = `<div class="content-badge ${badgeClass}">${item.tipo}</div>`;
+if(item.isLive) badgesHtml += `<div class="content-badge" style="background: #ff0000; color: white; border: none; box-shadow: 0 0 15px rgba(255,0,0,0.7); animation: pulse 1.5s infinite;"><i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 3px; color: white;"></i> AO VIVO</div>`;
+
                 if(item.isLancamento) badgesHtml += `<div class="content-badge" style="background: var(--accent); color: white; border: none; box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);"><i class="fas fa-fire"></i> NOVO</div>`;
                 if(visualizacoes >= 3) badgesHtml += `<div class="content-badge" style="background: #ff0077; color: white; border: none; box-shadow: 0 0 10px #ff0077;"><i class="fas fa-arrow-trend-up"></i> EM ALTA</div>`;
                 if(item.is4K) badgesHtml += `<div class="content-badge badge-4k"><i class="fas fa-gem"></i> 4K</div>`;
