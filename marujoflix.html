@@ -4391,7 +4391,7 @@ processarDados: function(data) {
     ];
     
     // --- DESTAQUE (prioriza LIVES) ---
-    const destaque = lives[0] || lancamentosTop[0] || premiumMix[0] || regularVod[0];
+    const destaque = lancamentosTop[0] || premiumMix[0] || lives[0] || regularVod[0];
     if (destaque) this.renderizarDestaque(destaque);
     
     // --- FINALIZA ---
