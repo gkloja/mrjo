@@ -3926,47 +3926,42 @@ function verificarAmbienteNavegacao() {
 
         
 init: function() {
-userProgress.updateUI();
-            this.gerarSkeleton();
-            this.carregarDados();
-            this.carregarEstatisticas(); 
-            this.renderShareBanner();
- // <--- ADICIONE ESTA LINHA AQUI
-            
-            document.getElementById('searchInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') this.executarBusca();
-            });
+    userProgress.updateUI();
+    this.gerarSkeleton();
+    
+    // Primeiro carrega os dados
+    this.carregarDados();
+    
+    // Depois carrega as estatísticas
+    this.carregarEstatisticas();
+    
+    this.renderShareBanner();
+    
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') this.executarBusca();
+    });
+    
     document.getElementById('searchInput').addEventListener('input', (e) => {
         clearTimeout(this.searchTimeout);
         this.searchTimeout = setTimeout(() => { this.executarBusca(); }, 1200);
     });
 
-    // ========== NOVO CÓDIGO PARA BUSCAR PELA URL ==========
-    // Pega os parâmetros da URL
-    // ... (parte inicial do init fica igual) ...
-
-    // ========== NOVO CÓDIGO PARA BUSCAR PELA URL E ABRIR SOZINHO ==========
+    // Código para busca por URL
     const urlParams = new URLSearchParams(window.location.search);
     const searchQuery = urlParams.get('q'); 
 
     if (searchQuery) {
-        // Pequeno atraso para garantir que os dados do site já carregaram
         setTimeout(() => {
             document.getElementById('searchInput').value = decodeURIComponent(searchQuery);
-            this.executarBusca(); // Executa a busca
+            this.executarBusca();
             
-            // Depois de pesquisar, abre o primeiro filme automaticamente!
             setTimeout(() => {
                 if (this.filtrados && this.filtrados.length > 0) {
                     this.abrirPlayerOuModal(this.filtrados[0].id_main);
                 }
-            }, 500); // 0.5s para dar tempo de renderizar os cartazes
-            
-        }, 1500); 
+            }, 500);
+        }, 1500);
     }
-    // ========== FIM DO NOVO CÓDIGO ==========
-
-    // ========== FIM DO NOVO CÓDIGO ==========
 },
 // ... (resto do código do IPTVSystem acima) ...
 
@@ -4001,25 +3996,83 @@ userProgress.updateUI();
             document.querySelector('.skeleton-grid').innerHTML = html;
         },
         
-                carregarEstatisticas: async function() {
-            try {
-                const response = await fetch(this.config.statsUrl);
-                if(response.ok) {
-                    const data = await response.json();
-                    if(data.estatisticas) {
-                        this.estatisticasSite.viewsPopulares = data.estatisticas.canaisPopulares || {};
-                        this.estatisticasSite.totalViews = data.estatisticas.totalVisualizacoes || 0;
-                        
-                        // Atualiza o painel lateral com as visualizações totais do site
-                        const statGlobais = document.getElementById('statGlobalViews');
-                        if(statGlobais) statGlobais.textContent = this.estatisticasSite.totalViews;
-                    }
-                }
-            } catch (error) {
-                console.log("Estatísticas offline, seguindo a viagem...");
-            }
-        },
 
+carregarEstatisticas: async function() {
+    try {
+        const response = await fetch(this.config.statsUrl);
+        if(response.ok) {
+            const data = await response.json();
+            
+            // Dicionário para contar views por ID
+            const viewsPorId = {};
+            let totalViewsGeral = 0;
+            
+            // Percorre TODOS os usuários
+            Object.values(data.usuarios).forEach(usuario => {
+                // Percorre o histórico de cada usuário
+                if (usuario.historico && Array.isArray(usuario.historico)) {
+                    usuario.historico.forEach(item => {
+                        const canalId = item.canalId;
+                        if (canalId) {
+                            // Incrementa o contador para este ID
+                            viewsPorId[canalId] = (viewsPorId[canalId] || 0) + 1;
+                            totalViewsGeral++;
+                        }
+                    });
+                }
+            });
+            
+            // Guarda as estatísticas
+            this.estatisticasSite = {
+                viewsPorId: viewsPorId,
+                totalViews: totalViewsGeral
+            };
+            
+            console.log('✅ Views por ID carregadas:', viewsPorId);
+            console.log('📊 Total de visualizações:', totalViewsGeral);
+            
+            // Se já tiver dados carregados, atualiza a visualização
+            if (this.todosItens.length > 0) {
+                this.atualizarViewsNosItens();
+                if (this.abaAtual === 'em_alta') {
+                    this.aplicarFiltros();
+                }
+            }
+        }
+    } catch (error) {
+        console.log("❌ Erro ao carregar estatísticas:", error);
+        this.estatisticasSite = { viewsPorId: {}, totalViews: 0 };
+    }
+},
+// ==========================================
+// ATUALIZAR VIEWS EM TODOS OS ITENS
+// ==========================================
+atualizarViewsNosItens: function() {
+    if (!this.todosItens.length || !this.estatisticasSite.viewsPorId) return;
+    
+    this.todosItens.forEach(item => {
+        let totalViews = 0;
+        
+        // Views do grupo principal pelo ID principal
+        if (this.estatisticasSite.viewsPorId[item.id_main]) {
+            totalViews += this.estatisticasSite.viewsPorId[item.id_main];
+        }
+        
+        // Views de cada child (episódio/versão)
+        if (item.children) {
+            item.children.forEach(child => {
+                if (this.estatisticasSite.viewsPorId[child.id]) {
+                    totalViews += this.estatisticasSite.viewsPorId[child.id];
+                }
+            });
+        }
+        
+        // Guarda a viewCount NO PRÓPRIO ITEM (permanente)
+        item.viewCount = totalViews;
+    });
+    
+    console.log('✅ Views atualizadas nos itens');
+},
         
         carregarDados: async function() {
     try {
@@ -4487,24 +4540,29 @@ processarDados: function(data) {
             else if (this.abaAtual === 'historico') {
                 result = userProgress.history.map(id => this.todosItens.find(i => i.id_main === id)).filter(Boolean);
             }
-            // NOVO: Aba Em Alta (Filtra quem tem views e ordena do maior para o menor)
-                        // NOVO: Aba Em Alta (Filtra quem tem views, remove adultos e ordena)
-            else if (this.abaAtual === 'em_alta') {
-                result = result.filter(item => {
-                    // ⛔ BLOQUEIO: Se for conteúdo adulto, não entra no Em Alta!
-                    if (item.isAdulto) return false; 
-                    
-                    let views = this.estatisticasSite.viewsPopulares[item.titulo] || 0;
-                    if (views === 0 && item.children) {
-                        item.children.forEach(c => {
-                            if(this.estatisticasSite.viewsPopulares[c.nomeOriginal]) views += this.estatisticasSite.viewsPopulares[c.nomeOriginal];
-                        });
-                    }
-                    item.tempViews = views; 
-                    return views >= 2; // Puxa pra aba Em Alta tudo que tiver 2 views ou mais
-                }).sort((a, b) => b.tempViews - a.tempViews);
-            }
-
+  
+  
+else if (this.abaAtual === 'em_alta') {
+    // Primeiro, garante que as views estão atualizadas
+    if (!this.todosItens[0]?.viewCount) {
+        this.atualizarViewsNosItens();
+    }
+    
+    // Filtra: remove adultos
+    let emAlta = this.todosItens.filter(item => !item.isAdulto);
+    
+    // Ordena por viewCount (do maior para o menor)
+    emAlta.sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
+    
+    // Pega apenas os que têm pelo menos 1 view
+    result = emAlta.filter(item => item.viewCount > 0);
+    
+    // Log para debug (opcional)
+    console.log('🔥 Em Alta - Top 10:', result.slice(0, 10).map(i => ({
+        titulo: i.titulo,
+        views: i.viewCount
+    })));
+}
             
             if (this.generoAtivo !== 'all') result = result.filter(i => i.categoriaLimpa === this.generoAtivo);
             
@@ -4543,97 +4601,110 @@ processarDados: function(data) {
             }
         },
         
-                        renderizarGrid: function() {
-            const grid = document.getElementById('contentGrid');
-            
-            // Botão global de limpar histórico
-            let htmlExtra = '';
-            if (this.abaAtual === 'historico' && this.filtrados.length > 0) {
-                htmlExtra = `
-                <div style="grid-column: 1/-1; display: flex; justify-content: flex-end; margin-bottom: 15px;">
-                    <button onclick="IPTVSystem.limparHistorico()" style="background: rgba(255, 77, 77, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: var(--transition);">
-                        <i class="fas fa-trash-alt"></i> Esvaziar Diário de Bordo
-                    </button>
+                        // ==========================================
+// RENDERIZAR GRID - CORRIGIDO
+// ==========================================
+renderizarGrid: function() {
+    const grid = document.getElementById('contentGrid');
+    
+    // Botão global de limpar histórico (já existente)
+    let htmlExtra = '';
+    if (this.abaAtual === 'historico' && this.filtrados.length > 0) {
+        htmlExtra = `
+        <div style="grid-column: 1/-1; display: flex; justify-content: flex-end; margin-bottom: 15px;">
+            <button onclick="IPTVSystem.limparHistorico()" style="background: rgba(255, 77, 77, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: var(--transition);">
+                <i class="fas fa-trash-alt"></i> Esvaziar Diário de Bordo
+            </button>
+        </div>`;
+    }
+
+    if(this.filtrados.length === 0) {
+        let msg = this.abaAtual === 'historico' ? "Seu diário de bordo está vazio." : "Nenhum tesouro encontrado por aqui.";
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted); background: var(--bg-card); border-radius: 20px; border: 1px dashed var(--primary);">
+            <i class="fas fa-ghost" style="font-size: 3rem; margin-bottom: 15px; display:block; color: var(--primary);"></i>
+            ${msg}
+        </div>`;
+        return;
+    }
+    
+    const itensMostrar = this.filtrados.slice(0, this.paginaAtual * this.config.itemsPerPage);
+    
+    let htmlCards = itensMostrar.map((item, index) => {
+        let badgeClass = 'badge-filme';
+        if(item.tipo === 'Canal') badgeClass = 'badge-canal';
+        if(item.tipo === 'Série') badgeClass = 'badge-serie';
+
+        const fallbackImg = item.tipo === 'Canal' ? 'https://via.placeholder.com/300x300?text=Canal+TV' : 'https://via.placeholder.com/300x450?text=Cartaz';
+        const isFav = userProgress.isFavorite(item.id_main);
+
+        // 👇 USA O VIEWCOUNT QUE CALCULAMOS (CORRETO)
+        const visualizacoes = item.viewCount || 0;
+        
+        // Só mostra se tiver pelo menos 1 view
+        let viewsHtml = visualizacoes > 0 ? 
+            `<div class="content-views"><i class="fas fa-eye"></i> ${visualizacoes} ${visualizacoes === 1 ? 'view' : 'views'}</div>` : '';
+        
+        let badgesHtml = `<div class="content-badge ${badgeClass}">${item.tipo}</div>`;
+        if(item.isLive) badgesHtml += `<div class="content-badge" style="background: #ff0000; color: white; border: none; box-shadow: 0 0 15px rgba(255,0,0,0.7); animation: pulse 1.5s infinite;"><i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 3px; color: white;"></i> AO VIVO</div>`;
+
+        if(item.isLancamento) badgesHtml += `<div class="content-badge" style="background: var(--accent); color: white; border: none; box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);"><i class="fas fa-fire"></i> NOVO</div>`;
+        
+        // 👇 DESTAQUE ESPECIAL PARA OS MAIS VISTOS
+        if(visualizacoes >= 10) {
+            badgesHtml += `<div class="content-badge" style="background: #ff0077; color: white; border: none; box-shadow: 0 0 10px #ff0077;"><i class="fas fa-crown"></i> TOP 10</div>`;
+        } else if(visualizacoes >= 5) {
+            badgesHtml += `<div class="content-badge" style="background: #ffaa00; color: black; border: none;"><i class="fas fa-fire"></i> EM ALTA</div>`;
+        } else if(visualizacoes >= 2) {
+            badgesHtml += `<div class="content-badge" style="background: #0088ff; color: white; border: none;"><i class="fas fa-arrow-up"></i> EM ALTA</div>`;
+        }
+        
+        if(item.is4K) badgesHtml += `<div class="content-badge badge-4k"><i class="fas fa-gem"></i> 4K</div>`;
+        if(item.isLeg) badgesHtml += `<div class="content-badge badge-leg">CC</div>`;
+        if(item.children.length > 1) badgesHtml += `<div class="content-badge badge-opcoes"><i class="fas fa-list"></i> ${item.children.length} Opções</div>`;
+
+        // Botão de remover individualmente do histórico (só aparece na aba histórico)
+        let btnHistorico = '';
+        if (this.abaAtual === 'historico') {
+            btnHistorico = `
+            <div onclick="IPTVSystem.removerDoHistorico(event, '${item.id_main}')" title="Apagar do Histórico" 
+                 style="position: absolute; top: 8px; left: 45px; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); border: 1px solid var(--accent); color: var(--accent); display: flex; align-items: center; justify-content: center; z-index: 4; transition: var(--transition);">
+                    <i class="fas fa-times"></i>
                 </div>`;
-            }
+        }
 
-            if(this.filtrados.length === 0) {
-                let msg = this.abaAtual === 'historico' ? "Seu diário de bordo está vazio." : "Nenhum tesouro encontrado por aqui.";
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted); background: var(--bg-card); border-radius: 20px; border: 1px dashed var(--primary);">
-                    <i class="fas fa-ghost" style="font-size: 3rem; margin-bottom: 15px; display:block; color: var(--primary);"></i>
-                    ${msg}
-                </div>`;
-                return;
-            }
-            
-            const itensMostrar = this.filtrados.slice(0, this.paginaAtual * this.config.itemsPerPage);
-            
-            let htmlCards = itensMostrar.map((item, index) => {
-                let badgeClass = 'badge-filme';
-                if(item.tipo === 'Canal') badgeClass = 'badge-canal';
-                if(item.tipo === 'Série') badgeClass = 'badge-serie';
-
-                const fallbackImg = item.tipo === 'Canal' ? 'https://via.placeholder.com/300x300?text=Canal+TV' : 'https://via.placeholder.com/300x450?text=Cartaz';
-                const isFav = userProgress.isFavorite(item.id_main);
-
-                let visualizacoes = this.estatisticasSite.viewsPopulares[item.titulo] || 0;
-                if (visualizacoes === 0 && item.children) {
-                    item.children.forEach(c => { if(this.estatisticasSite.viewsPopulares[c.nomeOriginal]) visualizacoes += this.estatisticasSite.viewsPopulares[c.nomeOriginal]; });
-                }
-
-                let viewsHtml = visualizacoes > 0 ? `<div class="content-views"><i class="fas fa-eye"></i> ${visualizacoes}</div>` : '';
+        return `
+        <div class="content-card" style="animation-delay: ${Math.min(index * 0.02, 0.3)}s" onclick="IPTVSystem.abrirPlayerOuModal('${item.id_main}')">
+            <div class="content-poster">
+                <img src="${item.poster}" onerror="this.src='${fallbackImg}'" loading="lazy">
                 
-                let badgesHtml = `<div class="content-badge ${badgeClass}">${item.tipo}</div>`;
-if(item.isLive) badgesHtml += `<div class="content-badge" style="background: #ff0000; color: white; border: none; box-shadow: 0 0 15px rgba(255,0,0,0.7); animation: pulse 1.5s infinite;"><i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 3px; color: white;"></i> AO VIVO</div>`;
-
-                if(item.isLancamento) badgesHtml += `<div class="content-badge" style="background: var(--accent); color: white; border: none; box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);"><i class="fas fa-fire"></i> NOVO</div>`;
-                if(visualizacoes >= 3) badgesHtml += `<div class="content-badge" style="background: #ff0077; color: white; border: none; box-shadow: 0 0 10px #ff0077;"><i class="fas fa-arrow-trend-up"></i> EM ALTA</div>`;
-                if(item.is4K) badgesHtml += `<div class="content-badge badge-4k"><i class="fas fa-gem"></i> 4K</div>`;
-                if(item.isLeg) badgesHtml += `<div class="content-badge badge-leg">CC</div>`;
-                if(item.children.length > 1) badgesHtml += `<div class="content-badge badge-opcoes"><i class="fas fa-list"></i> ${item.children.length} Opções</div>`;
-
-                // Botão de remover individualmente do histórico (só aparece na aba histórico)
-                let btnHistorico = '';
-                if (this.abaAtual === 'historico') {
-                    btnHistorico = `
-                    <div onclick="IPTVSystem.removerDoHistorico(event, '${item.id_main}')" title="Apagar do Histórico" 
-                         style="position: absolute; top: 8px; left: 45px; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); border: 1px solid var(--accent); color: var(--accent); display: flex; align-items: center; justify-content: center; z-index: 4; transition: var(--transition);">
-                        <i class="fas fa-times"></i>
-                    </div>`;
-                }
-
-                return `
-                <div class="content-card" style="animation-delay: ${Math.min(index * 0.02, 0.3)}s" onclick="IPTVSystem.abrirPlayerOuModal('${item.id_main}')">
-                    <div class="content-poster">
-                        <img src="${item.poster}" onerror="this.src='${fallbackImg}'" loading="lazy">
-                        
-                        <div class="card-favorite-btn ${isFav ? 'is-fav' : ''}" onclick="IPTVSystem.clicarFavorito(event, '${item.id_main}')" title="Favoritar">
-                            <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
-                        </div>
-                        
-                        ${btnHistorico}
-
-                        <div class="badges-container">${badgesHtml}</div>
-                        ${viewsHtml}
-                        <div class="content-overlay"><div class="content-play-btn"><i class="fas fa-play" style="margin-left: 5px;"></i></div></div>
-                    </div>
-                    <div class="content-info">
-                        <div class="content-title">${item.titulo}</div>
-                        <div class="content-category">${item.categoriaLimpa}</div>
-                    </div>
+                <div class="card-favorite-btn ${isFav ? 'is-fav' : ''}" onclick="IPTVSystem.clicarFavorito(event, '${item.id_main}')" title="Favoritar">
+                    <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
                 </div>
-                `;
-            }).join('');
+                
+                ${btnHistorico}
 
-            let loadMoreHtml = '';
-            if (this.filtrados.length > this.paginaAtual * this.config.itemsPerPage) {
-                loadMoreHtml = `
-                <div class="load-more-container">
-                    <button class="load-more-btn" onclick="IPTVSystem.carregarMais()"><i class="fas fa-arrow-down"></i> Revelar Mais (+${this.filtrados.length - (this.paginaAtual * this.config.itemsPerPage)})</button>
-                </div>`;
-            }
-            grid.innerHTML = htmlExtra + htmlCards + loadMoreHtml;
-        },
+                <div class="badges-container">${badgesHtml}</div>
+                ${viewsHtml}
+                <div class="content-overlay"><div class="content-play-btn"><i class="fas fa-play" style="margin-left: 5px;"></i></div></div>
+            </div>
+            <div class="content-info">
+                <div class="content-title">${item.titulo}</div>
+                <div class="content-category">${item.categoriaLimpa}</div>
+                ${visualizacoes > 0 ? `<div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 5px;"><i class="fas fa-eye" style="color: var(--primary);"></i> ${visualizacoes} visualizações</div>` : ''}
+            </div>
+        </div>
+        `;
+    }).join('');
+
+    let loadMoreHtml = '';
+    if (this.filtrados.length > this.paginaAtual * this.config.itemsPerPage) {
+        loadMoreHtml = `
+        <div class="load-more-container">
+            <button class="load-more-btn" onclick="IPTVSystem.carregarMais()"><i class="fas fa-arrow-down"></i> Revelar Mais (+${this.filtrados.length - (this.paginaAtual * this.config.itemsPerPage)})</button>
+        </div>`;
+    }
+    grid.innerHTML = htmlExtra + htmlCards + loadMoreHtml;
+},
 
 
 
