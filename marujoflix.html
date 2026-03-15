@@ -1,5 +1,7 @@
 
 
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -1909,6 +1911,12 @@
     50% { opacity: 0.8; transform: scale(1.05); background: #ff3333; }
     100% { opacity: 1; transform: scale(1); }
 }
+/* Badge AO VIVO pulsante */
+@keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); background: #ff3333; }
+    100% { opacity: 1; transform: scale(1); }
+}
     </style>
 </head>
 <body>
@@ -2025,6 +2033,9 @@
 <section class="categories-section" id="catalogo">
         <div class="main-tabs">
             <button class="main-tab active" onclick="IPTVSystem.mudarAba('todos')" id="abaTodos">Tudo</button>
+            <button class="main-tab" onclick="IPTVSystem.mudarAba('jogos')" id="abaJogos" style="background: #ff0000; color: white; animation: pulse 1.5s infinite;">
+    <i class="fas fa-futbol"></i> Jogos Ao Vivo!
+</button>
             <button class="main-tab" onclick="IPTVSystem.mudarAba('em_alta')" id="abaEm_alta"><i class="fas fa-fire" style="color: #ff0077;"></i> Em Alta</button>
             <button class="main-tab" onclick="IPTVSystem.mudarAba('filmes')" id="abaFilmes">Filmes</button>
             <button class="main-tab" onclick="IPTVSystem.mudarAba('series')" id="abaSeries">Séries & Animes</button>
@@ -3590,121 +3601,146 @@ updateLoadingScreen();
     function toggleSidebar() { document.getElementById('sidebarMenu').classList.toggle('active'); }
     
         async function openEpisodesModal(title, children, tipo, id_main) {
-        document.getElementById('episodesTitle').textContent = title;
-        const list = document.getElementById('episodesList');
-        const tmdbContainer = document.getElementById('tmdbContainer');
-        const tmdbTrailer = document.getElementById('tmdbTrailer');
-        const tmdbSinopse = document.getElementById('tmdbSinopse');
-        
-        // Tela de carregamento rápida enquanto busca no TMDB
-        list.innerHTML = '<div style="text-align:center; padding: 30px;"><i class="fas fa-compass fa-spin" style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;"></i><p style="color: var(--text-muted);">Buscando registros navais...</p></div>';
-        tmdbContainer.style.display = 'none';
-        tmdbTrailer.innerHTML = '';
-        tmdbTrailer.style.display = 'none';
-        
-        // Limpa o botão de fallback antigo (se houver) ao abrir um novo filme
-        const oldFallback = document.getElementById('btnYoutubeFallback');
-        if(oldFallback) oldFallback.remove();
-        
-        document.getElementById('modalOverlay').classList.add('active');
-        document.getElementById('episodesModal').classList.add('active');
+    document.getElementById('episodesTitle').textContent = title;
+    const list = document.getElementById('episodesList');
+    const tmdbContainer = document.getElementById('tmdbContainer');
+    const tmdbTrailer = document.getElementById('tmdbTrailer');
+    const tmdbSinopse = document.getElementById('tmdbSinopse');
+    
+    // Tela de carregamento
+    list.innerHTML = '<div style="text-align:center; padding: 30px;"><i class="fas fa-compass fa-spin" style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;"></i><p style="color: var(--text-muted);">Buscando registros navais...</p></div>';
+    tmdbContainer.style.display = 'none';
+    tmdbTrailer.innerHTML = '';
+    tmdbTrailer.style.display = 'none';
+    
+    const oldFallback = document.getElementById('btnYoutubeFallback');
+    if(oldFallback) oldFallback.remove();
+    
+    document.getElementById('modalOverlay').classList.add('active');
+    document.getElementById('episodesModal').classList.add('active');
 
-        // Busca dados no TMDB (Ignora se for Canal de TV)
-        if (tipo === 'Filme' || tipo === 'Série') {
-            const info = await TMDBSystem.buscarInfo(title, tipo);
+    // Busca dados no TMDB
+    if (tipo === 'Filme' || tipo === 'Série') {
+        const info = await TMDBSystem.buscarInfo(title, tipo);
+        if (info) {
+            tmdbContainer.style.display = 'block';
+            tmdbSinopse.textContent = info.sinopse;
+            tmdbSinopse.style.maxHeight = '90px';
+            tmdbSinopse.style.overflowY = 'auto';
+            tmdbSinopse.style.paddingRight = '10px';
             
-            if (info) {
-                tmdbContainer.style.display = 'block';
-                
-                // CORREÇÃO DA SINOPSE: Limita a altura e cria uma barra de rolagem (scroll)
-                tmdbSinopse.textContent = info.sinopse;
-                tmdbSinopse.style.maxHeight = '90px'; // Altura máxima permitida
-                tmdbSinopse.style.overflowY = 'auto'; // Habilita o scroll
-                tmdbSinopse.style.paddingRight = '10px'; // Dá um espaço para a barra
-                
-                if (info.trailer) {
-                    tmdbTrailer.style.display = 'block';
-                    
-                    const urlAtual = window.location.origin;
-                    tmdbTrailer.innerHTML = `<iframe width="100%" height="100%" style="position: absolute; top: 0; left: 0;" src="https://www.youtube.com/embed/${info.trailer}?autoplay=1&origin=${urlAtual}" title="Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-                    
-                    // Cria um link logo abaixo do player para quem sofrer com o vídeo bloqueado
-                    const fallbackHtml = `<a id="btnYoutubeFallback" href="https://www.youtube.com/watch?v=${info.trailer}" target="_blank" style="display: block; text-align: center; color: var(--accent); font-size: 0.75rem; margin-top: -10px; margin-bottom: 15px; text-decoration: none;"><i class="fab fa-youtube"></i> Trailer não carregou? Assista direto no YouTube</a>`;
-                    tmdbTrailer.insertAdjacentHTML('afterend', fallbackHtml);
-                }
+            if (info.trailer) {
+                tmdbTrailer.style.display = 'block';
+                const urlAtual = window.location.origin;
+                tmdbTrailer.innerHTML = `<iframe width="100%" height="100%" style="position: absolute; top: 0; left: 0;" src="https://www.youtube.com/embed/${info.trailer}?autoplay=1&origin=${urlAtual}" title="Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                const fallbackHtml = `<a id="btnYoutubeFallback" href="https://www.youtube.com/watch?v=${info.trailer}" target="_blank" style="display: block; text-align: center; color: var(--accent); font-size: 0.75rem; margin-top: -10px; margin-bottom: 15px; text-decoration: none;"><i class="fab fa-youtube"></i> Trailer não carregou? Assista direto no YouTube</a>`;
+                tmdbTrailer.insertAdjacentHTML('afterend', fallbackHtml);
             }
         }
+    }
 
-        // ====================================================================
-        // NOVO SISTEMA: AGRUPAMENTO BLINDADO DE DUBLADO E LEGENDADO
-        // ====================================================================
+    // ====================================================================
+    // NOVO SISTEMA: AGRUPAMENTO COM QUALIDADE VISÍVEL
+    // ====================================================================
+    
+    const gruposEpisodios = {};
+
+    // 1. Agrupa os filhos por um nome base (sem qualidade)
+    children.forEach(child => {
+        const original = child.nomeOriginal;
         
-        const gruposEpisodios = {};
-
-        // 1. Limpa os nomes e agrupa perfeitamente
-        children.forEach(child => {
-            const original = child.nomeOriginal;
-            
-            // O "CORTADOR" SUPER PODEROSO: Arranca Dublado, Legendado, Dub, Leg, 4K, 1080p, etc.
-            let nomeBase = original.replace(/\s*(?:\(|\[|-)?\s*(Dublado|Legendado|Dub|Leg|Dual Áudio|Dual Audio|Dual|4K|FHD|HD|1080p|720p|\bD\b|\bL\b)\s*(?:\)|\]|-)?\s*/gi, ' ').trim();
-            
-            // Remove hifens ou traços que sobrarem soltos no final
-            nomeBase = nomeBase.replace(/^[-|:;]\s*|\s*[-|:;]$/g, '').trim();
-            
-            // Trava de segurança: Se sobrar vazio, usa o nome original
-            if (!nomeBase) nomeBase = original; 
-            
-            // Cria a "gaveta" do episódio se não existir e guarda o vídeo lá dentro
-            if (!gruposEpisodios[nomeBase]) gruposEpisodios[nomeBase] = [];
-            gruposEpisodios[nomeBase].push(child);
+        // Extrai a QUALIDADE do nome (HD, FHD, 4K, 1080p, etc.)
+        let qualidade = '';
+        const qualidadeMatch = original.match(/\b(4K|FHD|HD|UHD|1080p|720p|480p|Full HD)\b/i);
+        if (qualidadeMatch) {
+            qualidade = qualidadeMatch[1].toUpperCase();
+        }
+        
+        // Extrai se é LEGENDADO ou DUBLADO
+        let tipoAudio = 'Dublado'; // padrão
+        if (child.isLeg || /\([Ll]\)|\[[Ll]\]|\bleg\b|\blegendado\b/i.test(original)) {
+            tipoAudio = 'Legendado';
+        } else if (child.isDublado || /\([Dd]\)|\[[Dd]\]|\bdub\b|\bdublado\b/i.test(original)) {
+            tipoAudio = 'Dublado';
+        }
+        
+        // Cria um nome base removendo QUALIDADE e ÁUDIO para agrupar
+        let nomeBase = original
+            .replace(/\b(4K|FHD|HD|UHD|1080p|720p|480p|Full HD)\b/gi, '') // Remove qualidade
+            .replace(/\s*\([Ll]\)\s*/g, ' ').replace(/\s*\([Dd]\)\s*/g, ' ') // Remove (L) (D)
+            .replace(/\s*\[[Ll]\]\s*/g, ' ').replace(/\s*\[[Dd]\]\s*/g, ' ') // Remove [L] [D]
+            .replace(/\b(Legendado|Dublado|Dub|Leg)\b/gi, '') // Remove palavras de áudio
+            .replace(/[^\w\sÀ-ÿ-]/g, ' ') // Remove caracteres especiais
+            .replace(/\s+/g, ' ')
+            .trim();
+        
+        // Fallback se ficou vazio
+        if (!nomeBase) nomeBase = original;
+        
+        // Cria a "gaveta" do episódio se não existir
+        if (!gruposEpisodios[nomeBase]) gruposEpisodios[nomeBase] = [];
+        
+        // Guarda o child com as informações extras
+        gruposEpisodios[nomeBase].push({
+            ...child,
+            qualidade: qualidade,
+            tipoAudio: tipoAudio
         });
+    });
 
-        // 2. Ordena as gavetas (Episódio 1, Episódio 2, Episódio 3...)
-        const nomesOrdenados = Object.keys(gruposEpisodios).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+    // 2. Ordena as gavetas
+    const nomesOrdenados = Object.keys(gruposEpisodios).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
 
-        // 3. Renderiza a lista na tela (com os botões lado a lado)
-        list.innerHTML = nomesOrdenados.map(nomeBase => {
-            const videosDesteEpisodio = gruposEpisodios[nomeBase];
+    // 3. Renderiza a lista com QUALIDADE e ÁUDIO visíveis
+    list.innerHTML = nomesOrdenados.map(nomeBase => {
+        const videosDesteEpisodio = gruposEpisodios[nomeBase];
+        
+        // Ordena os vídeos: primeiro FHD/4K, depois HD, etc.
+        videosDesteEpisodio.sort((a, b) => {
+            const qualidadeOrder = { '4K': 4, 'FHD': 3, 'HD': 2, '1080P': 3, '720P': 2, '': 1 };
+            const orderA = qualidadeOrder[a.qualidade] || 1;
+            const orderB = qualidadeOrder[b.qualidade] || 1;
+            return orderB - orderA; // Maior qualidade primeiro
+        });
+        
+        // Cria os botões para este episódio
+        const botoesHtml = videosDesteEpisodio.map(child => {
+            // Define cores e ícones baseado no tipo de áudio
+            const isLeg = child.tipoAudio === 'Legendado';
+            const langIcon = isLeg ? 'fa-closed-captioning' : 'fa-microphone';
+            const langText = child.tipoAudio;
+            const corBotao = isLeg ? '#ffb700' : 'var(--primary)';
             
-            // Cria os botões miniaturas para este episódio específico
-            const botoesHtml = videosDesteEpisodio.map(child => {
-                const originalUpper = child.nomeOriginal.toUpperCase();
-                
-                // Descobre se o botão é Legendado ou Dublado analisando o nome original
-                const isLeg = originalUpper.includes('[L]') || originalUpper.includes('(L)') || originalUpper.includes('LEGENDADO') || originalUpper.includes('LEG');
-                
-                // Define as cores e ícones (Amarelo para Legendado, Verde para Dublado)
-                const langIcon = isLeg ? 'fa-closed-captioning' : 'fa-microphone';
-                const langText = isLeg ? 'Legendado' : 'Dublado';
-                const corBotao = isLeg ? '#ffb700' : 'var(--primary)'; 
-
-                return `
-                <div class="episode-btn-mini" onclick="IPTVSystem.irParaVideo('${child.id}')">
-                    <i class="fas ${langIcon}" style="color: ${corBotao}; font-size: 1.1rem;"></i>
-                    <div style="display: flex; flex-direction: column; flex: 1;">
-                        <span style="font-size: 0.85rem; font-weight: bold; color: white;">${langText}</span>
-                    </div>
-                    <i class="fas fa-play" style="color: ${corBotao}; font-size: 0.9rem; opacity: 0.7;"></i>
-                </div>
-                `;
-            }).join('');
-
-            // Mostra o Título do Episódio por cima dos botões
-            const mostrarCabecalho = `<div style="color: white; font-weight: bold; margin-bottom: 12px; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;"><i class="fas fa-tv" style="color: var(--primary);"></i> ${nomeBase}</div>`;
-
-            // Junta tudo na caixinha final
+            // 🔥 NOVO: Mostra a QUALIDADE no botão!
+            const qualidadeText = child.qualidade ? ` [${child.qualidade}]` : '';
+            
             return `
-            <div style="margin-bottom: 15px; background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; border: 1px solid rgba(255,255,255,0.05);">
-                ${mostrarCabecalho}
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    ${botoesHtml}
+            <div class="episode-btn-mini" onclick="IPTVSystem.irParaVideo('${child.id}')" style="flex: 1; min-width: 140px; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 10px;">
+                <i class="fas ${langIcon}" style="color: ${corBotao}; font-size: 1.1rem;"></i>
+                <div style="display: flex; flex-direction: column; flex: 1;">
+                    <span style="font-size: 0.85rem; font-weight: bold; color: white;">${langText}${qualidadeText}</span>
+                    ${child.qualidade ? `<span style="font-size: 0.65rem; color: ${corBotao};">${child.qualidade}</span>` : ''}
                 </div>
+                <i class="fas fa-play" style="color: ${corBotao}; font-size: 0.9rem; opacity: 0.7;"></i>
             </div>
             `;
         }).join('');
-        
-        carregarComentarios(id_main)
-    }
+
+        // Mostra o Título do Episódio (ex: "JOGOS DO DIA - 20:30")
+        const mostrarCabecalho = `<div style="color: white; font-weight: bold; margin-bottom: 12px; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;"><i class="fas fa-tv" style="color: var(--primary);"></i> ${nomeBase}</div>`;
+
+        return `
+        <div style="margin-bottom: 15px; background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; border: 1px solid rgba(255,255,255,0.05);">
+            ${mostrarCabecalho}
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                ${botoesHtml}
+            </div>
+        </div>
+        `;
+    }).join('');
+    
+    carregarComentarios(id_main);
+}
 
 
 
@@ -4217,145 +4253,108 @@ atualizarViewsNosItens: function() {
 processarDados: function(data) {
     console.log('📦 Processando', data.length, 'itens do JSON');
     const mapaAgrupado = new Map();
-    
-    // Função auxiliar para limpar título
-    function limparTitulo(titulo) {
+
+    // Função para LIMPAR TÍTULO DE VODs (Filmes/Séries) - agressiva
+    function limparTituloParaVOD(titulo) {
+        if (!titulo) return '';
+        let t = titulo;
+        t = t.replace(/^Novela\s*[-–—]\s*/i, '');
+        t = t.replace(/\s*\([Ll]\)\s*/g, ' ').replace(/\s*\([Dd]\)\s*/g, ' ')
+             .replace(/\s*\[[Ll]\]\s*/g, ' ').replace(/\s*\[[Dd]\]\s*/g, ' ');
+        t = t.replace(/\s*[-–—]?\s*\d{4}\s*$/, '').replace(/\s*\(\d{4}\)\s*$/, '').replace(/\s*\[\d{4}\]\s*$/, '');
+        t = t.replace(/\b[Ss]\d{2}\s*[Ee]\d{2,3}\b/g, '').replace(/\b[Ss]\d{2}[Ee]\d{2,3}\b/g, '')
+             .replace(/\bTemporada\s*\d+\b/gi, '').replace(/\bEpis[oó]dio\s*\d+\b/gi, '')
+             .replace(/\bEp\s*\d+\b/gi, '').replace(/\b\d{1,2}x\d{2,3}\b/g, '');
+        t = t.replace(/\b(FHD|Full HD|HD|4K|UHD|SD|720p|1080p|2160p|480p|360p)\b/gi, '');
+        t = t.replace(/\bLegendado\b/gi, '').replace(/\bDublado\b/gi, '').replace(/\bLANCAMENTOS?\b/gi, '');
+        t = t.replace(/\b\d{1,2}[:h]\d{2}\b/g, '');
+        t = t.replace(/[^\w\sÀ-ÿ]/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+        if (!t || t.length < 3) {
+            t = titulo.replace(/[^\w\sÀ-ÿ]/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+        }
+        return t;
+    }
+
+    // 🎯 NOVA FUNÇÃO: Limpeza ESPECÍFICA para CANAIS/LIVES
+    // Remove apenas os sufixos de qualidade (HD, FHD, 4K) mas MANTÉM o nome base e horários
+    function limparTituloParaCanal(titulo) {
         if (!titulo) return '';
         
         let t = titulo;
         
-        // 1. Remove "Novela - " do início
-        t = t.replace(/^Novela\s*[-–—]\s*/i, '');
+        // 1. Remove APENAS os marcadores de qualidade no final ou separados por espaço
+        // Isso vai transformar "JOGOS DO DIA - 20:30 HD" em "JOGOS DO DIA - 20:30"
+        // E "JOGOS DO DIA - 20:30 FHD" também em "JOGOS DO DIA - 20:30"
+        t = t.replace(/\s*(HD|FHD|4K|UHD|Full HD|1080p|720p)\s*$/gi, ''); // Remove no final
+        t = t.replace(/\s+(HD|FHD|4K|UHD|Full HD|1080p|720p)\s+/gi, ' '); // Remove no meio
         
-        // 2. Remove (L), (D), [L], [D]
-        t = t.replace(/\s*\([Ll]\)\s*/g, ' ');
-        t = t.replace(/\s*\([Dd]\)\s*/g, ' ');
-        t = t.replace(/\s*\[[Ll]\]\s*/g, ' ');
-        t = t.replace(/\s*\[[Dd]\]\s*/g, ' ');
+        // 2. Remove qualidade com hífen: "- HD" vira ""
+        t = t.replace(/\s*[-–—]\s*(HD|FHD|4K|UHD|Full HD|1080p|720p)\s*/gi, ' ');
         
-        // 3. Remove ano no final
-        t = t.replace(/\s*[-–—]?\s*\d{4}\s*$/, '');
-        t = t.replace(/\s*\(\d{4}\)\s*$/, '');
-        t = t.replace(/\s*\[\d{4}\]\s*$/, '');
+        // 3. Limpa espaços duplicados
+        t = t.replace(/\s+/g, ' ').trim();
         
-        // 4. Remove padrões de episódio
-        t = t.replace(/\b[Ss]\d{2}\s*[Ee]\d{2,3}\b/g, '');
-        t = t.replace(/\b[Ss]\d{2}\s*Ep\s*\d{2,3}\b/g, '');
-        t = t.replace(/\bTemporada\s*\d+\b/gi, '');
-        t = t.replace(/\bEpis[oó]dio\s*\d+\b/gi, '');
-        t = t.replace(/\bEp\s*\d+\b/gi, '');
-        t = t.replace(/\b\d{1,2}x\d{2,3}\b/g, '');
-        
-        // 5. Remove palavras de versão/qualidade
-        t = t.replace(/\bLegendado\b/gi, '');
-        t = t.replace(/\bDublado\b/gi, '');
-        t = t.replace(/\b4K\b/gi, '');
-        t = t.replace(/\bFHD\b/gi, '');
-        t = t.replace(/\bHD\b/gi, '');
-        t = t.replace(/\b720p\b/gi, '');
-        t = t.replace(/\b1080p\b/gi, '');
-        t = t.replace(/\bLANCAMENTOS?\b/gi, '');
-        
-        // 6. Remove caracteres especiais
-        t = t.replace(/[^\w\sÀ-ÿ]/g, ' ')
-              .replace(/\s+/g, ' ')
-              .trim()
-              .toLowerCase();
-        
-        if (!t || t.length < 3) {
-            t = titulo
-                .replace(/^Novela\s*[-–—]\s*/i, '')
-                .replace(/\s*\([Ll]\)\s*/g, ' ')
-                .replace(/\s*\([Dd]\)\s*/g, ' ')
-                .replace(/\s*\[[Ll]\]\s*/g, ' ')
-                .replace(/\s*\[[Dd]\]\s*/g, ' ')
-                .replace(/[^\w\sÀ-ÿ]/g, ' ')
-                .replace(/\s+/g, ' ')
-                .trim()
-                .toLowerCase();
-        }
-        
-        return t;
+        // Se ficou vazio, retorna o original
+        return t || titulo;
     }
 
     data.forEach((item, index) => {
         const catStr = item.categoria || 'Geral';
         const nomeOriginal = item.nome || 'Sem título';
         const link = item.link || '';
-        
-        // ============================================
-        // DETECÇÃO DE TIPO - PRIORIDADE MÁXIMA
-        // ============================================
-        let tipo = 'Filme'; // padrão
-        
+
+        // --- DETECÇÃO DE TIPO ---
         const catLower = catStr.toLowerCase();
         const nomeLower = nomeOriginal.toLowerCase();
-
-        // 🔥 PRIORIDADE 1: SE TERMINA COM .m3u8 É LIVE/CANAL
         const ehM3U8 = link.toLowerCase().endsWith('.m3u8');
-        
-        // 🔥 PRIORIDADE 2: DETECTAR CANAL DE TV
-        if (ehM3U8 || 
-            catLower.includes('canais') || 
-            catLower === 'nacional' || 
-            catLower.includes('esporte') || 
-            catLower.includes('documentario') ||
-            catLower.includes('notícias') ||
-            catLower.includes('variedades') ||
-            catLower.includes('infantil') ||
-            catLower.includes('musica') ||
-            catLower.includes('tv ') ||
-            catLower.includes('aberta') ||
-            catLower.includes('pago')) {
+        let tipo = 'Filme';
+
+        if (ehM3U8 ||
+            catLower.includes('canais') || catLower === 'nacional' || catLower.includes('esporte') ||
+            catLower.includes('documentario') || catLower.includes('notícias') || catLower.includes('variedades') ||
+            catLower.includes('infantil') || catLower.includes('musica') || catLower.includes('tv ') ||
+            catLower.includes('aberta') || catLower.includes('pago')) {
             tipo = 'Canal';
         }
-
-        // 🔥 PRIORIDADE 3: Detectar SÉRIE (tem padrão de episódio)
-        if (/\b(s\d{2}\s*e\d{2,3}|temporada\s*\d+|epis[oó]dio\s*\d+|\d{1,2}x\d{2,3})\b/i.test(nomeOriginal) ||
-            catLower.includes('série') || 
-            catLower.includes('novela') || 
-            catLower.includes('anime') || 
-            catLower.includes('dorama')) {
+        else if (/\b(s\d{2}\s*e\d{2,3}|temporada\s*\d+|epis[oó]dio\s*\d+|\d{1,2}x\d{2,3})\b/i.test(nomeOriginal) ||
+                 catLower.includes('série') || catLower.includes('novela') || catLower.includes('anime') || catLower.includes('dorama')) {
             tipo = 'Série';
         }
-
-        // 🔥 PRIORIDADE 4: Se for explicitamente "Filmes" na categoria
-        if (catLower.includes('filmes') || catLower.includes('cinema')) {
+        else if (catLower.includes('filmes') || catLower.includes('cinema')) {
             tipo = 'Filme';
         }
 
-        // ============================================
-        // DETECÇÃO DE LIVE (AO VIVO)
-        // ============================================
-        const ehLive = ehM3U8 && (
-            nomeLower.includes('ao vivo') || 
-            nomeLower.includes('live') || 
-            nomeLower.includes('agora') ||
-            catLower.includes('esporte') ||
-            catLower.includes('futebol') ||
-            catLower.includes('notícia') ||
-            catLower.includes('jornal')
-        );
-
-        // --- DETECÇÃO DE FLAGS ESPECÍFICAS ---
+        // --- DETECÇÃO DE FLAGS ---
         const isLeg = /\([Ll]\)|\[[Ll]\]|\blegendado\b/i.test(nomeOriginal);
         const isDublado = /\([Dd]\)|\[[Dd]\]|\bdublado\b/i.test(nomeOriginal);
         const is4K = /\b4K\b|\bFHD\b/i.test(nomeOriginal) || catStr.toUpperCase().includes('4K');
         const isLancamento = catLower.includes('cinema') || catLower.includes('lancamento') || catLower.includes('lançamento');
         const isAdulto = catLower.includes('xxx') || catLower.includes('adulto');
-        
+        const ehLive = ehM3U8 && (nomeLower.includes('ao vivo') || nomeLower.includes('live') || nomeLower.includes('agora') ||
+                                   catLower.includes('esporte') || catLower.includes('futebol') || catLower.includes('notícia') || catLower.includes('jornal'));
+
         // ============================================
-        // CHAVE DE AGRUPAMENTO
+        // 🎯 CHAVE DE AGRUPAMENTO - VERSÃO INTELIGENTE
         // ============================================
         let chaveUnica;
+        let tituloParaExibicao = nomeOriginal; // Título que vai aparecer no card
+
         if (tipo === 'Canal') {
-            // Para canais, usa o nomeOriginal como chave (não limpa)
-            chaveUnica = `${nomeOriginal}|CANAL`;
-        } else {
-            const nomeBase = limparTitulo(nomeOriginal);
+            // 👉 PARA CANAIS: Usa a função de limpeza específica
+            // Isso faz "JOGOS DO DIA - 20:30 HD" e "JOGOS DO DIA - 20:30 FHD" virarem a MESMA CHAVE
+            const nomeBase = limparTituloParaCanal(nomeOriginal);
             chaveUnica = `${nomeBase}|${tipo}`;
+            
+            // Para exibição, podemos usar o nomeBase ou o original? 
+            // Vamos usar o original para manter HD/FHD visível, mas agrupar por baixo
+            tituloParaExibicao = nomeOriginal; // Mostra "JOGOS DO DIA - 20:30 HD" no card
+        } else {
+            // 👉 PARA VODs: Usa a versão super limpa
+            const nomeBase = limparTituloParaVOD(nomeOriginal);
+            chaveUnica = `${nomeBase}|${tipo}`;
+            tituloParaExibicao = nomeOriginal; // Mostra o título original
         }
-        
+
         // --- CRIA O FILHO ---
         const filhoObj = {
             id: item.id || `idx_${index}`,
@@ -4363,31 +4362,40 @@ processarDados: function(data) {
             videoUrl: link,
             isLeg: isLeg,
             isDublado: isDublado,
-            isLive: ehLive, // NOVO: Marca se é live
-            isM3U8: ehM3U8  // NOVO: Marca se é stream
+            isLive: ehLive,
+            isM3U8: ehM3U8,
+            // Guarda a qualidade para possível uso futuro
+            qualidade: nomeOriginal.match(/\b(HD|FHD|4K|UHD|1080p|720p)\b/i)?.[0] || ''
         };
-        
-        // --- AGRUPA USANDO A CHAVE ---
+
+        // --- AGRUPA USANDO A CHAVE INTELIGENTE ---
         if (mapaAgrupado.has(chaveUnica)) {
             const grupoExistente = mapaAgrupado.get(chaveUnica);
             grupoExistente.children.push(filhoObj);
             
+            // Atualiza o poster se não tiver
             if (!grupoExistente.poster && item.logo) {
                 grupoExistente.poster = item.logo;
             }
             
+            // Atualiza flags do grupo
             if (isLeg) grupoExistente.isLeg = true;
             if (isDublado) grupoExistente.isDublado = true;
             if (is4K) grupoExistente.is4K = true;
             if (isLancamento) grupoExistente.isLancamento = true;
             if (isAdulto) grupoExistente.isAdulto = true;
-            if (ehLive) grupoExistente.isLive = true; // NOVO: Grupo tem live
-            if (ehM3U8) grupoExistente.isM3U8 = true; // NOVO: Grupo tem stream
+            if (ehLive) grupoExistente.isLive = true;
+            if (ehM3U8) grupoExistente.isM3U8 = true;
             
+            // Guarda a maior qualidade disponível no grupo (opcional)
+            if (filhoObj.qualidade === 'FHD' || filhoObj.qualidade === '4K') {
+                grupoExistente.melhorQualidade = filhoObj.qualidade;
+            }
+
         } else {
             mapaAgrupado.set(chaveUnica, {
                 id_main: filhoObj.id,
-                titulo: tipo === 'Canal' ? nomeOriginal : nomeOriginal,
+                titulo: tituloParaExibicao, // Usa o título original para exibição
                 categoriaLimpa: this.simplificarCategoria(catStr),
                 tipo: tipo,
                 poster: item.logo || '',
@@ -4396,34 +4404,39 @@ processarDados: function(data) {
                 is4K: is4K,
                 isLancamento: isLancamento,
                 isAdulto: isAdulto,
-                isLive: ehLive, // NOVO
-                isM3U8: ehM3U8, // NOVO
+                isLive: ehLive,
+                isM3U8: ehM3U8,
+                melhorQualidade: filhoObj.qualidade,
                 children: [filhoObj]
             });
         }
     });
-    
+
     const itensAgrupados = Array.from(mapaAgrupado.values());
     console.log('🔗 Grupos formados:', itensAgrupados.length);
-    
+
+    // Conta quantos grupos de Jogos do Dia foram criados (para debug)
+    const jogosDoDia = itensAgrupados.filter(i => i.titulo.toUpperCase().includes('JOGOS DO DIA'));
+    console.log('⚽ Grupos de Jogos do Dia:', jogosDoDia.length);
+    jogosDoDia.forEach(j => {
+        console.log(`   → ${j.titulo} (${j.children.length} opções: ${j.children.map(c => c.qualidade).filter(Boolean).join(', ') || 'sem qualidade'})`);
+    });
+
     // --- SEPARA POR CATEGORIA ---
-    let lancamentosTop = [], premiumMix = [], regularVod = [], 
+    let lancamentosTop = [], premiumMix = [], regularVod = [],
         canais = [], adultos = [], lives = [], resto = [];
-    
+
     itensAgrupados.forEach(item => {
-        // NOVO: Separa LIVES em categoria especial
         if (item.isLive) {
             lives.push(item);
-        }
-        else if (item.isAdulto) adultos.push(item);
+        } else if (item.isAdulto) adultos.push(item);
         else if (item.tipo === 'Canal') canais.push(item);
         else if (!item.poster || item.poster.trim() === '') resto.push(item);
         else if (item.isLancamento) lancamentosTop.push(item);
         else if (item.tipo === 'Série') premiumMix.push(item);
         else regularVod.push(item);
     });
-    
-    // Embaralha para variedade
+
     const shuffle = (arr) => {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -4431,28 +4444,27 @@ processarDados: function(data) {
         }
         return arr;
     };
-    
-    // NOVO: Coloca as LIVES no topo!
+
     this.todosItens = [
         ...shuffle(lancamentosTop),
         ...shuffle(premiumMix),
-        ...shuffle(lives),       
+        ...shuffle(lives),
         ...shuffle(regularVod),
         ...shuffle(resto),
         ...shuffle(canais),
         ...shuffle(adultos)
     ];
-    
-    // --- DESTAQUE (prioriza LIVES) ---
+
+    // --- DESTAQUE ---
     const destaque = lancamentosTop[0] || premiumMix[0] || lives[0] || regularVod[0];
     if (destaque) this.renderizarDestaque(destaque);
-    
+
     // --- FINALIZA ---
     clearInterval(loadingTipTimer);
     document.getElementById('loadingScreen').classList.add('hidden');
     document.getElementById('skeletonContainer').style.display = 'none';
     document.getElementById('contentGrid').style.display = 'grid';
-    
+
     this.renderizarGêneros();
     this.aplicarFiltros();
 },
@@ -4526,6 +4538,14 @@ processarDados: function(data) {
             this.aplicarFiltros();
             this.renderizarGêneros(); 
         },
+        filtrarJogosAoVivo: function() {
+    // Procura por "JOGOS DO DIA" no título ou categoria
+    return this.todosItens.filter(item => {
+        const titulo = (item.titulo || '').toUpperCase();
+        const categoria = (item.categoriaLimpa || '').toUpperCase();
+        return titulo.includes('JOGOS DO DIA') || categoria.includes('JOGOS DO DIA');
+    });
+},
         
 
                 aplicarFiltros: function() {
@@ -4540,6 +4560,19 @@ processarDados: function(data) {
             else if (this.abaAtual === 'historico') {
                 result = userProgress.history.map(id => this.todosItens.find(i => i.id_main === id)).filter(Boolean);
             }
+            
+            else if (this.abaAtual === 'jogos') {
+    result = this.filtrarJogosAoVivo();
+    if (result.length === 0) {
+        // Se não achar nada, mostra mensagem amigável
+        document.getElementById('contentGrid').innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
+            <i class="fas fa-futbol" style="font-size: 4rem; margin-bottom: 15px; display:block;"></i>
+            Nenhum jogo ao vivo no momento. Volte mais tarde!
+        </div>`;
+        return;
+    }
+}
   
   
 else if (this.abaAtual === 'em_alta') {
@@ -5663,6 +5696,936 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
 </div>
 </body>
 </html>
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
 
 
 
