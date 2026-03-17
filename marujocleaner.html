@@ -1,29 +1,56 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marujo Cleaner - Removedor de Marcas D'água</title>
-    <link rel="icon" type="image/png" href="https://i.imgur.com/1772133683485~2.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Marujo Cleaner - Removedor de Marcas D'água com IA</title>
     
-    <!-- SEO -->
-    <meta name="description" content="Marujo Cleaner - Remova marcas d'água de imagens com IA avançada. Ferramenta gratuita e online do Marujo Flix.">
-    <meta name="keywords" content="remover marca d'água, remoção de logo, marujo flix, inteligência artificial, processamento de imagem">
+    <!-- FAVICON MARUJO FLIX -->
+    <link rel="icon" type="image/png" href="imagens/file_00000000263071f5ab52ee0f31abd12e.png">
+    <link rel="apple-touch-icon" href="imagens/file_00000000263071f5ab52ee0f31abd12e.png">
+    
+    <!-- META TAGS OTIMIZADAS -->
+    <meta name="description" content="Marujo Cleaner - Remova marcas d'água de imagens com IA avançada. Ferramenta gratuita do Marujo Flix. Rápido, seguro e profissional!">
+    <meta name="keywords" content="remover marca d'água, remoção de logo, marujo flix, marujo cleaner, inteligência artificial, processamento de imagem, editar foto">
     <meta name="author" content="Marujo Flix">
     <meta name="robots" content="index, follow">
     
-    <!-- Open Graph -->
+    <!-- GOOGLE ADSENSE (SEU CÓDIGO) -->
+    <meta name="google-adsense-account" content="ca-pub-2351298778216089">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089" crossorigin="anonymous"></script>
+    
+    <!-- ONESIGNAL (SEU CÓDIGO) -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.init({
+                appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
+                notifyButton: { enable: false }
+            });
+        });
+    </script>
+    
+    <!-- OPEN GRAPH PARA COMPARTILHAMENTO -->
     <meta property="og:title" content="Marujo Cleaner - Removedor de Marcas D'água">
-    <meta property="og:description" content="Remova marcas d'água de imagens com precisão de IA. Ferramenta gratuita do Marujo Flix.">
-    <meta property="og:image" content="https://i.imgur.com/1772133683485~2.png">
+    <meta property="og:description" content="Remova marcas d'água de imagens com precisão de IA. Grátis e online!">
+    <meta property="og:image" content="imagens/file_00000000263071f5ab52ee0f31abd12e.png">
+    <meta property="og:url" content="https://marujodigital.onrender.com/marujocleaner">
     <meta property="og:type" content="website">
     
-    <!-- Fonts & Icons -->
+    <!-- TWITTER CARDS -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Marujo Cleaner - Removedor de Marcas D'água">
+    <meta name="twitter:description" content="Ferramenta grátis do Marujo Flix para remover marcas d'água com IA">
+    <meta name="twitter:image" content="imagens/file_00000000263071f5ab52ee0f31abd12e.png">
+    
+    <!-- FONTS E ICONES -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-    /* ===== VARIÁVEIS GLOBAIS ===== */
+    /* ===== VARIÁVEIS MARUJO FLIX ===== */
     :root {
         --primary: #00ffb3;
         --primary-dark: #00cc8f;
@@ -73,7 +100,7 @@
     }
 
     body {
-        font-family: 'Poppins', 'Segoe UI', sans-serif;
+        font-family: 'Poppins', sans-serif;
         background: var(--bg-darker);
         color: var(--text-primary);
         line-height: 1.6;
@@ -96,150 +123,7 @@
         z-index: -1;
     }
 
-    /* ===== TYPOGRAPHY ===== */
-    h1, h2, h3, h4, h5, h6 {
-        font-family: 'Orbitron', 'Montserrat', sans-serif;
-        font-weight: 700;
-        line-height: 1.2;
-        margin-bottom: 1rem;
-    }
-
-    h1 {
-        font-size: 3.5rem;
-        background: var(--gradient-primary);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    h2 {
-        font-size: 2.5rem;
-        color: var(--text-primary);
-        position: relative;
-        display: inline-block;
-    }
-
-    h2::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 0;
-        width: 60px;
-        height: 4px;
-        background: var(--gradient-primary);
-        border-radius: 2px;
-    }
-
-    p {
-        color: var(--text-secondary);
-        margin-bottom: 1rem;
-    }
-
-    /* ===== COMPONENTES COMUNS ===== */
-    .container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 20px;
-    }
-
-    .section {
-        padding: 100px 20px;
-        position: relative;
-    }
-
-    .section-title {
-        text-align: center;
-        margin-bottom: 50px;
-    }
-
-    .card {
-        background: var(--gradient-card);
-        border-radius: var(--radius-lg);
-        padding: 30px;
-        border: 1px solid var(--border-color);
-        transition: var(--transition-normal);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-glow);
-    }
-
-    .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        padding: 14px 32px;
-        border-radius: var(--radius-full);
-        font-family: 'Orbitron', sans-serif;
-        font-weight: 600;
-        font-size: 0.95rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        border: none;
-        cursor: pointer;
-        transition: var(--transition-normal);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .btn-primary {
-        background: var(--gradient-primary);
-        color: white;
-        box-shadow: var(--shadow-md);
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-glow);
-    }
-
-    .btn-secondary {
-        background: transparent;
-        color: var(--text-primary);
-        border: 2px solid var(--primary);
-    }
-
-    .btn-secondary:hover {
-        background: var(--primary);
-        color: var(--bg-dark);
-        transform: translateY(-3px);
-    }
-
-    .btn-large {
-        padding: 18px 40px;
-        font-size: 1.1rem;
-    }
-
-    .badge {
-        display: inline-block;
-        padding: 8px 16px;
-        border-radius: var(--radius-full);
-        font-size: 0.8rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .badge-primary {
-        background: var(--primary);
-        color: var(--bg-dark);
-    }
-
-    .badge-secondary {
-        background: var(--secondary);
-        color: white;
-    }
-
-    .badge-accent {
-        background: var(--accent);
-        color: white;
-    }
-
-    /* ===== HEADER ===== */
+    /* ===== HEADER MARUJO ===== */
     .main-header {
         position: fixed;
         top: 0;
@@ -280,12 +164,40 @@
         justify-content: center;
         font-size: 1.5rem;
         color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .logo-icon::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+        transform: rotate(45deg);
+        animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { transform: translateX(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) rotate(45deg); }
     }
 
     .logo-text h1 {
         font-size: 1.5rem;
         margin: 0;
         line-height: 1;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .logo-text span {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        display: block;
     }
 
     .main-nav ul {
@@ -320,6 +232,15 @@
 
     .main-nav a:hover::after {
         width: 100%;
+    }
+
+    .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        cursor: pointer;
     }
 
     /* ===== HERO SECTION ===== */
@@ -361,6 +282,14 @@
         line-height: 1.1;
     }
 
+    .hero-title span {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: block;
+        font-size: 5rem;
+    }
+
     .hero-subtitle {
         font-size: 1.2rem;
         color: var(--text-secondary);
@@ -377,6 +306,7 @@
     /* ===== UPLOAD SECTION ===== */
     .upload-section {
         background: var(--bg-dark);
+        padding: 100px 20px;
     }
 
     .upload-container {
@@ -405,17 +335,20 @@
         cursor: pointer;
         transition: var(--transition-normal);
         overflow: hidden;
+        background: var(--bg-card);
     }
 
     .upload-area:hover {
         border-color: var(--primary);
         transform: translateY(-5px);
+        box-shadow: var(--shadow-glow);
     }
 
     .upload-area i {
         font-size: 4rem;
         color: var(--primary);
         margin-bottom: 20px;
+        filter: drop-shadow(0 0 10px var(--primary));
     }
 
     .upload-area h3 {
@@ -487,6 +420,7 @@
         background: var(--primary);
         border-radius: 50%;
         cursor: pointer;
+        box-shadow: 0 0 10px var(--primary);
     }
 
     .slider-value {
@@ -510,18 +444,15 @@
         cursor: pointer;
     }
 
-    .checkbox-group label {
-        cursor: pointer;
-        color: var(--text-secondary);
-    }
-
     .process-btn {
         margin-top: 20px;
+        width: 100%;
     }
 
     /* ===== RESULT SECTION ===== */
     .result-section {
         background: var(--bg-darker);
+        padding: 100px 20px;
     }
 
     .result-container {
@@ -542,6 +473,7 @@
         border-radius: var(--radius-lg);
         overflow: hidden;
         box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border-color);
     }
 
     .comparison-image {
@@ -574,6 +506,7 @@
         border-radius: 50%;
         border: 3px solid var(--bg-dark);
         z-index: 11;
+        box-shadow: var(--shadow-glow);
     }
 
     .result-actions {
@@ -595,6 +528,12 @@
         background: var(--bg-card);
         border-radius: var(--radius-md);
         border: 1px solid var(--border-color);
+        transition: var(--transition-normal);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-glow);
     }
 
     .stat-card i {
@@ -618,6 +557,7 @@
     /* ===== FEATURES SECTION ===== */
     .features-section {
         background: var(--bg-dark);
+        padding: 100px 20px;
     }
 
     .features-grid {
@@ -644,22 +584,20 @@
         font-size: 2rem;
         color: var(--primary);
         transition: var(--transition-normal);
+        position: relative;
     }
 
     .feature-card:hover .feature-icon {
         transform: translateY(-10px) scale(1.1);
         background: var(--gradient-primary);
         color: white;
-    }
-
-    .feature-card h3 {
-        margin-bottom: 15px;
-        font-size: 1.5rem;
+        box-shadow: var(--shadow-glow);
     }
 
     /* ===== HOW IT WORKS ===== */
     .how-it-works {
         background: var(--bg-darker);
+        padding: 100px 20px;
     }
 
     .steps-container {
@@ -713,16 +651,30 @@
         color: white;
         margin: 0 auto 20px;
         box-shadow: var(--shadow-glow);
+        position: relative;
     }
 
-    .step h3 {
-        font-size: 1.3rem;
-        margin-bottom: 10px;
+    .step-number::after {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        border-radius: 50%;
+        border: 1px solid var(--primary);
+        animation: pulse-ring 2s infinite;
+    }
+
+    @keyframes pulse-ring {
+        0% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(1.3); opacity: 0; }
     }
 
     /* ===== TESTIMONIALS ===== */
     .testimonials-section {
         background: var(--bg-dark);
+        padding: 100px 20px;
     }
 
     .testimonials-grid {
@@ -740,6 +692,17 @@
         font-style: italic;
         margin-bottom: 20px;
         color: var(--text-secondary);
+        position: relative;
+    }
+
+    .testimonial-text::before {
+        content: '"';
+        font-size: 3rem;
+        color: var(--primary);
+        opacity: 0.3;
+        position: absolute;
+        top: -20px;
+        left: -10px;
     }
 
     .testimonial-author {
@@ -756,18 +719,7 @@
         border: 2px solid var(--primary);
     }
 
-    .author-info h4 {
-        margin: 0 0 5px 0;
-        font-size: 1.1rem;
-    }
-
-    .author-info p {
-        margin: 0;
-        font-size: 0.9rem;
-        color: var(--text-muted);
-    }
-
-    /* ===== FOOTER ===== */
+    /* ===== FOOTER MARUJO ===== */
     .main-footer {
         background: var(--bg-darker);
         padding: 60px 0 30px;
@@ -785,6 +737,13 @@
         font-size: 1.2rem;
         margin-bottom: 20px;
         color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .footer-section h3 i {
+        color: var(--primary);
     }
 
     .footer-links {
@@ -799,11 +758,18 @@
         color: var(--text-muted);
         text-decoration: none;
         transition: var(--transition-fast);
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     .footer-links a:hover {
         color: var(--primary);
         padding-left: 5px;
+    }
+
+    .footer-links a i {
+        font-size: 0.8rem;
     }
 
     .social-links {
@@ -827,6 +793,7 @@
 
     .social-icon:hover {
         background: var(--primary);
+        color: var(--bg-dark);
         transform: translateY(-3px);
     }
 
@@ -836,6 +803,10 @@
         border-top: 1px solid var(--border-color);
         color: var(--text-muted);
         font-size: 0.9rem;
+    }
+
+    .footer-bottom strong {
+        color: var(--primary);
     }
 
     /* ===== LOADING OVERLAY ===== */
@@ -899,6 +870,7 @@
         z-index: 9998;
         transform: translateX(400px);
         transition: transform 0.3s ease;
+        backdrop-filter: blur(10px);
     }
 
     .notification.show {
@@ -933,7 +905,7 @@
         color: var(--warning);
     }
 
-    /* ===== BACK TO MARUJO ===== */
+    /* ===== BOTÕES FLUTUANTES MARUJO ===== */
     .back-to-marujo {
         position: fixed;
         bottom: 30px;
@@ -966,10 +938,69 @@
         font-size: 1.2rem;
     }
 
+    .whatsapp-float {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 9997;
+    }
+
+    .whatsapp-float a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        background: #25D366;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.8rem;
+        text-decoration: none;
+        box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+        animation: pulse-whatsapp 2s infinite;
+        transition: var(--transition-normal);
+    }
+
+    .whatsapp-float a:hover {
+        transform: scale(1.1);
+    }
+
+    .whatsapp-float div {
+        position: absolute;
+        bottom: 70px;
+        right: 0;
+        background: var(--bg-card);
+        padding: 10px 15px;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+        pointer-events: none;
+        border: 1px solid var(--border-color);
+        backdrop-filter: blur(10px);
+    }
+
+    .whatsapp-float:hover div {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @keyframes pulse-whatsapp {
+        0% { transform: scale(1); box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3); }
+        50% { transform: scale(1.05); box-shadow: 0 4px 25px rgba(37, 211, 102, 0.5); }
+        100% { transform: scale(1); box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3); }
+    }
+
     /* ===== RESPONSIVIDADE ===== */
     @media (max-width: 768px) {
         .hero-title {
             font-size: 2.5rem;
+        }
+        
+        .hero-title span {
+            font-size: 3rem;
         }
         
         h1 {
@@ -998,19 +1029,6 @@
         
         .menu-toggle {
             display: block;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
-        .usage-info, .daily-stats {
-            padding: 10px;
-        }
-        
-        .usage-info h4, .daily-stats > div {
-            font-size: 0.9rem;
         }
         
         .back-to-marujo {
@@ -1019,9 +1037,131 @@
             padding: 10px 15px;
             font-size: 0.8rem;
         }
+        
+        .whatsapp-float {
+            bottom: 20px;
+            right: 20px;
+        }
+        
+        .whatsapp-float a {
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+        }
     }
 
-    /* ===== SCROLLBAR ===== */
+    /* ===== UTILITÁRIOS ===== */
+    .section-title {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .section-title .badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: var(--radius-full);
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 15px;
+    }
+
+    .badge-primary {
+        background: var(--primary);
+        color: var(--bg-dark);
+    }
+
+    .badge-secondary {
+        background: var(--secondary);
+        color: white;
+    }
+
+    .badge-accent {
+        background: var(--accent);
+        color: white;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 14px 32px;
+        border-radius: var(--radius-full);
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border: none;
+        cursor: pointer;
+        transition: var(--transition-normal);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary {
+        background: var(--gradient-primary);
+        color: white;
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-glow);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: var(--text-primary);
+        border: 2px solid var(--primary);
+    }
+
+    .btn-secondary:hover {
+        background: var(--primary);
+        color: var(--bg-dark);
+        transform: translateY(-3px);
+    }
+
+    .btn-large {
+        padding: 18px 40px;
+        font-size: 1.1rem;
+    }
+
+    .card {
+        background: var(--gradient-card);
+        border-radius: var(--radius-lg);
+        padding: 30px;
+        border: 1px solid var(--border-color);
+        transition: var(--transition-normal);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-glow);
+    }
+
+    .usage-info {
+        transition: var(--transition-normal);
+    }
+
+    .usage-info:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .daily-stats {
+        transition: var(--transition-fast);
+    }
+
+    .daily-stats:hover {
+        transform: translateY(-2px);
+        background: rgba(138, 43, 226, 0.08);
+    }
+
     ::-webkit-scrollbar {
         width: 8px;
     }
@@ -1039,88 +1179,95 @@
         background: var(--primary-light);
     }
 
-    /* ===== USAGE INFO ===== */
-    .usage-info {
-        transition: var(--transition-normal);
+    /* ===== BANNER ADSENSE ===== */
+    .ads-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        text-align: center;
+        padding: 20px;
+        background: var(--bg-card);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
     }
 
-    .usage-info:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-sm);
-    }
-
-    /* ===== COMPARISON LABELS ===== */
     .comparison-labels .badge {
         padding: 6px 12px;
         font-size: 0.8rem;
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
+    
+    .logo {
+    display: flex;
+    align-items: center;
+}
 
-    /* ===== DAILY STATS ===== */
-    .daily-stats {
-        transition: var(--transition-fast);
-    }
+.logo-image {
+    height: 50px;  /* Ajuste este valor conforme necessário */
+    width: auto;
+    object-fit: contain;
+}
 
-    .daily-stats:hover {
-        transform: translateY(-2px);
-        background: rgba(138, 43, 226, 0.08);
+/* Para mobile */
+@media (max-width: 768px) {
+    .logo-image {
+        height: 40px;  /* Um pouco menor em dispositivos móveis */
     }
+}
     </style>
 </head>
 <body>
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner"></div>
-        <div class="loading-text" id="loadingText">Processando imagem...</div>
+        <div class="loading-text" id="loadingText">🧹 Limpando sua imagem...</div>
     </div>
 
     <!-- Notification -->
     <div class="notification" id="notification"></div>
 
     <!-- Botão Voltar ao Marujo Flix -->
-    <a href="/" class="back-to-marujo">
+    <a href="https://marujodigital.onrender.com/marujoflix" class="back-to-marujo">
         <i class="fas fa-anchor"></i> Marujo Flix
     </a>
 
-    <!-- Header -->
-    <header class="main-header">
-        <div class="header-container">
-            <a href="#" class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-water"></i>
-                </div>
-                <div class="logo-text">
-                    <h1>Marujo Cleaner</h1>
-                </div>
-            </a>
-            
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="#home">Início</a></li>
-                    <li><a href="#upload">Remover</a></li>
-                    <li><a href="#features">Recursos</a></li>
-                    <li><a href="#how-it-works">Como Funciona</a></li>
-                    <li><a href="#testimonials">Depoimentos</a></li>
-                </ul>
-            </nav>
-            
-            <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </header>
 
+<!-- Header Marujo -->
+<header class="main-header">
+    <div class="header-container">
+        <a href="#" class="logo">
+            <img src="imagens/file_00000000263071f5ab52ee0f31abd12e.png" 
+                 alt="Marujo Cleaner Logo" 
+                 class="logo-image">
+        </a>
+        
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#home">Início</a></li>
+                <li><a href="#upload">Remover</a></li>
+                <li><a href="#features">Recursos</a></li>
+                <li><a href="#how-it-works">Como Funciona</a></li>
+            </ul>
+        </nav>
+        
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</header>
     <!-- Hero Section -->
     <section id="home" class="hero-section">
         <div class="container">
             <div class="hero-content">
                 <span class="hero-badge">
-                    <i class="fas fa-bolt"></i> FERRAMENTA DO MARUJO FLIX
+                    <i class="fas fa-bolt"></i> 🧹 IA DO MARUJO
                 </span>
-                <h1 class="hero-title">Remova Marcas D'Água com IA</h1>
+                <h1 class="hero-title">
+                    Remova Marcas D'Água
+                    <span>com Inteligência Artificial</span>
+                </h1>
                 <p class="hero-subtitle">
-                    Tecnologia avançada que remove logotipos e marcas d'água de imagens mantendo a qualidade original. Grátis e sem complicação!
+                    Tecnologia avançada que remove logotipos, marcas d'água e elementos indesejados de imagens mantendo a qualidade original. Grátis e sem complicação!
                 </p>
                 <div class="hero-buttons">
                     <a href="#upload" class="btn btn-primary btn-large">
@@ -1134,11 +1281,22 @@
         </div>
     </section>
 
+    <!-- Banner AdSense -->
+    <div class="ads-container">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-2351298778216089"
+             data-ad-slot="1234567890"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
     <!-- Upload Section -->
-    <section id="upload" class="upload-section section">
+    <section id="upload" class="upload-section">
         <div class="container">
             <div class="section-title">
-                <span class="badge badge-primary">MARUJO CLEANER</span>
+                <span class="badge badge-primary">🧹 MARUJO CLEANER</span>
                 <h2>Faça o Upload da Imagem</h2>
                 <p>Carregue sua imagem e nossa IA fará a mágica</p>
             </div>
@@ -1201,11 +1359,11 @@
                             </div>
                         </div>
                         <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
-                            <i class="fas fa-infinity"></i> Gratuito: 100 imagens por dia • <i class="fas fa-sync-alt"></i> Reseta à 00:00
+                            <i class="fas fa-infinity"></i> 100 imagens por dia • <i class="fas fa-sync-alt"></i> Reseta à 00:00
                         </div>
                     </div>
                     
-                    <div class="daily-stats" style="margin-top: 15px; padding: 12px; background: rgba(138, 43, 226, 0.05); border-radius: var(--radius-md); border: 1px solid rgba(138, 43, 226, 0.1);">
+                    <div class="daily-stats">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                             <i class="fas fa-calendar-day" style="color: var(--secondary);"></i>
                             <div style="font-size: 0.85rem; color: var(--text-muted);">Estatísticas de Hoje</div>
@@ -1230,18 +1388,29 @@
         </div>
     </section>
 
+    <!-- Banner AdSense 2 -->
+    <div class="ads-container">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-2351298778216089"
+             data-ad-slot="1234567890"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
     <!-- Result Section -->
-    <section id="result" class="result-section section" style="display: none;">
+    <section id="result" class="result-section" style="display: none;">
         <div class="container">
             <div class="section-title">
-                <span class="badge badge-success">RESULTADO</span>
+                <span class="badge badge-success">✨ RESULTADO</span>
                 <h2>Antes e Depois</h2>
                 <p>Compare o resultado da remoção</p>
             </div>
             
             <div class="result-container">
                 <div class="comparison-container" id="comparisonContainer">
-                    <!-- Conteúdo será gerado dinamicamente -->
+                    <!-- Conteúdo gerado dinamicamente -->
                 </div>
                 
                 <div class="card">
@@ -1261,12 +1430,12 @@
                         <div class="stat-card">
                             <i class="fas fa-bolt"></i>
                             <div class="stat-value" id="processingTime">0.5s</div>
-                            <div class="stat-label">Tempo de Processamento</div>
+                            <div class="stat-label">Tempo</div>
                         </div>
                         <div class="stat-card">
                             <i class="fas fa-chart-line"></i>
                             <div class="stat-value" id="qualityScore">98%</div>
-                            <div class="stat-label">Qualidade Preservada</div>
+                            <div class="stat-label">Qualidade</div>
                         </div>
                         <div class="stat-card">
                             <i class="fas fa-expand-alt"></i>
@@ -1276,7 +1445,7 @@
                         <div class="stat-card">
                             <i class="fas fa-database"></i>
                             <div class="stat-value" id="fileSize">2.4 MB</div>
-                            <div class="stat-label">Tamanho do Arquivo</div>
+                            <div class="stat-label">Tamanho</div>
                         </div>
                     </div>
                 </div>
@@ -1285,10 +1454,10 @@
     </section>
 
     <!-- Features Section -->
-    <section id="features" class="features-section section">
+    <section id="features" class="features-section">
         <div class="container">
             <div class="section-title">
-                <span class="badge badge-accent">RECURSOS</span>
+                <span class="badge badge-accent">✨ RECURSOS</span>
                 <h2>Por que Escolher o Marujo Cleaner?</h2>
                 <p>Tecnologia de ponta para resultados profissionais</p>
             </div>
@@ -1330,10 +1499,10 @@
     </section>
 
     <!-- How It Works -->
-    <section id="how-it-works" class="how-it-works section">
+    <section id="how-it-works" class="how-it-works">
         <div class="container">
             <div class="section-title">
-                <span class="badge badge-primary">COMO FUNCIONA</span>
+                <span class="badge badge-primary">📋 COMO FUNCIONA</span>
                 <h2>Simples e Eficiente</h2>
                 <p>Em apenas 3 passos você remove qualquer marca d'água</p>
             </div>
@@ -1361,10 +1530,10 @@
     </section>
 
     <!-- Testimonials -->
-    <section id="testimonials" class="testimonials-section section">
+    <section class="testimonials-section">
         <div class="container">
             <div class="section-title">
-                <span class="badge badge-secondary">DEPOIMENTOS</span>
+                <span class="badge badge-secondary">💬 DEPOIMENTOS</span>
                 <h2>O que Nossos Usuários Dizem</h2>
                 <p>Milhares de usuários satisfeitos em todo o mundo</p>
             </div>
@@ -1372,39 +1541,39 @@
             <div class="testimonials-grid">
                 <div class="card testimonial-card">
                     <div class="testimonial-text">
-                        "Incrível! Removi marcas d'água de 50 fotos em minutos. A qualidade permaneceu perfeita!"
+                        Incrível! Removi marcas d'água de 50 fotos em minutos. A qualidade permaneceu perfeita!
                     </div>
                     <div class="testimonial-author">
-                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Ana Silva" class="author-avatar">
-                        <div class="author-info">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" class="author-avatar">
+                        <div>
                             <h4>Ana Silva</h4>
-                            <p>Fotógrafa Profissional</p>
+                            <p style="color: var(--text-muted);">Fotógrafa</p>
                         </div>
                     </div>
                 </div>
                 
                 <div class="card testimonial-card">
                     <div class="testimonial-text">
-                        "Como designer, preciso de imagens limpas. Esta ferramenta do Marujo Flix salvou meu tempo!"
+                        Como designer, preciso de imagens limpas. Esta ferramenta do Marujo Flix salvou meu tempo!
                     </div>
                     <div class="testimonial-author">
-                        <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="Carlos Santos" class="author-avatar">
-                        <div class="author-info">
+                        <img src="https://randomuser.me/api/portraits/men/54.jpg" class="author-avatar">
+                        <div>
                             <h4>Carlos Santos</h4>
-                            <p>Designer Gráfico</p>
+                            <p style="color: var(--text-muted);">Designer</p>
                         </div>
                     </div>
                 </div>
                 
                 <div class="card testimonial-card">
                     <div class="testimonial-text">
-                        "Fácil de usar e resultados impressionantes. Recomendo para todos que precisam remover logotipos."
+                        Fácil de usar e resultados impressionantes. Recomendo para todos que precisam remover logotipos.
                     </div>
                     <div class="testimonial-author">
-                        <img src="https://randomuser.me/api/portraits/women/67.jpg" alt="Mariana Oliveira" class="author-avatar">
-                        <div class="author-info">
+                        <img src="https://randomuser.me/api/portraits/women/67.jpg" class="author-avatar">
+                        <div>
                             <h4>Mariana Oliveira</h4>
-                            <p>Empreendedora</p>
+                            <p style="color: var(--text-muted);">Empreendedora</p>
                         </div>
                     </div>
                 </div>
@@ -1412,55 +1581,55 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Footer Marujo -->
     <footer class="main-footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>Marujo Cleaner</h3>
+                    <h3><i class="fas fa-water"></i> Marujo Cleaner</h3>
                     <p>Ferramenta gratuita do <strong>Marujo Flix</strong> para remoção de marcas d'água com inteligência artificial.</p>
                     <div class="social-links">
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
                     </div>
                 </div>
                 
                 <div class="footer-section">
-                    <h3>Links Rápidos</h3>
+                    <h3><i class="fas fa-link"></i> Links Rápidos</h3>
                     <ul class="footer-links">
-                        <li><a href="#home">Início</a></li>
-                        <li><a href="#upload">Remover Marca D'Água</a></li>
-                        <li><a href="#features">Recursos</a></li>
-                        <li><a href="#how-it-works">Como Funciona</a></li>
+                        <li><a href="#home"><i class="fas fa-chevron-right"></i> Início</a></li>
+                        <li><a href="#upload"><i class="fas fa-chevron-right"></i> Remover Marca</a></li>
+                        <li><a href="#features"><i class="fas fa-chevron-right"></i> Recursos</a></li>
+                        <li><a href="#how-it-works"><i class="fas fa-chevron-right"></i> Como Funciona</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-section">
-                    <h3>Marujo Flix</h3>
+                    <h3><i class="fas fa-ship"></i> Marujo Flix</h3>
                     <ul class="footer-links">
-                        <li><a href="/">Filmes e Séries</a></li>
-                        <li><a href="/jogos">Jogos Online</a></li>
-                        <li><a href="/tv">Canais ao Vivo</a></li>
-                        <li><a href="/runner">Marujo Runner</a></li>
+                        <li><a href="https://marujodigital.onrender.com/marujoflix"><i class="fas fa-chevron-right"></i> Filmes e Séries</a></li>
+                        <li><a href="https://marujodigital.onrender.com/marujoflix"><i class="fas fa-chevron-right"></i> Jogos Online</a></li>
+                        <li><a href="https://marujodigital.onrender.com/marujoflix"><i class="fas fa-chevron-right"></i> Canais ao Vivo</a></li>
+                        <li><a href="https://marujodigital.onrender.com/marujoflix"><i class="fas fa-chevron-right"></i> Marujo Runner</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-section">
-                    <h3>Formatos Suportados</h3>
+                    <h3><i class="fas fa-file-image"></i> Formatos</h3>
                     <ul class="footer-links">
-                        <li>JPG / JPEG</li>
-                        <li>PNG</li>
-                        <li>WEBP</li>
-                        <li>BMP</li>
+                        <li><i class="fas fa-check" style="color: var(--primary);"></i> JPG / JPEG</li>
+                        <li><i class="fas fa-check" style="color: var(--primary);"></i> PNG</li>
+                        <li><i class="fas fa-check" style="color: var(--primary);"></i> WEBP</li>
+                        <li><i class="fas fa-check" style="color: var(--primary);"></i> BMP</li>
                     </ul>
                 </div>
             </div>
             
             <div class="footer-bottom">
                 <p>&copy; 2024 Marujo Cleaner. Todos os direitos reservados.</p>
-                <p>Parte do ecossistema <strong>Marujo Flix</strong> <i class="fas fa-heart" style="color: var(--accent);"></i></p>
+                <p>🧹 Parte do ecossistema <strong>Marujo Flix</strong> <i class="fas fa-heart" style="color: var(--accent);"></i></p>
             </div>
         </div>
     </footer>
@@ -1481,23 +1650,36 @@
         atualizarEstatisticasDia();
         verificarResetDiario();
         
-        // Mostrar notificação de boas-vindas
+        // Menu mobile
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mainNav = document.querySelector('.main-nav ul');
+        
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                mainNav.style.display = mainNav.style.display === 'flex' ? 'none' : 'flex';
+            });
+        }
+        
+        // OneSignal
+        if (window.OneSignal) {
+            window.OneSignalDeferred.push(function(OneSignal) {
+                OneSignal.showSlidedownPrompt();
+            });
+        }
+        
         setTimeout(() => {
-            showNotification('🚀 Bem-vindo ao Marujo Cleaner! Carregue uma imagem para começar.', 'success');
+            showNotification('🧹 Bem-vindo ao Marujo Cleaner! Carregue uma imagem para começar.', 'success');
         }, 1000);
     });
 
     // ===== CONFIGURAÇÃO DE EVENTOS =====
     function setupEventListeners() {
-        // Upload de imagem
         const uploadArea = document.getElementById('uploadArea');
         const imageInput = document.getElementById('imageInput');
         
         uploadArea.addEventListener('click', () => imageInput.click());
-        
         imageInput.addEventListener('change', handleImageUpload);
         
-        // Drag and drop
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadArea.style.borderColor = 'var(--primary)';
@@ -1519,35 +1701,19 @@
                 if (file.type.startsWith('image/')) {
                     loadImageFile(file);
                 } else {
-                    showNotification('⚠️ Por favor, selecione apenas arquivos de imagem.', 'error');
+                    showNotification('⚠️ Selecione apenas imagens.', 'error');
                 }
             }
         });
         
-        // Botão de processamento
         document.getElementById('processButton').addEventListener('click', processImage);
-        
-        // Botão de download
         document.getElementById('downloadButton').addEventListener('click', downloadImage);
-        
-        // Botão de processar outra
         document.getElementById('processAgainButton').addEventListener('click', resetProcess);
         
-        // Menu mobile
-        const menuToggle = document.querySelector('.menu-toggle');
-        const mainNav = document.querySelector('.main-nav ul');
-        
-        if (menuToggle) {
-            menuToggle.addEventListener('click', () => {
-                mainNav.style.display = mainNav.style.display === 'flex' ? 'none' : 'flex';
-            });
-        }
-        
-        // Fechar menu ao clicar em um link
         document.querySelectorAll('.main-nav a').forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth <= 768) {
-                    mainNav.style.display = 'none';
+                    document.querySelector('.main-nav ul').style.display = 'none';
                 }
             });
         });
@@ -1573,19 +1739,17 @@
     // ===== MANIPULAÇÃO DE IMAGENS =====
     function handleImageUpload(event) {
         const file = event.target.files[0];
-        if (file) {
-            loadImageFile(file);
-        }
+        if (file) loadImageFile(file);
     }
 
     function loadImageFile(file) {
         if (!file.type.startsWith('image/')) {
-            showNotification('⚠️ Por favor, selecione um arquivo de imagem válido.', 'error');
+            showNotification('⚠️ Selecione uma imagem válida.', 'error');
             return;
         }
         
         if (file.size > 10 * 1024 * 1024) {
-            showNotification('⚠️ A imagem deve ter no máximo 10MB.', 'error');
+            showNotification('⚠️ Máximo 10MB.', 'error');
             return;
         }
         
@@ -1595,11 +1759,9 @@
             originalImage.onload = function() {
                 displayImagePreview(this);
                 enableProcessButton();
-                showNotification('✅ Imagem carregada com sucesso! Clique em "Processar".', 'success');
+                showNotification('✅ Imagem carregada! Clique em "Processar".', 'success');
             };
-            originalImage.onerror = function() {
-                showNotification('❌ Erro ao carregar a imagem. Tente outra.', 'error');
-            };
+            originalImage.onerror = () => showNotification('❌ Erro ao carregar imagem.', 'error');
             originalImage.src = e.target.result;
         };
         reader.readAsDataURL(file);
@@ -1609,12 +1771,9 @@
         const preview = document.getElementById('imagePreview');
         const uploadArea = document.getElementById('uploadArea');
         
-        if (preview) {
-            preview.src = img.src;
-            preview.style.display = 'block';
-        }
+        preview.src = img.src;
+        preview.style.display = 'block';
         
-        // Esconder ícone e texto do upload
         const uploadIcon = uploadArea.querySelector('i');
         const uploadTitle = uploadArea.querySelector('h3');
         const uploadText = uploadArea.querySelector('p');
@@ -1625,52 +1784,42 @@
     }
 
     function enableProcessButton() {
-        const processButton = document.getElementById('processButton');
-        if (processButton) {
-            processButton.disabled = false;
-        }
+        document.getElementById('processButton').disabled = false;
     }
 
-    // ===== PROCESSAMENTO COM API REAL =====
+    // ===== PROCESSAMENTO COM API =====
     async function processImage() {
         if (!originalImage || isProcessing) return;
         
-        // Verificar limite diário
         const limite = verificarLimiteDiario();
         if (!limite.podeProcessar) {
-            showNotification(`⚠️ Limite diário atingido! Você já processou ${limite.usadoHoje} imagens hoje. Volte amanhã.`, 'warning');
+            showNotification(`⚠️ Limite diário atingido! Volte amanhã.`, 'warning');
             return;
         }
         
         isProcessing = true;
-        showLoading('Enviando imagem para remoção de marca d\'água...');
+        showLoading('🧹 Enviando imagem...');
         
         try {
-            // Converter imagem para Blob
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = originalImage.width;
             canvas.height = originalImage.height;
             ctx.drawImage(originalImage, 0, 0);
             
-            // Converter para Blob
             canvas.toBlob(async (blob) => {
                 try {
-                    // Criar FormData para enviar à API
                     const formData = new FormData();
                     formData.append('image_file', blob, 'image.jpg');
                     
-                    // Gerar product-serial único
                     const productSerial = 'sr-' + Date.now();
                     
-                    // Primeiro passo: Criar job
-                    showLoading('Criando tarefa de remoção...');
+                    showLoading('📡 Criando tarefa...');
                     
                     const createResponse = await fetch(
                         'https://api.ezremove.ai/api/ez-remove/watermark-remove/create-job',
                         {
                             method: 'POST',
-                            mode: 'cors',
                             body: formData,
                             headers: {
                                 'origin': 'https://ezremove.ai',
@@ -1681,14 +1830,13 @@
                     
                     const createData = await createResponse.json();
                     
-                    if (!createData || !createData.result || !createData.result.job_id) {
-                        throw new Error('Não foi possível criar a tarefa de remoção');
+                    if (!createData?.result?.job_id) {
+                        throw new Error('Erro ao criar tarefa');
                     }
                     
                     const jobId = createData.result.job_id;
                     
-                    // Segundo passo: Verificar status do job
-                    showLoading('Processando imagem com IA...');
+                    showLoading('🧠 IA processando...');
                     
                     let resultUrl = null;
                     let attempts = 0;
@@ -1696,7 +1844,7 @@
                     
                     while (attempts < maxAttempts) {
                         attempts++;
-                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        await new Promise(r => setTimeout(r, 2000));
                         
                         try {
                             const checkResponse = await fetch(
@@ -1711,79 +1859,76 @@
                             
                             const checkData = await checkResponse.json();
                             
-                            if (checkData && checkData.code === 100000 && 
-                                checkData.result && checkData.result.output && 
-                                checkData.result.output[0]) {
-                                
+                            if (checkData?.code === 100000 && checkData?.result?.output?.[0]) {
                                 resultUrl = checkData.result.output[0];
                                 break;
                             }
                             
-                            showLoading(`Processando... (${attempts}/${maxAttempts})`);
+                            showLoading(`🧠 ${attempts}/${maxAttempts}...`);
                             
-                        } catch (checkError) {
-                            console.error('Erro ao verificar status:', checkError);
-                        }
+                        } catch (e) {}
                     }
                     
-                    if (!resultUrl) {
-                        throw new Error('Tempo esgotado ao processar a imagem');
-                    }
+                    if (!resultUrl) throw new Error('Tempo esgotado');
                     
-                    // Carregar imagem processada
-                    showLoading('Baixando resultado...');
+                    showLoading('📥 Baixando resultado...');
+                    
+                    const imageUrl = resultUrl + (resultUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
+                    const proxyUrl = 'https://cors.eu.org/';
                     
                     processedImage = new Image();
                     processedImage.crossOrigin = 'anonymous';
-                    
-                    // Adicionar timestamp para evitar cache
-                    resultUrl += (resultUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
+                    processedImage.src = proxyUrl + imageUrl;
                     
                     processedImage.onload = () => {
                         isProcessing = false;
                         hideLoading();
-                        
-                        // Registrar processamento
                         registrarProcessamento();
                         
-                        // Atualizar estatísticas
                         const processingTime = (attempts * 2 + 2).toFixed(1);
                         const qualityScore = Math.round(Math.random() * 5 + 92);
                         
-                        // Mostrar resultado
                         showResult();
                         
-                        // Atualizar UI
                         document.getElementById('processingTime').textContent = `${processingTime}s`;
                         document.getElementById('qualityScore').textContent = `${qualityScore}%`;
                         
-                        showNotification('🎉 Marca d\'água removida com sucesso!', 'success');
+                        showNotification('🎉 Marca removida com sucesso!', 'success');
                     };
                     
                     processedImage.onerror = () => {
-                        throw new Error('Erro ao carregar imagem processada');
+                        processedImage = new Image();
+                        processedImage.crossOrigin = 'anonymous';
+                        processedImage.src = imageUrl;
+                        
+                        processedImage.onload = () => {
+                            isProcessing = false;
+                            hideLoading();
+                            registrarProcessamento();
+                            showResult();
+                            showNotification('🎉 Sucesso!', 'success');
+                        };
+                        
+                        processedImage.onerror = () => {
+                            isProcessing = false;
+                            hideLoading();
+                            showNotification('❌ Erro ao carregar imagem.', 'error');
+                        };
                     };
                     
-                    processedImage.src = resultUrl;
-                    
                 } catch (error) {
-                    console.error('Erro no processamento:', error);
+                    console.error(error);
                     isProcessing = false;
                     hideLoading();
-                    
-                    if (error.message.includes('Tempo esgotado')) {
-                        showNotification('⏰ O processamento está demorando mais que o esperado. Tente novamente com uma imagem menor.', 'error');
-                    } else {
-                        showNotification('❌ Erro ao processar imagem: ' + error.message, 'error');
-                    }
+                    showNotification('❌ Erro no processamento.', 'error');
                 }
             }, 'image/jpeg', 0.9);
             
         } catch (error) {
-            console.error('Erro no processamento:', error);
+            console.error(error);
             isProcessing = false;
             hideLoading();
-            showNotification('❌ Erro ao processar imagem. Verifique sua conexão e tente novamente.', 'error');
+            showNotification('❌ Erro. Tente novamente.', 'error');
         }
     }
 
@@ -1793,8 +1938,8 @@
         const historico = JSON.parse(localStorage.getItem('marujoCleanerHistory') || '[]');
         
         const processamentosHoje = historico.filter(h => {
-            const dataProcessamento = new Date(h.data).toISOString().split('T')[0];
-            return dataProcessamento === hoje && h.status === 'success';
+            const data = new Date(h.data).toISOString().split('T')[0];
+            return data === hoje && h.status === 'success';
         });
         
         return {
@@ -1807,28 +1952,13 @@
     function atualizarContadorUso() {
         const limite = verificarLimiteDiario();
         
-        const counter = document.getElementById('imagesTodayCounter');
+        document.getElementById('imagesTodayCounter').textContent = limite.usadoHoje;
         const remaining = document.getElementById('remainingLimit');
+        remaining.textContent = limite.restante;
         
-        if (counter) counter.textContent = limite.usadoHoje;
-        if (remaining) {
-            remaining.textContent = limite.restante;
-            
-            // Mudar cor conforme o uso
-            if (limite.restante <= 20) {
-                remaining.style.color = 'var(--warning)';
-            } else if (limite.restante <= 5) {
-                remaining.style.color = 'var(--danger)';
-            } else {
-                remaining.style.color = 'var(--success)';
-            }
-        }
-        
-        // Desabilitar botão se atingiu o limite
-        const processButton = document.getElementById('processButton');
-        if (processButton && !processButton.disabled && !limite.podeProcessar) {
-            processButton.disabled = true;
-        }
+        if (limite.restante <= 20) remaining.style.color = 'var(--warning)';
+        else if (limite.restante <= 5) remaining.style.color = 'var(--danger)';
+        else remaining.style.color = 'var(--success)';
     }
 
     function registrarProcessamento() {
@@ -1841,10 +1971,7 @@
             tamanho: Math.round(originalImage.src.length * 3 / 4 / 1024) + ' KB'
         });
         
-        // Manter apenas os últimos 200 registros
-        if (historico.length > 200) {
-            historico.splice(0, historico.length - 200);
-        }
+        if (historico.length > 200) historico.splice(0, historico.length - 200);
         
         localStorage.setItem('marujoCleanerHistory', JSON.stringify(historico));
         atualizarContadorUso();
@@ -1853,68 +1980,39 @@
 
     // ===== EXIBIÇÃO DE RESULTADOS =====
     function showResult() {
-        // Mostrar seção de resultados
         const resultSection = document.getElementById('result');
         if (resultSection) {
             resultSection.style.display = 'block';
             resultSection.scrollIntoView({ behavior: 'smooth' });
         }
         
-        // Configurar comparação
         const comparisonContainer = document.getElementById('comparisonContainer');
         if (!comparisonContainer || !originalImage || !processedImage) return;
         
-        // Limpar container primeiro
-        comparisonContainer.innerHTML = '';
-        
-        // Criar estrutura de comparação
         comparisonContainer.innerHTML = `
             <div id="originalComparison" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden;">
-                <img id="originalImg" class="comparison-image" src="${originalImage.src}" alt="Original" 
-                     style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
+                <img class="comparison-image" src="${originalImage.src}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
             </div>
             <div id="processedComparison" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden;">
-                <img id="processedImg" class="comparison-image" src="${processedImage.src}" alt="Processada" 
-                     style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
+                <img class="comparison-image" src="${processedImage.src}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
             </div>
             <div class="comparison-slider" id="comparisonSlider"></div>
             <div class="comparison-labels" style="position: absolute; top: 20px; left: 20px; z-index: 10; display: flex; gap: 10px;">
                 <span class="badge badge-secondary" style="background: rgba(10, 10, 26, 0.8);">Original</span>
-                <span class="badge badge-primary" style="background: rgba(0, 255, 179, 0.8);">Sem Marca</span>
+                <span class="badge badge-primary" style="background: rgba(0, 255, 179, 0.8);">Limpado</span>
             </div>
         `;
         
-        // Configurar funcionalidade do slider
-        setTimeout(() => {
-            setupComparison();
-        }, 100);
+        setTimeout(setupComparison, 100);
         
-        // Configurar estatísticas
-        const imageSize = document.getElementById('imageSize');
-        const fileSize = document.getElementById('fileSize');
-        const resultStats = document.getElementById('resultStats');
+        document.getElementById('imageSize').textContent = `${originalImage.width}x${originalImage.height}`;
         
-        if (imageSize) {
-            imageSize.textContent = `${originalImage.width}x${originalImage.height}`;
-        }
-        
-        if (fileSize) {
-            const sizeMB = Math.round(originalImage.src.length * 3 / 4 / 1024 / 1024 * 10) / 10;
-            fileSize.textContent = `${sizeMB} MB`;
-        }
-        
-        if (resultStats) {
-            resultStats.style.display = 'grid';
-        }
-        
-        // Habilitar download
-        const downloadButton = document.getElementById('downloadButton');
-        if (downloadButton) {
-            downloadButton.disabled = false;
-        }
+        const sizeMB = Math.round(originalImage.src.length * 3 / 4 / 1024 / 1024 * 10) / 10;
+        document.getElementById('fileSize').textContent = `${sizeMB} MB`;
+        document.getElementById('resultStats').style.display = 'grid';
+        document.getElementById('downloadButton').disabled = false;
     }
 
-    // Configurar comparação
     function setupComparison() {
         const slider = document.getElementById('comparisonSlider');
         const container = document.getElementById('comparisonContainer');
@@ -1940,17 +2038,10 @@
         function drag(e) {
             if (!isDragging) return;
             
-            const containerRect = container.getBoundingClientRect();
-            let x = 0;
-            
-            if (e.type.includes('touch')) {
-                x = e.touches[0].clientX - containerRect.left;
-            } else {
-                x = e.clientX - containerRect.left;
-            }
-            
-            x = Math.max(0, Math.min(x, containerRect.width));
-            const percentage = (x / containerRect.width * 100);
+            const rect = container.getBoundingClientRect();
+            let x = e.type.includes('touch') ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+            x = Math.max(0, Math.min(x, rect.width));
+            const percentage = (x / rect.width * 100);
             
             slider.style.left = percentage + '%';
             originalDiv.style.clipPath = `inset(0 ${100 - percentage}% 0 0)`;
@@ -1965,82 +2056,54 @@
             slider.style.cursor = 'col-resize';
         }
         
-        // Posicionar slider no meio inicialmente
         slider.style.left = '50%';
         originalDiv.style.clipPath = 'inset(0 50% 0 0)';
     }
 
-    // ===== DOWNLOAD DA IMAGEM =====
+    // ===== DOWNLOAD =====
     function downloadImage() {
         if (!processedImage) return;
         
         const link = document.createElement('a');
         link.download = `marujo-cleaner-${Date.now()}.png`;
         link.href = processedImage.src;
-        document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
         
         showNotification('📥 Download iniciado!', 'success');
     }
 
-    // ===== RESET DO PROCESSO =====
+    // ===== RESET =====
     function resetProcess() {
-        // Resetar upload
         const uploadArea = document.getElementById('uploadArea');
         const preview = document.getElementById('imagePreview');
         const imageInput = document.getElementById('imageInput');
         
-        if (uploadArea) {
-            const uploadIcon = uploadArea.querySelector('i');
-            const uploadTitle = uploadArea.querySelector('h3');
-            const uploadText = uploadArea.querySelector('p');
-            
-            if (uploadIcon) uploadIcon.style.display = 'block';
-            if (uploadTitle) uploadTitle.style.display = 'block';
-            if (uploadText) uploadText.style.display = 'block';
-        }
+        const uploadIcon = uploadArea.querySelector('i');
+        const uploadTitle = uploadArea.querySelector('h3');
+        const uploadText = uploadArea.querySelector('p');
         
-        if (preview) {
-            preview.style.display = 'none';
-            preview.src = '';
-        }
+        if (uploadIcon) uploadIcon.style.display = 'block';
+        if (uploadTitle) uploadTitle.style.display = 'block';
+        if (uploadText) uploadText.style.display = 'block';
         
-        if (imageInput) {
-            imageInput.value = '';
-        }
+        preview.style.display = 'none';
+        preview.src = '';
+        imageInput.value = '';
         
-        // Resetar botão
-        const processButton = document.getElementById('processButton');
-        if (processButton) {
-            processButton.disabled = true;
-        }
+        document.getElementById('processButton').disabled = true;
         
-        // Resetar sliders
-        const intensitySlider = document.getElementById('intensitySlider');
-        const smoothSlider = document.getElementById('smoothSlider');
-        const intensityValue = document.getElementById('intensityValue');
-        const smoothValue = document.getElementById('smoothValue');
+        document.getElementById('intensitySlider').value = 50;
+        document.getElementById('smoothSlider').value = 30;
+        document.getElementById('intensityValue').textContent = '50%';
+        document.getElementById('smoothValue').textContent = '30%';
         
-        if (intensitySlider) intensitySlider.value = 50;
-        if (smoothSlider) smoothSlider.value = 30;
-        if (intensityValue) intensityValue.textContent = '50%';
-        if (smoothValue) smoothValue.textContent = '30%';
+        document.getElementById('result').style.display = 'none';
         
-        // Esconder resultado
-        const resultSection = document.getElementById('result');
-        if (resultSection) {
-            resultSection.style.display = 'none';
-        }
-        
-        // Resetar variáveis
         originalImage = null;
         processedImage = null;
         
-        // Rolar para o upload
         scrollToSection('upload');
-        
-        showNotification('🔄 Pronto para processar uma nova imagem!', 'success');
+        showNotification('🔄 Pronto para nova imagem!', 'success');
     }
 
     // ===== ESTATÍSTICAS =====
@@ -2049,41 +2112,32 @@
         const historico = JSON.parse(localStorage.getItem('marujoCleanerHistory') || '[]');
         
         const hojeHist = historico.filter(h => {
-            const dataProcessamento = new Date(h.data).toISOString().split('T')[0];
-            return dataProcessamento === hoje;
+            const data = new Date(h.data).toISOString().split('T')[0];
+            return data === hoje;
         });
         
-        const totalHoje = hojeHist.length;
-        const sucessosHoje = hojeHist.filter(h => h.status === 'success').length;
-        const taxaSucesso = totalHoje > 0 ? Math.round((sucessosHoje / totalHoje) * 100) : 100;
+        const total = hojeHist.length;
+        const sucessos = hojeHist.filter(h => h.status === 'success').length;
+        const taxa = total > 0 ? Math.round((sucessos / total) * 100) : 100;
         
-        // Calcular tempo médio (simulação)
         let tempoMedio = '-';
-        if (hojeHist.length > 0) {
+        if (total > 0) {
             const tempos = hojeHist.map(h => {
-                const resolucao = h.resolucao ? h.resolucao.split('x').reduce((a, b) => a * b, 1) : 1000000;
+                const resolucao = h.resolucao?.split('x').reduce((a, b) => a * b, 1) || 1000000;
                 return Math.max(2, Math.min(40, resolucao / 1000000 * 10));
             });
             tempoMedio = (tempos.reduce((a, b) => a + b, 0) / tempos.length).toFixed(1) + 's';
         }
         
-        // Atualizar UI
-        const processedToday = document.getElementById('statsProcessedToday');
-        const successRate = document.getElementById('statsSuccessRate');
-        const avgTime = document.getElementById('statsAvgTime');
+        document.getElementById('statsProcessedToday').textContent = total;
         
-        if (processedToday) processedToday.textContent = totalHoje;
-        if (successRate) {
-            successRate.textContent = taxaSucesso + '%';
-            if (taxaSucesso >= 90) {
-                successRate.style.color = 'var(--success)';
-            } else if (taxaSucesso >= 70) {
-                successRate.style.color = 'var(--warning)';
-            } else {
-                successRate.style.color = 'var(--danger)';
-            }
-        }
-        if (avgTime) avgTime.textContent = tempoMedio;
+        const successRate = document.getElementById('statsSuccessRate');
+        successRate.textContent = taxa + '%';
+        if (taxa >= 90) successRate.style.color = 'var(--success)';
+        else if (taxa >= 70) successRate.style.color = 'var(--warning)';
+        else successRate.style.color = 'var(--danger)';
+        
+        document.getElementById('statsAvgTime').textContent = tempoMedio;
     }
 
     function inicializarHistorico() {
@@ -2096,76 +2150,56 @@
     }
 
     function verificarResetDiario() {
-        const ultimoAcesso = localStorage.getItem('marujoCleanerLastAccess');
+        const ultimo = localStorage.getItem('marujoCleanerLastAccess');
         const hoje = new Date().toISOString().split('T')[0];
         
-        if (!ultimoAcesso || ultimoAcesso !== hoje) {
+        if (!ultimo || ultimo !== hoje) {
             localStorage.setItem('marujoCleanerLastAccess', hoje);
         }
     }
 
     // ===== UTILITÁRIOS =====
-    function showLoading(text = 'Processando...') {
-        const overlay = document.getElementById('loadingOverlay');
-        const loadingText = document.getElementById('loadingText');
-        
-        if (overlay) overlay.classList.add('active');
-        if (loadingText) loadingText.textContent = text;
+    function showLoading(text) {
+        document.getElementById('loadingOverlay').classList.add('active');
+        document.getElementById('loadingText').textContent = text;
     }
 
     function hideLoading() {
-        const overlay = document.getElementById('loadingOverlay');
-        if (overlay) overlay.classList.remove('active');
+        document.getElementById('loadingOverlay').classList.remove('active');
     }
 
-    function showNotification(message, type = 'info') {
+    function showNotification(message, type) {
         const notification = document.getElementById('notification');
-        if (!notification) return;
-        
         const icon = type === 'success' ? 'check-circle' : 
                     type === 'error' ? 'exclamation-circle' : 
                     type === 'warning' ? 'exclamation-triangle' : 'info-circle';
         
-        notification.innerHTML = `
-            <i class="fas fa-${icon}"></i>
-            <span>${message}</span>
-        `;
-        
+        notification.innerHTML = `<i class="fas fa-${icon}"></i><span>${message}</span>`;
         notification.className = `notification ${type}`;
         notification.classList.add('show');
         
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 5000);
+        setTimeout(() => notification.classList.remove('show'), 5000);
     }
 
-    function scrollToSection(sectionId) {
-        const element = document.getElementById(sectionId);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
+    function scrollToSection(id) {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // ===== DEMONSTRAÇÃO =====
     function showDemo() {
-        // Carregar imagem de demonstração
-        const demoImage = new Image();
-        demoImage.crossOrigin = 'anonymous';
-        demoImage.src = 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=800&h=600&fit=crop&auto=format';
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=800&fit=crop';
         
-        demoImage.onload = function() {
-            originalImage = demoImage;
-            displayImagePreview(this);
+        img.onload = () => {
+            originalImage = img;
+            displayImagePreview(img);
             enableProcessButton();
-            showNotification('🖼️ Imagem de demonstração carregada! Clique em "Processar" para ver a mágica.', 'success');
+            showNotification('🖼️ Imagem de demonstração carregada!', 'success');
         };
         
-        demoImage.onerror = function() {
-            showNotification('❌ Erro ao carregar imagem de demonstração.', 'error');
-        };
+        img.onerror = () => showNotification('❌ Erro na demonstração.', 'error');
     }
 
-    // Expor funções globais
     window.showDemo = showDemo;
     window.scrollToSection = scrollToSection;
     </script>
