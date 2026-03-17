@@ -6788,9 +6788,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
 
 
 
-
-
-<!-- ===== MARUJO RUNNER (CÓPIA EXATA DO FABI RUNNER) ===== -->
+<!-- ===== MARUJO RUNNER - EDIÇÃO PROFISSIONAL ===== -->
 <style>
     /* ===== RESET E CONFIGURAÇÕES GERAIS ===== */
     :root {
@@ -6819,7 +6817,10 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         box-shadow: 0 0 50px rgba(0, 255, 204, 0.4);
         border: 2px solid rgba(0, 255, 204, 0.3);
         margin: 0 auto;
+        cursor: pointer;
+        transition: all 0.3s ease;
     }
+    
     #runnerGameContainer canvas {
         width: 100% !important;
         height: 100% !important;
@@ -6841,10 +6842,12 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         z-index: 9999 !important;
         background: #000 !important;
     }
+    
     body.runner-fullscreen-active {
         overflow: hidden;
         padding: 0 !important;
     }
+    
     body.runner-fullscreen-active .main-header,
     body.runner-fullscreen-active .mobile-bottom-nav,
     body.runner-fullscreen-active .floating-pix-container,
@@ -6853,7 +6856,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         display: none !important;
     }
 
-    /* Botão de sair da tela cheia */
+    /* Botões flutuantes */
     .runner-fullscreen-exit {
         position: fixed;
         top: 20px;
@@ -6873,12 +6876,136 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
         transition: var(--transition);
     }
+    
     .runner-fullscreen-exit:hover {
         background: rgba(0, 255, 204, 0.3);
         transform: scale(1.1);
     }
+    
     .runner-fullscreen-exit.active {
         display: flex;
+    }
+
+    /* Painel de Game Over */
+    .gameover-panel {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(145deg, #0f1422, #1a2038);
+        border: 3px solid var(--primary-cyan);
+        border-radius: 30px;
+        padding: 30px;
+        color: white;
+        font-family: 'Orbitron', sans-serif;
+        z-index: 10001;
+        min-width: 300px;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 0 100px var(--primary-cyan);
+        text-align: center;
+        animation: panelAppear 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+    }
+    
+    @keyframes panelAppear {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -30%);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+    }
+    
+    .gameover-icon {
+        font-size: 4rem;
+        color: var(--danger-red);
+        margin-bottom: 10px;
+        animation: pulse 1.5s infinite;
+    }
+    
+    .gameover-title {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--danger-red);
+        text-shadow: 0 0 30px var(--danger-red);
+        margin-bottom: 20px;
+    }
+    
+    .gameover-stats {
+        background: rgba(0,0,0,0.3);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid var(--card-border);
+    }
+    
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+    }
+    
+    .stat-row:last-child {
+        margin-bottom: 0;
+    }
+    
+    .stat-label {
+        color: var(--text-muted);
+    }
+    
+    .stat-value {
+        font-weight: 700;
+        color: var(--primary-cyan);
+    }
+    
+    .stat-value.golds {
+        color: #FFD700;
+    }
+    
+    .gameover-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+    }
+    
+    .gameover-btn {
+        flex: 1;
+        padding: 15px 20px;
+        border: none;
+        border-radius: 15px;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: var(--transition);
+    }
+    
+    .gameover-btn.restart {
+        background: linear-gradient(45deg, var(--primary-cyan), var(--primary-blue));
+        color: var(--dark-bg);
+        box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+    }
+    
+    .gameover-btn.exit {
+        background: linear-gradient(45deg, var(--danger-red), #ff6b6b);
+        color: white;
+        box-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
+    }
+    
+    .gameover-btn:hover {
+        transform: translateY(-3px) scale(1.05);
+    }
+    
+    .gameover-btn:active {
+        transform: translateY(-1px) scale(0.98);
     }
 
     /* Controles do jogo */
@@ -6887,7 +7014,9 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         gap: 20px;
         justify-content: center;
         margin: 20px 0;
+        flex-wrap: wrap;
     }
+    
     .runner-btn {
         padding: 15px 30px;
         font-family: 'Orbitron', sans-serif;
@@ -6903,20 +7032,24 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         align-items: center;
         gap: 10px;
     }
+    
     .runner-btn.primary {
         background: linear-gradient(45deg, var(--primary-cyan), var(--primary-blue));
         color: var(--dark-bg);
         box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
     }
+    
     .runner-btn.secondary {
         background: linear-gradient(45deg, var(--accent-pink), #ff00aa);
         color: white;
         box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
     }
+    
     .runner-btn.fullscreen {
         background: linear-gradient(45deg, var(--accent-yellow), #ffaa00);
         color: var(--dark-bg);
     }
+    
     .runner-btn:hover {
         transform: translateY(-3px) scale(1.05);
         box-shadow: 0 0 30px rgba(0, 255, 204, 0.8);
@@ -6925,7 +7058,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
     /* Controles touch (mobile) */
     .runner-touch-controls {
         position: fixed;
-        bottom: 50px;
+        bottom: 30px;
         left: 0;
         right: 0;
         display: flex;
@@ -6936,10 +7069,12 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         pointer-events: none;
         transition: opacity 0.3s;
     }
+    
     .runner-touch-controls.active {
         opacity: 1;
         pointer-events: all;
     }
+    
     .touch-btn {
         width: 80px;
         height: 80px;
@@ -6954,15 +7089,20 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         cursor: pointer;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 255, 204, 0.6);
         transition: all 0.15s;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
     }
+    
     .touch-btn:active {
         transform: scale(0.85);
     }
+    
     body.runner-fullscreen-active .runner-touch-controls {
         bottom: 40px !important;
         opacity: 1 !important;
         pointer-events: all !important;
     }
+    
     body.runner-fullscreen-active .touch-btn {
         width: 100px !important;
         height: 100px !important;
@@ -6981,6 +7121,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         box-shadow: var(--glow-primary);
         margin: 20px auto 0;
     }
+    
     .runner-ranking h3 {
         font-family: 'Orbitron', sans-serif;
         font-size: 1.8rem;
@@ -6990,11 +7131,13 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         gap: 10px;
         margin-bottom: 20px;
     }
+    
     .ranking-list {
         list-style: none;
         max-height: 300px;
         overflow-y: auto;
     }
+    
     .ranking-item {
         display: flex;
         align-items: center;
@@ -7005,6 +7148,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         border-left: 4px solid var(--primary-cyan);
         color: white;
     }
+    
     .ranking-pos {
         font-family: 'Orbitron', sans-serif;
         font-size: 1.2rem;
@@ -7013,17 +7157,19 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         min-width: 50px;
         text-align: center;
     }
+    
     .ranking-name {
         flex: 1;
         font-size: 1rem;
         font-weight: 600;
     }
+    
     .ranking-score {
         font-weight: 600;
         color: var(--accent-yellow);
     }
 
-    /* Modal de áudio (igual ao Fabi Runner) */
+    /* Modal de áudio */
     .modal {
         position: fixed;
         top: 0;
@@ -7040,10 +7186,12 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         visibility: hidden;
         transition: var(--transition);
     }
+    
     .modal.active {
         opacity: 1;
         visibility: visible;
     }
+    
     .modal-content {
         background: var(--card-bg);
         border: 2px solid var(--card-border);
@@ -7055,15 +7203,18 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         transform: scale(0.9);
         transition: transform 0.3s ease;
     }
+    
     .modal.active .modal-content {
         transform: scale(1);
     }
+    
     .modal-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
     }
+    
     .modal-title {
         font-family: 'Orbitron', sans-serif;
         font-size: 1.8rem;
@@ -7072,6 +7223,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         align-items: center;
         gap: 10px;
     }
+    
     .close-modal {
         background: none;
         border: none;
@@ -7086,6 +7238,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         justify-content: center;
         transition: var(--transition);
     }
+    
     .close-modal:hover {
         background: rgba(255, 255, 255, 0.1);
         transform: rotate(90deg);
@@ -7095,6 +7248,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         .runner-btn { padding: 12px 20px; font-size: 0.9rem; }
         .touch-btn { width: 60px; height: 60px; font-size: 1.5rem; }
     }
+    
     @media (max-width: 480px) {
         .runner-btn { padding: 10px 15px; font-size: 0.8rem; }
         .touch-btn { width: 50px; height: 50px; font-size: 1.2rem; }
@@ -7103,7 +7257,17 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
 
 <!-- Container principal do jogo -->
 <div style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 20px;">
-    <div id="runnerGameContainer"></div>
+    <div id="runnerGameContainer">
+        <!-- Canvas será inserido aqui pelo JavaScript -->
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: white; text-align: center; padding: 20px;">
+            <i class="fas fa-gamepad" style="font-size: 4rem; color: var(--primary-cyan); margin-bottom: 20px;"></i>
+            <h3 style="color: var(--primary-cyan); margin-bottom: 10px;">Marujo Runner</h3>
+            <p style="margin-bottom: 20px;">Clique em INICIAR para começar a aventura!</p>
+            <button class="runner-btn primary" onclick="window.iniciarJogo()" style="font-size: 0.9rem; padding: 10px 20px;">
+                <i class="fas fa-play"></i> INICIAR AGORA
+            </button>
+        </div>
+    </div>
 
     <!-- Botão de sair da tela cheia -->
     <button class="runner-fullscreen-exit" id="runnerFullscreenExit">
@@ -7135,25 +7299,53 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
     <div class="modal-content">
         <div class="modal-header">
             <div class="modal-title"><i class="fas fa-volume-up"></i> PERMISSÃO DE ÁUDIO</div>
-            <button class="close-modal" onclick="skipRunnerAudio()"><i class="fas fa-times"></i></button>
+            <button class="close-modal" onclick="document.getElementById('runnerAudioModal').classList.remove('active')"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body text-center">
             <p>Para uma experiência completa com efeitos sonoros, permita o áudio.</p>
-            <button class="btn btn-primary" onclick="initRunnerAudio()">PERMITIR</button>
-            <button class="btn" onclick="skipRunnerAudio()">SEM SOM</button>
+            <button class="runner-btn primary" onclick="initRunnerAudio()" style="margin: 10px;">PERMITIR</button>
+            <button class="runner-btn secondary" onclick="skipRunnerAudio()" style="margin: 10px;">SEM SOM</button>
         </div>
+    </div>
+</div>
+
+<!-- Painel de Game Over (inicialmente oculto) -->
+<div id="gameoverPanel" class="gameover-panel" style="display: none;">
+    <div class="gameover-icon">💀</div>
+    <div class="gameover-title">NAUFRAGOU!</div>
+    <div class="gameover-stats">
+        <div class="stat-row">
+            <span class="stat-label">Pontuação</span>
+            <span class="stat-value" id="gameoverScore">0</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Golds</span>
+            <span class="stat-value golds" id="gameoverGolds">0</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Tempo</span>
+            <span class="stat-value" id="gameoverTime">0s</span>
+        </div>
+    </div>
+    <div class="gameover-buttons">
+        <button class="gameover-btn restart" onclick="window.restartRunnerGame()">
+            <i class="fas fa-redo"></i> REINICIAR
+        </button>
+        <button class="gameover-btn exit" onclick="window.exitRunnerGame()">
+            <i class="fas fa-sign-out-alt"></i> SAIR
+        </button>
     </div>
 </div>
 
 <script>
 (function() {
-    // ==================== CONFIGURAÇÕES (IGUAL AO FABI RUNNER) ====================
+    // ==================== CONFIGURAÇÕES ====================
     const GAME_CONFIG = {
         FPS: 60,
         GRAVITY: 0.6,
-        JUMP_FORCE: -24,
+        JUMP_FORCE: -18,
         DUCK_GRAVITY: 3,
-        SPEED_INITIAL: 3,
+        SPEED_INITIAL: 4,
         SPEED_INCREMENT: 0.01,
         SPEED_MAX: 20,
         OBSTACLE_SPAWN_MIN: 100,
@@ -7180,6 +7372,8 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
     let corridaMusic = null;
     let derrotaSound = null;
     let lastTapTime = 0;
+    let startTime = 0;
+    let aguardandoInicio = false; // NOVO: controla se pode iniciar
 
     // Elementos DOM
     const container = document.getElementById('runnerGameContainer');
@@ -7190,19 +7384,264 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
     const touchJump = document.getElementById('touchJump');
     const touchDuck = document.getElementById('touchDuck');
     const rankingList = document.getElementById('runnerRankingList');
+    const gameoverPanel = document.getElementById('gameoverPanel');
+    const audioModal = document.getElementById('runnerAudioModal');
 
-    // ==================== CLASSE DO JOGO (COPIADA DO FABI RUNNER) ====================
+    // ==================== FUNÇÃO PARA FORÇAR ORIENTAÇÃO ====================
+    function forceLandscapeAndFullscreen() {
+        const container = document.getElementById('runnerGameContainer');
+        
+        if (!isFullscreen) {
+            if (container.requestFullscreen) {
+                container.requestFullscreen().then(() => {
+                    if (screen.orientation && screen.orientation.lock) {
+                        screen.orientation.lock('landscape').catch(() => {});
+                    }
+                }).catch(() => {});
+            } else if (container.webkitRequestFullscreen) {
+                container.webkitRequestFullscreen();
+            }
+        } else {
+            // Se já está em tela cheia, só tenta travar orientação
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(() => {});
+            }
+        }
+    }
+
+function showGameOverPanel(score, golds) {
+        const tempoJogo = Math.floor((Date.now() - startTime) / 1000);
+        const minutos = Math.floor(tempoJogo / 60);
+        const segundos = tempoJogo % 60;
+        
+        document.getElementById('gameoverScore').textContent = Math.floor(score);
+        document.getElementById('gameoverGolds').textContent = golds;
+        document.getElementById('gameoverTime').textContent = `${minutos}:${segundos.toString().padStart(2, '0')}`;
+        
+        gameoverPanel.style.display = 'block';
+        
+        // Esconder botões principais
+        startBtn.style.display = 'none';
+        restartBtn.style.display = 'none';
+        
+        // Sair da tela cheia
+        if (isFullscreen) {
+            setTimeout(() => exitFullscreen(), 500);
+        }
+        
+        // Destravar orientação
+        if (screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock();
+        }
+    }
+
+    function hideGameOverPanel() {
+        gameoverPanel.style.display = 'none';
+    }
+
+    // ==================== FUNÇÕES GLOBAIS PARA OS BOTÕES ====================
+    window.restartRunnerGame = function() {
+        hideGameOverPanel();
+        // Forçar orientação novamente ao reiniciar
+        forceLandscapeAndFullscreen();
+        restartGame();
+    };
+
+    window.exitRunnerGame = function() {
+        hideGameOverPanel();
+        
+        if (isFullscreen) {
+            exitFullscreen();
+        }
+        
+        // Destravar orientação
+        if (screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock();
+        }
+        
+        // Mostrar botão iniciar novamente
+        startBtn.style.display = 'inline-flex';
+        restartBtn.style.display = 'none';
+        
+        // Limpar o jogo
+        if (game) {
+            game.cleanup();
+            game = null;
+        }
+        isGameRunning = false;
+        aguardandoInicio = false; // Resetar estado
+        
+        // Voltar ao menu inicial
+        container.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: white; text-align: center; padding: 20px;">
+                <i class="fas fa-gamepad" style="font-size: 4rem; color: var(--primary-cyan); margin-bottom: 20px;"></i>
+                <h3 style="color: var(--primary-cyan); margin-bottom: 10px;">Marujo Runner</h3>
+                <p style="margin-bottom: 20px;">Clique em INICIAR para começar a aventura!</p>
+                <button class="runner-btn primary" onclick="window.iniciarJogo()" style="font-size: 0.9rem; padding: 10px 20px;">
+                    <i class="fas fa-play"></i> INICIAR AGORA
+                </button>
+            </div>
+        `;
+    };
+
+    window.iniciarJogo = function() {
+        // Mostrar modal de áudio
+        audioModal.classList.add('active');
+        
+        // Rolar até o jogo
+        container.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // ==================== FUNÇÕES DE ÁUDIO ====================
+    window.initRunnerAudio = function() {
+        if (isAudioEnabled) return;
+        
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            audioContext = new AudioCtx();
+            isAudioEnabled = true;
+
+            audioGain = audioContext.createGain();
+            audioGain.gain.value = AUDIO_CONFIG.VOLUME_EFFECTS;
+            audioGain.connect(audioContext.destination);
+
+            corridaMusic = new Audio(AUDIO_CONFIG.CORRIDA);
+            corridaMusic.loop = true;
+            corridaMusic.volume = AUDIO_CONFIG.VOLUME_MUSICA;
+
+            derrotaSound = new Audio(AUDIO_CONFIG.DERROTA);
+            derrotaSound.volume = AUDIO_CONFIG.VOLUME_EFFECTS;
+
+            // Fechar modal
+            audioModal.classList.remove('active');
+            
+            // Tocar som de confirmação
+            playSound(800, 'sine', 0.1);
+            
+            // SÓ marcar que pode iniciar, NÃO iniciar automaticamente
+            aguardandoInicio = true;
+            
+            // Mostrar mensagem para o usuário
+            if (typeof ToastSystem !== 'undefined') {
+                ToastSystem.show('Áudio ativado! Clique em INICIAR para começar', 'success');
+            } else {
+                alert('Áudio ativado! Clique em INICIAR para começar');
+            }
+            
+        } catch (e) {
+            console.log('Áudio não suportado');
+            isAudioEnabled = false;
+            audioModal.classList.remove('active');
+            aguardandoInicio = true;
+        }
+    };
+
+    window.skipRunnerAudio = function() {
+        audioModal.classList.remove('active');
+        isAudioEnabled = false;
+        
+        // SÓ marcar que pode iniciar, NÃO iniciar automaticamente
+        aguardandoInicio = true;
+        
+        if (typeof ToastSystem !== 'undefined') {
+            ToastSystem.show('Modo sem áudio ativado! Clique em INICIAR', 'info');
+        } else {
+            alert('Modo sem áudio! Clique em INICIAR para começar');
+        }
+    };
+
+    function playSound(freq, type, dur) {
+        if (!isAudioEnabled || !audioContext) return;
+        try {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioGain);
+            osc.frequency.value = freq;
+            osc.type = type;
+            const now = audioContext.currentTime;
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + dur);
+            osc.start(now);
+            osc.stop(now + dur);
+        } catch (e) {}
+    }
+
+    function startCorridaMusic() {
+        if (!isAudioEnabled || !corridaMusic) return;
+        corridaMusic.currentTime = 0;
+        corridaMusic.play().catch(() => {});
+    }
+
+    function stopCorridaMusic() {
+        if (corridaMusic) {
+            corridaMusic.pause();
+            corridaMusic.currentTime = 0;
+        }
+    }
+
+    function playDerrotaSound() {
+        if (!isAudioEnabled || !derrotaSound) return;
+        stopCorridaMusic();
+        setTimeout(() => {
+            derrotaSound.currentTime = 0;
+            derrotaSound.play().catch(() => {});
+        }, 500);
+    }
+
+    // ==================== FUNÇÃO PARA REALMENTE INICIAR O JOGO ====================
+    function realmenteIniciarJogo() {
+        if (isGameRunning) return;
+        
+        console.log('🎮 Iniciando jogo de verdade...');
+        
+        isGameRunning = true;
+        hideGameOverPanel();
+
+        if (game) {
+            game.cleanup();
+        }
+        
+        game = new MarujoRunnerGame(container);
+        game.start();
+
+        startBtn.style.display = 'none';
+        restartBtn.style.display = 'inline-flex';
+
+        if (isAudioEnabled) {
+            startCorridaMusic();
+        }
+    }
+
+    // NOVA FUNÇÃO: Verificar se pode iniciar e iniciar
+    window.tentarIniciarJogo = function() {
+        if (!aguardandoInicio) {
+            // Se não passou pelo áudio, mostra o modal primeiro
+            window.iniciarJogo();
+            return;
+        }
+        
+        // Se já passou pelo áudio, inicia com orientação
+        forceLandscapeAndFullscreen();
+        realmenteIniciarJogo();
+    };
+
+    // ==================== CLASSE DO JOGO ====================
     class MarujoRunnerGame {
         constructor(container) {
             this.container = container;
             this.canvas = document.createElement('canvas');
             this.ctx = this.canvas.getContext('2d');
+            
+            // Limpar container e adicionar canvas
+            this.container.innerHTML = '';
             this.container.appendChild(this.canvas);
 
             this.resize();
             window.addEventListener('resize', () => this.resize());
 
             this.reset();
+            startTime = Date.now();
         }
 
         resize() {
@@ -7245,7 +7684,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
                 groundY: this.canvas.height * 0.75,
 
                 player: {
-                    x: this.canvas.width * 0.15,
+                    x: 100,
                     y: 0,
                     width: 50,
                     height: 70,
@@ -7280,6 +7719,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         }
 
         start() {
+            console.log('🎮 Jogo iniciado!');
             this.reset();
             this.state.isRunning = true;
             this.state.lastTime = performance.now();
@@ -7287,10 +7727,6 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
 
             if (window.innerWidth <= 768) {
                 document.getElementById('runnerTouchControls').classList.add('active');
-            }
-
-            if (isAudioEnabled) {
-                playSound(1200, 'sine', 0.2);
             }
         }
 
@@ -7395,13 +7831,13 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
 
             // Spawn
             this.state.timers.obstacle -= dt;
-            if (this.state.timers.obstacle <= 0 && this.state.obstacles.length < 3) {
+            if (this.state.timers.obstacle <= 0 && this.state.obstacles.length < 2) {
                 this.spawnObstacle();
                 this.state.timers.obstacle = this.randomSpawnTime('obstacle');
             }
 
             this.state.timers.coin -= dt;
-            if (this.state.timers.coin <= 0 && this.state.coins.length < 3) {
+            if (this.state.timers.coin <= 0 && this.state.coins.length < 2) {
                 this.spawnCoin();
                 this.state.timers.coin = this.randomSpawnTime('coin');
             }
@@ -7417,11 +7853,6 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
             if (Math.floor(this.state.score) % 100 === 0 && this.state.score > 0) {
                 this.state.speed = Math.min(this.state.speed + GAME_CONFIG.SPEED_INCREMENT * (this.state.score / 1000), GAME_CONFIG.SPEED_MAX);
             }
-
-            // Atualizar UI (score sem decimais)
-            document.getElementById('gameScore').textContent = Math.floor(this.state.score);
-            document.getElementById('gameLives').textContent = this.state.lives;
-            document.getElementById('gameSpeed').textContent = this.state.speed.toFixed(1);
         }
 
         render() {
@@ -7476,14 +7907,26 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
             this.state.obstacles.forEach(obs => {
                 ctx.save();
                 ctx.translate(obs.x + obs.width/2, obs.y + obs.height/2);
+                
+                if (obs.type === 'tornado' || obs.type === 'lightning' || obs.type === 'fire') {
+                    ctx.rotate(Date.now() / 800);
+                }
+                
                 ctx.font = `${obs.size}px Arial`;
                 ctx.fillStyle = obs.color;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
+                
                 ctx.shadowColor = obs.color;
                 ctx.shadowBlur = 15;
                 ctx.fillText(obs.emoji, 0, 0);
                 ctx.shadowBlur = 0;
+                
+                // MOSTRAR AVISO DE PERIGO SE ESTIVER PRÓXIMO
+                if (obs.x < this.canvas.width * 0.8 && obs.x > this.canvas.width * 0.6) {
+                    this.renderObstacleWarning(obs);
+                }
+                
                 ctx.restore();
             });
 
@@ -7584,12 +8027,12 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
 
         spawnObstacle() {
             const obstacles = [
-                { emoji: '🌪️', color: '#00bfff', size: 45 },
-                { emoji: '🌋', color: '#ff6b6b', size: 50 },
-                { emoji: '👾', color: '#ff00ff', size: 40 },
-                { emoji: '💀', color: '#ffffff', size: 35 },
-                { emoji: '⚡', color: '#ffff00', size: 30 },
-                { emoji: '🔥', color: '#ff4500', size: 40 }
+                { emoji: '🌪️', type: 'tornado', color: '#00bfff', size: 45 },
+                { emoji: '🌋', type: 'volcano', color: '#ff6b6b', size: 50 },
+                { emoji: '👾', type: 'alien', color: '#ff00ff', size: 40 },
+                { emoji: '💀', type: 'skull', color: '#ffffff', size: 35 },
+                { emoji: '⚡', type: 'lightning', color: '#ffff00', size: 30 },
+                { emoji: '🔥', type: 'fire', color: '#ff4500', size: 40 }
             ];
             const obs = obstacles[Math.floor(Math.random() * obstacles.length)];
             this.state.obstacles.push({
@@ -7644,6 +8087,70 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
             }
         }
 
+        renderObstacleWarning(obs) {
+            const ctx = this.ctx;
+            const width = this.canvas.width;
+            
+            ctx.save();
+            
+            // Posição do aviso (canto esquerdo)
+            const warningX = 20;
+            const warningY = 150;
+            
+            // Efeito de pulsação
+            const pulse = Math.sin(Date.now() / 200) * 0.3 + 0.7;
+            ctx.globalAlpha = pulse;
+            
+            // Fundo do aviso
+            ctx.fillStyle = 'rgba(255, 71, 87, 0.2)';
+            ctx.beginPath();
+            this.roundRect(ctx, warningX, warningY - 20, 200, 40, 20);
+            ctx.fill();
+            
+            // Triângulo de alerta
+            ctx.fillStyle = '#ff4757';
+            ctx.beginPath();
+            ctx.moveTo(warningX + 10, warningY);
+            ctx.lineTo(warningX + 30, warningY - 10);
+            ctx.lineTo(warningX + 30, warningY + 10);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Texto de perigo
+            ctx.font = 'bold 16px Orbitron';
+            ctx.fillStyle = '#ff4757';
+            ctx.textAlign = 'left';
+            ctx.fillText('PERIGO!', warningX + 45, warningY + 5);
+            
+            // Ícone do obstáculo
+            ctx.font = `${obs.size}px Arial`;
+            ctx.fillStyle = obs.color;
+            ctx.fillText(obs.emoji, warningX + 140, warningY + 5);
+            
+            ctx.restore();
+        }
+
+        roundRect(ctx, x, y, w, h, r) {
+            if (w < 2 * r) r = w / 2;
+            if (h < 2 * r) r = h / 2;
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+        }
+
+        cleanup() {
+            this.state.isRunning = false;
+            if (window.innerWidth <= 768) {
+                document.getElementById('runnerTouchControls').classList.remove('active');
+            }
+        }
+
         async gameOver() {
             this.state.isRunning = false;
             this.state.isGameOver = true;
@@ -7666,101 +8173,58 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
                 }
             }
 
-            // Salvar pontuação no ranking
+            // ===== PEGAR DADOS DO USUÁRIO =====
+            let nomeUsuario = 'Visitante';
+            let idUsuario = 'visitante_' + Date.now();
+            
             if (typeof currentUser !== 'undefined' && currentUser) {
-                await fetch('https://cors.eu.org/br2.bronxyshost.com:4009/salvarPontuacao', {
+                nomeUsuario = currentUser.displayName || 'Marujo';
+                idUsuario = currentUser.uid || 'site';
+            } else if (window.currentUser) {
+                nomeUsuario = window.currentUser.displayName || 'Marujo';
+                idUsuario = window.currentUser.uid || 'site';
+            }
+
+            const grupo = 'marujo_runner_' + window.location.hostname;
+
+            // Salvar pontuação no ranking
+            try {
+                const response = await fetch('https://fabibot.vercel.app/salvarPontuacaoMarujo', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        nome: currentUser.displayName || 'Marujo',
-                        id: currentUser.uid,
-                        grupo: 'marujoflix',
+                    mode: 'cors',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        nome: nomeUsuario,
+                        id: idUsuario,
+                        grupo: grupo,
                         score: Math.floor(this.state.score),
                         golds: this.state.golds
                     })
-                }).then(() => loadRanking()).catch(() => {});
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.sucesso) {
+                        console.log('✅ Pontuação salva!');
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Erro ao salvar:', error);
             }
 
-            startBtn.style.display = 'none';
-            restartBtn.style.display = 'inline-flex';
-        }
-
-        cleanup() {
-            this.state.isRunning = false;
-            if (window.innerWidth <= 768) {
-                document.getElementById('runnerTouchControls').classList.remove('active');
+            // Carregar ranking atualizado
+            try {
+                await loadRanking();
+            } catch (error) {
+                console.error('❌ Erro ao carregar ranking:', error);
             }
+
+            // MOSTRAR PAINEL DE GAME OVER
+            showGameOverPanel(this.state.score, this.state.golds);
         }
-    }
-
-    // ==================== ÁUDIO ====================
-    function initRunnerAudio() {
-        if (isAudioEnabled) return;
-        try {
-            const AudioCtx = window.AudioContext || window.webkitAudioContext;
-            audioContext = new AudioCtx();
-            isAudioEnabled = true;
-
-            audioGain = audioContext.createGain();
-            audioGain.gain.value = AUDIO_CONFIG.VOLUME_EFFECTS;
-            audioGain.connect(audioContext.destination);
-
-            corridaMusic = new Audio(AUDIO_CONFIG.CORRIDA);
-            corridaMusic.loop = true;
-            corridaMusic.volume = AUDIO_CONFIG.VOLUME_MUSICA;
-
-            derrotaSound = new Audio(AUDIO_CONFIG.DERROTA);
-            derrotaSound.volume = AUDIO_CONFIG.VOLUME_EFFECTS;
-
-            document.getElementById('runnerAudioModal').classList.remove('active');
-            playSound(800, 'sine', 0.1);
-        } catch (e) {
-            console.log('Áudio não suportado');
-            isAudioEnabled = false;
-        }
-    }
-
-    function skipRunnerAudio() {
-        document.getElementById('runnerAudioModal').classList.remove('active');
-    }
-
-    function playSound(freq, type, dur) {
-        if (!isAudioEnabled || !audioContext) return;
-        try {
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            osc.connect(gain);
-            gain.connect(audioGain);
-            osc.frequency.value = freq;
-            osc.type = type;
-            const now = audioContext.currentTime;
-            gain.gain.setValueAtTime(0.3, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + dur);
-            osc.start(now);
-            osc.stop(now + dur);
-        } catch (e) {}
-    }
-
-    function startCorridaMusic() {
-        if (!isAudioEnabled || !corridaMusic) return;
-        corridaMusic.currentTime = 0;
-        corridaMusic.play().catch(() => {});
-    }
-
-    function stopCorridaMusic() {
-        if (corridaMusic) {
-            corridaMusic.pause();
-            corridaMusic.currentTime = 0;
-        }
-    }
-
-    function playDerrotaSound() {
-        if (!isAudioEnabled || !derrotaSound) return;
-        stopCorridaMusic();
-        setTimeout(() => {
-            derrotaSound.currentTime = 0;
-            derrotaSound.play().catch(() => {});
-        }, 500);
     }
 
     // ==================== TELA CHEIA ====================
@@ -7782,6 +8246,10 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         fullscreenBtn.classList.add('secondary');
         isFullscreen = true;
         if (game) game.resize();
+        
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(() => {});
+        }
     }
 
     function exitFullscreen() {
@@ -7799,58 +8267,80 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
     // ==================== RANKING ====================
     async function loadRanking() {
         try {
-            const res = await fetch('https://cors.eu.org/br2.bronxyshost.com:4009/rankpontuacao.json');
+            const res = await fetch('https://cors.eu.org/br2.bronxyshost.com:4009/rankmarujo.json');
+            
+            if (!res.ok) {
+                rankingList.innerHTML = '<div style="color: gray; text-align: center;">Nenhuma pontuação ainda</div>';
+                return;
+            }
+            
             const data = await res.json();
-            const sorted = data.sort((a,b) => b.score - a.score).slice(0, 10);
-            rankingList.innerHTML = sorted.map((u, i) => `
-                <div class="ranking-item">
-                    <span class="ranking-pos">${i+1}º</span>
-                    <span class="ranking-name">${u.nome || 'Anônimo'}</span>
-                    <span class="ranking-score">${u.score} pts</span>
-                </div>
-            `).join('');
-        } catch (e) {
-            rankingList.innerHTML = '<div style="color: gray; text-align: center;">Ranking offline</div>';
-        }
-    }
-
-    // ==================== CONTROLES ====================
-    function startGame() {
-        if (isGameRunning) return;
-
-        // Primeiro entra em tela cheia
-        if (!isFullscreen) {
-            enterFullscreen();
-        }
-
-        // Aguarda um pouco para a tela cheia aplicar
-        setTimeout(() => {
-            isGameRunning = true;
-
-            if (game) {
-                game.cleanup();
+            const rankings = Array.isArray(data) ? data : [];
+            
+            if (rankings.length === 0) {
+                rankingList.innerHTML = '<div style="color: gray; text-align: center;">Nenhuma pontuação ainda</div>';
+                return;
             }
-            game = new MarujoRunnerGame(container);
-            game.start();
-
-            startBtn.style.display = 'none';
-            restartBtn.style.display = 'inline-flex';
-
-            if (isAudioEnabled) {
-                startCorridaMusic();
-            }
-        }, 300);
+            
+            const sorted = rankings.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 10);
+            
+            rankingList.innerHTML = sorted.map((u, i) => {
+                let medal = '';
+                if (i === 0) medal = '🥇';
+                else if (i === 1) medal = '🥈';
+                else if (i === 2) medal = '🥉';
+                
+                return `
+                    <div class="ranking-item">
+                        <span class="ranking-pos">${medal || (i+1) + 'º'}</span>
+                        <span class="ranking-name">${u.nome || 'Anônimo'}</span>
+                        <span class="ranking-score">${u.score || 0} pts</span>
+                    </div>
+                `;
+            }).join('');
+            
+        } catch (error) {
+            console.error('Erro ao carregar ranking:', error);
+            rankingList.innerHTML = '<div style="color: gray; text-align: center;">Ranking indisponível</div>';
+        }
     }
 
     function restartGame() {
+        console.log('🔄 Reiniciando jogo...');
         stopCorridaMusic();
         if (game) game.cleanup();
-        game = new MarujoRunnerGame(container);
-        startGame();
+        isGameRunning = false;
+        
+        // Forçar orientação novamente
+        forceLandscapeAndFullscreen();
+        realmenteIniciarJogo();
     }
 
-    // Eventos
-    startBtn.addEventListener('click', startGame);
+    // ==================== EXPOR FUNÇÕES GLOBALMENTE ====================
+    window.startRunnerGame = window.tentarIniciarJogo;
+    window.restartRunnerGame = restartGame;
+    window.initRunnerAudio = window.initRunnerAudio;
+    window.skipRunnerAudio = window.skipRunnerAudio;
+    window.iniciarJogo = window.iniciarJogo;
+    window.tentarIniciarJogo = window.tentarIniciarJogo;
+
+    window.abrirRunner = function() {
+        window.iniciarJogo();
+    };
+
+    // ==================== EVENT LISTENERS ====================
+    startBtn.addEventListener('click', () => {
+        window.tentarIniciarJogo();
+    });
+    
+    // Também configurar o botão do container
+    const containerBtn = document.querySelector('#runnerGameContainer .runner-btn.primary');
+    if (containerBtn) {
+        containerBtn.onclick = function() {
+            window.tentarIniciarJogo();
+        };
+    }
+    
     restartBtn.addEventListener('click', restartGame);
     fullscreenBtn.addEventListener('click', toggleFullscreen);
     fullscreenExit.addEventListener('click', exitFullscreen);
@@ -7874,6 +8364,7 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         e.preventDefault();
         if (game) game.jump();
     });
+    
     touchDuck.addEventListener('click', (e) => {
         e.preventDefault();
         if (game) game.duck();
@@ -7892,22 +8383,10 @@ if (document.getElementById('socialHubPanel').classList.contains('active')) {
         }
     });
 
-    // ==================== EXPOR FUNÇÕES ====================
-    window.abrirRunner = function() {
-        // Mostrar modal de áudio se necessário
-        if (!isAudioEnabled) {
-            document.getElementById('runnerAudioModal').classList.add('active');
-        }
-        // Rolar até o jogo
-        document.getElementById('runnerGameContainer').scrollIntoView({ behavior: 'smooth' });
-        loadRanking();
-    };
-
-    window.initRunnerAudio = initRunnerAudio;
-    window.skipRunnerAudio = skipRunnerAudio;
-
-    // Inicializar ranking
+    // Inicializar
     loadRanking();
+    
+    console.log('✅ Marujo Runner carregado!');
 })();
 </script>
 <!-- ===== FIM MARUJO RUNNER ===== -->
