@@ -101,7 +101,6 @@
     }
     </script>
     
-    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
     <!-- SCHEMA PARA O SITE (ORGANIZAÇÃO) -->
     <script type="application/ld+json">
     {
@@ -3687,22 +3686,22 @@ body::before {
      <div class="episodes-modal" id="episodesModal">
         <div class="episodes-header">
             <h3 id="episodesTitle">Escolha uma Opção</h3>
-<!-- Botões no modal de episódios (trecho modificado) -->
 <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
     <!-- WhatsApp -->
-    <button class="episodes-share-btn" title="Compartilhar no WhatsApp" onclick="shareWhatsApp()">
+    <button class="episodes-share-btn" title="Compartilhar no WhatsApp" onclick="compartilharFilmeAtivo()">
         <i class="fab fa-whatsapp"></i>
     </button>
     <!-- Facebook -->
-    <button class="episodes-share-btn" title="Compartilhar no Facebook" onclick="shareFacebook()">
+    <button class="episodes-share-btn" title="Compartilhar no Facebook" onclick="compartilharFilmeAtivo()">
         <i class="fab fa-facebook-f"></i>
     </button>
+
     <!-- Telegram -->
-    <button class="episodes-share-btn" title="Compartilhar no Telegram" onclick="shareTelegram()">
+    <button class="episodes-share-btn" title="Compartilhar no Telegram" onclick="compartilharFilmeAtivo()">
         <i class="fab fa-telegram-plane"></i>
     </button>
     <!-- Copiar Link -->
-    <button class="episodes-share-btn" title="Copiar link" onclick="shareCopyLink()">
+    <button class="episodes-share-btn" title="Copiar link" onclick="compartilharFilmeAtivo()">
         <i class="fas fa-link"></i>
     </button>
     <!-- Fechar -->
@@ -3733,18 +3732,11 @@ body::before {
 
 
 <script>
-    let ticking = false;
-window.addEventListener('scroll', () => {
-    if (!ticking) {
-        window.requestAnimationFrame(() => {
-            const header = document.getElementById('mainHeader');
-            if (window.scrollY > 50) header.classList.add('scrolled');
-            else header.classList.remove('scrolled');
-            ticking = false;
-        });
-        ticking = true;
-    }
-});
+    window.addEventListener('scroll', () => {
+        const header = document.getElementById('mainHeader');
+        if (window.scrollY > 50) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+    });
 
         const curiosidades = [
         "A preparar as pipocas e a içar as velas...",
@@ -5658,56 +5650,130 @@ atualizarViewsNosItens: function() {
     console.log('✅ Views atualizadas nos itens');
 },
         
-carregarDados: async function() {
+        carregarDados: async function() {
     try {
-        const cacheKey = 'marujo_cache_lista';
-        const cacheExpira = 'marujo_cache_expira';
-        const agora = Date.now();
-        const expiracao = localStorage.getItem(cacheExpira);
-
-        // Verifica se há cache válido
-        if (expiracao && agora < parseInt(expiracao)) {
-            const compressed = localStorage.getItem(cacheKey);
-            if (compressed) {
-                try {
-                    // Descomprime os dados
-                    const dadosCache = JSON.parse(LZString.decompress(compressed));
-                    console.log('📦 Usando cache local (comprimido)');
-                    this.processarDados(dadosCache);
-                    return;
-                } catch (e) {
-                    console.warn('Falha ao descomprimir cache, ignorando...', e);
-                    // Se falhar, continua para buscar da API
-                }
-            }
-        }
-
-        // Faz o fetch da API
         const response = await fetch(this.config.apiUrl);
         console.log('Resposta da API:', response.status);
-
-        if (response.ok) {
+        
+        if(response.ok) {
             const data = await response.json();
             console.log('Dados carregados:', data.length, 'itens');
-
-            // Tenta salvar no cache (com compressão)
-            try {
-                const compressed = LZString.compress(JSON.stringify(data));
-                localStorage.setItem(cacheKey, compressed);
-                localStorage.setItem(cacheExpira, agora + 3600000); // 60 minutos
-                console.log('✅ Cache salvo com compressão');
-            } catch (storageError) {
-                console.warn('Não foi possível salvar no cache (quota excedida?)', storageError);
-                // Ignora e continua - o site funciona sem cache
-            }
-
             this.processarDados(data);
         } else {
-            this.mostrarErro(`Erro HTTP ${response.status}`, response.status);
+            console.error('Erro HTTP:', response.status);
+            
+            // Cria um elemento de erro visível na tela
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(255, 0, 0, 0.9);
+                color: white;
+                padding: 30px;
+                border-radius: 20px;
+                z-index: 99999;
+                text-align: center;
+                font-family: monospace;
+                font-size: 16px;
+                border: 3px solid white;
+                box-shadow: 0 0 50px rgba(255,0,0,0.5);
+                max-width: 90%;
+            `;
+            errorDiv.innerHTML = `
+                <h2 style="color: white; margin-bottom: 20px;">🚨 ERRO CRÍTICO 🚨</h2>
+                <p><strong>Status HTTP:</strong> ${response.status}</p>
+                <p><strong>URL tentada:</strong> ${this.config.apiUrl}</p>
+                <p><strong>Mensagem:</strong> O servidor respondeu com erro ${response.status}</p>
+                <p style="margin-top: 20px; font-size: 14px;">Verifique se o arquivo lista.json existe no servidor</p>
+                <button onclick="this.parentElement.remove()" style="
+                    background: white;
+                    color: red;
+                    border: none;
+                    padding: 10px 30px;
+                    border-radius: 30px;
+                    font-weight: bold;
+                    margin-top: 20px;
+                    cursor: pointer;
+                ">Fechar</button>
+            `;
+            document.body.appendChild(errorDiv);
+            
+            throw new Error('Resposta não OK');
         }
     } catch (error) {
         console.error('Erro no fetch:', error);
-        this.mostrarErro(error.message);
+        
+        // Mostra o erro também na tela
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 0, 0, 0.95);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            z-index: 99999;
+            text-align: left;
+            font-family: monospace;
+            font-size: 14px;
+            border: 3px solid white;
+            box-shadow: 0 0 50px rgba(255,0,0,0.5);
+            max-width: 90%;
+            max-height: 80vh;
+            overflow: auto;
+        `;
+        errorDiv.innerHTML = `
+            <h2 style="color: white; margin-bottom: 20px; text-align: center;">🔥 ERRO NO CARREGAMENTO 🔥</h2>
+            
+            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <p><strong>📍 URL:</strong> ${this.config.apiUrl}</p>
+                <p><strong>⚠️ Erro:</strong> ${error.message}</p>
+                <p><strong>🕐 Horário:</strong> ${new Date().toLocaleString()}</p>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <p><strong>🔍 Possíveis causas:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li>Arquivo lista.json não encontrado na pasta public/</li>
+                    <li>Servidor está offline ou bloqueando o acesso</li>
+                    <li>Erro de CORS (Cross-Origin Resource Sharing)</li>
+                    <li>A URL configurada está incorreta</li>
+                </ul>
+            </div>
+            
+            <div style="background: #00ffb3; color: black; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <p><strong>✅ SOLUÇÃO RÁPIDA:</strong></p>
+                <p>1. Execute no terminal do servidor:</p>
+                <code style="display: block; background: black; color: #00ffb3; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                curl -s https://fabibot.vercel.app/lista.m3u | awk '...' > ./public/lista.json
+                </code>
+                <p>2. Verifique se o arquivo foi criado:</p>
+                <code style="display: block; background: black; color: #00ffb3; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                ls -la public/lista.json
+                </code>
+                <p>3. Reinicie o servidor</p>
+            </div>
+            
+            <button onclick="this.parentElement.remove()" style="
+                background: white;
+                color: red;
+                border: none;
+                padding: 15px 40px;
+                border-radius: 30px;
+                font-weight: bold;
+                font-size: 16px;
+                cursor: pointer;
+                width: 100%;
+                margin-top: 10px;
+            ">TENTAR NOVAMENTE (F5)</button>
+        `;
+        document.body.appendChild(errorDiv);
+        
+        // Também mostra o Toast original
         ToastSystem.show("Modo offline ativado. Verifique o erro na tela!", "error");
     }
 },
@@ -6889,51 +6955,6 @@ document.addEventListener('click', () => {
 // Força a renderização da interface mesmo sem usuário logado
 if (typeof atualizarTodaAInterface === 'function') {
     atualizarTodaAInterface(null);
-}
-
-// ==========================================
-// COMPARTILHAMENTO DIRETO POR APP
-// ==========================================
-
-// Função auxiliar para obter dados atuais do filme
-function getCurrentShareData() {
-    const title = document.getElementById('episodesTitle').textContent;
-    const url = window.location.href; // ou uma URL personalizada
-    const text = `Assista ${title} no Marujo Flix! 🎬`;
-    return { title, url, text };
-}
-
-// WhatsApp (abre diretamente no app ou web)
-function shareWhatsApp() {
-    const { text, url } = getCurrentShareData();
-    const message = encodeURIComponent(`${text}\n${url}`);
-    window.open(`https://wa.me/?text=${message}`, '_blank');
-}
-
-// Facebook (compartilhamento via Feed Dialog)
-function shareFacebook() {
-    const { url } = getCurrentShareData();
-    const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-    window.open(fbUrl, '_blank', 'width=600,height=400');
-}
-
-// Telegram (compartilhamento direto)
-function shareTelegram() {
-    const { text, url } = getCurrentShareData();
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
-    window.open(telegramUrl, '_blank');
-}
-
-// Copiar link (fallback)
-function shareCopyLink() {
-    const { url } = getCurrentShareData();
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(url).then(() => {
-            ToastSystem.show('Link copiado! 📋', 'success');
-        });
-    } else {
-        fallbackCopia(url, () => ToastSystem.show('Link copiado! 📋', 'success'));
-    }
 }
 </script>
 
