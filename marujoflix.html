@@ -120,68 +120,24 @@
     <!-- VERIFICAÇÃO DO BING (OPCIONAL, MAS RECOMENDADO) -->
 <meta name="msvalidate.01" content="6A4FEB6B17FB89AAD403E19AC61A4333" />
     
-<!-- ONESIGNAL - CONFIGURAÇÃO COMPLETA COM BOTÃO -->
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
 <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    
-    OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-            appId: "bc45abcb-b1cc-4959-8554-b82dc51b773d",
-            // 👇 ATIVA O BOTÃO DE NOTIFICAÇÃO
-            notifyButton: {
-                enable: true,           // Habilita o botão
-                position: 'bottom-right', // Posição: bottom-left, bottom-right, top-left, top-right
-                theme: 'inverse',       // inverse (claro) ou default (escuro)
-                size: 'medium',         // small, medium, large
-                showCredit: false,      // Não mostra crédito do OneSignal
-                text: {
-                    'tip.state.unsubscribed': '🔔 Ativar notificações',
-                    'tip.state.subscribed': '✅ Notificações ativas',
-                    'tip.state.blocked': '🔕 Desbloquear notificações',
-                    'message.prenotify': 'Clique para receber notificações'
-                },
-                colors: {
-                    'button.background': '#0ef',
-                    'button.background.hover': '#b829e9',
-                    'button.text': '#000000',
-                    'badge.background': '#ff3b6f'
-                }
-            },
-            // 👇 CONFIGURA O POPUP DE PERMISSÃO
-            promptOptions: {
-                actionMessage: "⚓ Quer receber notificações sobre novos filmes, jogos ao vivo e novidades do Marujo Flix?",
-                acceptButtonText: "SIM, QUERO! 🚀",
-                cancelButtonText: "TALVEZ DEPOIS",
-                autoPrompt: true,        // Mostra automaticamente após alguns segundos
-                autoAcceptTitle: "🔔",
-                siteName: "Marujo Flix"
-            },
-            // 👇 SEGMENTAÇÃO DO USUÁRIO
-            userSubscription: {
-                deviceType: 5  // 5 = Web Push
-            }
-        });
-        
-        // 🔥 REGISTRA O TOKEN (se LibSignal existir)
-        if (typeof LibSignal !== "undefined") {
-            LibSignal.register();
-        }
-        
-        // 🔥 REGISTRA O USUÁRIO LOGADO (se existir)
-        if (typeof currentUser !== 'undefined' && currentUser) {
-            try {
-                await OneSignal.User.addTag("user_id", currentUser.uid);
-                await OneSignal.User.addTag("user_name", currentUser.displayName?.split(' ')[0] || 'Marujo');
-                await OneSignal.User.addTag("user_level", (typeof userProgress !== 'undefined' ? userProgress.level : 1).toString());
-                console.log("✅ Usuário registrado no OneSignal");
-            } catch(e) {
-                console.log("Erro ao registrar tags:", e);
-            }
-        }
-        
-        console.log("✅ OneSignal inicializado com botão de notificação!");
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
+      notifyButton: {
+        enable: false
+      }
     });
+
+    // 🔥 REGISTRA O TOKEN CORRETAMENTE
+    if (typeof LibSignal !== "undefined") {
+      LibSignal.register();
+    }
+  });
 </script>
     
     <!-- GOOGLE ADSENSE (JÁ EXISTENTE) -->
@@ -6019,25 +5975,14 @@ processarDados: function(data) {
     }
 
     // 🎯 NOVA FUNÇÃO: Limpeza ESPECÍFICA para CANAIS/LIVES
-    // Remove apenas os sufixos de qualidade (HD, FHD, 4K) mas MANTÉM o nome base e horários
     function limparTituloParaCanal(titulo) {
         if (!titulo) return '';
         
         let t = titulo;
-        
-        // 1. Remove APENAS os marcadores de qualidade no final ou separados por espaço
-        // Isso vai transformar "JOGOS DO DIA - 20:30 HD" em "JOGOS DO DIA - 20:30"
-        // E "JOGOS DO DIA - 20:30 FHD" também em "JOGOS DO DIA - 20:30"
-        t = t.replace(/\s*(HD|FHD|4K|UHD|Full HD|1080p|720p)\s*$/gi, ''); // Remove no final
-        t = t.replace(/\s+(HD|FHD|4K|UHD|Full HD|1080p|720p)\s+/gi, ' '); // Remove no meio
-        
-        // 2. Remove qualidade com hífen: "- HD" vira ""
+        t = t.replace(/\s*(HD|FHD|4K|UHD|Full HD|1080p|720p)\s*$/gi, '');
+        t = t.replace(/\s+(HD|FHD|4K|UHD|Full HD|1080p|720p)\s+/gi, ' ');
         t = t.replace(/\s*[-–—]\s*(HD|FHD|4K|UHD|Full HD|1080p|720p)\s*/gi, ' ');
-        
-        // 3. Limpa espaços duplicados
         t = t.replace(/\s+/g, ' ').trim();
-        
-        // Se ficou vazio, retorna o original
         return t || titulo;
     }
 
@@ -6072,7 +6017,7 @@ processarDados: function(data) {
         const isDublado = /\([Dd]\)|\[[Dd]\]|\bdublado\b/i.test(nomeOriginal);
         const is4K = /\b4K\b|\bFHD\b/i.test(nomeOriginal) || catStr.toUpperCase().includes('4K');
         const isLancamento = catLower.includes('cinema') || catLower.includes('lancamento') || catLower.includes('lançamento');
-        const isAdulto = catLower.includes('xxx') || catLower.includes('adulto');
+        const isAdulto = catLower.includes('xxx') || catLower.includes('adulto') || catLower.includes('+18')
         const ehLive = ehM3U8 && (nomeLower.includes('ao vivo') || nomeLower.includes('live') || nomeLower.includes('agora') ||
                                    catLower.includes('esporte') || catLower.includes('futebol') || catLower.includes('notícia') || catLower.includes('jornal'));
 
@@ -6080,25 +6025,18 @@ processarDados: function(data) {
         // 🎯 CHAVE DE AGRUPAMENTO - VERSÃO INTELIGENTE
         // ============================================
         let chaveUnica;
-        let tituloParaExibicao = nomeOriginal; // Título que vai aparecer no card
+        let tituloParaExibicao = nomeOriginal;
 
         if (tipo === 'Canal') {
-            // 👉 PARA CANAIS: Usa a função de limpeza específica
-            // Isso faz "JOGOS DO DIA - 20:30 HD" e "JOGOS DO DIA - 20:30 FHD" virarem a MESMA CHAVE
             const nomeBase = limparTituloParaCanal(nomeOriginal);
             chaveUnica = `${nomeBase}|${tipo}`;
-            
-            // Para exibição, podemos usar o nomeBase ou o original? 
-            // Vamos usar o original para manter HD/FHD visível, mas agrupar por baixo
-            tituloParaExibicao = nomeOriginal; // Mostra "JOGOS DO DIA - 20:30 HD" no card
+            tituloParaExibicao = nomeOriginal;
         } else {
-            // 👉 PARA VODs: Usa a versão super limpa
             const nomeBase = limparTituloParaVOD(nomeOriginal);
             chaveUnica = `${nomeBase}|${tipo}`;
-            tituloParaExibicao = nomeOriginal; // Mostra o título original
+            tituloParaExibicao = nomeOriginal;
         }
 
-        // --- CRIA O FILHO ---
         const filhoObj = {
             id: item.id || `idx_${index}`,
             nomeOriginal: nomeOriginal,
@@ -6107,21 +6045,13 @@ processarDados: function(data) {
             isDublado: isDublado,
             isLive: ehLive,
             isM3U8: ehM3U8,
-            // Guarda a qualidade para possível uso futuro
             qualidade: nomeOriginal.match(/\b(HD|FHD|4K|UHD|1080p|720p)\b/i)?.[0] || ''
         };
 
-        // --- AGRUPA USANDO A CHAVE INTELIGENTE ---
         if (mapaAgrupado.has(chaveUnica)) {
             const grupoExistente = mapaAgrupado.get(chaveUnica);
             grupoExistente.children.push(filhoObj);
-            
-            // Atualiza o poster se não tiver
-            if (!grupoExistente.poster && item.logo) {
-                grupoExistente.poster = item.logo;
-            }
-            
-            // Atualiza flags do grupo
+            if (!grupoExistente.poster && item.logo) grupoExistente.poster = item.logo;
             if (isLeg) grupoExistente.isLeg = true;
             if (isDublado) grupoExistente.isDublado = true;
             if (is4K) grupoExistente.is4K = true;
@@ -6129,16 +6059,11 @@ processarDados: function(data) {
             if (isAdulto) grupoExistente.isAdulto = true;
             if (ehLive) grupoExistente.isLive = true;
             if (ehM3U8) grupoExistente.isM3U8 = true;
-            
-            // Guarda a maior qualidade disponível no grupo (opcional)
-            if (filhoObj.qualidade === 'FHD' || filhoObj.qualidade === '4K') {
-                grupoExistente.melhorQualidade = filhoObj.qualidade;
-            }
-
+            if (filhoObj.qualidade === 'FHD' || filhoObj.qualidade === '4K') grupoExistente.melhorQualidade = filhoObj.qualidade;
         } else {
             mapaAgrupado.set(chaveUnica, {
                 id_main: filhoObj.id,
-                titulo: tituloParaExibicao, // Usa o título original para exibição
+                titulo: tituloParaExibicao,
                 categoriaLimpa: this.simplificarCategoria(catStr),
                 tipo: tipo,
                 poster: item.logo || '',
@@ -6158,21 +6083,13 @@ processarDados: function(data) {
     const itensAgrupados = Array.from(mapaAgrupado.values());
     console.log('🔗 Grupos formados:', itensAgrupados.length);
 
-    // Conta quantos grupos de Jogos do Dia foram criados (para debug)
-    const jogosDoDia = itensAgrupados.filter(i => i.titulo.toUpperCase().includes('JOGOS DO DIA'));
-    console.log('⚽ Grupos de Jogos do Dia:', jogosDoDia.length);
-    jogosDoDia.forEach(j => {
-        console.log(`   → ${j.titulo} (${j.children.length} opções: ${j.children.map(c => c.qualidade).filter(Boolean).join(', ') || 'sem qualidade'})`);
-    });
-
     // --- SEPARA POR CATEGORIA ---
     let lancamentosTop = [], premiumMix = [], regularVod = [],
         canais = [], adultos = [], lives = [], resto = [];
 
     itensAgrupados.forEach(item => {
-        if (item.isLive) {
-            lives.push(item);
-        } else if (item.isAdulto) adultos.push(item);
+        if (item.isLive) lives.push(item);
+        else if (item.isAdulto) adultos.push(item);
         else if (item.tipo === 'Canal') canais.push(item);
         else if (!item.poster || item.poster.trim() === '') resto.push(item);
         else if (item.isLancamento) lancamentosTop.push(item);
@@ -6188,14 +6105,51 @@ processarDados: function(data) {
         return arr;
     };
 
+    // --- NOVO: Função de ordenação alfabética ---
+    const ordenarAlfabeticamente = (arr) => {
+        return arr.sort((a, b) => {
+            // Remove acentos para uma comparação mais justa
+            const tituloA = a.titulo.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            const tituloB = b.titulo.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            if (tituloA < tituloB) return -1;
+            if (tituloA > tituloB) return 1;
+            return 0;
+        });
+    };
+
+    // --- NOVO: Função para ordenar e colocar adultos por último ---
+    const ordenarLista = (lista) => {
+        // Separa adultos e não adultos
+        const naoAdultos = lista.filter(item => !item.isAdulto);
+        const apenasAdultos = lista.filter(item => item.isAdulto);
+        
+        // Ordena ambos alfabeticamente
+        const naoAdultosOrdenados = ordenarAlfabeticamente(naoAdultos);
+        const adultosOrdenados = ordenarAlfabeticamente(apenasAdultos);
+        
+        // Junta: não adultos primeiro, adultos por último
+        return [...naoAdultosOrdenados, ...adultosOrdenados];
+    };
+
+    // --- APLICA A ORDENAÇÃO EM CADA CATEGORIA ---
+    lancamentosTop = ordenarLista(lancamentosTop);
+    premiumMix = ordenarLista(premiumMix);
+    regularVod = ordenarLista(regularVod);
+    canais = ordenarLista(canais);
+    adultos = ordenarLista(adultos);
+    lives = ordenarLista(lives);
+    resto = ordenarLista(resto);
+
+    // Concatena na ordem desejada, mas agora com ADULTOS sempre por último dentro de cada seção
+    // e a seção de adultos será a última do catálogo geral.
     this.todosItens = [
-        ...shuffle(lancamentosTop),
-        ...shuffle(premiumMix),
-        ...shuffle(lives),
-        ...shuffle(regularVod),
-        ...shuffle(resto),
-        ...shuffle(canais),
-        ...shuffle(adultos)
+        ...lancamentosTop,
+        ...premiumMix,
+        ...lives,
+        ...regularVod,
+        ...resto,
+        ...canais,
+        ...adultos  // Adultos ficam no final de TUDO
     ];
 
     // --- DESTAQUE ---
