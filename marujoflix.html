@@ -4795,6 +4795,9 @@ msgList.innerHTML += `
 // ==========================================
 // SISTEMA DE NOTIFICAÇÕES ONESIGNAL
 // ==========================================
+// ==========================================
+// SISTEMA DE NOTIFICAÇÕES ONESIGNAL - CORRIGIDO
+// ==========================================
 const NotificacaoSystem = {
     // Envia notificação para o usuário logado
     enviarNotificacaoSubiuNivel: async function(novoNivel, novaPatente, xpGanho) {
@@ -4819,42 +4822,46 @@ const NotificacaoSystem = {
             }
             
             // Título e mensagem personalizados
-            const titulo = `⚓ PARABÉNS, MARUJO! ⚓`;
-            const mensagem = `Você alcançou o Nível ${novoNivel} e agora é ${novaPatente}! +${xpGanho} XP de recompensa! 🌊`;
+            const tituloPt = `⚓ PARABÉNS, MARUJO! ⚓`;
+            const tituloEn = `⚓ CONGRATULATIONS, SAILOR! ⚓`;
+            const mensagemPt = `Você alcançou o Nível ${novoNivel} e agora é ${novaPatente}! +${xpGanho} XP de recompensa! 🌊`;
+            const mensagemEn = `You reached Level ${novoNivel} and are now ${novaPatente}! +${xpGanho} XP reward! 🌊`;
             
-            // Configura a notificação
+            // Configura a notificação - FORMATO CORRETO
             const notification = {
                 app_id: "bc45abcb-b1cc-4959-8554-b82dc51b773d",
-                include_aliases: {
-                    external_id: [userId]
+                include_player_ids: [userId], // 👈 Usar include_player_ids
+                headings: { 
+                    "en": tituloEn,
+                    "pt": tituloPt 
                 },
-                target_channel: "push",
-                headings: { "en": titulo, "pt": titulo },
-                contents: { "en": mensagem, "pt": mensagem },
+                contents: { 
+                    "en": mensagemEn,
+                    "pt": mensagemPt 
+                },
                 data: {
                     level: novoNivel,
                     rank: novaPatente,
                     type: "level_up"
                 },
-                // Ícone e imagem (opcional)
                 small_icon: "https://marujodigital.onrender.com/imagens/1772133683485~2.png",
                 large_icon: "https://marujodigital.onrender.com/imagens/1772133683485~2.png",
                 url: "https://marujodigital.onrender.com/"
             };
             
-            // Envia via API REST (backend-to-frontend)
+            // 👇 FORMATO DE AUTENTICAÇÃO CORRETO: "key" e NÃO "Basic"
             const response = await fetch("https://onesignal.com/api/v1/notifications", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Basic " + btoa("os_v2_app_xrc2xs5rzrevtbkuxaw4kg3xhvg736wnz4euyavktbzydi4lc6ws767qdo6ishd6nntigojsbsyd7kzfpzcroyax5y6cqx6rezu67la") // SUA KEY
+                    "Authorization": "key os_v2_app_xrc2xs5rzrevtbkuxaw4kg3xhwpkct5kdpqeltn3iht6jgwwtbdgggnxortme5nhj2pxruxc5qndcmzvd7ake2gupyuus4im7q7j4dq"
                 },
                 body: JSON.stringify(notification)
             });
             
             const resultado = await response.json();
             
-            if (response.ok) {
+            if (response.ok && resultado.id) {
                 console.log("✅ Notificação enviada com sucesso!", resultado);
             } else {
                 console.error("❌ Erro ao enviar notificação:", resultado);
@@ -4874,6 +4881,45 @@ const NotificacaoSystem = {
             console.log(`🏷️ Tag de nível atualizada: ${novoNivel}`);
         } catch (erro) {
             console.error("Erro ao atualizar tag:", erro);
+        }
+    },
+    
+    // ==========================================
+    // NOVA FUNÇÃO: Enviar notificação para TODOS
+    // ==========================================
+    enviarNotificacaoParaTodos: async function(titulo, mensagem, link = "https://marujodigital.onrender.com/") {
+        try {
+            const notification = {
+                app_id: "bc45abcb-b1cc-4959-8554-b82dc51b773d",
+                headings: { 
+                    "en": titulo,
+                    "pt": titulo 
+                },
+                contents: { 
+                    "en": mensagem,
+                    "pt": mensagem 
+                },
+                included_segments: ["All"], // 👈 ENVIA PARA TODOS OS USUÁRIOS
+                url: link,
+                small_icon: "https://marujodigital.onrender.com/imagens/1772133683485~2.png",
+                large_icon: "https://marujodigital.onrender.com/imagens/1772133683485~2.png"
+            };
+            
+            const response = await fetch("https://onesignal.com/api/v1/notifications", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "key os_v2_app_xrc2xs5rzrevtbkuxaw4kg3xhwpkct5kdpqeltn3iht6jgwwtbdgggnxortme5nhj2pxruxc5qndcmzvd7ake2gupyuus4im7q7j4dq"
+                },
+                body: JSON.stringify(notification)
+            });
+            
+            const resultado = await response.json();
+            return resultado;
+            
+        } catch (erro) {
+            console.error("Erro ao enviar notificação para todos:", erro);
+            return null;
         }
     }
 };
@@ -7122,19 +7168,24 @@ if (typeof atualizarTodaAInterface === 'function') {
 
 
 // Registra o usuário no OneSignal quando ele faz login
+// Registra o usuário no OneSignal quando ele faz login
 async function registrarUsuarioNoOneSignal(user) {
     if (!user) return;
     
     // Aguarda o OneSignal estar pronto
     if (window.OneSignalDeferred) {
         window.OneSignalDeferred.push(async function(OneSignal) {
-            // Define as tags do usuário
-            OneSignal.User.addTag("user_id", user.uid);
-            OneSignal.User.addTag("user_name", user.displayName.split(' ')[0]);
-            OneSignal.User.addTag("user_level", userProgress.level.toString());
-            OneSignal.User.addTag("user_email", user.email);
-            
-            console.log("✅ Usuário registrado no OneSignal:", user.displayName);
+            try {
+                // Adiciona tags para segmentação
+                await OneSignal.User.addTag("user_id", user.uid);
+                await OneSignal.User.addTag("user_name", user.displayName.split(' ')[0]);
+                await OneSignal.User.addTag("user_level", userProgress.level.toString());
+                await OneSignal.User.addTag("user_email", user.email);
+                
+                console.log("✅ Usuário registrado no OneSignal:", user.displayName);
+            } catch (erro) {
+                console.error("Erro ao registrar no OneSignal:", erro);
+            }
         });
     }
 }
