@@ -6246,74 +6246,97 @@ processarDados: function(data) {
         
 
                 aplicarFiltros: function() {
-            let result = this.todosItens;
-            
-            if (this.abaAtual === 'canais') result = result.filter(i => i.tipo === 'Canal');
-            else if (this.abaAtual === 'filmes') result = result.filter(i => i.tipo === 'Filme');
-            else if (this.abaAtual === 'series') result = result.filter(i => i.tipo === 'Série');
-            else if (this.abaAtual === 'favoritos') result = result.filter(i => userProgress.isFavorite(i.id_main));
-            
-// Dentro de aplicarFiltros: Substitua o bloco do histórico
-else if (this.abaAtual === 'historico') {
-    // Mapeia os IDs do histórico para os itens correspondentes
-    // e filtra os que são encontrados (não são undefined)
-    result = userProgress.history
-        .map(id => this.todosItens.find(i => i.id_main === id))
-        .filter(item => item !== undefined); // <--- CORREÇÃO CRÍTICA: Remove itens não encontrados
-}
-            
-            else if (this.abaAtual === 'jogos') {
-    result = this.filtrarJogosAoVivo();
-    if (result.length === 0) {
-        // Se não achar nada, mostra mensagem amigável
-        document.getElementById('contentGrid').innerHTML = `
-        <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
-            <i class="fas fa-futbol" style="font-size: 4rem; margin-bottom: 15px; display:block;"></i>
-            Nenhum jogo ao vivo no momento. Volte mais tarde!
-        </div>`;
-        return;
+    let result = this.todosItens;
+    
+    // Filtra pela aba selecionada
+    if (this.abaAtual === 'canais') result = result.filter(i => i.tipo === 'Canal');
+    else if (this.abaAtual === 'filmes') result = result.filter(i => i.tipo === 'Filme');
+    else if (this.abaAtual === 'series') result = result.filter(i => i.tipo === 'Série');
+    else if (this.abaAtual === 'favoritos') result = result.filter(i => userProgress.isFavorite(i.id_main));
+    else if (this.abaAtual === 'historico') {
+        result = userProgress.history
+            .map(id => this.todosItens.find(i => i.id_main === id))
+            .filter(item => item !== undefined);
     }
-}
-  
-  
-else if (this.abaAtual === 'em_alta') {
-    // Primeiro, garante que as views estão atualizadas
-    if (!this.todosItens[0]?.viewCount) {
-        this.atualizarViewsNosItens();
+    else if (this.abaAtual === 'jogos') {
+        result = this.filtrarJogosAoVivo();
+        if (result.length === 0) {
+            document.getElementById('contentGrid').innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
+                <i class="fas fa-futbol" style="font-size: 4rem; margin-bottom: 15px; display:block;"></i>
+                Nenhum jogo ao vivo no momento. Volte mais tarde!
+            </div>`;
+            return;
+        }
+    }
+    else if (this.abaAtual === 'em_alta') {
+        if (!this.todosItens[0]?.viewCount) this.atualizarViewsNosItens();
+        let emAlta = this.todosItens.filter(item => !item.isAdulto);
+        emAlta.sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
+        result = emAlta.filter(item => item.viewCount > 0);
     }
     
-    // Filtra: remove adultos
-    let emAlta = this.todosItens.filter(item => !item.isAdulto);
+    // 🔥 FUNÇÃO QUE COLOCA ADULTOS POR ÚLTIMO EM ORDEM ALFABÉTICA
+    const ordenarAdultosPorUltimo = (lista) => {
+        // Separa adultos dos não adultos
+        const normais = lista.filter(item => !item.isAdulto);
+        const adultos = lista.filter(item => item.isAdulto);
+        
+        // Ordena os não adultos em ordem alfabética
+        normais.sort((a, b) => {
+            const nomeA = (a.titulo || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            const nomeB = (b.titulo || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            if (nomeA < nomeB) return -1;
+            if (nomeA > nomeB) return 1;
+            return 0;
+        });
+        
+        // Ordena os adultos em ordem alfabética também
+        adultos.sort((a, b) => {
+            const nomeA = (a.titulo || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            const nomeB = (b.titulo || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            if (nomeA < nomeB) return -1;
+            if (nomeA > nomeB) return 1;
+            return 0;
+        });
+        
+        // Junta: normais primeiro, adultos por último
+        return [...normais, ...adultos];
+    };
     
-    // Ordena por viewCount (do maior para o menor)
-    emAlta.sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
+    // Aplica a ordenação em todas as abas EXCETO "em_alta" e "historico"
+    if (this.abaAtual !== 'em_alta' && this.abaAtual !== 'historico') {
+        result = ordenarAdultosPorUltimo(result);
+    }
     
-    // Pega apenas os que têm pelo menos 1 view
-    result = emAlta.filter(item => item.viewCount > 0);
+    // Filtra por gênero (se houver)
+    if (this.generoAtivo !== 'all') {
+        result = result.filter(i => i.categoriaLimpa === this.generoAtivo);
+        // Reaplica a ordenação após filtrar por gênero
+        if (this.abaAtual !== 'em_alta' && this.abaAtual !== 'historico') {
+            result = ordenarAdultosPorUltimo(result);
+        }
+    }
     
-    // Log para debug (opcional)
-    console.log('🔥 Em Alta - Top 10:', result.slice(0, 10).map(i => ({
-        titulo: i.titulo,
-        views: i.viewCount
-    })));
-}
-            
-            if (this.generoAtivo !== 'all') result = result.filter(i => i.categoriaLimpa === this.generoAtivo);
-            
-            if (this.busca) {
-                result = result.filter(i => {
-                    const matchTitulo = i.titulo.toLowerCase().includes(this.busca);
-                    const matchCat = i.categoriaLimpa.toLowerCase().includes(this.busca);
-                    const matchFilhos = i.children.some(child => child.nomeOriginal.toLowerCase().includes(this.busca));
-                    return matchTitulo || matchCat || matchFilhos;
-                });
-            }
-            
-            this.ajustarLayoutTopo(this.abaAtual !== 'todos' || this.busca !== '');
-            this.filtrados = result;
-            this.paginaAtual = 1;
-            this.renderizarGrid();
-        },
+    // Filtra por busca (se houver)
+    if (this.busca) {
+        result = result.filter(i => {
+            const matchTitulo = i.titulo.toLowerCase().includes(this.busca);
+            const matchCat = i.categoriaLimpa.toLowerCase().includes(this.busca);
+            const matchFilhos = i.children.some(child => child.nomeOriginal.toLowerCase().includes(this.busca));
+            return matchTitulo || matchCat || matchFilhos;
+        });
+        // Reaplica a ordenação após filtrar por busca
+        if (this.abaAtual !== 'em_alta' && this.abaAtual !== 'historico') {
+            result = ordenarAdultosPorUltimo(result);
+        }
+    }
+    
+    this.ajustarLayoutTopo(this.abaAtual !== 'todos' || this.busca !== '');
+    this.filtrados = result;
+    this.paginaAtual = 1;
+    this.renderizarGrid();
+},
 
 
         carregarMais: function() {
