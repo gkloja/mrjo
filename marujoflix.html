@@ -1,6 +1,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -5975,14 +5976,25 @@ processarDados: function(data) {
     }
 
     // 🎯 NOVA FUNÇÃO: Limpeza ESPECÍFICA para CANAIS/LIVES
+    // Remove apenas os sufixos de qualidade (HD, FHD, 4K) mas MANTÉM o nome base e horários
     function limparTituloParaCanal(titulo) {
         if (!titulo) return '';
         
         let t = titulo;
-        t = t.replace(/\s*(HD|FHD|4K|UHD|Full HD|1080p|720p)\s*$/gi, '');
-        t = t.replace(/\s+(HD|FHD|4K|UHD|Full HD|1080p|720p)\s+/gi, ' ');
+        
+        // 1. Remove APENAS os marcadores de qualidade no final ou separados por espaço
+        // Isso vai transformar "JOGOS DO DIA - 20:30 HD" em "JOGOS DO DIA - 20:30"
+        // E "JOGOS DO DIA - 20:30 FHD" também em "JOGOS DO DIA - 20:30"
+        t = t.replace(/\s*(HD|FHD|4K|UHD|Full HD|1080p|720p)\s*$/gi, ''); // Remove no final
+        t = t.replace(/\s+(HD|FHD|4K|UHD|Full HD|1080p|720p)\s+/gi, ' '); // Remove no meio
+        
+        // 2. Remove qualidade com hífen: "- HD" vira ""
         t = t.replace(/\s*[-–—]\s*(HD|FHD|4K|UHD|Full HD|1080p|720p)\s*/gi, ' ');
+        
+        // 3. Limpa espaços duplicados
         t = t.replace(/\s+/g, ' ').trim();
+        
+        // Se ficou vazio, retorna o original
         return t || titulo;
     }
 
@@ -6017,7 +6029,7 @@ processarDados: function(data) {
         const isDublado = /\([Dd]\)|\[[Dd]\]|\bdublado\b/i.test(nomeOriginal);
         const is4K = /\b4K\b|\bFHD\b/i.test(nomeOriginal) || catStr.toUpperCase().includes('4K');
         const isLancamento = catLower.includes('cinema') || catLower.includes('lancamento') || catLower.includes('lançamento');
-        const isAdulto = catLower.includes('xxx') || catLower.includes('adulto') || catLower.includes('+18')
+        const isAdulto = catLower.includes('xxx') || catLower.includes('adulto') || catLower.includes('18+')
         const ehLive = ehM3U8 && (nomeLower.includes('ao vivo') || nomeLower.includes('live') || nomeLower.includes('agora') ||
                                    catLower.includes('esporte') || catLower.includes('futebol') || catLower.includes('notícia') || catLower.includes('jornal'));
 
@@ -6025,18 +6037,25 @@ processarDados: function(data) {
         // 🎯 CHAVE DE AGRUPAMENTO - VERSÃO INTELIGENTE
         // ============================================
         let chaveUnica;
-        let tituloParaExibicao = nomeOriginal;
+        let tituloParaExibicao = nomeOriginal; // Título que vai aparecer no card
 
         if (tipo === 'Canal') {
+            // 👉 PARA CANAIS: Usa a função de limpeza específica
+            // Isso faz "JOGOS DO DIA - 20:30 HD" e "JOGOS DO DIA - 20:30 FHD" virarem a MESMA CHAVE
             const nomeBase = limparTituloParaCanal(nomeOriginal);
             chaveUnica = `${nomeBase}|${tipo}`;
-            tituloParaExibicao = nomeOriginal;
+            
+            // Para exibição, podemos usar o nomeBase ou o original? 
+            // Vamos usar o original para manter HD/FHD visível, mas agrupar por baixo
+            tituloParaExibicao = nomeOriginal; // Mostra "JOGOS DO DIA - 20:30 HD" no card
         } else {
+            // 👉 PARA VODs: Usa a versão super limpa
             const nomeBase = limparTituloParaVOD(nomeOriginal);
             chaveUnica = `${nomeBase}|${tipo}`;
-            tituloParaExibicao = nomeOriginal;
+            tituloParaExibicao = nomeOriginal; // Mostra o título original
         }
 
+        // --- CRIA O FILHO ---
         const filhoObj = {
             id: item.id || `idx_${index}`,
             nomeOriginal: nomeOriginal,
@@ -6045,13 +6064,21 @@ processarDados: function(data) {
             isDublado: isDublado,
             isLive: ehLive,
             isM3U8: ehM3U8,
+            // Guarda a qualidade para possível uso futuro
             qualidade: nomeOriginal.match(/\b(HD|FHD|4K|UHD|1080p|720p)\b/i)?.[0] || ''
         };
 
+        // --- AGRUPA USANDO A CHAVE INTELIGENTE ---
         if (mapaAgrupado.has(chaveUnica)) {
             const grupoExistente = mapaAgrupado.get(chaveUnica);
             grupoExistente.children.push(filhoObj);
-            if (!grupoExistente.poster && item.logo) grupoExistente.poster = item.logo;
+            
+            // Atualiza o poster se não tiver
+            if (!grupoExistente.poster && item.logo) {
+                grupoExistente.poster = item.logo;
+            }
+            
+            // Atualiza flags do grupo
             if (isLeg) grupoExistente.isLeg = true;
             if (isDublado) grupoExistente.isDublado = true;
             if (is4K) grupoExistente.is4K = true;
@@ -6059,11 +6086,16 @@ processarDados: function(data) {
             if (isAdulto) grupoExistente.isAdulto = true;
             if (ehLive) grupoExistente.isLive = true;
             if (ehM3U8) grupoExistente.isM3U8 = true;
-            if (filhoObj.qualidade === 'FHD' || filhoObj.qualidade === '4K') grupoExistente.melhorQualidade = filhoObj.qualidade;
+            
+            // Guarda a maior qualidade disponível no grupo (opcional)
+            if (filhoObj.qualidade === 'FHD' || filhoObj.qualidade === '4K') {
+                grupoExistente.melhorQualidade = filhoObj.qualidade;
+            }
+
         } else {
             mapaAgrupado.set(chaveUnica, {
                 id_main: filhoObj.id,
-                titulo: tituloParaExibicao,
+                titulo: tituloParaExibicao, // Usa o título original para exibição
                 categoriaLimpa: this.simplificarCategoria(catStr),
                 tipo: tipo,
                 poster: item.logo || '',
@@ -6083,13 +6115,21 @@ processarDados: function(data) {
     const itensAgrupados = Array.from(mapaAgrupado.values());
     console.log('🔗 Grupos formados:', itensAgrupados.length);
 
+    // Conta quantos grupos de Jogos do Dia foram criados (para debug)
+    const jogosDoDia = itensAgrupados.filter(i => i.titulo.toUpperCase().includes('JOGOS DO DIA'));
+    console.log('⚽ Grupos de Jogos do Dia:', jogosDoDia.length);
+    jogosDoDia.forEach(j => {
+        console.log(`   → ${j.titulo} (${j.children.length} opções: ${j.children.map(c => c.qualidade).filter(Boolean).join(', ') || 'sem qualidade'})`);
+    });
+
     // --- SEPARA POR CATEGORIA ---
     let lancamentosTop = [], premiumMix = [], regularVod = [],
         canais = [], adultos = [], lives = [], resto = [];
 
     itensAgrupados.forEach(item => {
-        if (item.isLive) lives.push(item);
-        else if (item.isAdulto) adultos.push(item);
+        if (item.isLive) {
+            lives.push(item);
+        } else if (item.isAdulto) adultos.push(item);
         else if (item.tipo === 'Canal') canais.push(item);
         else if (!item.poster || item.poster.trim() === '') resto.push(item);
         else if (item.isLancamento) lancamentosTop.push(item);
@@ -6105,51 +6145,14 @@ processarDados: function(data) {
         return arr;
     };
 
-    // --- NOVO: Função de ordenação alfabética ---
-    const ordenarAlfabeticamente = (arr) => {
-        return arr.sort((a, b) => {
-            // Remove acentos para uma comparação mais justa
-            const tituloA = a.titulo.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-            const tituloB = b.titulo.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-            if (tituloA < tituloB) return -1;
-            if (tituloA > tituloB) return 1;
-            return 0;
-        });
-    };
-
-    // --- NOVO: Função para ordenar e colocar adultos por último ---
-    const ordenarLista = (lista) => {
-        // Separa adultos e não adultos
-        const naoAdultos = lista.filter(item => !item.isAdulto);
-        const apenasAdultos = lista.filter(item => item.isAdulto);
-        
-        // Ordena ambos alfabeticamente
-        const naoAdultosOrdenados = ordenarAlfabeticamente(naoAdultos);
-        const adultosOrdenados = ordenarAlfabeticamente(apenasAdultos);
-        
-        // Junta: não adultos primeiro, adultos por último
-        return [...naoAdultosOrdenados, ...adultosOrdenados];
-    };
-
-    // --- APLICA A ORDENAÇÃO EM CADA CATEGORIA ---
-    lancamentosTop = ordenarLista(lancamentosTop);
-    premiumMix = ordenarLista(premiumMix);
-    regularVod = ordenarLista(regularVod);
-    canais = ordenarLista(canais);
-    adultos = ordenarLista(adultos);
-    lives = ordenarLista(lives);
-    resto = ordenarLista(resto);
-
-    // Concatena na ordem desejada, mas agora com ADULTOS sempre por último dentro de cada seção
-    // e a seção de adultos será a última do catálogo geral.
     this.todosItens = [
-        ...lancamentosTop,
-        ...premiumMix,
-        ...lives,
-        ...regularVod,
-        ...resto,
-        ...canais,
-        ...adultos  // Adultos ficam no final de TUDO
+        ...shuffle(lancamentosTop),
+        ...shuffle(premiumMix),
+        ...shuffle(lives),
+        ...shuffle(regularVod),
+        ...shuffle(resto),
+        ...shuffle(canais),
+        ...shuffle(adultos)
     ];
 
     // --- DESTAQUE ---
@@ -6246,97 +6249,74 @@ processarDados: function(data) {
         
 
                 aplicarFiltros: function() {
-    let result = this.todosItens;
-    
-    // Filtra pela aba selecionada
-    if (this.abaAtual === 'canais') result = result.filter(i => i.tipo === 'Canal');
-    else if (this.abaAtual === 'filmes') result = result.filter(i => i.tipo === 'Filme');
-    else if (this.abaAtual === 'series') result = result.filter(i => i.tipo === 'Série');
-    else if (this.abaAtual === 'favoritos') result = result.filter(i => userProgress.isFavorite(i.id_main));
-    else if (this.abaAtual === 'historico') {
-        result = userProgress.history
-            .map(id => this.todosItens.find(i => i.id_main === id))
-            .filter(item => item !== undefined);
+            let result = this.todosItens;
+            
+            if (this.abaAtual === 'canais') result = result.filter(i => i.tipo === 'Canal');
+            else if (this.abaAtual === 'filmes') result = result.filter(i => i.tipo === 'Filme');
+            else if (this.abaAtual === 'series') result = result.filter(i => i.tipo === 'Série');
+            else if (this.abaAtual === 'favoritos') result = result.filter(i => userProgress.isFavorite(i.id_main));
+            
+// Dentro de aplicarFiltros: Substitua o bloco do histórico
+else if (this.abaAtual === 'historico') {
+    // Mapeia os IDs do histórico para os itens correspondentes
+    // e filtra os que são encontrados (não são undefined)
+    result = userProgress.history
+        .map(id => this.todosItens.find(i => i.id_main === id))
+        .filter(item => item !== undefined); // <--- CORREÇÃO CRÍTICA: Remove itens não encontrados
+}
+            
+            else if (this.abaAtual === 'jogos') {
+    result = this.filtrarJogosAoVivo();
+    if (result.length === 0) {
+        // Se não achar nada, mostra mensagem amigável
+        document.getElementById('contentGrid').innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
+            <i class="fas fa-futbol" style="font-size: 4rem; margin-bottom: 15px; display:block;"></i>
+            Nenhum jogo ao vivo no momento. Volte mais tarde!
+        </div>`;
+        return;
     }
-    else if (this.abaAtual === 'jogos') {
-        result = this.filtrarJogosAoVivo();
-        if (result.length === 0) {
-            document.getElementById('contentGrid').innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
-                <i class="fas fa-futbol" style="font-size: 4rem; margin-bottom: 15px; display:block;"></i>
-                Nenhum jogo ao vivo no momento. Volte mais tarde!
-            </div>`;
-            return;
-        }
-    }
-    else if (this.abaAtual === 'em_alta') {
-        if (!this.todosItens[0]?.viewCount) this.atualizarViewsNosItens();
-        let emAlta = this.todosItens.filter(item => !item.isAdulto);
-        emAlta.sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
-        result = emAlta.filter(item => item.viewCount > 0);
-    }
-    
-    // 🔥 FUNÇÃO QUE COLOCA ADULTOS POR ÚLTIMO EM ORDEM ALFABÉTICA
-    const ordenarAdultosPorUltimo = (lista) => {
-        // Separa adultos dos não adultos
-        const normais = lista.filter(item => !item.isAdulto);
-        const adultos = lista.filter(item => item.isAdulto);
-        
-        // Ordena os não adultos em ordem alfabética
-        normais.sort((a, b) => {
-            const nomeA = (a.titulo || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-            const nomeB = (b.titulo || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-            if (nomeA < nomeB) return -1;
-            if (nomeA > nomeB) return 1;
-            return 0;
-        });
-        
-        // Ordena os adultos em ordem alfabética também
-        adultos.sort((a, b) => {
-            const nomeA = (a.titulo || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-            const nomeB = (b.titulo || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-            if (nomeA < nomeB) return -1;
-            if (nomeA > nomeB) return 1;
-            return 0;
-        });
-        
-        // Junta: normais primeiro, adultos por último
-        return [...normais, ...adultos];
-    };
-    
-    // Aplica a ordenação em todas as abas EXCETO "em_alta" e "historico"
-    if (this.abaAtual !== 'em_alta' && this.abaAtual !== 'historico') {
-        result = ordenarAdultosPorUltimo(result);
+}
+  
+  
+else if (this.abaAtual === 'em_alta') {
+    // Primeiro, garante que as views estão atualizadas
+    if (!this.todosItens[0]?.viewCount) {
+        this.atualizarViewsNosItens();
     }
     
-    // Filtra por gênero (se houver)
-    if (this.generoAtivo !== 'all') {
-        result = result.filter(i => i.categoriaLimpa === this.generoAtivo);
-        // Reaplica a ordenação após filtrar por gênero
-        if (this.abaAtual !== 'em_alta' && this.abaAtual !== 'historico') {
-            result = ordenarAdultosPorUltimo(result);
-        }
-    }
+    // Filtra: remove adultos
+    let emAlta = this.todosItens.filter(item => !item.isAdulto);
     
-    // Filtra por busca (se houver)
-    if (this.busca) {
-        result = result.filter(i => {
-            const matchTitulo = i.titulo.toLowerCase().includes(this.busca);
-            const matchCat = i.categoriaLimpa.toLowerCase().includes(this.busca);
-            const matchFilhos = i.children.some(child => child.nomeOriginal.toLowerCase().includes(this.busca));
-            return matchTitulo || matchCat || matchFilhos;
-        });
-        // Reaplica a ordenação após filtrar por busca
-        if (this.abaAtual !== 'em_alta' && this.abaAtual !== 'historico') {
-            result = ordenarAdultosPorUltimo(result);
-        }
-    }
+    // Ordena por viewCount (do maior para o menor)
+    emAlta.sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
     
-    this.ajustarLayoutTopo(this.abaAtual !== 'todos' || this.busca !== '');
-    this.filtrados = result;
-    this.paginaAtual = 1;
-    this.renderizarGrid();
-},
+    // Pega apenas os que têm pelo menos 1 view
+    result = emAlta.filter(item => item.viewCount > 0);
+    
+    // Log para debug (opcional)
+    console.log('🔥 Em Alta - Top 10:', result.slice(0, 10).map(i => ({
+        titulo: i.titulo,
+        views: i.viewCount
+    })));
+}
+            
+            if (this.generoAtivo !== 'all') result = result.filter(i => i.categoriaLimpa === this.generoAtivo);
+            
+            if (this.busca) {
+                result = result.filter(i => {
+                    const matchTitulo = i.titulo.toLowerCase().includes(this.busca);
+                    const matchCat = i.categoriaLimpa.toLowerCase().includes(this.busca);
+                    const matchFilhos = i.children.some(child => child.nomeOriginal.toLowerCase().includes(this.busca));
+                    return matchTitulo || matchCat || matchFilhos;
+                });
+            }
+            
+            this.ajustarLayoutTopo(this.abaAtual !== 'todos' || this.busca !== '');
+            this.filtrados = result;
+            this.paginaAtual = 1;
+            this.renderizarGrid();
+        },
 
 
         carregarMais: function() {
@@ -7555,4 +7535,3 @@ document.getElementById('toolsBadge').style.display = 'flex';
 </div>
 </body>
 </html>
-
