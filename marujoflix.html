@@ -120,18 +120,41 @@
     <!-- VERIFICAÇÃO DO BING (OPCIONAL, MAS RECOMENDADO) -->
 <meta name="msvalidate.01" content="6A4FEB6B17FB89AAD403E19AC61A4333" />
     
-    <!-- ONESIGNAL (JÁ EXISTENTE) -->
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(async function(OneSignal) {
-            await OneSignal.init({
-                appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
-                notifyButton: { enable: false }
-            });
-            if (typeof LibSignal !== "undefined") { LibSignal.register(); }
+  <!-- ONESIGNAL - SUA CONTA -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+            appId: "bc45abcb-b1cc-4959-8554-b82dc51b773d", // SEU ID
+            notifyButton: {
+                enable: true, // Habilita o botão de notificação
+                position: 'bottom-left',
+                theme: 'inverse',
+                size: 'medium',
+                showCredit: false,
+                text: {
+                    'tip.state.unsubscribed': 'Clique para receber notificações',
+                    'tip.state.subscribed': 'Você está inscrito nas notificações',
+                    'tip.state.blocked': 'Desbloqueie as notificações',
+                    'message.prenotify': 'Clique para receber notificações'
+                }
+            },
+            promptOptions: {
+                actionMessage: "Quer receber notificações sobre novos filmes e seus níveis no Marujo Flix?",
+                acceptButtonText: "SIM, QUERO!",
+                cancelButtonText: "TALVEZ DEPOIS",
+            }
         });
-    </script>
+        
+        // Registra o usuário logado (se existir)
+        if (typeof currentUser !== 'undefined' && currentUser) {
+            OneSignal.sendTag("user_id", currentUser.uid);
+            OneSignal.sendTag("user_level", userProgress.level);
+            OneSignal.sendTag("user_name", currentUser.displayName.split(' ')[0]);
+        }
+    });
+</script>
     
     <!-- GOOGLE ADSENSE (JÁ EXISTENTE) -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089" crossorigin="anonymous"></script>
@@ -4768,6 +4791,92 @@ msgList.innerHTML += `
 // ==========================================
 // SISTEMA DE PROGRESSO - VERSÃO CORRIGIDA
 // ==========================================
+
+// ==========================================
+// SISTEMA DE NOTIFICAÇÕES ONESIGNAL
+// ==========================================
+const NotificacaoSystem = {
+    // Envia notificação para o usuário logado
+    enviarNotificacaoSubiuNivel: async function(novoNivel, novaPatente, xpGanho) {
+        console.log(`📢 Tentando enviar notificação: Nível ${novoNivel} alcançado!`);
+        
+        // Verifica se o OneSignal está disponível
+        if (!window.OneSignal || !window.OneSignal.User) {
+            console.log("⚠️ OneSignal não inicializado ainda");
+            return;
+        }
+        
+        try {
+            // Aguarda o OneSignal estar pronto
+            await window.OneSignalDeferred;
+            
+            // Obtém o ID do usuário no OneSignal
+            const userId = await window.OneSignal.User.getOnesignalId();
+            
+            if (!userId) {
+                console.log("⚠️ Usuário não está inscrito nas notificações");
+                return;
+            }
+            
+            // Título e mensagem personalizados
+            const titulo = `⚓ PARABÉNS, MARUJO! ⚓`;
+            const mensagem = `Você alcançou o Nível ${novoNivel} e agora é ${novaPatente}! +${xpGanho} XP de recompensa! 🌊`;
+            
+            // Configura a notificação
+            const notification = {
+                app_id: "bc45abcb-b1cc-4959-8554-b82dc51b773d",
+                include_aliases: {
+                    external_id: [userId]
+                },
+                target_channel: "push",
+                headings: { "en": titulo, "pt": titulo },
+                contents: { "en": mensagem, "pt": mensagem },
+                data: {
+                    level: novoNivel,
+                    rank: novaPatente,
+                    type: "level_up"
+                },
+                // Ícone e imagem (opcional)
+                small_icon: "https://marujodigital.onrender.com/imagens/1772133683485~2.png",
+                large_icon: "https://marujodigital.onrender.com/imagens/1772133683485~2.png",
+                url: "https://marujodigital.onrender.com/"
+            };
+            
+            // Envia via API REST (backend-to-frontend)
+            const response = await fetch("https://onesignal.com/api/v1/notifications", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Basic " + btoa("os_v2_app_xrc2xs5rzrevtbkuxaw4kg3xhvg736wnz4euyavktbzydi4lc6ws767qdo6ishd6nntigojsbsyd7kzfpzcroyax5y6cqx6rezu67la") // SUA KEY
+                },
+                body: JSON.stringify(notification)
+            });
+            
+            const resultado = await response.json();
+            
+            if (response.ok) {
+                console.log("✅ Notificação enviada com sucesso!", resultado);
+            } else {
+                console.error("❌ Erro ao enviar notificação:", resultado);
+            }
+            
+        } catch (erro) {
+            console.error("🔥 Erro no sistema de notificação:", erro);
+        }
+    },
+    
+    // Atualiza a tag de nível do usuário no OneSignal
+    atualizarTagNivel: async function(novoNivel) {
+        if (!window.OneSignal || !window.OneSignal.User) return;
+        
+        try {
+            await window.OneSignal.User.addTag("user_level", novoNivel.toString());
+            console.log(`🏷️ Tag de nível atualizada: ${novoNivel}`);
+        } catch (erro) {
+            console.error("Erro ao atualizar tag:", erro);
+        }
+    }
+};
 const userProgress = {
     xp: parseInt(localStorage.getItem('marujoflix_xp')) || 0,
     level: parseInt(localStorage.getItem('marujoflix_level')) || 1,
@@ -4776,29 +4885,49 @@ const userProgress = {
     
     getNextLevelXP() { return Math.floor(100 * Math.pow(1.5, this.level - 1)); },
     
-    addXP(amount) {
-        this.xp += amount;
-        let subiuDeNivel = false;
-        let nivelAnterior = this.level;
+    // Dentro do userProgress, modifique a função addXP:
+addXP: function(amount) {
+    this.xp += amount;
+    let subiuDeNivel = false;
+    let nivelAnterior = this.level;
+    let xpAntes = this.xp - amount;
+    
+    while (this.xp >= this.getNextLevelXP()) {
+        this.xp -= this.getNextLevelXP();
+        this.level++;
+        subiuDeNivel = true;
+    }
+    
+    // SALVA OS DADOS
+    this.save();
+    
+    // ATUALIZA TODA A INTERFACE
+    this.updateUI();
+    
+    // 🚨 SE SUBIU DE NÍVEL, ENVIA NOTIFICAÇÃO!
+    if (subiuDeNivel) {
+        const novaPatente = getRankTitle(this.level);
         
-        while (this.xp >= this.getNextLevelXP()) {
-            this.xp -= this.getNextLevelXP();
-            this.level++;
-            subiuDeNivel = true;
-        }
+        // Calcula o XP ganho nesta subida (opcional)
+        const xpGanho = (this.xp + this.getNextLevelXP()) - xpAntes;
         
-        // SALVA OS DADOS
-        this.save();
+        // Mostra toast na tela
+        ToastSystem.show(`🚀 Nível ${this.level} Alcançado! Você agora é um ${novaPatente}!`, 'success');
         
-        // ATUALIZA TODA A INTERFACE (isso vai resolver seu problema!)
-        this.updateUI();
+        // 🔔 ENVIA NOTIFICAÇÃO PUSH!
+        NotificacaoSystem.enviarNotificacaoSubiuNivel(this.level, novaPatente, xpGanho);
         
-        // Se subiu de nível, mostra notificação
-        if (subiuDeNivel) {
-            const novaPatente = getRankTitle(this.level);
-            ToastSystem.show(`🚀 Nível ${this.level} Alcançado! Você agora é um ${novaPatente}!`, 'success');
-        }
-    },
+        // Atualiza a tag de nível no OneSignal
+        NotificacaoSystem.atualizarTagNivel(this.level);
+        
+        // Toca um som de conquista (opcional)
+        try {
+            const audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3');
+            audio.volume = 0.3;
+            audio.play().catch(e => console.log("Som bloqueado pelo navegador"));
+        } catch(e) {}
+    }
+},
     
     // NOVO MÉTODO: Atualiza TUDO na interface
     updateUI() {
@@ -6990,6 +7119,25 @@ if (typeof atualizarTodaAInterface === 'function') {
   window.googleProvider = googleProvider;
   window.fbOps = { signInWithPopup, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc };
 
+
+
+// Registra o usuário no OneSignal quando ele faz login
+async function registrarUsuarioNoOneSignal(user) {
+    if (!user) return;
+    
+    // Aguarda o OneSignal estar pronto
+    if (window.OneSignalDeferred) {
+        window.OneSignalDeferred.push(async function(OneSignal) {
+            // Define as tags do usuário
+            OneSignal.User.addTag("user_id", user.uid);
+            OneSignal.User.addTag("user_name", user.displayName.split(' ')[0]);
+            OneSignal.User.addTag("user_level", userProgress.level.toString());
+            OneSignal.User.addTag("user_email", user.email);
+            
+            console.log("✅ Usuário registrado no OneSignal:", user.displayName);
+        });
+    }
+}
   // ==================== LISTENER DE AUTENTICAÇÃO ====================
   onAuthStateChanged(auth, async (user) => {
     const previousUser = currentUser; // variável global definida no script principal
@@ -7021,7 +7169,7 @@ if (typeof atualizarTodaAInterface === 'function') {
         console.error("Falha ao puxar save: ", err);
         ToastSystem.show("Erro ao ler dados do servidor.", "error");
       }
-
+registrarUsuarioNoOneSignal(user)
       userProgress.save(); // Salva localmente
       // Se a comunidade estiver aberta, recarrega
 if (document.getElementById('socialHubPanel').classList.contains('active')) {
