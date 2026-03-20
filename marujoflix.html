@@ -120,39 +120,67 @@
     <!-- VERIFICAÇÃO DO BING (OPCIONAL, MAS RECOMENDADO) -->
 <meta name="msvalidate.01" content="6A4FEB6B17FB89AAD403E19AC61A4333" />
     
-  <!-- ONESIGNAL - SUA CONTA -->
+<!-- ONESIGNAL - CONFIGURAÇÃO COMPLETA COM BOTÃO -->
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
+    
     OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
-            appId: "bc45abcb-b1cc-4959-8554-b82dc51b773d", // SEU ID
+            appId: "bc45abcb-b1cc-4959-8554-b82dc51b773d",
+            // 👇 ATIVA O BOTÃO DE NOTIFICAÇÃO
             notifyButton: {
-                enable: true, // Habilita o botão de notificação
-                position: 'bottom-left',
-                theme: 'inverse',
-                size: 'medium',
-                showCredit: false,
+                enable: true,           // Habilita o botão
+                position: 'bottom-right', // Posição: bottom-left, bottom-right, top-left, top-right
+                theme: 'inverse',       // inverse (claro) ou default (escuro)
+                size: 'medium',         // small, medium, large
+                showCredit: false,      // Não mostra crédito do OneSignal
                 text: {
-                    'tip.state.unsubscribed': 'Clique para receber notificações',
-                    'tip.state.subscribed': 'Você está inscrito nas notificações',
-                    'tip.state.blocked': 'Desbloqueie as notificações',
+                    'tip.state.unsubscribed': '🔔 Ativar notificações',
+                    'tip.state.subscribed': '✅ Notificações ativas',
+                    'tip.state.blocked': '🔕 Desbloquear notificações',
                     'message.prenotify': 'Clique para receber notificações'
+                },
+                colors: {
+                    'button.background': '#0ef',
+                    'button.background.hover': '#b829e9',
+                    'button.text': '#000000',
+                    'badge.background': '#ff3b6f'
                 }
             },
+            // 👇 CONFIGURA O POPUP DE PERMISSÃO
             promptOptions: {
-                actionMessage: "Quer receber notificações sobre novos filmes e seus níveis no Marujo Flix?",
-                acceptButtonText: "SIM, QUERO!",
+                actionMessage: "⚓ Quer receber notificações sobre novos filmes, jogos ao vivo e novidades do Marujo Flix?",
+                acceptButtonText: "SIM, QUERO! 🚀",
                 cancelButtonText: "TALVEZ DEPOIS",
+                autoPrompt: true,        // Mostra automaticamente após alguns segundos
+                autoAcceptTitle: "🔔",
+                siteName: "Marujo Flix"
+            },
+            // 👇 SEGMENTAÇÃO DO USUÁRIO
+            userSubscription: {
+                deviceType: 5  // 5 = Web Push
             }
         });
         
-        // Registra o usuário logado (se existir)
-        if (typeof currentUser !== 'undefined' && currentUser) {
-            OneSignal.sendTag("user_id", currentUser.uid);
-            OneSignal.sendTag("user_level", userProgress.level);
-            OneSignal.sendTag("user_name", currentUser.displayName.split(' ')[0]);
+        // 🔥 REGISTRA O TOKEN (se LibSignal existir)
+        if (typeof LibSignal !== "undefined") {
+            LibSignal.register();
         }
+        
+        // 🔥 REGISTRA O USUÁRIO LOGADO (se existir)
+        if (typeof currentUser !== 'undefined' && currentUser) {
+            try {
+                await OneSignal.User.addTag("user_id", currentUser.uid);
+                await OneSignal.User.addTag("user_name", currentUser.displayName?.split(' ')[0] || 'Marujo');
+                await OneSignal.User.addTag("user_level", (typeof userProgress !== 'undefined' ? userProgress.level : 1).toString());
+                console.log("✅ Usuário registrado no OneSignal");
+            } catch(e) {
+                console.log("Erro ao registrar tags:", e);
+            }
+        }
+        
+        console.log("✅ OneSignal inicializado com botão de notificação!");
     });
 </script>
     
