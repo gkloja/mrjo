@@ -29,9 +29,12 @@
         const googleProvider = new GoogleAuthProvider();
         googleProvider.setCustomParameters({ prompt: 'select_account' });
 
+        // EXPORTA PARA O ESCOPO GLOBAL
         window.auth = auth;
         window.googleProvider = googleProvider;
         window.fbOps = { signInWithPopup, signOut, onAuthStateChanged };
+        
+        console.log('🔥 Firebase inicializado');
     </script>
     
     <style>
@@ -78,7 +81,7 @@
         .header {
             position: fixed;
             top: 0; width: 100%;
-            padding: 1rem 5%;
+            padding: 0.8rem 5%;
             background: rgba(2, 8, 19, 0.85);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--glass-border);
@@ -99,22 +102,63 @@
         .logo-text h1 { font-size: 1.3rem; color: var(--text-main); }
         .logo-text span { font-size: 0.6rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; }
 
-        .credit-pill {
+        /* Perfil do Usuário */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 0.3rem 0.8rem 0.3rem 0.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .user-profile:hover {
+            background: rgba(20, 184, 166, 0.2);
+            border-color: var(--aqua-primary);
+        }
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--aqua-primary);
+        }
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .user-credits {
+            font-size: 0.7rem;
+            color: var(--gold-light);
+        }
+        .user-credits i {
+            margin-right: 3px;
+        }
+        .login-btn {
             background: rgba(234, 179, 8, 0.1);
             border: 1px solid rgba(234, 179, 8, 0.3);
             border-radius: 50px;
             padding: 0.4rem 1rem;
             display: flex;
             align-items: center;
-            gap: 0.8rem;
+            gap: 0.5rem;
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .credit-pill:hover { background: rgba(234, 179, 8, 0.2); transform: translateY(-2px); }
-        .credit-pill i { color: var(--gold-primary); }
-        .credit-info { display: flex; flex-direction: column; line-height: 1; }
-        .credit-label { font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; }
-        .credit-value { font-size: 1rem; font-weight: 700; color: var(--gold-light); }
+        .login-btn:hover {
+            background: rgba(234, 179, 8, 0.2);
+            transform: translateY(-2px);
+        }
+        .login-btn i { color: var(--gold-primary); }
+        .login-btn span { font-size: 0.85rem; font-weight: 500; color: var(--gold-light); }
 
         .container {
             max-width: 1300px;
@@ -285,33 +329,12 @@
             box-shadow: 0 4px 15px rgba(20, 184, 166, 0.2);
         }
         .btn-executar:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(20, 184, 166, 0.4); }
-        
         .btn-executar:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
         }
 
-        .btn-whatsapp {
-            width: 100%;
-            margin-top: 1rem;
-            padding: 0.8rem;
-            background: linear-gradient(135deg, #25d366, #128c7e);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.8rem;
-        }
-        .btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3); }
-
-        /* Planos de Créditos */
         .planos-container {
             margin-top: 1.5rem;
             padding-top: 1.5rem;
@@ -351,24 +374,9 @@
             transform: translateY(-2px);
         }
 
-        .plano-creditos {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--gold-light);
-        }
-
-        .plano-preco {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--aqua-light);
-            margin-top: 0.3rem;
-        }
-
-        .plano-bonus {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-top: 0.3rem;
-        }
+        .plano-creditos { font-size: 1.2rem; font-weight: 700; color: var(--gold-light); }
+        .plano-preco { font-size: 1rem; font-weight: 600; color: var(--aqua-light); margin-top: 0.3rem; }
+        .plano-bonus { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.3rem; }
 
         @media (max-width: 500px) {
             .planos-grid { grid-template-columns: 1fr; gap: 0.5rem; }
@@ -402,7 +410,6 @@
             font-size: 0.85rem; color: #cbd5e1;
             max-height: 500px; overflow-y: auto;
         }
-        .json-key { color: #38bdf8; } .json-string { color: #a5b4fc; } .json-number { color: #fde047; } .json-boolean { color: #fca5a5; }
 
         .loader-overlay {
             position: fixed; inset: 0; background: rgba(2, 8, 19, 0.85);
@@ -433,117 +440,24 @@
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        .badge-regional {
-            font-size: 0.65rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
+        .badge-regional { font-size: 0.65rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.3rem; }
+        .info-regional { background: rgba(20, 184, 166, 0.08); border-radius: 12px; padding: 0.8rem 1rem; margin-bottom: 1rem; font-size: 0.75rem; border-left: 3px solid var(--aqua-primary); }
+        .input-hint { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.25rem; padding-left: 2.5rem; }
+        .telefone-formatado { font-size: 0.7rem; color: var(--aqua-light); margin-top: 0.25rem; padding-left: 2.5rem; }
 
-        .info-regional {
-            background: rgba(20, 184, 166, 0.08);
-            border-radius: 12px;
-            padding: 0.8rem 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.75rem;
-            border-left: 3px solid var(--aqua-primary);
-        }
-
-        .input-hint {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-            padding-left: 2.5rem;
-        }
-
-        .telefone-formatado {
-            font-size: 0.7rem;
-            color: var(--aqua-light);
-            margin-top: 0.25rem;
-            padding-left: 2.5rem;
-        }
-
-        .resultado-item {
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .resultado-item:last-child {
-            border-bottom: none;
-        }
-        .resultado-nome {
-            color: var(--gold-light);
-            font-weight: bold;
-            font-size: 1rem;
-        }
-        .resultado-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
-        }
-        .resultado-info span {
-            color: var(--aqua-light);
-        }
+        .resultado-item { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1rem; margin-bottom: 0.5rem; }
+        .resultado-item:last-child { border-bottom: none; }
+        .resultado-nome { color: var(--gold-light); font-weight: bold; font-size: 1rem; }
+        .resultado-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; font-size: 0.85rem; }
+        .resultado-info span { color: var(--aqua-light); }
         
-        /* Estilos para os resultados formatados */
-        .resultado-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 0.8rem;
-            margin-top: 0.5rem;
-        }
+        .resultado-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.8rem; margin-top: 0.5rem; }
+        .section-title { font-size: 0.9rem; font-weight: bold; color: var(--aqua-light); margin-bottom: 0.8rem; padding-bottom: 0.3rem; border-bottom: 1px solid rgba(20, 184, 166, 0.3); display: flex; align-items: center; gap: 0.5rem; }
+        .info-card { background: rgba(255, 255, 255, 0.03); border-radius: 10px; padding: 0.8rem; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.2s ease; }
+        .info-card:hover { background: rgba(20, 184, 166, 0.1); border-color: rgba(20, 184, 166, 0.3); transform: translateX(3px); }
+        .info-card i { font-size: 1.1rem; color: var(--aqua-light); width: 24px; text-align: center; }
+        .info-card strong { color: var(--aqua-light); font-weight: 600; }
 
-        .section-title {
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: var(--aqua-light);
-            margin-bottom: 0.8rem;
-            padding-bottom: 0.3rem;
-            border-bottom: 1px solid rgba(20, 184, 166, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .info-card {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-            padding: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            flex-wrap: wrap;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.2s ease;
-        }
-
-        .info-card:hover {
-            background: rgba(20, 184, 166, 0.1);
-            border-color: rgba(20, 184, 166, 0.3);
-            transform: translateX(3px);
-        }
-
-        .info-card i {
-            font-size: 1.1rem;
-            color: var(--aqua-light);
-            width: 24px;
-            text-align: center;
-        }
-
-        .info-card strong {
-            color: var(--aqua-light);
-            font-weight: 600;
-        }
-
-        .info-card span {
-            color: var(--text-main);
-            word-break: break-word;
-        }
-
-        /* Login Overlay */
         .login-overlay {
             position: fixed;
             top: 0;
@@ -581,13 +495,8 @@
             color: var(--gold-primary);
             margin-bottom: 1rem;
         }
-        .login-card h2 {
-            margin-bottom: 0.5rem;
-        }
-        .login-card p {
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-        }
+        .login-card h2 { margin-bottom: 0.5rem; }
+        .login-card p { color: var(--text-muted); margin-bottom: 1.5rem; }
         .btn-google {
             background: white;
             color: #333;
@@ -606,9 +515,68 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(255,255,255,0.2);
         }
-        .btn-google img {
-            width: 20px;
-            height: 20px;
+        .btn-google img { width: 20px; height: 20px; }
+
+        /* Menu Dropdown */
+        .user-menu {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 12px;
+            z-index: 2000;
+            min-width: 220px;
+            box-shadow: var(--shadow-card);
+            animation: slideIn 0.2s ease;
+        }
+        .user-menu-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 8px;
+        }
+        .user-menu-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--aqua-primary);
+        }
+        .user-menu-info .user-menu-name {
+            font-weight: bold;
+            color: var(--text-main);
+        }
+        .user-menu-info .user-menu-email {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .user-menu-stats {
+            padding: 8px 0;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .user-menu-stats i {
+            color: var(--gold-light);
+            margin-right: 5px;
+        }
+        .logout-btn {
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+            background: rgba(255,77,77,0.2);
+            border: 1px solid #ef4444;
+            border-radius: 10px;
+            color: #ef4444;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover {
+            background: rgba(255,77,77,0.4);
         }
     </style>
 </head>
@@ -619,13 +587,7 @@
             <div class="logo-icon"><i class="fas fa-anchor"></i></div>
             <div class="logo-text"><h1>Marujo</h1><span>Consultas</span></div>
         </a>
-        <div class="credit-pill" id="creditPill">
-            <i class="fas fa-user"></i>
-            <div class="credit-info">
-                <span class="credit-label">Entrar</span>
-                <span class="credit-value" id="creditsDisplay">5</span>
-            </div>
-        </div>
+        <div id="authContainer"></div>
     </header>
 
     <main class="container">
@@ -659,176 +621,61 @@
                 <div class="app-panel">
                     
                     <div class="selection-grid">
-                        <button class="type-btn active" onclick="switchTab('cpf', this)">
-                            <i class="fas fa-id-card"></i><span>CPF</span>
-                        </button>
-                        <button class="type-btn" onclick="switchTab('cnpj', this)">
-                            <i class="fas fa-building"></i><span>CNPJ</span>
-                        </button>
-                        <button class="type-btn" onclick="switchTab('placa', this)">
-                            <i class="fas fa-car"></i><span>Placa</span>
-                        </button>
-                        <button class="type-btn" onclick="switchTab('telefone', this)">
-                            <i class="fas fa-phone-alt"></i><span>Telefone</span>
-                        </button>
-                        <button class="type-btn" onclick="switchTab('veiculo', this)">
-                            <i class="fas fa-microchip"></i><span>Motor/Chassi</span>
-                        </button>
-                        <button class="type-btn" onclick="switchTab('foto', this)">
-                            <i class="fas fa-camera-retro"></i><span>Biometria</span>
-                        </button>
-                        <button class="type-btn" onclick="switchTab('nome', this)">
-                            <i class="fas fa-user-friends"></i><span>Busca por Nome</span>
-                        </button>
+                        <button class="type-btn active" onclick="switchTab('cpf', this)"><i class="fas fa-id-card"></i><span>CPF</span></button>
+                        <button class="type-btn" onclick="switchTab('cnpj', this)"><i class="fas fa-building"></i><span>CNPJ</span></button>
+                        <button class="type-btn" onclick="switchTab('placa', this)"><i class="fas fa-car"></i><span>Placa</span></button>
+                        <button class="type-btn" onclick="switchTab('telefone', this)"><i class="fas fa-phone-alt"></i><span>Telefone</span></button>
+                        <button class="type-btn" onclick="switchTab('veiculo', this)"><i class="fas fa-microchip"></i><span>Motor/Chassi</span></button>
+                        <button class="type-btn" onclick="switchTab('foto', this)"><i class="fas fa-camera-retro"></i><span>Biometria</span></button>
+                        <button class="type-btn" onclick="switchTab('nome', this)"><i class="fas fa-user-friends"></i><span>Busca por Nome</span></button>
                     </div>
 
                     <div id="cpfGroup" class="consulta-group active">
                         <div class="form-label">PARÂMETROS DE BUSCA - CPF</div>
                         <div class="input-wrapper">
-                            <div class="input-row">
-                                <i class="fas fa-fingerprint"></i>
-                                <input type="text" id="cpf" placeholder="Digite apenas os 11 números..." maxlength="14">
-                            </div>
-                            <div class="input-hint"><i class="fas fa-info-circle"></i> Aceita com pontos e traço: 123.456.789-00 → será limpo automaticamente</div>
+                            <div class="input-row"><i class="fas fa-fingerprint"></i><input type="text" id="cpf" placeholder="Digite apenas os 11 números..." maxlength="14"></div>
+                            <div class="input-hint"><i class="fas fa-info-circle"></i> Aceita com pontos e traço: 123.456.789-00</div>
                             <div class="divider"></div>
-                            <div class="input-row">
-                                <i class="fas fa-layer-group"></i>
-                                <select id="cpfVersao">
-                                    <option value="v3">V3 - Dossiê Completo + Score</option>
-                                    <option value="v2">V2 - Relatório Básico</option>
-                                </select>
-                            </div>
+                            <div class="input-row"><i class="fas fa-layer-group"></i><select id="cpfVersao"><option value="v3">V3 - Dossiê Completo + Score</option><option value="v2">V2 - Relatório Básico</option></select></div>
                         </div>
-                        <div class="chips-container">
-                            <span class="chip" onclick="preencherDemo('cpf','88222144634')">Demo 1</span>
-                            <span class="chip" onclick="preencherDemo('cpf','12537664795')">Demo 2</span>
-                        </div>
+                        <div class="chips-container"><span class="chip" onclick="preencherDemo('cpf','88222144634')">Demo 1</span><span class="chip" onclick="preencherDemo('cpf','12537664795')">Demo 2</span></div>
                     </div>
 
                     <div id="cnpjGroup" class="consulta-group">
                         <div class="form-label">PARÂMETROS DE BUSCA - CNPJ</div>
-                        <div class="input-wrapper">
-                            <div class="input-row">
-                                <i class="fas fa-building"></i>
-                                <input type="text" id="cnpj" placeholder="Digite os 14 dígitos..." maxlength="18">
-                            </div>
-                            <div class="input-hint"><i class="fas fa-info-circle"></i> Aceita formato: 00.000.000/0000-00 → será limpo automaticamente</div>
-                        </div>
-                        <div class="chips-container">
-                            <span class="chip" onclick="preencherDemo('cnpj','00910509000171')">Thomson Reuters</span>
-                        </div>
+                        <div class="input-wrapper"><div class="input-row"><i class="fas fa-building"></i><input type="text" id="cnpj" placeholder="Digite os 14 dígitos..." maxlength="18"></div><div class="input-hint"><i class="fas fa-info-circle"></i> Aceita formato: 00.000.000/0000-00</div></div>
+                        <div class="chips-container"><span class="chip" onclick="preencherDemo('cnpj','00910509000171')">Thomson Reuters</span></div>
                     </div>
 
                     <div id="placaGroup" class="consulta-group">
                         <div class="form-label">PARÂMETROS DE BUSCA - PLACA</div>
-                        <div class="input-wrapper">
-                            <div class="input-row">
-                                <i class="fas fa-car-side"></i>
-                                <input type="text" id="placa" placeholder="EX: ABC1D23" maxlength="7" style="text-transform:uppercase;">
-                            </div>
-                            <div class="divider"></div>
-                            <div class="input-row">
-                                <i class="fas fa-filter"></i>
-                                <select id="placaVersao">
-                                    <option value="v2">V2 - Proprietário e Débitos</option>
-                                </select>
-                            </div>
-                        </div>
+                        <div class="input-wrapper"><div class="input-row"><i class="fas fa-car-side"></i><input type="text" id="placa" placeholder="EX: ABC1D23" maxlength="7" style="text-transform:uppercase;"></div><div class="divider"></div><div class="input-row"><i class="fas fa-filter"></i><select id="placaVersao"><option value="v2">V2 - Proprietário e Débitos</option></select></div></div>
                     </div>
 
                     <div id="telefoneGroup" class="consulta-group">
                         <div class="form-label">PARÂMETROS DE BUSCA - TELEFONE</div>
-                        <div class="input-wrapper">
-                            <div class="input-row">
-                                <i class="fas fa-satellite"></i>
-                                <input type="text" id="telefone" placeholder="Cole qualquer formato: (21) 98904-7220 ou 21989047220" oninput="formatarTelefoneInput(this)">
-                            </div>
-                            <div class="telefone-formatado" id="telefoneAjuda">
-                                <i class="fas fa-magic"></i> Aceita qualquer formato: (21) 98904-7220, 21 98904-7220, 21989047220
-                            </div>
-                        </div>
-                        <div class="chips-container">
-                            <span class="chip" onclick="preencherDemo('telefone','21989047220')">Demo 1: 21989047220</span>
-                            <span class="chip" onclick="preencherDemo('telefone','(21) 98904-7220')">Demo 2: (21) 98904-7220</span>
-                            <span class="chip" onclick="preencherDemo('telefone','21 98904-7220')">Demo 3: 21 98904-7220</span>
-                        </div>
+                        <div class="input-wrapper"><div class="input-row"><i class="fas fa-satellite"></i><input type="text" id="telefone" placeholder="Cole qualquer formato: (21) 98904-7220 ou 21989047220" oninput="formatarTelefoneInput(this)"></div><div class="telefone-formatado" id="telefoneAjuda"><i class="fas fa-magic"></i> Aceita qualquer formato</div></div>
+                        <div class="chips-container"><span class="chip" onclick="preencherDemo('telefone','21989047220')">Demo 1</span><span class="chip" onclick="preencherDemo('telefone','(21) 98904-7220')">Demo 2</span></div>
                     </div>
 
                     <div id="veiculoGroup" class="consulta-group">
                         <div class="form-label">PARÂMETROS DE BUSCA - CHASSI/MOTOR</div>
-                        <div class="input-wrapper">
-                            <div class="input-row">
-                                <i class="fas fa-cogs"></i>
-                                <select id="veiculoTipo">
-                                    <option value="motor">Busca por Numeração do Motor</option>
-                                    <option value="chassi">Busca por Chassi (VIN)</option>
-                                </select>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="input-row">
-                                <i class="fas fa-barcode"></i>
-                                <input type="text" id="veiculoValor" placeholder="Insira o código alfanumérico...">
-                            </div>
-                        </div>
-                        <div class="chips-container">
-                            <span class="chip" onclick="preencherDemo('veiculoValor','UD316909')">Motor Teste</span>
-                        </div>
+                        <div class="input-wrapper"><div class="input-row"><i class="fas fa-cogs"></i><select id="veiculoTipo"><option value="motor">Busca por Numeração do Motor</option><option value="chassi">Busca por Chassi (VIN)</option></select></div><div class="divider"></div><div class="input-row"><i class="fas fa-barcode"></i><input type="text" id="veiculoValor" placeholder="Insira o código alfanumérico..."></div></div>
+                        <div class="chips-container"><span class="chip" onclick="preencherDemo('veiculoValor','UD316909')">Motor Teste</span></div>
                     </div>
 
                     <div id="fotoGroup" class="consulta-group">
-                        <div class="form-label">
-                            <span><i class="fas fa-camera-retro"></i> BIOMETRIA FACIAL - Dados PE</span>
-                            <span class="badge-regional" style="background: rgba(234, 179, 8, 0.2); color: var(--gold-light); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.65rem;">
-                                <i class="fas fa-map-marker-alt"></i> Base: Pernambuco
-                            </span>
-                        </div>
-                        <div class="info-regional" style="background: rgba(20, 184, 166, 0.1); border-radius: 12px; padding: 0.8rem; margin-bottom: 1rem; font-size: 0.75rem; color: var(--text-muted); border-left: 3px solid var(--aqua-primary);">
-                            <i class="fas fa-info-circle"></i> <strong>Área de cobertura:</strong> Dados de identificação civil do estado de Pernambuco (PE). Para outros estados, utilize as outras modalidades de consulta.
-                        </div>
-                        <div class="input-wrapper">
-                            <div class="input-row">
-                                <i class="fas fa-user-circle"></i>
-                                <input type="text" id="nomeFoto" placeholder="Nome completo (Ex: MARIA DA SILVA SANTOS)">
-                            </div>
-                        </div>
-                        <div class="chips-container">
-                            <span class="chip" onclick="preencherDemo('nomeFoto', 'JOSENILDA MARIA DE ARRUDA')">
-                                <i class="fas fa-user-check"></i> Demo 1: JOSENILDA
-                            </span>
-                            <span class="chip" onclick="preencherDemo('nomeFoto', 'MARIA APARECIDA DE SOUZA')">
-                                <i class="fas fa-user-check"></i> Demo 2: MARIA A.
-                            </span>
-                        </div>
+                        <div class="form-label"><span><i class="fas fa-camera-retro"></i> BIOMETRIA FACIAL</span><span class="badge-regional"><i class="fas fa-map-marker-alt"></i> Base: Pernambuco</span></div>
+                        <div class="info-regional"><i class="fas fa-info-circle"></i> <strong>Área de cobertura:</strong> Dados de identificação civil do estado de Pernambuco (PE).</div>
+                        <div class="input-wrapper"><div class="input-row"><i class="fas fa-user-circle"></i><input type="text" id="nomeFoto" placeholder="Nome completo (Ex: MARIA DA SILVA SANTOS)"></div></div>
+                        <div class="chips-container"><span class="chip" onclick="preencherDemo('nomeFoto', 'JOSENILDA MARIA DE ARRUDA')"><i class="fas fa-user-check"></i> Demo: JOSENILDA</span></div>
                     </div>
 
                     <div id="nomeGroup" class="consulta-group">
-                        <div class="form-label">
-                            <span><i class="fas fa-user-friends"></i> BUSCA POR NOME COMPLETO</span>
-                            <span class="badge-regional" style="background: rgba(20, 184, 166, 0.2); color: var(--aqua-light); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.65rem;">
-                                <i class="fas fa-database"></i> Base Nacional
-                            </span>
-                        </div>
-                        <div class="info-regional">
-                            <i class="fas fa-info-circle"></i> <strong>Busca por nome completo:</strong> Retorna CPF, data de nascimento e sexo de pessoas com o nome informado.
-                        </div>
-                        <div class="input-wrapper">
-                            <div class="input-row">
-                                <i class="fas fa-user-tag"></i>
-                                <input type="text" id="nomeCompleto" placeholder="Nome completo (Ex: PEDRO HENRIQUE)" style="text-transform:uppercase;">
-                            </div>
-                            <div class="input-hint"><i class="fas fa-info-circle"></i> Digite o nome completo para melhores resultados. Exemplo: PEDRO HENRIQUE</div>
-                        </div>
-                        <div class="chips-container">
-                            <span class="chip" onclick="preencherDemo('nomeCompleto', 'PEDRO HENRIQUE')">
-                                <i class="fas fa-user-check"></i> Demo: PEDRO HENRIQUE
-                            </span>
-                            <span class="chip" onclick="preencherDemo('nomeCompleto', 'MARIA SILVA')">
-                                <i class="fas fa-user-check"></i> Demo: MARIA SILVA
-                            </span>
-                            <span class="chip" onclick="preencherDemo('nomeCompleto', 'JOAO SANTOS')">
-                                <i class="fas fa-user-check"></i> Demo: JOAO SANTOS
-                            </span>
-                        </div>
+                        <div class="form-label"><span><i class="fas fa-user-friends"></i> BUSCA POR NOME COMPLETO</span><span class="badge-regional"><i class="fas fa-database"></i> Base Nacional</span></div>
+                        <div class="info-regional"><i class="fas fa-info-circle"></i> <strong>Busca por nome completo:</strong> Retorna CPF, data de nascimento e sexo.</div>
+                        <div class="input-wrapper"><div class="input-row"><i class="fas fa-user-tag"></i><input type="text" id="nomeCompleto" placeholder="Nome completo (Ex: PEDRO HENRIQUE)" style="text-transform:uppercase;"></div><div class="input-hint"><i class="fas fa-info-circle"></i> Digite o nome completo para melhores resultados.</div></div>
+                        <div class="chips-container"><span class="chip" onclick="preencherDemo('nomeCompleto', 'PEDRO HENRIQUE')"><i class="fas fa-user-check"></i> Demo: PEDRO HENRIQUE</span></div>
                     </div>
 
                     <button class="btn-executar" id="btnExecutar" onclick="realizarConsulta()" style="margin-top: 1.5rem;">
@@ -836,56 +683,28 @@
                     </button>
                     
                     <div class="planos-container">
-                        <div class="planos-title">
-                            <i class="fas fa-gem"></i> Escolha seu plano
-                            <i class="fas fa-gem"></i>
-                        </div>
+                        <div class="planos-title"><i class="fas fa-gem"></i> Escolha seu plano <i class="fas fa-gem"></i></div>
                         <div class="planos-grid">
-                            <div class="plano-card" onclick="comprarCreditos(10, 1)">
-                                <div class="plano-creditos">10 Créditos</div>
-                                <div class="plano-preco">R$ 1,00</div>
-                                <div class="plano-bonus">🔰 Básico</div>
-                            </div>
-                            <div class="plano-card" onclick="comprarCreditos(50, 4.5)">
-                                <div class="plano-creditos">50 Créditos</div>
-                                <div class="plano-preco">R$ 4,50</div>
-                                <div class="plano-bonus">✨ 10% OFF</div>
-                            </div>
-                            <div class="plano-card" onclick="comprarCreditos(120, 10)">
-                                <div class="plano-creditos">120 Créditos</div>
-                                <div class="plano-preco">R$ 10,00</div>
-                                <div class="plano-bonus">🚀 20% OFF + SUPORTE VIP</div>
-                            </div>
+                            <div class="plano-card" onclick="comprarCreditos(10, 1)"><div class="plano-creditos">10 Créditos</div><div class="plano-preco">R$ 1,00</div><div class="plano-bonus">🔰 Básico</div></div>
+                            <div class="plano-card" onclick="comprarCreditos(50, 4.5)"><div class="plano-creditos">50 Créditos</div><div class="plano-preco">R$ 4,50</div><div class="plano-bonus">✨ 10% OFF</div></div>
+                            <div class="plano-card" onclick="comprarCreditos(120, 10)"><div class="plano-creditos">120 Créditos</div><div class="plano-preco">R$ 10,00</div><div class="plano-bonus">🚀 20% OFF + SUPORTE VIP</div></div>
                         </div>
                     </div>
                 </div>
 
                 <div id="resultadoTerminal" class="results-container">
                     <div class="terminal-header">
-                        <div class="mac-dots">
-                            <div class="mac-dot red" onclick="limparResultados()" style="cursor:pointer;" title="Limpar"></div>
-                            <div class="mac-dot yellow"></div>
-                            <div class="mac-dot green"></div>
-                        </div>
+                        <div class="mac-dots"><div class="mac-dot red" onclick="limparResultados()" style="cursor:pointer;" title="Limpar"></div><div class="mac-dot yellow"></div><div class="mac-dot green"></div></div>
                         <div class="terminal-title">~/marujo/output_data.json</div>
-                        <div class="terminal-actions">
-                            <button onclick="copiarJSON()"><i class="far fa-copy"></i></button>
-                            <button onclick="exportarPDF()"><i class="far fa-file-pdf"></i></button>
-                        </div>
+                        <div class="terminal-actions"><button onclick="copiarJSON()"><i class="far fa-copy"></i></button><button onclick="exportarPDF()"><i class="far fa-file-pdf"></i></button></div>
                     </div>
                     <div class="terminal-body" id="resultadoBody"></div>
                 </div>
-
             </div>
         </div>
     </main>
 
-    <div id="loaderOverlay" class="loader-overlay">
-        <div style="text-align:center;">
-            <div class="spinner"></div>
-            <p style="margin-top:1rem; color:var(--aqua-light); font-weight:600; letter-spacing:2px;">DECRIPTANDO DADOS...</p>
-        </div>
-    </div>
+    <div id="loaderOverlay" class="loader-overlay"><div style="text-align:center;"><div class="spinner"></div><p style="margin-top:1rem; color:var(--aqua-light);">DECRIPTANDO DADOS...</p></div></div>
 
     <div id="codigoModal" class="modal">
         <div class="modal-content">
@@ -893,17 +712,9 @@
             <i class="fas fa-gem" style="font-size:2.5rem; color:var(--gold-primary); margin-bottom:1rem;"></i>
             <h2 style="margin-bottom: 0.5rem; color:white;">Ativar Key Premium</h2>
             <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1.5rem;">Insira seu código VIP para recarregar sua conta.</p>
-            
             <input type="text" id="codigoInput" placeholder="EX: MARUJO100" style="width:100%; padding:1rem; border-radius:12px; border:1px solid var(--gold-primary); background:rgba(0,0,0,0.5); color:white; text-align:center; text-transform:uppercase; margin-bottom:1rem; outline:none;">
-            
             <button class="btn-executar" style="background:var(--gradient-gold); color:black;" onclick="ativarCodigo()">Validar Key</button>
-            
-            <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
-                <p style="font-size: 0.75rem; color: var(--text-muted);">Não tem uma key?</p>
-                <button onclick="contatoWhatsApp(); fecharModalCodigo()" style="background: transparent; border: 1px solid var(--gold-primary); color: var(--gold-light); padding: 0.5rem 1rem; border-radius: 50px; margin-top: 0.5rem; cursor: pointer; width: 100%; font-size: 0.8rem;">
-                    <i class="fab fa-whatsapp"></i> Falar com o Capitão
-                </button>
-            </div>
+            <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><p style="font-size: 0.75rem; color: var(--text-muted);">Não tem uma key?</p><button onclick="contatoWhatsApp(); fecharModalCodigo()" style="background: transparent; border: 1px solid var(--gold-primary); color: var(--gold-light); padding: 0.5rem 1rem; border-radius: 50px; margin-top: 0.5rem; cursor: pointer; width: 100%; font-size: 0.8rem;"><i class="fab fa-whatsapp"></i> Falar com o Capitão</button></div>
         </div>
     </div>
 
@@ -914,10 +725,7 @@
             <i class="fas fa-ship"></i>
             <h2>Bem-vindo ao Marujo</h2>
             <p>Faça login com sua conta Google para começar a realizar consultas</p>
-            <button class="btn-google" onclick="fazerLoginGoogle()">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
-                Entrar com Google
-            </button>
+            <button class="btn-google" id="googleLoginBtn"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google"> Entrar com Google</button>
         </div>
     </div>
 
@@ -935,51 +743,18 @@
         // ==========================================
         // FUNÇÕES DE LIMPEZA DE DADOS
         // ==========================================
-        function limparCPF(valor) {
-            let limpo = valor.replace(/[^\d]/g, '');
-            if(limpo.length !== 11) return null;
-            return limpo;
-        }
-
-        function limparCNPJ(valor) {
-            let limpo = valor.replace(/[^\d]/g, '');
-            if(limpo.length !== 14) return null;
-            return limpo;
-        }
-
-        function limparTelefone(valor) {
-            let limpo = valor.replace(/[^\d]/g, '');
-            if(limpo.startsWith('55') && limpo.length > 10) {
-                limpo = limpo.substring(2);
-            }
-            if(limpo.length === 10 || limpo.length === 11) {
-                return limpo;
-            }
-            return null;
-        }
-
+        function limparCPF(valor) { let limpo = valor.replace(/[^\d]/g, ''); return limpo.length === 11 ? limpo : null; }
+        function limparCNPJ(valor) { let limpo = valor.replace(/[^\d]/g, ''); return limpo.length === 14 ? limpo : null; }
+        function limparTelefone(valor) { let limpo = valor.replace(/[^\d]/g, ''); if(limpo.startsWith('55') && limpo.length > 10) limpo = limpo.substring(2); return (limpo.length === 10 || limpo.length === 11) ? limpo : null; }
+        
         function formatarTelefoneInput(input) {
-            let valor = input.value;
-            let numeros = valor.replace(/[^\d]/g, '');
-            
-            if(numeros.startsWith('55') && numeros.length > 10) {
-                numeros = numeros.substring(2);
-            }
-            
+            let numeros = input.value.replace(/[^\d]/g, '');
+            if(numeros.startsWith('55') && numeros.length > 10) numeros = numeros.substring(2);
             const ajudaSpan = document.getElementById('telefoneAjuda');
-            if(numeros.length === 10) {
-                ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Telefone fixo válido: ${numeros.substring(0,2)} ${numeros.substring(2,6)}-${numeros.substring(6)}`;
-                ajudaSpan.style.color = '#10b981';
-            } else if(numeros.length === 11) {
-                ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Telefone celular válido: ${numeros.substring(0,2)} ${numeros.substring(2,7)}-${numeros.substring(7)}`;
-                ajudaSpan.style.color = '#10b981';
-            } else if(numeros.length > 0) {
-                ajudaSpan.innerHTML = `<i class="fas fa-info-circle"></i> Aguardando ${numeros.length}/10-11 dígitos. Exemplo: (21) 98904-7220 → 21989047220`;
-                ajudaSpan.style.color = '#eab308';
-            } else {
-                ajudaSpan.innerHTML = `<i class="fas fa-magic"></i> Aceita qualquer formato: (21) 98904-7220, 21 98904-7220, 21989047220`;
-                ajudaSpan.style.color = '#94a3b8';
-            }
+            if(numeros.length === 10) ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Telefone fixo válido`;
+            else if(numeros.length === 11) ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Telefone celular válido`;
+            else if(numeros.length > 0) ajudaSpan.innerHTML = `<i class="fas fa-info-circle"></i> Aguardando ${numeros.length}/10-11 dígitos`;
+            else ajudaSpan.innerHTML = `<i class="fas fa-magic"></i> Aceita qualquer formato`;
         }
 
         // ==========================================
@@ -990,19 +765,12 @@
             let c = localStorage.getItem(key); 
             return c === null ? 5 : parseInt(c); 
         }
-
         function setCreditos(val) { 
             const key = currentUser ? `${CREDITS_KEY}_${currentUser.uid}` : CREDITS_KEY;
             localStorage.setItem(key, val); 
             atualizarInterface(); 
         }
-        
-        function addCreditos(qtd) { 
-            let novo = getCreditos() + qtd; 
-            setCreditos(novo); 
-            return novo; 
-        }
-        
+        function addCreditos(qtd) { let novo = getCreditos() + qtd; setCreditos(novo); return novo; }
         function consumirCredito() { 
             let atual = getCreditos(); 
             if(atual <= 0) return false; 
@@ -1012,11 +780,78 @@
             atualizarInterface();
             return true; 
         }
-
         function atualizarInterface() { 
             const creditsSpan = document.getElementById('creditsDisplay');
-            if (creditsSpan) creditsSpan.textContent = getCreditos(); 
+            if(creditsSpan) creditsSpan.textContent = getCreditos(); 
             document.getElementById('statsConsultas').textContent = (parseInt(localStorage.getItem(CONSULTAS_KEY)) || 0); 
+            atualizarPerfilUI();
+        }
+
+        // ==========================================
+        // UI DO PERFIL
+        // ==========================================
+        function atualizarPerfilUI() {
+            const container = document.getElementById('authContainer');
+            if (!container) return;
+            
+            if (currentUser) {
+                container.innerHTML = `
+                    <div class="user-profile" id="userProfileBtn">
+                        <img src="${currentUser.photoURL || 'https://via.placeholder.com/38'}" class="user-avatar" onerror="this.src='https://via.placeholder.com/38'">
+                        <div class="user-info">
+                            <span class="user-name">${currentUser.displayName?.split(' ')[0] || 'Marujo'}</span>
+                            <span class="user-credits"><i class="fas fa-gem"></i> ${getCreditos()} créditos</span>
+                        </div>
+                        <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: var(--text-muted);"></i>
+                    </div>
+                `;
+                document.getElementById('userProfileBtn')?.addEventListener('click', toggleUserMenu);
+            } else {
+                container.innerHTML = `
+                    <div class="login-btn" id="loginBtn">
+                        <i class="fas fa-user"></i>
+                        <span>Entrar</span>
+                    </div>
+                `;
+                document.getElementById('loginBtn')?.addEventListener('click', () => {
+                    document.getElementById('loginOverlay').classList.add('active');
+                });
+            }
+        }
+
+        function toggleUserMenu() {
+            let menu = document.getElementById('userMenu');
+            if (menu) { menu.remove(); return; }
+            
+            menu = document.createElement('div');
+            menu.id = 'userMenu';
+            menu.className = 'user-menu';
+            menu.innerHTML = `
+                <div class="user-menu-header">
+                    <img src="${currentUser.photoURL || 'https://via.placeholder.com/45'}" class="user-menu-avatar" onerror="this.src='https://via.placeholder.com/45'">
+                    <div class="user-menu-info">
+                        <div class="user-menu-name">${currentUser.displayName || 'Marujo'}</div>
+                        <div class="user-menu-email">${currentUser.email || ''}</div>
+                    </div>
+                </div>
+                <div class="user-menu-stats">
+                    <i class="fas fa-gem"></i> ${getCreditos()} créditos disponíveis
+                </div>
+                <div class="user-menu-stats">
+                    <i class="fas fa-chart-line"></i> ${localStorage.getItem(CONSULTAS_KEY) || 0} consultas realizadas
+                </div>
+                <button class="logout-btn" onclick="fazerLogout()"><i class="fas fa-sign-out-alt"></i> Sair da conta</button>
+            `;
+            document.body.appendChild(menu);
+            
+            setTimeout(() => {
+                document.addEventListener('click', function closeMenu(e) {
+                    if (!menu.contains(e.target) && !document.getElementById('userProfileBtn')?.contains(e.target)) {
+                        menu.remove();
+                        document.removeEventListener('click', closeMenu);
+                    }
+                });
+            }, 100);
         }
 
         // ==========================================
@@ -1025,13 +860,11 @@
         function comprarCreditos(creditos, valor) {
             if (!currentUser) {
                 showToast('🔒 Faça login para adquirir créditos!', 'error');
-                fazerLoginGoogle();
+                document.getElementById('loginOverlay').classList.add('active');
                 return;
             }
             let mensagem = `Olá! Gostaria de adquirir ${creditos} créditos por R$ ${valor.toFixed(2).replace('.', ',')} para o Marujo Consultas.`;
-            let numeroWhatsApp = '5521989047220';
-            let url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`;
-            window.open(url, '_blank');
+            window.open(`https://wa.me/5521989047220?text=${encodeURIComponent(mensagem)}`, '_blank');
         }
 
         // ==========================================
@@ -1040,15 +873,11 @@
         async function ativarCodigo() {
             if (!currentUser) {
                 showToast('🔒 Faça login para ativar um código!', 'error');
-                fazerLoginGoogle();
+                document.getElementById('loginOverlay').classList.add('active');
                 return;
             }
-            
             let codigo = document.getElementById('codigoInput').value.trim().toUpperCase();
-            if(!codigo) { 
-                showToast('Digite um código válido.', 'error'); 
-                return; 
-            }
+            if(!codigo) { showToast('Digite um código válido.', 'error'); return; }
             
             const btn = event.target;
             const textoOriginal = btn.innerHTML;
@@ -1058,18 +887,12 @@
             try {
                 const response = await fetch(`http://br2.bronxyshost.com:4009/api/ativar-codigo`, {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({ codigo: codigo, userId: currentUser.uid })
                 });
-                
                 const data = await response.json();
-                
                 if (data.sucesso) {
-                    const creditosAdicionados = data.creditos;
-                    const novoTotal = addCreditos(creditosAdicionados);
+                    const novoTotal = addCreditos(data.creditos);
                     showToast(`🎉 ${data.mensagem} Agora você tem ${novoTotal} créditos!`, 'success');
                     fecharModalCodigo();
                     document.getElementById('codigoInput').value = '';
@@ -1077,7 +900,6 @@
                     showToast(`❌ ${data.erro}`, 'error');
                 }
             } catch (error) {
-                console.error('❌ Erro:', error);
                 showToast('Erro ao conectar com o servidor', 'error');
             } finally {
                 btn.innerHTML = textoOriginal;
@@ -1086,18 +908,16 @@
         }
 
         // ==========================================
-        // REALIZAR CONSULTA - COM VERIFICAÇÃO DE LOGIN
+        // REALIZAR CONSULTA
         // ==========================================
         async function realizarConsulta() {
-            // 🔒 VERIFICAÇÃO DE LOGIN OBRIGATÓRIA
             if (!currentUser) {
                 showToast('🔒 Você precisa estar logado para realizar consultas!', 'error');
                 document.getElementById('loginOverlay').classList.add('active');
                 return;
             }
-            
             if(getCreditos() <= 0) { 
-                showToast('⚓ Saldo zerado! Adquira um dos planos acima para continuar navegando.', 'error'); 
+                showToast('⚓ Saldo zerado! Adquira um dos planos acima.', 'error'); 
                 return; 
             }
 
@@ -1108,44 +928,35 @@
                     let cpfRaw = document.getElementById('cpf').value.trim();
                     if(!cpfRaw) { showToast('Digite um CPF.', 'error'); return; }
                     valor = limparCPF(cpfRaw);
-                    if(!valor) { showToast('CPF inválido. Use 11 dígitos: 12345678900 ou 123.456.789-00', 'error'); return; }
+                    if(!valor) { showToast('CPF inválido.', 'error'); return; }
                     versao = document.getElementById('cpfVersao').value; 
                     break;
-                    
                 case 'cnpj': 
                     let cnpjRaw = document.getElementById('cnpj').value.trim();
                     if(!cnpjRaw) { showToast('Digite um CNPJ.', 'error'); return; }
                     valor = limparCNPJ(cnpjRaw);
-                    if(!valor) { showToast('CNPJ inválido. Use 14 dígitos ou formato 00.000.000/0000-00', 'error'); return; }
+                    if(!valor) { showToast('CNPJ inválido.', 'error'); return; }
                     break;
-                    
                 case 'placa': 
                     valor = document.getElementById('placa').value.trim().toUpperCase(); 
                     if(!valor || valor.length < 7) { showToast('Placa inválida.', 'error'); return; } 
                     versao = document.getElementById('placaVersao').value; 
                     break;
-                    
                 case 'telefone': 
                     let telRaw = document.getElementById('telefone').value.trim();
                     if(!telRaw) { showToast('Digite um telefone.', 'error'); return; }
                     valor = limparTelefone(telRaw);
-                    if(!valor) { 
-                        showToast('Telefone inválido. Use formatos como: (21) 98904-7220 ou 21989047220', 'error'); 
-                        return; 
-                    }
+                    if(!valor) { showToast('Telefone inválido.', 'error'); return; }
                     break;
-                    
                 case 'veiculo': 
                     tipo = document.getElementById('veiculoTipo').value; 
                     valor = document.getElementById('veiculoValor').value.trim(); 
                     if(!valor) { showToast('Digite a numeração.', 'error'); return; } 
                     break;
-                    
                 case 'foto': 
                     valor = document.getElementById('nomeFoto').value.trim(); 
                     if(!valor) { showToast('Nome obrigatório.', 'error'); return; } 
                     break;
-                    
                 case 'nome':
                     valor = document.getElementById('nomeCompleto').value.trim().toUpperCase();
                     if(!valor) { showToast('Digite um nome para buscar.', 'error'); return; }
@@ -1157,12 +968,8 @@
             showLoader(true);
 
             try {
-                let url;
-                if (tipo) {
-                    url = `${API_BASE}/api/consultar?tipo=${tipo}&valor=${encodeURIComponent(valor)}`;
-                    if(versao) url += `&versao=${versao}`;
-                    console.log('📡 Consultando:', url);
-                }
+                let url = `${API_BASE}/api/consultar?tipo=${tipo}&valor=${encodeURIComponent(valor)}`;
+                if(versao) url += `&versao=${versao}`;
                 
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 20000); 
@@ -1180,8 +987,7 @@
                     addCreditos(1); 
                 }
             } catch(e) {
-                console.error('Erro:', e);
-                mostrarErro('Servidor inacessível no momento. Seus creditos foram devolvidos, pedimos que aguarde o servidor voltar a ativa.');
+                mostrarErro('Servidor inacessível no momento. Seus créditos foram devolvidos.');
                 addCreditos(1);
             } finally {
                 showLoader(false);
@@ -1195,10 +1001,7 @@
             currentTab = tab; 
             document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active')); 
             if(btnElement) btnElement.classList.add('active'); 
-            
-            document.querySelectorAll('.consulta-group').forEach(g => {
-                g.classList.remove('active');
-            }); 
+            document.querySelectorAll('.consulta-group').forEach(g => g.classList.remove('active')); 
             document.getElementById(`${tab}Group`).classList.add('active'); 
         }
 
@@ -1213,154 +1016,58 @@
 
         function preencherDemo(id, val) { 
             document.getElementById(id).value = val; 
-            if(id === 'telefone') {
-                formatarTelefoneInput(document.getElementById('telefone'));
-            }
+            if(id === 'telefone') formatarTelefoneInput(document.getElementById('telefone'));
             showToast('Dados de teste inseridos.', 'success'); 
         }
 
-        function showLoader(show) {
-            const loader = document.getElementById('loaderOverlay');
-            show ? loader.classList.add('active') : loader.classList.remove('active');
-        }
-
+        function showLoader(show) { document.getElementById('loaderOverlay').classList.toggle('active', show); }
         function abrirModalCodigo() { 
-            if (!currentUser) {
-                showToast('🔒 Faça login para ativar um código!', 'error');
-                fazerLoginGoogle();
-                return;
-            }
+            if (!currentUser) { showToast('🔒 Faça login para ativar um código!', 'error'); document.getElementById('loginOverlay').classList.add('active'); return; }
             document.getElementById('codigoModal').classList.add('active'); 
         }
-        
         function fecharModalCodigo() { document.getElementById('codigoModal').classList.remove('active'); }
-
-        function contatoWhatsApp() {
-            window.open('https://wa.me/5521989047220?text=Olá! Gostaria de adquirir um código VIP para o Marujo Consultas', '_blank');
-        }
-
-        function limparResultados() {
-            dadosAtuais = null;
-            document.getElementById('resultadoTerminal').classList.remove('active');
-            showToast('Terminal apagado.', 'success');
-        }
-
+        function contatoWhatsApp() { window.open('https://wa.me/5521989047220?text=Olá! Gostaria de adquirir um código VIP', '_blank'); }
+        function limparResultados() { dadosAtuais = null; document.getElementById('resultadoTerminal').classList.remove('active'); showToast('Terminal apagado.', 'success'); }
         function copiarJSON() { if(!dadosAtuais) return; navigator.clipboard.writeText(JSON.stringify(dadosAtuais.resultado || dadosAtuais, null, 2)); showToast('Copiado.', 'success'); }
-        
-        function exportarPDF() { 
-            if(!dadosAtuais) return; 
-            showToast('Gerando PDF...', 'success');
-            html2pdf().set({ margin: 0.5, filename: `marujo_${Date.now()}.pdf`, html2canvas: { scale: 2, backgroundColor: '#090e17' } }).from(document.getElementById('resultadoTerminal')).save(); 
-        }
+        function exportarPDF() { if(!dadosAtuais) return; html2pdf().set({ margin: 0.5, filename: `marujo_${Date.now()}.pdf` }).from(document.getElementById('resultadoTerminal')).save(); }
 
         // ==========================================
         // LOGIN COM GOOGLE
         // ==========================================
-        function fazerLoginGoogle() {
+        async function fazerLoginGoogle() {
             if (!window.fbOps) {
                 showToast('Sistema de login carregando...', 'info');
                 return;
             }
-            
-            showToast('Abrindo porta de embarque...', 'info');
-            window.fbOps.signInWithPopup(window.auth, window.googleProvider)
-                .then((result) => {
-                    showToast(`Bem-vindo, ${result.user.displayName.split(' ')[0]}!`, 'success');
-                    document.getElementById('loginOverlay').classList.remove('active');
-                })
-                .catch((error) => {
-                    if(error.code !== 'auth/popup-closed-by-user') {
-                        showToast("Erro ao logar: " + error.message, 'error');
-                    }
-                });
+            try {
+                showToast('Abrindo porta de embarque...', 'info');
+                const result = await window.fbOps.signInWithPopup(window.auth, window.googleProvider);
+                currentUser = result.user;
+                showToast(`Bem-vindo, ${currentUser.displayName?.split(' ')[0]}!`, 'success');
+                document.getElementById('loginOverlay').classList.remove('active');
+                atualizarPerfilUI();
+                atualizarInterface();
+            } catch (error) {
+                if(error.code !== 'auth/popup-closed-by-user') {
+                    showToast("Erro ao logar: " + error.message, 'error');
+                }
+            }
         }
 
         function fazerLogout() {
             if(!window.fbOps) return;
             window.fbOps.signOut(window.auth).then(() => {
-                showToast('Você deslogou da sua conta.', 'info');
                 currentUser = null;
-                atualizarInterfaceUsuario();
+                showToast('Você deslogou da sua conta.', 'info');
+                atualizarPerfilUI();
+                atualizarInterface();
+                const menu = document.getElementById('userMenu');
+                if(menu) menu.remove();
             });
         }
 
-        function atualizarInterfaceUsuario() {
-            const creditPill = document.getElementById('creditPill');
-            
-            if (currentUser) {
-                creditPill.innerHTML = `
-                    <i class="fas fa-user-circle"></i>
-                    <div class="credit-info">
-                        <span class="credit-label">${currentUser.displayName?.split(' ')[0] || 'Marujo'}</span>
-                        <span class="credit-value" id="creditsDisplay">${getCreditos()}</span>
-                    </div>
-                    <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
-                `;
-                creditPill.onclick = () => abrirMenuUsuario();
-            } else {
-                creditPill.innerHTML = `
-                    <i class="fas fa-user"></i>
-                    <div class="credit-info">
-                        <span class="credit-label">Entrar</span>
-                        <span class="credit-value" id="creditsDisplay">${getCreditos()}</span>
-                    </div>
-                `;
-                creditPill.onclick = () => {
-                    document.getElementById('loginOverlay').classList.add('active');
-                };
-            }
-        }
-
-        function abrirMenuUsuario() {
-            let menu = document.getElementById('userMenu');
-            if (menu) menu.remove();
-            
-            menu = document.createElement('div');
-            menu.id = 'userMenu';
-            menu.style.cssText = `
-                position: fixed;
-                top: 70px;
-                right: 20px;
-                background: var(--glass-bg);
-                backdrop-filter: blur(20px);
-                border: 1px solid var(--glass-border);
-                border-radius: 16px;
-                padding: 12px;
-                z-index: 2000;
-                min-width: 180px;
-                box-shadow: var(--shadow-card);
-            `;
-            
-            menu.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 8px;">
-                    <img src="${currentUser.photoURL || 'https://via.placeholder.com/40'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                    <div>
-                        <div style="font-weight: bold;">${currentUser.displayName || 'Marujo'}</div>
-                        <div style="font-size: 0.7rem; color: var(--text-muted);">${currentUser.email || ''}</div>
-                    </div>
-                </div>
-                <div style="padding: 8px 0; color: var(--text-muted); font-size: 0.8rem;">
-                    <i class="fas fa-gem"></i> Créditos: ${getCreditos()}
-                </div>
-                <button onclick="fazerLogout(); this.parentElement.remove();" style="width: 100%; padding: 8px; margin-top: 8px; background: rgba(255,77,77,0.2); border: 1px solid var(--accent); border-radius: 10px; color: var(--accent); cursor: pointer;">
-                    <i class="fas fa-sign-out-alt"></i> Sair
-                </button>
-            `;
-            
-            document.body.appendChild(menu);
-            
-            setTimeout(() => {
-                document.addEventListener('click', function closeMenu(e) {
-                    if (!menu.contains(e.target) && !creditPill.contains(e.target)) {
-                        menu.remove();
-                        document.removeEventListener('click', closeMenu);
-                    }
-                });
-            }, 100);
-        }
-
         // ==========================================
-        // FUNÇÕES DE FORMATAÇÃO DE RESULTADOS
+        // RESULTADOS
         // ==========================================
         function mostrarSucesso(dados) {
             dadosAtuais = dados;
@@ -1369,273 +1076,50 @@
             container.classList.add('active');
             
             let html = '';
-            
-            if (dados.resultado && dados.resultado.resultados && Array.isArray(dados.resultado.resultados)) {
-                html += `<div style="margin-bottom: 1rem; padding: 0.5rem; background: rgba(20, 184, 166, 0.1); border-radius: 8px;">
-                            <i class="fas fa-info-circle"></i> ${dados.resposta || 'Resultados encontrados:'}
-                         </div>`;
-                dados.resultado.resultados.forEach((pessoa, index) => {
-                    html += `<div class="resultado-item">
-                        <div class="resultado-nome"><i class="fas fa-user"></i> ${pessoa.nome || 'N/A'}</div>
-                        <div class="resultado-info">
-                            <div><span>📄 CPF:</span> ${pessoa.cpf || 'N/A'}</div>
-                            <div><span>⚥ Sexo:</span> ${pessoa.sexo || 'N/A'}</div>
-                            <div><span>🎂 Nascimento:</span> ${pessoa.nascimento || 'N/A'}</div>
-                        </div>
-                    </div>`;
+            if (dados.resultado && dados.resultado.resultados) {
+                html = `<div class="resultado-grid">`;
+                dados.resultado.resultados.forEach(p => {
+                    html += `<div class="resultado-item"><div class="resultado-nome"><i class="fas fa-user"></i> ${p.nome || 'N/A'}</div><div class="resultado-info"><div><span>📄 CPF:</span> ${p.cpf || 'N/A'}</div><div><span>⚥ Sexo:</span> ${p.sexo || 'N/A'}</div><div><span>🎂 Nascimento:</span> ${p.nascimento || 'N/A'}</div></div></div>`;
                 });
-            } else if (dados.resultado && dados.resultado.foto) {
-                html = formatarResultadoBiometria(dados.resultado);
-            } else if (dados.resultado && dados.resultado.cpf && !dados.resultado.placa && !dados.resultado.telefone) {
-                html = formatarResultadoCPF(dados.resultado);
-            } else if (dados.resultado && dados.resultado.empresa) {
-                html = formatarResultadoCNPJ(dados.resultado);
-            } else if (dados.resultado && dados.resultado.placa) {
-                html = formatarResultadoPlaca(dados.resultado);
-            } else if (dados.resultado && dados.resultado.telefone) {
-                html = formatarResultadoTelefone(dados.resultado);
-            } else if (dados.resultado && dados.resultado.bases) {
-                html = formatarResultadoVeiculo(dados.resultado);
+                html += `</div>`;
+            } else if (dados.resultado && dados.resultado.cpf) {
+                html = `<div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem;"><div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fas fa-id-card" style="font-size: 1.5rem; color: var(--bg-deep);"></i></div>
+                    <div><div style="font-size: 1.3rem; font-weight: bold;">${dados.resultado.nome || 'N/A'}</div><div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-fingerprint"></i> CPF: ${dados.resultado.cpf || 'N/A'}</div></div></div></div>
+                    <div class="resultado-grid">${dados.resultado.nascimento ? `<div class="info-card"><i class="fas fa-birthday-cake"></i> <strong>🎂 Nascimento:</strong> ${dados.resultado.nascimento}</div>` : ''}
+                    ${dados.resultado.idade ? `<div class="info-card"><i class="fas fa-chart-line"></i> <strong>📊 Idade:</strong> ${dados.resultado.idade} anos</div>` : ''}
+                    ${dados.resultado.estado_receita ? `<div class="info-card"><i class="fas fa-check-circle"></i> <strong>✅ Situação:</strong> ${dados.resultado.estado_receita}</div>` : ''}
+                    ${dados.resultado.score_estimado ? `<div class="info-card"><i class="fas fa-chart-simple"></i> <strong>📈 Score:</strong> ${dados.resultado.score_estimado}</div>` : ''}</div>`;
             } else {
-                html = formatarDadosGenericos(dados.resultado || dados);
+                html = `<div class="info-card">${JSON.stringify(dados.resultado || dados)}</div>`;
             }
-            
-            if (dados.developer) {
-                html += `<div style="margin-top: 1rem; padding: 0.8rem; font-size: 0.7rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-                            <i class="fab fa-whatsapp"></i> Suporte: ${dados.developer}
-                        </div>`;
-            }
-            
             body.innerHTML = html;
-            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function formatarResultadoCPF(data) {
-            let html = `<div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
-                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                    <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-id-card" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
-                    </div>
-                    <div>
-                        <div style="font-size: 1.3rem; font-weight: bold;">${data.nome || 'N/A'}</div>
-                        <div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-fingerprint"></i> CPF: ${data.cpf || 'N/A'}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="resultado-grid">
-                ${data.nascimento ? `<div class="info-card"><i class="fas fa-birthday-cake"></i> <strong>🎂 Nascimento:</strong> ${data.nascimento}</div>` : ''}
-                ${data.idade ? `<div class="info-card"><i class="fas fa-chart-line"></i> <strong>📊 Idade:</strong> ${data.idade} anos</div>` : ''}
-                ${data.sexo ? `<div class="info-card"><i class="fas ${data.sexo === 'F' ? 'fa-venus' : 'fa-mars'}"></i> <strong>⚥ Sexo:</strong> ${data.sexo === 'F' ? 'Feminino' : 'Masculino'}</div>` : ''}
-                ${data.estado_receita ? `<div class="info-card"><i class="fas fa-check-circle"></i> <strong>✅ Situação:</strong> ${data.estado_receita}</div>` : ''}
-                ${data.score_estimado ? `<div class="info-card"><i class="fas fa-chart-simple"></i> <strong>📈 Score:</strong> ${data.score_estimado}</div>` : ''}
-            </div>`;
-            
-            if (data.telefones && data.telefones.length > 0) {
-                html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-phone-alt"></i> 📞 TELEFONES</div><div class="resultado-grid">`;
-                data.telefones.forEach(tel => {
-                    html += `<div class="info-card"><i class="fas fa-phone"></i> ${tel}</div>`;
-                });
-                html += `</div></div>`;
-            }
-            
-            if (data.enderecos && data.enderecos.length > 0) {
-                html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-map-pin"></i> 📍 ENDEREÇOS</div>`;
-                data.enderecos.forEach(end => {
-                    html += `<div class="info-card" style="margin-bottom: 0.5rem;">
-                        <i class="fas fa-home"></i> ${end.rua || ''}, ${end.numero || ''} - ${end.bairro || ''}, ${end.cidade || ''} ${end.uf || ''} - CEP: ${end.cep || ''}
-                    </div>`;
-                });
-                html += `</div>`;
-            }
-            return html;
-        }
-
-        function formatarResultadoCNPJ(data) {
-            const empresa = data.empresa || data;
-            let html = `<div style="background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
-                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                    <div style="background: var(--gold-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-building" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
-                    </div>
-                    <div>
-                        <div style="font-size: 1.3rem; font-weight: bold;">${empresa.razao_social || 'N/A'}</div>
-                        <div style="font-size: 0.8rem; color: var(--gold-light);"><i class="fas fa-building"></i> CNPJ: ${empresa.cnpj || 'N/A'}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="resultado-grid">
-                ${empresa.nome_fantasia ? `<div class="info-card"><i class="fas fa-tag"></i> <strong>🏷️ Fantasia:</strong> ${empresa.nome_fantasia}</div>` : ''}
-                ${empresa.fundacao ? `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>📅 Fundação:</strong> ${empresa.fundacao}</div>` : ''}
-                ${empresa.capital_social ? `<div class="info-card"><i class="fas fa-dollar-sign"></i> <strong>💰 Capital:</strong> R$ ${parseFloat(empresa.capital_social).toLocaleString('pt-BR')}</div>` : ''}
-            </div>`;
-            return html;
-        }
-
-        function formatarResultadoPlaca(data) {
-            const veiculo = data.veiculo || data;
-            const proprietario = data.proprietario || data.possuidor;
-            
-            let html = `<div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
-                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                    <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-car" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
-                    </div>
-                    <div>
-                        <div style="font-size: 1.3rem; font-weight: bold;">${veiculo.marca_modelo || veiculo.marca || 'Veículo'}</div>
-                        <div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-id-card"></i> Placa: ${data.placa || veiculo.placa || 'N/A'}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="resultado-grid">
-                ${veiculo.cor ? `<div class="info-card"><i class="fas fa-palette"></i> <strong>🎨 Cor:</strong> ${veiculo.cor}</div>` : ''}
-                ${veiculo.ano_fabricacao ? `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>🏭 Ano:</strong> ${veiculo.ano_fabricacao}/${veiculo.ano_modelo || ''}</div>` : ''}
-                ${data.chassi ? `<div class="info-card"><i class="fas fa-barcode"></i> <strong>🔢 Chassi:</strong> ${data.chassi}</div>` : ''}
-            </div>`;
-            
-            if (proprietario) {
-                html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-user-check"></i> 👤 PROPRIETÁRIO</div>
-                    <div class="resultado-grid">
-                        <div class="info-card"><i class="fas fa-user"></i> <strong>Nome:</strong> ${proprietario.nome || 'N/A'}</div>
-                        <div class="info-card"><i class="fas fa-id-card"></i> <strong>CPF/CNPJ:</strong> ${proprietario.cpf_cnpj || proprietario.documento || 'N/A'}</div>
-                    </div>
-                </div>`;
-            }
-            
-            if (data.restricoes && data.restricoes.length > 0) {
-                html += `<div style="margin-top: 1rem;"><div class="section-title" style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> ⚠️ RESTRIÇÕES</div>`;
-                data.restricoes.forEach(r => {
-                    html += `<div class="info-card" style="background: rgba(239,68,68,0.1); border-left-color: #ef4444;"><i class="fas fa-ban"></i> ${r}</div>`;
-                });
-                html += `</div>`;
-            }
-            return html;
-        }
-
-        function formatarResultadoTelefone(data) {
-            let html = `<div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
-                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                    <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-phone-alt" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
-                    </div>
-                    <div>
-                        <div style="font-size: 1.3rem; font-weight: bold;">${data.nome || 'Titular'}</div>
-                        <div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-phone"></i> Telefone: ${data.telefone || 'N/A'}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="resultado-grid">
-                ${data.cpf_cnpj ? `<div class="info-card"><i class="fas fa-id-card"></i> <strong>📄 CPF/CNPJ:</strong> ${data.cpf_cnpj}</div>` : ''}
-            </div>`;
-            
-            if (data.endereco) {
-                html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-map-pin"></i> 📍 ENDEREÇO</div>
-                    <div class="info-card"><i class="fas fa-home"></i> ${data.endereco.logradouro || ''}, ${data.endereco.numero || ''} - ${data.endereco.bairro || ''}<br>${data.endereco.cidade || ''} - ${data.endereco.estado || ''} | CEP: ${data.endereco.cep || ''}</div>
-                </div>`;
-            }
-            return html;
-        }
-
-        function formatarResultadoVeiculo(data) {
-            let html = `<div style="background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
-                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                    <div style="background: var(--gold-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-microchip" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
-                    </div>
-                    <div>
-                        <div style="font-size: 1.3rem; font-weight: bold;">Consulta por ${data.tipo_consulta === 'motor' ? 'Motor' : 'Chassi'}</div>
-                        <div style="font-size: 0.8rem; color: var(--gold-light);"><i class="fas fa-barcode"></i> Valor: ${data.valor_consultado || 'N/A'}</div>
-                    </div>
-                </div>
-            </div>`;
-            
-            if (data.bases) {
-                for (let key in data.bases) {
-                    const base = data.bases[key];
-                    html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-database"></i> 📁 ${key}</div>
-                        <div class="resultado-grid">
-                            ${base.placa ? `<div class="info-card"><i class="fas fa-car"></i> <strong>Placa:</strong> ${base.placa}</div>` : ''}
-                            ${base.marca_modelo ? `<div class="info-card"><i class="fas fa-car-side"></i> <strong>Modelo:</strong> ${base.marca_modelo}</div>` : ''}
-                            ${base.chassi ? `<div class="info-card"><i class="fas fa-barcode"></i> <strong>Chassi:</strong> ${base.chassi}</div>` : ''}
-                        </div>
-                    </div>`;
-                    break;
-                }
-            }
-            return html;
-        }
-
-        function formatarResultadoBiometria(data) {
-            let html = `<div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
-                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                    <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-camera-retro" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
-                    </div>
-                    <div><div style="font-size: 1.3rem; font-weight: bold;">${data.pessoa?.nome || 'Biometria Facial'}</div></div>
-                </div>
-            </div>`;
-            
-            if (data.foto && data.foto.data_uri) {
-                html += `<div style="text-align: center; margin-bottom: 1.5rem;"><img src="${data.foto.data_uri}" style="max-width: 150px; border-radius: 12px; border: 2px solid var(--aqua-primary);"></div>`;
-            }
-            
-            if (data.pessoa) {
-                html += `<div class="resultado-grid">
-                    <div class="info-card"><i class="fas fa-user"></i> <strong>Nome:</strong> ${data.pessoa.nome || 'N/A'}</div>
-                    <div class="info-card"><i class="fas fa-check-circle"></i> <strong>Situação:</strong> ${data.pessoa.situacao || 'N/A'}</div>
-                </div>`;
-            }
-            return html;
-        }
-
-        function formatarDadosGenericos(data) {
-            if (!data) return '<div class="info-card">Nenhum dado encontrado</div>';
-            let html = '<div style="display: flex; flex-direction: column; gap: 0.8rem;">';
-            for (let [chave, valor] of Object.entries(data)) {
-                if (valor && typeof valor !== 'object') {
-                    html += `<div class="info-card"><i class="fas fa-info-circle"></i><strong>${chave.replace(/_/g, ' ').toUpperCase()}:</strong><span>${escapeHtml(String(valor))}</span></div>`;
-                }
-            }
-            html += '</div>';
-            return html;
         }
 
         function mostrarErro(msg) { 
             const container = document.getElementById('resultadoTerminal');
             container.classList.add('active');
-            document.getElementById('resultadoBody').innerHTML = `<span style="color: #ff5f56;">> ERRO: ${escapeHtml(msg)}</span>`;
-            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function escapeHtml(text) { 
-            let div = document.createElement('div'); 
-            div.textContent = text; 
-            return div.innerHTML; 
+            document.getElementById('resultadoBody').innerHTML = `<span style="color: #ff5f56;">> ERRO: ${msg}</span>`;
         }
 
         // ==========================================
         // INICIALIZAÇÃO
         // ==========================================
-        setInterval(() => { 
-            let el = document.getElementById('statTempo');
-            if(el) el.textContent = `${(Math.random() * 0.3 + 0.2).toFixed(1)}s`; 
-        }, 3000);
-
+        setInterval(() => { let el = document.getElementById('statTempo'); if(el) el.textContent = `${(Math.random() * 0.3 + 0.2).toFixed(1)}s`; }, 3000);
         document.getElementById('placa')?.addEventListener('input', e => e.target.value = e.target.value.toUpperCase());
         
-        // Listener de autenticação do Firebase
+        // Listener de autenticação
         if (window.fbOps) {
             window.fbOps.onAuthStateChanged(window.auth, (user) => {
                 currentUser = user;
-                atualizarInterfaceUsuario();
+                atualizarPerfilUI();
                 atualizarInterface();
-                
-                if (user) {
-                    console.log('✅ Usuário logado:', user.displayName);
-                } else {
-                    console.log('❌ Usuário não logado');
-                }
+                if (user) console.log('✅ Usuário logado:', user.displayName);
+                else console.log('❌ Usuário não logado');
             });
         }
+        
+        document.getElementById('googleLoginBtn')?.addEventListener('click', fazerLoginGoogle);
         
         atualizarInterface();
     </script>
