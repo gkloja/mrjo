@@ -10,6 +10,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDruRISw56lL0dZpnKpFv2COaJkUmamgoc",
+            authDomain: "marujoflix.firebaseapp.com",
+            projectId: "marujoflix",
+            storageBucket: "marujoflix.firebasestorage.app",
+            messagingSenderId: "258606436715",
+            appId: "1:258606436715:web:42a46b19321138a15cfc2e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+        googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+        window.auth = auth;
+        window.googleProvider = googleProvider;
+        window.fbOps = { signInWithPopup, signOut, onAuthStateChanged };
+    </script>
+    
     <style>
         :root {
             --bg-deep: #020813;
@@ -80,8 +104,11 @@
             border: 1px solid rgba(234, 179, 8, 0.3);
             border-radius: 50px;
             padding: 0.4rem 1rem;
-            display: flex; align-items: center; gap: 0.8rem;
-            cursor: pointer; transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         .credit-pill:hover { background: rgba(234, 179, 8, 0.2); transform: translateY(-2px); }
         .credit-pill i { color: var(--gold-primary); }
@@ -258,6 +285,12 @@
             box-shadow: 0 4px 15px rgba(20, 184, 166, 0.2);
         }
         .btn-executar:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(20, 184, 166, 0.4); }
+        
+        .btn-executar:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         .btn-whatsapp {
             width: 100%;
@@ -456,48 +489,127 @@
         }
         
         /* Estilos para os resultados formatados */
-.resultado-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 0.8rem;
-    margin-top: 0.5rem;
-}
+        .resultado-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 0.8rem;
+            margin-top: 0.5rem;
+        }
 
-.info-card {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 10px;
-    padding: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.2s ease;
-}
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--aqua-light);
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid rgba(20, 184, 166, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-.info-card:hover {
-    background: rgba(20, 184, 166, 0.1);
-    border-color: rgba(20, 184, 166, 0.3);
-    transform: translateX(3px);
-}
+        .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
 
-.info-card i {
-    font-size: 1.1rem;
-    color: var(--aqua-light);
-    width: 24px;
-    text-align: center;
-}
+        .info-card:hover {
+            background: rgba(20, 184, 166, 0.1);
+            border-color: rgba(20, 184, 166, 0.3);
+            transform: translateX(3px);
+        }
 
-.info-card strong {
-    color: var(--aqua-light);
-    font-weight: 600;
-}
+        .info-card i {
+            font-size: 1.1rem;
+            color: var(--aqua-light);
+            width: 24px;
+            text-align: center;
+        }
 
-.info-card span {
-    color: var(--text-main);
-    word-break: break-word;
-}
+        .info-card strong {
+            color: var(--aqua-light);
+            font-weight: 600;
+        }
 
+        .info-card span {
+            color: var(--text-main);
+            word-break: break-word;
+        }
+
+        /* Login Overlay */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 8, 19, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .login-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .login-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-card);
+            animation: slideUp 0.5s ease;
+        }
+        .login-card i {
+            font-size: 4rem;
+            color: var(--gold-primary);
+            margin-bottom: 1rem;
+        }
+        .login-card h2 {
+            margin-bottom: 0.5rem;
+        }
+        .login-card p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+        .btn-google {
+            background: white;
+            color: #333;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+        .btn-google:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255,255,255,0.2);
+        }
+        .btn-google img {
+            width: 20px;
+            height: 20px;
+        }
     </style>
 </head>
 <body>
@@ -507,11 +619,11 @@
             <div class="logo-icon"><i class="fas fa-anchor"></i></div>
             <div class="logo-text"><h1>Marujo</h1><span>Consultas</span></div>
         </a>
-        <div class="credit-pill" onclick="abrirModalCodigo()">
-            <i class="fas fa-gem"></i>
+        <div class="credit-pill" id="creditPill">
+            <i class="fas fa-user"></i>
             <div class="credit-info">
-                <span class="credit-label">Saldo</span>
-                <span class="credit-value" id="creditsDisplay">3</span>
+                <span class="credit-label">Entrar</span>
+                <span class="credit-value" id="creditsDisplay">5</span>
             </div>
         </div>
     </header>
@@ -689,7 +801,6 @@
                         </div>
                     </div>
 
-                    <!-- Nova aba de Busca por Nome -->
                     <div id="nomeGroup" class="consulta-group">
                         <div class="form-label">
                             <span><i class="fas fa-user-friends"></i> BUSCA POR NOME COMPLETO</span>
@@ -720,11 +831,10 @@
                         </div>
                     </div>
 
-                    <button class="btn-executar" onclick="realizarConsulta()" style="margin-top: 1.5rem;">
+                    <button class="btn-executar" id="btnExecutar" onclick="realizarConsulta()" style="margin-top: 1.5rem;">
                         <i class="fas fa-search"></i> Executar Rastreamento
                     </button>
                     
-                    <!-- Planos de Créditos -->
                     <div class="planos-container">
                         <div class="planos-title">
                             <i class="fas fa-gem"></i> Escolha seu plano
@@ -799,6 +909,18 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-card">
+            <i class="fas fa-ship"></i>
+            <h2>Bem-vindo ao Marujo</h2>
+            <p>Faça login com sua conta Google para começar a realizar consultas</p>
+            <button class="btn-google" onclick="fazerLoginGoogle()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
+                Entrar com Google
+            </button>
+        </div>
+    </div>
+
     <script>
         // ==========================================
         // CONFIGURAÇÃO
@@ -808,6 +930,7 @@
         const CONSULTAS_KEY = 'marujo_consultas';
         let currentTab = 'cpf';
         let dadosAtuais = null;
+        let currentUser = null;
 
         // ==========================================
         // FUNÇÕES DE LIMPEZA DE DADOS
@@ -826,15 +949,12 @@
 
         function limparTelefone(valor) {
             let limpo = valor.replace(/[^\d]/g, '');
-            
             if(limpo.startsWith('55') && limpo.length > 10) {
                 limpo = limpo.substring(2);
             }
-            
             if(limpo.length === 10 || limpo.length === 11) {
                 return limpo;
             }
-            
             return null;
         }
 
@@ -863,15 +983,17 @@
         }
 
         // ==========================================
-        // SISTEMA DE CRÉDITOS (LOCAL)
+        // SISTEMA DE CRÉDITOS
         // ==========================================
         function getCreditos() { 
-            let c = localStorage.getItem(CREDITS_KEY); 
-            return c === null ? 3 : parseInt(c); 
+            const key = currentUser ? `${CREDITS_KEY}_${currentUser.uid}` : CREDITS_KEY;
+            let c = localStorage.getItem(key); 
+            return c === null ? 5 : parseInt(c); 
         }
-        
+
         function setCreditos(val) { 
-            localStorage.setItem(CREDITS_KEY, val); 
+            const key = currentUser ? `${CREDITS_KEY}_${currentUser.uid}` : CREDITS_KEY;
+            localStorage.setItem(key, val); 
             atualizarInterface(); 
         }
         
@@ -892,7 +1014,8 @@
         }
 
         function atualizarInterface() { 
-            document.getElementById('creditsDisplay').textContent = getCreditos(); 
+            const creditsSpan = document.getElementById('creditsDisplay');
+            if (creditsSpan) creditsSpan.textContent = getCreditos(); 
             document.getElementById('statsConsultas').textContent = (parseInt(localStorage.getItem(CONSULTAS_KEY)) || 0); 
         }
 
@@ -900,6 +1023,11 @@
         // COMPRA DE CRÉDITOS
         // ==========================================
         function comprarCreditos(creditos, valor) {
+            if (!currentUser) {
+                showToast('🔒 Faça login para adquirir créditos!', 'error');
+                fazerLoginGoogle();
+                return;
+            }
             let mensagem = `Olá! Gostaria de adquirir ${creditos} créditos por R$ ${valor.toFixed(2).replace('.', ',')} para o Marujo Consultas.`;
             let numeroWhatsApp = '5521989047220';
             let url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`;
@@ -907,9 +1035,15 @@
         }
 
         // ==========================================
-        // ATIVAR CÓDIGO NO BACKEND
+        // ATIVAR CÓDIGO
         // ==========================================
         async function ativarCodigo() {
+            if (!currentUser) {
+                showToast('🔒 Faça login para ativar um código!', 'error');
+                fazerLoginGoogle();
+                return;
+            }
+            
             let codigo = document.getElementById('codigoInput').value.trim().toUpperCase();
             if(!codigo) { 
                 showToast('Digite um código válido.', 'error'); 
@@ -922,19 +1056,16 @@
             btn.disabled = true;
             
             try {
-                console.log('📤 Enviando código:', codigo);
-                
                 const response = await fetch(`http://br2.bronxyshost.com:4009/api/ativar-codigo`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ codigo: codigo })
+                    body: JSON.stringify({ codigo: codigo, userId: currentUser.uid })
                 });
                 
                 const data = await response.json();
-                console.log('📥 Resposta:', data);
                 
                 if (data.sucesso) {
                     const creditosAdicionados = data.creditos;
@@ -955,9 +1086,16 @@
         }
 
         // ==========================================
-        // REALIZAR CONSULTA - COM INTEGRAÇÃO DA NOVA API
+        // REALIZAR CONSULTA - COM VERIFICAÇÃO DE LOGIN
         // ==========================================
         async function realizarConsulta() {
+            // 🔒 VERIFICAÇÃO DE LOGIN OBRIGATÓRIA
+            if (!currentUser) {
+                showToast('🔒 Você precisa estar logado para realizar consultas!', 'error');
+                document.getElementById('loginOverlay').classList.add('active');
+                return;
+            }
+            
             if(getCreditos() <= 0) { 
                 showToast('⚓ Saldo zerado! Adquira um dos planos acima para continuar navegando.', 'error'); 
                 return; 
@@ -1020,8 +1158,6 @@
 
             try {
                 let url;
-                
-                // Verifica se é a consulta por nome para usar a nova API
                 if (tipo) {
                     url = `${API_BASE}/api/consultar?tipo=${tipo}&valor=${encodeURIComponent(valor)}`;
                     if(versao) url += `&versao=${versao}`;
@@ -1088,392 +1224,19 @@
             show ? loader.classList.add('active') : loader.classList.remove('active');
         }
 
-        function abrirModalCodigo() { document.getElementById('codigoModal').classList.add('active'); }
+        function abrirModalCodigo() { 
+            if (!currentUser) {
+                showToast('🔒 Faça login para ativar um código!', 'error');
+                fazerLoginGoogle();
+                return;
+            }
+            document.getElementById('codigoModal').classList.add('active'); 
+        }
+        
         function fecharModalCodigo() { document.getElementById('codigoModal').classList.remove('active'); }
 
         function contatoWhatsApp() {
             window.open('https://wa.me/5521989047220?text=Olá! Gostaria de adquirir um código VIP para o Marujo Consultas', '_blank');
-        }
-
-    function mostrarSucesso(dados) {
-    dadosAtuais = dados;
-    const container = document.getElementById('resultadoTerminal');
-    const body = document.getElementById('resultadoBody');
-    container.classList.add('active');
-    
-    let html = '';
-    
-    // Busca por Nome (formato especial)
-    if (dados.resultado && dados.resultado.resultados && Array.isArray(dados.resultado.resultados)) {
-        html += `<div style="margin-bottom: 1rem; padding: 0.5rem; background: rgba(20, 184, 166, 0.1); border-radius: 8px;">
-                    <i class="fas fa-info-circle"></i> ${dados.resposta || 'Resultados encontrados:'}
-                 </div>`;
-        
-        dados.resultado.resultados.forEach((pessoa, index) => {
-            html += `
-                <div class="resultado-item">
-                    <div class="resultado-nome">
-                        <i class="fas fa-user"></i> ${pessoa.nome || 'N/A'}
-                    </div>
-                    <div class="resultado-info">
-                        <div><span>📄 CPF:</span> ${pessoa.cpf || 'N/A'}</div>
-                        <div><span>⚥ Sexo:</span> ${pessoa.sexo || 'N/A'}</div>
-                        <div><span>🎂 Nascimento:</span> ${pessoa.nascimento || 'N/A'}</div>
-                    </div>
-                </div>
-            `;
-        });
-    }
-    // Biometria (foto)
-    else if (dados.resultado && dados.resultado.foto) {
-        html = formatarResultadoBiometria(dados.resultado);
-    }
-    // CPF
-    else if (dados.resultado && dados.resultado.cpf && !dados.resultado.placa && !dados.resultado.telefone) {
-        html = formatarResultadoCPF(dados.resultado);
-    }
-    // CNPJ
-    else if (dados.resultado && dados.resultado.empresa) {
-        html = formatarResultadoCNPJ(dados.resultado);
-    }
-    // Placa
-    else if (dados.resultado && dados.resultado.placa) {
-        html = formatarResultadoPlaca(dados.resultado);
-    }
-    // Telefone
-    else if (dados.resultado && dados.resultado.telefone) {
-        html = formatarResultadoTelefone(dados.resultado);
-    }
-    // Motor/Chassi
-    else if (dados.resultado && dados.resultado.bases) {
-        html = formatarResultadoVeiculo(dados.resultado);
-    }
-    // Qualquer outro dado
-    else {
-        html = formatarDadosGenericos(dados.resultado || dados);
-    }
-    
-    // Adiciona informações do desenvolvedor
-    if (dados.developer) {
-        html += `<div style="margin-top: 1rem; padding: 0.8rem; font-size: 0.7rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-                    <i class="fab fa-whatsapp"></i> Suporte: ${dados.developer}
-                </div>`;
-    }
-    
-    body.innerHTML = html;
-    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// ==================== FUNÇÕES DE FORMATAÇÃO ====================
-
-function formatarResultadoCPF(data) {
-    let html = `
-        <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
-            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-id-card" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
-                </div>
-                <div>
-                    <div style="font-size: 1.3rem; font-weight: bold;">${data.nome || 'N/A'}</div>
-                    <div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-fingerprint"></i> CPF: ${data.cpf || 'N/A'}</div>
-                </div>
-            </div>
-        </div>
-        <div class="resultado-grid">
-            ${data.nascimento ? `<div class="info-card"><i class="fas fa-birthday-cake"></i> <strong>🎂 Nascimento:</strong> ${data.nascimento}</div>` : ''}
-            ${data.idade ? `<div class="info-card"><i class="fas fa-chart-line"></i> <strong>📊 Idade:</strong> ${data.idade} anos</div>` : ''}
-            ${data.signo ? `<div class="info-card"><i class="fas fa-star"></i> <strong>⭐ Signo:</strong> ${data.signo}</div>` : ''}
-            ${data.sexo ? `<div class="info-card"><i class="fas ${data.sexo === 'F' ? 'fa-venus' : 'fa-mars'}"></i> <strong>⚥ Sexo:</strong> ${data.sexo === 'F' ? 'Feminino' : 'Masculino'}</div>` : ''}
-            ${data.mae ? `<div class="info-card"><i class="fas fa-female"></i> <strong>👩 Mãe:</strong> ${data.mae}</div>` : ''}
-            ${data.pai ? `<div class="info-card"><i class="fas fa-male"></i> <strong>👨 Pai:</strong> ${data.pai}</div>` : ''}
-            ${data.municipio_nascimento ? `<div class="info-card"><i class="fas fa-map-marker-alt"></i> <strong>📍 Naturalidade:</strong> ${data.municipio_nascimento}</div>` : ''}
-            ${data.estado_receita ? `<div class="info-card"><i class="fas fa-check-circle"></i> <strong>✅ Situação:</strong> ${data.estado_receita}</div>` : ''}
-            ${data.score_estimado ? `<div class="info-card"><i class="fas fa-chart-simple"></i> <strong>📈 Score:</strong> ${data.score_estimado}</div>` : ''}
-            ${data.cns ? `<div class="info-card"><i class="fas fa-heartbeat"></i> <strong>🩺 CNS:</strong> ${data.cns}</div>` : ''}
-        </div>
-    `;
-    
-    // Telefones
-    if (data.telefones && data.telefones.length > 0) {
-        html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-phone-alt"></i> 📞 TELEFONES</div><div class="resultado-grid">`;
-        data.telefones.forEach(tel => {
-            html += `<div class="info-card"><i class="fas fa-phone"></i> ${tel}</div>`;
-        });
-        html += `</div></div>`;
-    }
-    
-    // Endereços
-    if (data.enderecos && data.enderecos.length > 0) {
-        html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-map-pin"></i> 📍 ENDEREÇOS</div>`;
-        data.enderecos.forEach(end => {
-            html += `
-                <div class="info-card" style="margin-bottom: 0.5rem;">
-                    <i class="fas fa-home"></i> 
-                    ${end.rua || ''}, ${end.numero || ''} - ${end.bairro || ''}, ${end.cidade || ''} ${end.uf || ''} - CEP: ${end.cep || ''}
-                </div>
-            `;
-        });
-        html += `</div>`;
-    }
-    
-    return html;
-}
-
-function formatarResultadoCNPJ(data) {
-    const empresa = data.empresa || data;
-    let html = `
-        <div style="background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
-            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                <div style="background: var(--gold-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-building" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
-                </div>
-                <div>
-                    <div style="font-size: 1.3rem; font-weight: bold;">${empresa.razao_social || 'N/A'}</div>
-                    <div style="font-size: 0.8rem; color: var(--gold-light);"><i class="fas fa-building"></i> CNPJ: ${empresa.cnpj || 'N/A'}</div>
-                </div>
-            </div>
-        </div>
-        <div class="resultado-grid">
-            ${empresa.nome_fantasia ? `<div class="info-card"><i class="fas fa-tag"></i> <strong>🏷️ Fantasia:</strong> ${empresa.nome_fantasia}</div>` : ''}
-            ${empresa.fundacao ? `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>📅 Fundação:</strong> ${empresa.fundacao}</div>` : ''}
-            ${empresa.natureza ? `<div class="info-card"><i class="fas fa-briefcase"></i> <strong>🏢 Natureza:</strong> ${empresa.natureza}</div>` : ''}
-            ${empresa.capital_social ? `<div class="info-card"><i class="fas fa-dollar-sign"></i> <strong>💰 Capital:</strong> R$ ${parseFloat(empresa.capital_social).toLocaleString('pt-BR')}</div>` : ''}
-            ${empresa.qtd_funcionarios ? `<div class="info-card"><i class="fas fa-users"></i> <strong>👥 Funcionários:</strong> ${empresa.qtd_funcionarios}</div>` : ''}
-        </div>
-    `;
-    
-    // Funcionários/Sócios
-    if (data.funcionarios && data.funcionarios.length > 0) {
-        html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-users"></i> 👥 SÓCIOS E ADMINISTRADORES</div>`;
-        data.funcionarios.slice(0, 5).forEach(func => {
-            html += `
-                <div class="info-card" style="margin-bottom: 0.5rem;">
-                    <i class="fas fa-user-tie"></i> 
-                    <strong>${func.nome || 'N/A'}</strong> - ${func.cargo || func.funcao || 'Cargo não informado'}
-                    ${func.cpf ? `<span style="color: var(--text-muted);"> (CPF: ${func.cpf})</span>` : ''}
-                </div>
-            `;
-        });
-        html += `</div>`;
-    }
-    
-    return html;
-}
-
-function formatarResultadoPlaca(data) {
-    const veiculo = data.veiculo || data;
-    const proprietario = data.proprietario || data.possuidor;
-    
-    let html = `
-        <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
-            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-car" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
-                </div>
-                <div>
-                    <div style="font-size: 1.3rem; font-weight: bold;">${veiculo.marca_modelo || veiculo.marca || 'Veículo'}</div>
-                    <div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-id-card"></i> Placa: ${data.placa || veiculo.placa || 'N/A'}</div>
-                </div>
-            </div>
-        </div>
-        <div class="resultado-grid">
-            ${veiculo.cor ? `<div class="info-card"><i class="fas fa-palette"></i> <strong>🎨 Cor:</strong> ${veiculo.cor}</div>` : ''}
-            ${veiculo.ano_fabricacao ? `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>🏭 Fab./Modelo:</strong> ${veiculo.ano_fabricacao}/${veiculo.ano_modelo || ''}</div>` : ''}
-            ${veiculo.combustivel ? `<div class="info-card"><i class="fas fa-gas-pump"></i> <strong>⛽ Combustível:</strong> ${veiculo.combustivel}</div>` : ''}
-            ${data.chassi ? `<div class="info-card"><i class="fas fa-barcode"></i> <strong>🔢 Chassi:</strong> ${data.chassi}</div>` : ''}
-            ${data.renavam ? `<div class="info-card"><i class="fas fa-qrcode"></i> <strong>📱 Renavam:</strong> ${data.renavam}</div>` : ''}
-            ${data.situacao ? `<div class="info-card"><i class="fas fa-check-circle"></i> <strong>✅ Situação:</strong> ${data.situacao === 'EM_CIRCULACAO' ? 'Em Circulação' : data.situacao}</div>` : ''}
-        </div>
-    `;
-    
-    if (proprietario) {
-        html += `
-            <div style="margin-top: 1rem;">
-                <div class="section-title"><i class="fas fa-user-check"></i> 👤 PROPRIETÁRIO</div>
-                <div class="resultado-grid">
-                    <div class="info-card"><i class="fas fa-user"></i> <strong>Nome:</strong> ${proprietario.nome || 'N/A'}</div>
-                    <div class="info-card"><i class="fas fa-id-card"></i> <strong>CPF/CNPJ:</strong> ${proprietario.cpf_cnpj || proprietario.documento || 'N/A'}</div>
-                </div>
-            </div>
-        `;
-    }
-    
-    if (data.restricoes && data.restricoes.length > 0) {
-        html += `<div style="margin-top: 1rem;"><div class="section-title" style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> ⚠️ RESTRIÇÕES</div>`;
-        data.restricoes.forEach(r => {
-            html += `<div class="info-card" style="background: rgba(239,68,68,0.1); border-left-color: #ef4444;"><i class="fas fa-ban"></i> ${r}</div>`;
-        });
-        html += `</div>`;
-    }
-    
-    return html;
-}
-
-function formatarResultadoTelefone(data) {
-    let html = `
-        <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
-            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-phone-alt" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
-                </div>
-                <div>
-                    <div style="font-size: 1.3rem; font-weight: bold;">${data.nome || 'Titular'}</div>
-                    <div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-phone"></i> Telefone: ${data.telefone || 'N/A'}</div>
-                </div>
-            </div>
-        </div>
-        <div class="resultado-grid">
-            ${data.cpf_cnpj ? `<div class="info-card"><i class="fas fa-id-card"></i> <strong>📄 CPF/CNPJ:</strong> ${data.cpf_cnpj}</div>` : ''}
-        </div>
-    `;
-    
-    if (data.endereco) {
-        html += `
-            <div style="margin-top: 1rem;">
-                <div class="section-title"><i class="fas fa-map-pin"></i> 📍 ENDEREÇO</div>
-                <div class="info-card">
-                    <i class="fas fa-home"></i> 
-                    ${data.endereco.logradouro || ''}, ${data.endereco.numero || ''} - ${data.endereco.bairro || ''}<br>
-                    ${data.endereco.cidade || ''} - ${data.endereco.estado || ''} | CEP: ${data.endereco.cep || ''}
-                </div>
-            </div>
-        `;
-    }
-    
-    return html;
-}
-
-function formatarResultadoVeiculo(data) {
-    let html = `
-        <div style="background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
-            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                <div style="background: var(--gold-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-microchip" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
-                </div>
-                <div>
-                    <div style="font-size: 1.3rem; font-weight: bold;">Consulta por ${data.tipo_consulta === 'motor' ? 'Motor' : 'Chassi'}</div>
-                    <div style="font-size: 0.8rem; color: var(--gold-light);"><i class="fas fa-barcode"></i> Valor: ${data.valor_consultado || 'N/A'}</div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    if (data.bases) {
-        let baseCount = 0;
-        for (let key in data.bases) {
-            const base = data.bases[key];
-            if (baseCount < 3) {
-                html += `
-                    <div style="margin-top: 1rem;">
-                        <div class="section-title"><i class="fas fa-database"></i> 📁 ${key}</div>
-                        <div class="resultado-grid">
-                            ${base.placa ? `<div class="info-card"><i class="fas fa-car"></i> <strong>Placa:</strong> ${base.placa}</div>` : ''}
-                            ${base.marca_modelo ? `<div class="info-card"><i class="fas fa-car-side"></i> <strong>Modelo:</strong> ${base.marca_modelo}</div>` : ''}
-                            ${base.cor ? `<div class="info-card"><i class="fas fa-palette"></i> <strong>Cor:</strong> ${base.cor}</div>` : ''}
-                            ${base.ano_fabricacao ? `<div class="info-card"><i class="fas fa-calendar"></i> <strong>Ano:</strong> ${base.ano_fabricacao}</div>` : ''}
-                            ${base.chassi ? `<div class="info-card"><i class="fas fa-barcode"></i> <strong>Chassi:</strong> ${base.chassi}</div>` : ''}
-                            ${base.proprietario ? `<div class="info-card"><i class="fas fa-user"></i> <strong>Proprietário:</strong> ${base.proprietario}</div>` : ''}
-                        </div>
-                    </div>
-                `;
-                baseCount++;
-            }
-        }
-    }
-    
-    return html;
-}
-
-function formatarResultadoBiometria(data) {
-    let html = `
-        <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
-            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-camera-retro" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
-                </div>
-                <div>
-                    <div style="font-size: 1.3rem; font-weight: bold;">${data.pessoa?.nome || 'Biometria Facial'}</div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    if (data.foto && data.foto.data_uri) {
-        html += `<div style="text-align: center; margin-bottom: 1.5rem;">
-                    <img src="${data.foto.data_uri}" style="max-width: 150px; border-radius: 12px; border: 2px solid var(--aqua-primary); box-shadow: 0 0 20px rgba(20,184,166,0.3);">
-                </div>`;
-    }
-    
-    if (data.pessoa) {
-        html += `<div class="resultado-grid">
-            <div class="info-card"><i class="fas fa-user"></i> <strong>Nome:</strong> ${data.pessoa.nome || 'N/A'}</div>
-            <div class="info-card"><i class="fas fa-id-card"></i> <strong>Ficha:</strong> ${data.pessoa.ficha || 'N/A'}</div>
-            <div class="info-card"><i class="fas fa-check-circle"></i> <strong>Situação:</strong> ${data.pessoa.situacao || 'N/A'}</div>
-        </div>`;
-    }
-    
-    if (data.documento) {
-        html += `<div class="info-card"><i class="fas fa-calendar"></i> <strong>Data RG:</strong> ${data.documento.data_rg || 'N/A'}</div>`;
-    }
-    
-    return html;
-}
-
-function formatarDadosGenericos(data) {
-    if (!data) return '<div class="info-card">Nenhum dado encontrado</div>';
-    
-    let html = '<div style="display: flex; flex-direction: column; gap: 0.8rem;">';
-    
-    for (let [chave, valor] of Object.entries(data)) {
-        if (valor && typeof valor !== 'object') {
-            const icone = getIconeParaChave(chave);
-            html += `
-                <div class="info-card">
-                    <i class="${icone}"></i>
-                    <strong>${chave.replace(/_/g, ' ').toUpperCase()}:</strong>
-                    <span>${escapeHtml(String(valor))}</span>
-                </div>
-            `;
-        }
-    }
-    
-    html += '</div>';
-    return html;
-}
-
-function getIconeParaChave(chave) {
-    const icones = {
-        'nome': 'fas fa-user',
-        'cpf': 'fas fa-id-card',
-        'cnpj': 'fas fa-building',
-        'telefone': 'fas fa-phone',
-        'email': 'fas fa-envelope',
-        'endereco': 'fas fa-map-marker-alt',
-        'cidade': 'fas fa-city',
-        'uf': 'fas fa-map',
-        'cep': 'fas fa-mail-bulk',
-        'nascimento': 'fas fa-birthday-cake',
-        'sexo': 'fas fa-venus-mars',
-        'placa': 'fas fa-car',
-        'modelo': 'fas fa-car-side',
-        'marca': 'fas fa-trademark',
-        'ano': 'fas fa-calendar',
-        'chassi': 'fas fa-barcode',
-        'score': 'fas fa-chart-line'
-    };
-    return icones[chave] || 'fas fa-info-circle';
-}
-
-function escapeHtml(text) { 
-    let div = document.createElement('div'); 
-    div.textContent = text; 
-    return div.innerHTML; 
-}
-        function mostrarErro(msg) { 
-            const container = document.getElementById('resultadoTerminal');
-            container.classList.add('active');
-            document.getElementById('resultadoBody').innerHTML = `<span style="color: #ff5f56;">> ERRO: ${escapeHtml(msg)}</span>`;
-            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function limparResultados() {
@@ -1482,31 +1245,397 @@ function escapeHtml(text) {
             showToast('Terminal apagado.', 'success');
         }
 
-        function syntaxHighlightJSON(json) {
-            if (typeof json != 'string') json = JSON.stringify(json, undefined, 2);
-            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-                var cls = 'json-number';
-                if (/^"/.test(match)) { cls = /:$/.test(match) ? 'json-key' : 'json-string'; } 
-                else if (/true|false|null/.test(match)) { cls = 'json-boolean'; }
-                return '<span class="' + cls + '">' + match + '</span>';
-            }).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
-        }
-
-        function escapeHtml(text) { let div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
         function copiarJSON() { if(!dadosAtuais) return; navigator.clipboard.writeText(JSON.stringify(dadosAtuais.resultado || dadosAtuais, null, 2)); showToast('Copiado.', 'success'); }
+        
         function exportarPDF() { 
             if(!dadosAtuais) return; 
             showToast('Gerando PDF...', 'success');
             html2pdf().set({ margin: 0.5, filename: `marujo_${Date.now()}.pdf`, html2canvas: { scale: 2, backgroundColor: '#090e17' } }).from(document.getElementById('resultadoTerminal')).save(); 
         }
 
+        // ==========================================
+        // LOGIN COM GOOGLE
+        // ==========================================
+        function fazerLoginGoogle() {
+            if (!window.fbOps) {
+                showToast('Sistema de login carregando...', 'info');
+                return;
+            }
+            
+            showToast('Abrindo porta de embarque...', 'info');
+            window.fbOps.signInWithPopup(window.auth, window.googleProvider)
+                .then((result) => {
+                    showToast(`Bem-vindo, ${result.user.displayName.split(' ')[0]}!`, 'success');
+                    document.getElementById('loginOverlay').classList.remove('active');
+                })
+                .catch((error) => {
+                    if(error.code !== 'auth/popup-closed-by-user') {
+                        showToast("Erro ao logar: " + error.message, 'error');
+                    }
+                });
+        }
+
+        function fazerLogout() {
+            if(!window.fbOps) return;
+            window.fbOps.signOut(window.auth).then(() => {
+                showToast('Você deslogou da sua conta.', 'info');
+                currentUser = null;
+                atualizarInterfaceUsuario();
+            });
+        }
+
+        function atualizarInterfaceUsuario() {
+            const creditPill = document.getElementById('creditPill');
+            
+            if (currentUser) {
+                creditPill.innerHTML = `
+                    <i class="fas fa-user-circle"></i>
+                    <div class="credit-info">
+                        <span class="credit-label">${currentUser.displayName?.split(' ')[0] || 'Marujo'}</span>
+                        <span class="credit-value" id="creditsDisplay">${getCreditos()}</span>
+                    </div>
+                    <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                `;
+                creditPill.onclick = () => abrirMenuUsuario();
+            } else {
+                creditPill.innerHTML = `
+                    <i class="fas fa-user"></i>
+                    <div class="credit-info">
+                        <span class="credit-label">Entrar</span>
+                        <span class="credit-value" id="creditsDisplay">${getCreditos()}</span>
+                    </div>
+                `;
+                creditPill.onclick = () => {
+                    document.getElementById('loginOverlay').classList.add('active');
+                };
+            }
+        }
+
+        function abrirMenuUsuario() {
+            let menu = document.getElementById('userMenu');
+            if (menu) menu.remove();
+            
+            menu = document.createElement('div');
+            menu.id = 'userMenu';
+            menu.style.cssText = `
+                position: fixed;
+                top: 70px;
+                right: 20px;
+                background: var(--glass-bg);
+                backdrop-filter: blur(20px);
+                border: 1px solid var(--glass-border);
+                border-radius: 16px;
+                padding: 12px;
+                z-index: 2000;
+                min-width: 180px;
+                box-shadow: var(--shadow-card);
+            `;
+            
+            menu.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 8px;">
+                    <img src="${currentUser.photoURL || 'https://via.placeholder.com/40'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    <div>
+                        <div style="font-weight: bold;">${currentUser.displayName || 'Marujo'}</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">${currentUser.email || ''}</div>
+                    </div>
+                </div>
+                <div style="padding: 8px 0; color: var(--text-muted); font-size: 0.8rem;">
+                    <i class="fas fa-gem"></i> Créditos: ${getCreditos()}
+                </div>
+                <button onclick="fazerLogout(); this.parentElement.remove();" style="width: 100%; padding: 8px; margin-top: 8px; background: rgba(255,77,77,0.2); border: 1px solid var(--accent); border-radius: 10px; color: var(--accent); cursor: pointer;">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            `;
+            
+            document.body.appendChild(menu);
+            
+            setTimeout(() => {
+                document.addEventListener('click', function closeMenu(e) {
+                    if (!menu.contains(e.target) && !creditPill.contains(e.target)) {
+                        menu.remove();
+                        document.removeEventListener('click', closeMenu);
+                    }
+                });
+            }, 100);
+        }
+
+        // ==========================================
+        // FUNÇÕES DE FORMATAÇÃO DE RESULTADOS
+        // ==========================================
+        function mostrarSucesso(dados) {
+            dadosAtuais = dados;
+            const container = document.getElementById('resultadoTerminal');
+            const body = document.getElementById('resultadoBody');
+            container.classList.add('active');
+            
+            let html = '';
+            
+            if (dados.resultado && dados.resultado.resultados && Array.isArray(dados.resultado.resultados)) {
+                html += `<div style="margin-bottom: 1rem; padding: 0.5rem; background: rgba(20, 184, 166, 0.1); border-radius: 8px;">
+                            <i class="fas fa-info-circle"></i> ${dados.resposta || 'Resultados encontrados:'}
+                         </div>`;
+                dados.resultado.resultados.forEach((pessoa, index) => {
+                    html += `<div class="resultado-item">
+                        <div class="resultado-nome"><i class="fas fa-user"></i> ${pessoa.nome || 'N/A'}</div>
+                        <div class="resultado-info">
+                            <div><span>📄 CPF:</span> ${pessoa.cpf || 'N/A'}</div>
+                            <div><span>⚥ Sexo:</span> ${pessoa.sexo || 'N/A'}</div>
+                            <div><span>🎂 Nascimento:</span> ${pessoa.nascimento || 'N/A'}</div>
+                        </div>
+                    </div>`;
+                });
+            } else if (dados.resultado && dados.resultado.foto) {
+                html = formatarResultadoBiometria(dados.resultado);
+            } else if (dados.resultado && dados.resultado.cpf && !dados.resultado.placa && !dados.resultado.telefone) {
+                html = formatarResultadoCPF(dados.resultado);
+            } else if (dados.resultado && dados.resultado.empresa) {
+                html = formatarResultadoCNPJ(dados.resultado);
+            } else if (dados.resultado && dados.resultado.placa) {
+                html = formatarResultadoPlaca(dados.resultado);
+            } else if (dados.resultado && dados.resultado.telefone) {
+                html = formatarResultadoTelefone(dados.resultado);
+            } else if (dados.resultado && dados.resultado.bases) {
+                html = formatarResultadoVeiculo(dados.resultado);
+            } else {
+                html = formatarDadosGenericos(dados.resultado || dados);
+            }
+            
+            if (dados.developer) {
+                html += `<div style="margin-top: 1rem; padding: 0.8rem; font-size: 0.7rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                            <i class="fab fa-whatsapp"></i> Suporte: ${dados.developer}
+                        </div>`;
+            }
+            
+            body.innerHTML = html;
+            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function formatarResultadoCPF(data) {
+            let html = `<div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-id-card" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.3rem; font-weight: bold;">${data.nome || 'N/A'}</div>
+                        <div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-fingerprint"></i> CPF: ${data.cpf || 'N/A'}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="resultado-grid">
+                ${data.nascimento ? `<div class="info-card"><i class="fas fa-birthday-cake"></i> <strong>🎂 Nascimento:</strong> ${data.nascimento}</div>` : ''}
+                ${data.idade ? `<div class="info-card"><i class="fas fa-chart-line"></i> <strong>📊 Idade:</strong> ${data.idade} anos</div>` : ''}
+                ${data.sexo ? `<div class="info-card"><i class="fas ${data.sexo === 'F' ? 'fa-venus' : 'fa-mars'}"></i> <strong>⚥ Sexo:</strong> ${data.sexo === 'F' ? 'Feminino' : 'Masculino'}</div>` : ''}
+                ${data.estado_receita ? `<div class="info-card"><i class="fas fa-check-circle"></i> <strong>✅ Situação:</strong> ${data.estado_receita}</div>` : ''}
+                ${data.score_estimado ? `<div class="info-card"><i class="fas fa-chart-simple"></i> <strong>📈 Score:</strong> ${data.score_estimado}</div>` : ''}
+            </div>`;
+            
+            if (data.telefones && data.telefones.length > 0) {
+                html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-phone-alt"></i> 📞 TELEFONES</div><div class="resultado-grid">`;
+                data.telefones.forEach(tel => {
+                    html += `<div class="info-card"><i class="fas fa-phone"></i> ${tel}</div>`;
+                });
+                html += `</div></div>`;
+            }
+            
+            if (data.enderecos && data.enderecos.length > 0) {
+                html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-map-pin"></i> 📍 ENDEREÇOS</div>`;
+                data.enderecos.forEach(end => {
+                    html += `<div class="info-card" style="margin-bottom: 0.5rem;">
+                        <i class="fas fa-home"></i> ${end.rua || ''}, ${end.numero || ''} - ${end.bairro || ''}, ${end.cidade || ''} ${end.uf || ''} - CEP: ${end.cep || ''}
+                    </div>`;
+                });
+                html += `</div>`;
+            }
+            return html;
+        }
+
+        function formatarResultadoCNPJ(data) {
+            const empresa = data.empresa || data;
+            let html = `<div style="background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <div style="background: var(--gold-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-building" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.3rem; font-weight: bold;">${empresa.razao_social || 'N/A'}</div>
+                        <div style="font-size: 0.8rem; color: var(--gold-light);"><i class="fas fa-building"></i> CNPJ: ${empresa.cnpj || 'N/A'}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="resultado-grid">
+                ${empresa.nome_fantasia ? `<div class="info-card"><i class="fas fa-tag"></i> <strong>🏷️ Fantasia:</strong> ${empresa.nome_fantasia}</div>` : ''}
+                ${empresa.fundacao ? `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>📅 Fundação:</strong> ${empresa.fundacao}</div>` : ''}
+                ${empresa.capital_social ? `<div class="info-card"><i class="fas fa-dollar-sign"></i> <strong>💰 Capital:</strong> R$ ${parseFloat(empresa.capital_social).toLocaleString('pt-BR')}</div>` : ''}
+            </div>`;
+            return html;
+        }
+
+        function formatarResultadoPlaca(data) {
+            const veiculo = data.veiculo || data;
+            const proprietario = data.proprietario || data.possuidor;
+            
+            let html = `<div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-car" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.3rem; font-weight: bold;">${veiculo.marca_modelo || veiculo.marca || 'Veículo'}</div>
+                        <div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-id-card"></i> Placa: ${data.placa || veiculo.placa || 'N/A'}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="resultado-grid">
+                ${veiculo.cor ? `<div class="info-card"><i class="fas fa-palette"></i> <strong>🎨 Cor:</strong> ${veiculo.cor}</div>` : ''}
+                ${veiculo.ano_fabricacao ? `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>🏭 Ano:</strong> ${veiculo.ano_fabricacao}/${veiculo.ano_modelo || ''}</div>` : ''}
+                ${data.chassi ? `<div class="info-card"><i class="fas fa-barcode"></i> <strong>🔢 Chassi:</strong> ${data.chassi}</div>` : ''}
+            </div>`;
+            
+            if (proprietario) {
+                html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-user-check"></i> 👤 PROPRIETÁRIO</div>
+                    <div class="resultado-grid">
+                        <div class="info-card"><i class="fas fa-user"></i> <strong>Nome:</strong> ${proprietario.nome || 'N/A'}</div>
+                        <div class="info-card"><i class="fas fa-id-card"></i> <strong>CPF/CNPJ:</strong> ${proprietario.cpf_cnpj || proprietario.documento || 'N/A'}</div>
+                    </div>
+                </div>`;
+            }
+            
+            if (data.restricoes && data.restricoes.length > 0) {
+                html += `<div style="margin-top: 1rem;"><div class="section-title" style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> ⚠️ RESTRIÇÕES</div>`;
+                data.restricoes.forEach(r => {
+                    html += `<div class="info-card" style="background: rgba(239,68,68,0.1); border-left-color: #ef4444;"><i class="fas fa-ban"></i> ${r}</div>`;
+                });
+                html += `</div>`;
+            }
+            return html;
+        }
+
+        function formatarResultadoTelefone(data) {
+            let html = `<div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-phone-alt" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.3rem; font-weight: bold;">${data.nome || 'Titular'}</div>
+                        <div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-phone"></i> Telefone: ${data.telefone || 'N/A'}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="resultado-grid">
+                ${data.cpf_cnpj ? `<div class="info-card"><i class="fas fa-id-card"></i> <strong>📄 CPF/CNPJ:</strong> ${data.cpf_cnpj}</div>` : ''}
+            </div>`;
+            
+            if (data.endereco) {
+                html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-map-pin"></i> 📍 ENDEREÇO</div>
+                    <div class="info-card"><i class="fas fa-home"></i> ${data.endereco.logradouro || ''}, ${data.endereco.numero || ''} - ${data.endereco.bairro || ''}<br>${data.endereco.cidade || ''} - ${data.endereco.estado || ''} | CEP: ${data.endereco.cep || ''}</div>
+                </div>`;
+            }
+            return html;
+        }
+
+        function formatarResultadoVeiculo(data) {
+            let html = `<div style="background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <div style="background: var(--gold-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-microchip" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.3rem; font-weight: bold;">Consulta por ${data.tipo_consulta === 'motor' ? 'Motor' : 'Chassi'}</div>
+                        <div style="font-size: 0.8rem; color: var(--gold-light);"><i class="fas fa-barcode"></i> Valor: ${data.valor_consultado || 'N/A'}</div>
+                    </div>
+                </div>
+            </div>`;
+            
+            if (data.bases) {
+                for (let key in data.bases) {
+                    const base = data.bases[key];
+                    html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-database"></i> 📁 ${key}</div>
+                        <div class="resultado-grid">
+                            ${base.placa ? `<div class="info-card"><i class="fas fa-car"></i> <strong>Placa:</strong> ${base.placa}</div>` : ''}
+                            ${base.marca_modelo ? `<div class="info-card"><i class="fas fa-car-side"></i> <strong>Modelo:</strong> ${base.marca_modelo}</div>` : ''}
+                            ${base.chassi ? `<div class="info-card"><i class="fas fa-barcode"></i> <strong>Chassi:</strong> ${base.chassi}</div>` : ''}
+                        </div>
+                    </div>`;
+                    break;
+                }
+            }
+            return html;
+        }
+
+        function formatarResultadoBiometria(data) {
+            let html = `<div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-camera-retro" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                    </div>
+                    <div><div style="font-size: 1.3rem; font-weight: bold;">${data.pessoa?.nome || 'Biometria Facial'}</div></div>
+                </div>
+            </div>`;
+            
+            if (data.foto && data.foto.data_uri) {
+                html += `<div style="text-align: center; margin-bottom: 1.5rem;"><img src="${data.foto.data_uri}" style="max-width: 150px; border-radius: 12px; border: 2px solid var(--aqua-primary);"></div>`;
+            }
+            
+            if (data.pessoa) {
+                html += `<div class="resultado-grid">
+                    <div class="info-card"><i class="fas fa-user"></i> <strong>Nome:</strong> ${data.pessoa.nome || 'N/A'}</div>
+                    <div class="info-card"><i class="fas fa-check-circle"></i> <strong>Situação:</strong> ${data.pessoa.situacao || 'N/A'}</div>
+                </div>`;
+            }
+            return html;
+        }
+
+        function formatarDadosGenericos(data) {
+            if (!data) return '<div class="info-card">Nenhum dado encontrado</div>';
+            let html = '<div style="display: flex; flex-direction: column; gap: 0.8rem;">';
+            for (let [chave, valor] of Object.entries(data)) {
+                if (valor && typeof valor !== 'object') {
+                    html += `<div class="info-card"><i class="fas fa-info-circle"></i><strong>${chave.replace(/_/g, ' ').toUpperCase()}:</strong><span>${escapeHtml(String(valor))}</span></div>`;
+                }
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function mostrarErro(msg) { 
+            const container = document.getElementById('resultadoTerminal');
+            container.classList.add('active');
+            document.getElementById('resultadoBody').innerHTML = `<span style="color: #ff5f56;">> ERRO: ${escapeHtml(msg)}</span>`;
+            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function escapeHtml(text) { 
+            let div = document.createElement('div'); 
+            div.textContent = text; 
+            return div.innerHTML; 
+        }
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
         setInterval(() => { 
             let el = document.getElementById('statTempo');
             if(el) el.textContent = `${(Math.random() * 0.3 + 0.2).toFixed(1)}s`; 
         }, 3000);
 
         document.getElementById('placa')?.addEventListener('input', e => e.target.value = e.target.value.toUpperCase());
+        
+        // Listener de autenticação do Firebase
+        if (window.fbOps) {
+            window.fbOps.onAuthStateChanged(window.auth, (user) => {
+                currentUser = user;
+                atualizarInterfaceUsuario();
+                atualizarInterface();
+                
+                if (user) {
+                    console.log('✅ Usuário logado:', user.displayName);
+                } else {
+                    console.log('❌ Usuário não logado');
+                }
+            });
+        }
         
         atualizarInterface();
     </script>
