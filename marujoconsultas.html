@@ -1,0 +1,1514 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Marujo Consultas | Inteligência Náutica Avançada</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-deep: #020813;
+            --bg-dark: #061428;
+            --aqua-light: #5eead4;
+            --aqua-primary: #14b8a6;
+            --aqua-dark: #0f766e;
+            --gold-primary: #eab308;
+            --gold-light: #fef08a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            
+            --glass-bg: rgba(10, 20, 35, 0.6);
+            --glass-border: rgba(45, 212, 191, 0.2);
+            --gradient-aqua: linear-gradient(135deg, var(--aqua-light), var(--aqua-primary));
+            --gradient-gold: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+            --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.5);
+            --glow-aqua: 0 0 20px rgba(20, 184, 166, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(20, 184, 166, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(234, 179, 8, 0.03) 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--aqua-dark); border-radius: 10px; }
+
+        h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
+        .text-gradient { background: var(--gradient-aqua); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .header {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 1rem 5%;
+            background: rgba(2, 8, 19, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; }
+        .logo-icon {
+            width: 40px; height: 40px;
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid var(--aqua-primary);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: var(--aqua-light);
+            box-shadow: var(--glow-aqua);
+        }
+        .logo-text h1 { font-size: 1.3rem; color: var(--text-main); }
+        .logo-text span { font-size: 0.6rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; }
+
+        .credit-pill {
+            background: rgba(234, 179, 8, 0.1);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            border-radius: 50px;
+            padding: 0.4rem 1rem;
+            display: flex; align-items: center; gap: 0.8rem;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .credit-pill:hover { background: rgba(234, 179, 8, 0.2); transform: translateY(-2px); }
+        .credit-pill i { color: var(--gold-primary); }
+        .credit-info { display: flex; flex-direction: column; line-height: 1; }
+        .credit-label { font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; }
+        .credit-value { font-size: 1rem; font-weight: 700; color: var(--gold-light); }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 6rem 5% 4rem;
+        }
+
+        .dashboard-layout {
+            display: flex;
+            gap: 3rem;
+            align-items: stretch;
+        }
+
+        .hero-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .panel-section {
+            flex: 1.3;
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-layout { flex-direction: column; gap: 2rem; }
+            .hero-section { text-align: center; align-items: center; padding-top: 1rem; }
+            .stats-grid { justify-content: center; }
+        }
+
+        .badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid var(--aqua-primary);
+            padding: 0.4rem 1rem; border-radius: 50px;
+            font-size: 0.75rem; font-weight: 600; color: var(--aqua-light);
+            margin-bottom: 1.5rem; width: max-content;
+        }
+
+        .hero-section h1 { font-size: clamp(2.2rem, 4vw, 3.5rem); margin-bottom: 1rem; }
+        .hero-section p { color: var(--text-muted); font-size: 1rem; max-width: 500px; margin-bottom: 2rem; }
+
+        .stats-grid {
+            display: flex; flex-wrap: wrap; gap: 1rem;
+        }
+        .stat-card {
+            background: var(--glass-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px; padding: 1.2rem;
+            min-width: 140px; flex: 1;
+            transition: all 0.3s;
+        }
+        .stat-card:hover { border-color: var(--aqua-dark); background: rgba(20, 184, 166, 0.05); }
+        .stat-value { font-size: 1.5rem; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-main); }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; margin-top: 0.2rem; }
+        .stat-icon { color: var(--aqua-light); margin-bottom: 0.5rem; font-size: 1.2rem; }
+
+        .app-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 600px) {
+            .selection-grid { grid-template-columns: repeat(2, 1fr); }
+            .app-panel { padding: 1.5rem; }
+        }
+
+        .type-btn {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1rem 0.5rem;
+            display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-muted);
+        }
+
+        .type-btn i { font-size: 1.3rem; transition: transform 0.3s; }
+        .type-btn span { font-size: 0.75rem; font-weight: 600; }
+
+        .type-btn:hover {
+            background: rgba(20, 184, 166, 0.1);
+            color: var(--text-main);
+            border-color: rgba(20, 184, 166, 0.3);
+        }
+        .type-btn:hover i { transform: scale(1.1); color: var(--aqua-light); }
+
+        .type-btn.active {
+            background: var(--gradient-aqua);
+            color: var(--bg-deep);
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
+        }
+        .type-btn.active i { color: var(--bg-deep); }
+
+        .consulta-group { display: none; animation: fadeIn 0.4s ease; }
+        .consulta-group.active { display: block; }
+
+        .form-label {
+            display: flex; justify-content: space-between;
+            font-size: 0.85rem; color: var(--aqua-light);
+            margin-bottom: 0.5rem; font-weight: 600;
+        }
+
+        .input-wrapper {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 0.5rem;
+            display: flex; flex-direction: column; gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .input-wrapper:focus-within {
+            border-color: var(--aqua-primary);
+            box-shadow: inset 0 0 0 1px var(--aqua-primary), 0 0 15px rgba(20, 184, 166, 0.1);
+        }
+
+        .input-row { display: flex; align-items: center; padding: 0.5rem 1rem; }
+        .input-row i { color: var(--text-muted); font-size: 1.2rem; margin-right: 1rem; width: 20px; text-align: center; }
+        
+        input, select {
+            flex: 1; background: transparent; border: none;
+            color: var(--text-main); font-size: 1rem;
+            font-family: 'JetBrains Mono', monospace; outline: none;
+            width: 100%;
+        }
+        input::placeholder { color: rgba(148, 163, 184, 0.4); }
+        select { font-family: 'Inter', sans-serif; font-size: 0.9rem; cursor: pointer; }
+        select option { background: var(--bg-deep); color: var(--text-main); }
+
+        .divider { height: 1px; background: rgba(255,255,255,0.05); margin: 0 1rem; }
+
+        .chips-container { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+        .chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.3rem 0.8rem; border-radius: 50px;
+            font-size: 0.7rem; color: var(--text-muted);
+            cursor: pointer; transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 0.4rem;
+        }
+        .chip:hover { background: rgba(20, 184, 166, 0.1); color: var(--aqua-light); border-color: var(--aqua-primary); }
+
+        .btn-executar {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--gradient-aqua);
+            color: var(--bg-deep);
+            border: none; border-radius: 16px;
+            font-size: 1rem; font-weight: 700;
+            cursor: pointer; transition: all 0.3s;
+            display: flex; justify-content: center; align-items: center; gap: 0.8rem;
+            text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.2);
+        }
+        .btn-executar:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(20, 184, 166, 0.4); }
+
+        .btn-whatsapp {
+            width: 100%;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3); }
+
+        /* Planos de Créditos */
+        .planos-container {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .planos-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .planos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+        }
+
+        .plano-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .plano-card:hover {
+            border-color: var(--gold-primary);
+            background: rgba(234, 179, 8, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .plano-creditos {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gold-light);
+        }
+
+        .plano-preco {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--aqua-light);
+            margin-top: 0.3rem;
+        }
+
+        .plano-bonus {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+
+        @media (max-width: 500px) {
+            .planos-grid { grid-template-columns: 1fr; gap: 0.5rem; }
+        }
+
+        .results-container {
+            background: #090e17;
+            border: 1px solid #1e293b;
+            border-radius: 16px; overflow: hidden;
+            margin-top: 2rem; display: none;
+            box-shadow: var(--shadow-card);
+        }
+        .results-container.active { display: block; animation: slideUp 0.5s ease; }
+        .terminal-header {
+            background: #0f172a; padding: 0.8rem 1rem;
+            border-bottom: 1px solid #1e293b;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .mac-dots { display: flex; gap: 6px; }
+        .mac-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .mac-dot.red { background: #ff5f56; } .mac-dot.yellow { background: #ffbd2e; } .mac-dot.green { background: #27c93f; }
+        .terminal-title { color: #64748b; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+        .terminal-actions button {
+            background: transparent; border: 1px solid #334155; color: #94a3b8;
+            padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.75rem;
+            cursor: pointer; transition: all 0.2s; margin-left: 0.5rem;
+        }
+        .terminal-actions button:hover { background: #334155; color: #f8fafc; }
+        .terminal-body {
+            padding: 1.5rem; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem; color: #cbd5e1;
+            max-height: 500px; overflow-y: auto;
+        }
+        .json-key { color: #38bdf8; } .json-string { color: #a5b4fc; } .json-number { color: #fde047; } .json-boolean { color: #fca5a5; }
+
+        .loader-overlay {
+            position: fixed; inset: 0; background: rgba(2, 8, 19, 0.85);
+            backdrop-filter: blur(8px); z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .loader-overlay.active { opacity: 1; pointer-events: all; }
+        .spinner {
+            width: 60px; height: 60px;
+            border: 4px solid rgba(20, 184, 166, 0.2);
+            border-top-color: var(--aqua-primary);
+            border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 2100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: all 0.3s; }
+        .modal.active { opacity: 1; pointer-events: all; }
+        .modal-content { background: var(--bg-dark); border: 1px solid var(--gold-primary); border-radius: 24px; padding: 2.5rem; width: 90%; max-width: 400px; text-align: center; position: relative; transform: scale(0.95); transition: all 0.3s; }
+        .modal.active .modal-content { transform: scale(1); }
+        .modal-close { position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+        .toast-container { position: fixed; bottom: 2rem; right: 2rem; display: flex; flex-direction: column; gap: 1rem; z-index: 9999; }
+        .toast { background: var(--glass-bg); backdrop-filter: blur(12px); border-left: 4px solid var(--aqua-primary); padding: 1rem 1.5rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 1rem; animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .toast.error { border-left-color: #ef4444; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .badge-regional {
+            font-size: 0.65rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .info-regional {
+            background: rgba(20, 184, 166, 0.08);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.75rem;
+            border-left: 3px solid var(--aqua-primary);
+        }
+
+        .input-hint {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+            padding-left: 2.5rem;
+        }
+
+        .telefone-formatado {
+            font-size: 0.7rem;
+            color: var(--aqua-light);
+            margin-top: 0.25rem;
+            padding-left: 2.5rem;
+        }
+
+        .resultado-item {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .resultado-item:last-child {
+            border-bottom: none;
+        }
+        .resultado-nome {
+            color: var(--gold-light);
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .resultado-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+        .resultado-info span {
+            color: var(--aqua-light);
+        }
+        
+        /* Estilos para os resultados formatados */
+.resultado-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.info-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+}
+
+.info-card:hover {
+    background: rgba(20, 184, 166, 0.1);
+    border-color: rgba(20, 184, 166, 0.3);
+    transform: translateX(3px);
+}
+
+.info-card i {
+    font-size: 1.1rem;
+    color: var(--aqua-light);
+    width: 24px;
+    text-align: center;
+}
+
+.info-card strong {
+    color: var(--aqua-light);
+    font-weight: 600;
+}
+
+.info-card span {
+    color: var(--text-main);
+    word-break: break-word;
+}
+
+    </style>
+</head>
+<body>
+
+    <header class="header" id="header">
+        <a href="#" class="logo">
+            <div class="logo-icon"><i class="fas fa-anchor"></i></div>
+            <div class="logo-text"><h1>Marujo</h1><span>Consultas</span></div>
+        </a>
+        <div class="credit-pill" onclick="abrirModalCodigo()">
+            <i class="fas fa-gem"></i>
+            <div class="credit-info">
+                <span class="credit-label">Saldo</span>
+                <span class="credit-value" id="creditsDisplay">3</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="dashboard-layout">
+            
+            <div class="hero-section">
+                <div class="badge"><i class="fas fa-satellite-dish"></i> Status: Online & Seguro</div>
+                <h1>A verdade <span class="text-gradient">revelada</span> em segundos.</h1>
+                <p>O sistema de inteligência mais rápido do mercado. Escolha a base de dados ao lado e inicie o rastreamento em tempo real.</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-database"></i></div>
+                        <div class="stat-value">19+</div>
+                        <div class="stat-label">Bases Integradas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-bolt"></i></div>
+                        <div class="stat-value" id="statTempo">0.4s</div>
+                        <div class="stat-label">Latência</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-chart-line" style="color:var(--gold-primary)"></i></div>
+                        <div class="stat-value" id="statsConsultas">0</div>
+                        <div class="stat-label">Consultas</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="app-panel">
+                    
+                    <div class="selection-grid">
+                        <button class="type-btn active" onclick="switchTab('cpf', this)">
+                            <i class="fas fa-id-card"></i><span>CPF</span>
+                        </button>
+                        <button class="type-btn" onclick="switchTab('cnpj', this)">
+                            <i class="fas fa-building"></i><span>CNPJ</span>
+                        </button>
+                        <button class="type-btn" onclick="switchTab('placa', this)">
+                            <i class="fas fa-car"></i><span>Placa</span>
+                        </button>
+                        <button class="type-btn" onclick="switchTab('telefone', this)">
+                            <i class="fas fa-phone-alt"></i><span>Telefone</span>
+                        </button>
+                        <button class="type-btn" onclick="switchTab('veiculo', this)">
+                            <i class="fas fa-microchip"></i><span>Motor/Chassi</span>
+                        </button>
+                        <button class="type-btn" onclick="switchTab('foto', this)">
+                            <i class="fas fa-camera-retro"></i><span>Biometria</span>
+                        </button>
+                        <button class="type-btn" onclick="switchTab('nome', this)">
+                            <i class="fas fa-user-friends"></i><span>Busca por Nome</span>
+                        </button>
+                    </div>
+
+                    <div id="cpfGroup" class="consulta-group active">
+                        <div class="form-label">PARÂMETROS DE BUSCA - CPF</div>
+                        <div class="input-wrapper">
+                            <div class="input-row">
+                                <i class="fas fa-fingerprint"></i>
+                                <input type="text" id="cpf" placeholder="Digite apenas os 11 números..." maxlength="14">
+                            </div>
+                            <div class="input-hint"><i class="fas fa-info-circle"></i> Aceita com pontos e traço: 123.456.789-00 → será limpo automaticamente</div>
+                            <div class="divider"></div>
+                            <div class="input-row">
+                                <i class="fas fa-layer-group"></i>
+                                <select id="cpfVersao">
+                                    <option value="v3">V3 - Dossiê Completo + Score</option>
+                                    <option value="v2">V2 - Relatório Básico</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="chips-container">
+                            <span class="chip" onclick="preencherDemo('cpf','88222144634')">Demo 1</span>
+                            <span class="chip" onclick="preencherDemo('cpf','12537664795')">Demo 2</span>
+                        </div>
+                    </div>
+
+                    <div id="cnpjGroup" class="consulta-group">
+                        <div class="form-label">PARÂMETROS DE BUSCA - CNPJ</div>
+                        <div class="input-wrapper">
+                            <div class="input-row">
+                                <i class="fas fa-building"></i>
+                                <input type="text" id="cnpj" placeholder="Digite os 14 dígitos..." maxlength="18">
+                            </div>
+                            <div class="input-hint"><i class="fas fa-info-circle"></i> Aceita formato: 00.000.000/0000-00 → será limpo automaticamente</div>
+                        </div>
+                        <div class="chips-container">
+                            <span class="chip" onclick="preencherDemo('cnpj','00910509000171')">Thomson Reuters</span>
+                        </div>
+                    </div>
+
+                    <div id="placaGroup" class="consulta-group">
+                        <div class="form-label">PARÂMETROS DE BUSCA - PLACA</div>
+                        <div class="input-wrapper">
+                            <div class="input-row">
+                                <i class="fas fa-car-side"></i>
+                                <input type="text" id="placa" placeholder="EX: ABC1D23" maxlength="7" style="text-transform:uppercase;">
+                            </div>
+                            <div class="divider"></div>
+                            <div class="input-row">
+                                <i class="fas fa-filter"></i>
+                                <select id="placaVersao">
+                                    <option value="v2">V2 - Proprietário e Débitos</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="telefoneGroup" class="consulta-group">
+                        <div class="form-label">PARÂMETROS DE BUSCA - TELEFONE</div>
+                        <div class="input-wrapper">
+                            <div class="input-row">
+                                <i class="fas fa-satellite"></i>
+                                <input type="text" id="telefone" placeholder="Cole qualquer formato: (21) 98904-7220 ou 21989047220" oninput="formatarTelefoneInput(this)">
+                            </div>
+                            <div class="telefone-formatado" id="telefoneAjuda">
+                                <i class="fas fa-magic"></i> Aceita qualquer formato: (21) 98904-7220, 21 98904-7220, 21989047220
+                            </div>
+                        </div>
+                        <div class="chips-container">
+                            <span class="chip" onclick="preencherDemo('telefone','21989047220')">Demo 1: 21989047220</span>
+                            <span class="chip" onclick="preencherDemo('telefone','(21) 98904-7220')">Demo 2: (21) 98904-7220</span>
+                            <span class="chip" onclick="preencherDemo('telefone','21 98904-7220')">Demo 3: 21 98904-7220</span>
+                        </div>
+                    </div>
+
+                    <div id="veiculoGroup" class="consulta-group">
+                        <div class="form-label">PARÂMETROS DE BUSCA - CHASSI/MOTOR</div>
+                        <div class="input-wrapper">
+                            <div class="input-row">
+                                <i class="fas fa-cogs"></i>
+                                <select id="veiculoTipo">
+                                    <option value="motor">Busca por Numeração do Motor</option>
+                                    <option value="chassi">Busca por Chassi (VIN)</option>
+                                </select>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="input-row">
+                                <i class="fas fa-barcode"></i>
+                                <input type="text" id="veiculoValor" placeholder="Insira o código alfanumérico...">
+                            </div>
+                        </div>
+                        <div class="chips-container">
+                            <span class="chip" onclick="preencherDemo('veiculoValor','UD316909')">Motor Teste</span>
+                        </div>
+                    </div>
+
+                    <div id="fotoGroup" class="consulta-group">
+                        <div class="form-label">
+                            <span><i class="fas fa-camera-retro"></i> BIOMETRIA FACIAL - Dados PE</span>
+                            <span class="badge-regional" style="background: rgba(234, 179, 8, 0.2); color: var(--gold-light); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.65rem;">
+                                <i class="fas fa-map-marker-alt"></i> Base: Pernambuco
+                            </span>
+                        </div>
+                        <div class="info-regional" style="background: rgba(20, 184, 166, 0.1); border-radius: 12px; padding: 0.8rem; margin-bottom: 1rem; font-size: 0.75rem; color: var(--text-muted); border-left: 3px solid var(--aqua-primary);">
+                            <i class="fas fa-info-circle"></i> <strong>Área de cobertura:</strong> Dados de identificação civil do estado de Pernambuco (PE). Para outros estados, utilize as outras modalidades de consulta.
+                        </div>
+                        <div class="input-wrapper">
+                            <div class="input-row">
+                                <i class="fas fa-user-circle"></i>
+                                <input type="text" id="nomeFoto" placeholder="Nome completo (Ex: MARIA DA SILVA SANTOS)">
+                            </div>
+                        </div>
+                        <div class="chips-container">
+                            <span class="chip" onclick="preencherDemo('nomeFoto', 'JOSENILDA MARIA DE ARRUDA')">
+                                <i class="fas fa-user-check"></i> Demo 1: JOSENILDA
+                            </span>
+                            <span class="chip" onclick="preencherDemo('nomeFoto', 'MARIA APARECIDA DE SOUZA')">
+                                <i class="fas fa-user-check"></i> Demo 2: MARIA A.
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Nova aba de Busca por Nome -->
+                    <div id="nomeGroup" class="consulta-group">
+                        <div class="form-label">
+                            <span><i class="fas fa-user-friends"></i> BUSCA POR NOME COMPLETO</span>
+                            <span class="badge-regional" style="background: rgba(20, 184, 166, 0.2); color: var(--aqua-light); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.65rem;">
+                                <i class="fas fa-database"></i> Base Nacional
+                            </span>
+                        </div>
+                        <div class="info-regional">
+                            <i class="fas fa-info-circle"></i> <strong>Busca por nome completo:</strong> Retorna CPF, data de nascimento e sexo de pessoas com o nome informado.
+                        </div>
+                        <div class="input-wrapper">
+                            <div class="input-row">
+                                <i class="fas fa-user-tag"></i>
+                                <input type="text" id="nomeCompleto" placeholder="Nome completo (Ex: PEDRO HENRIQUE)" style="text-transform:uppercase;">
+                            </div>
+                            <div class="input-hint"><i class="fas fa-info-circle"></i> Digite o nome completo para melhores resultados. Exemplo: PEDRO HENRIQUE</div>
+                        </div>
+                        <div class="chips-container">
+                            <span class="chip" onclick="preencherDemo('nomeCompleto', 'PEDRO HENRIQUE')">
+                                <i class="fas fa-user-check"></i> Demo: PEDRO HENRIQUE
+                            </span>
+                            <span class="chip" onclick="preencherDemo('nomeCompleto', 'MARIA SILVA')">
+                                <i class="fas fa-user-check"></i> Demo: MARIA SILVA
+                            </span>
+                            <span class="chip" onclick="preencherDemo('nomeCompleto', 'JOAO SANTOS')">
+                                <i class="fas fa-user-check"></i> Demo: JOAO SANTOS
+                            </span>
+                        </div>
+                    </div>
+
+                    <button class="btn-executar" onclick="realizarConsulta()" style="margin-top: 1.5rem;">
+                        <i class="fas fa-search"></i> Executar Rastreamento
+                    </button>
+                    
+                    <!-- Planos de Créditos -->
+                    <div class="planos-container">
+                        <div class="planos-title">
+                            <i class="fas fa-gem"></i> Escolha seu plano
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <div class="planos-grid">
+                            <div class="plano-card" onclick="comprarCreditos(10, 1)">
+                                <div class="plano-creditos">10 Créditos</div>
+                                <div class="plano-preco">R$ 1,00</div>
+                                <div class="plano-bonus">🔰 Básico</div>
+                            </div>
+                            <div class="plano-card" onclick="comprarCreditos(50, 4.5)">
+                                <div class="plano-creditos">50 Créditos</div>
+                                <div class="plano-preco">R$ 4,50</div>
+                                <div class="plano-bonus">✨ 10% OFF</div>
+                            </div>
+                            <div class="plano-card" onclick="comprarCreditos(120, 10)">
+                                <div class="plano-creditos">120 Créditos</div>
+                                <div class="plano-preco">R$ 10,00</div>
+                                <div class="plano-bonus">🚀 20% OFF + SUPORTE VIP</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="resultadoTerminal" class="results-container">
+                    <div class="terminal-header">
+                        <div class="mac-dots">
+                            <div class="mac-dot red" onclick="limparResultados()" style="cursor:pointer;" title="Limpar"></div>
+                            <div class="mac-dot yellow"></div>
+                            <div class="mac-dot green"></div>
+                        </div>
+                        <div class="terminal-title">~/marujo/output_data.json</div>
+                        <div class="terminal-actions">
+                            <button onclick="copiarJSON()"><i class="far fa-copy"></i></button>
+                            <button onclick="exportarPDF()"><i class="far fa-file-pdf"></i></button>
+                        </div>
+                    </div>
+                    <div class="terminal-body" id="resultadoBody"></div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <div id="loaderOverlay" class="loader-overlay">
+        <div style="text-align:center;">
+            <div class="spinner"></div>
+            <p style="margin-top:1rem; color:var(--aqua-light); font-weight:600; letter-spacing:2px;">DECRIPTANDO DADOS...</p>
+        </div>
+    </div>
+
+    <div id="codigoModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="fecharModalCodigo()"><i class="fas fa-times"></i></button>
+            <i class="fas fa-gem" style="font-size:2.5rem; color:var(--gold-primary); margin-bottom:1rem;"></i>
+            <h2 style="margin-bottom: 0.5rem; color:white;">Ativar Key Premium</h2>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1.5rem;">Insira seu código VIP para recarregar sua conta.</p>
+            
+            <input type="text" id="codigoInput" placeholder="EX: MARUJO100" style="width:100%; padding:1rem; border-radius:12px; border:1px solid var(--gold-primary); background:rgba(0,0,0,0.5); color:white; text-align:center; text-transform:uppercase; margin-bottom:1rem; outline:none;">
+            
+            <button class="btn-executar" style="background:var(--gradient-gold); color:black;" onclick="ativarCodigo()">Validar Key</button>
+            
+            <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                <p style="font-size: 0.75rem; color: var(--text-muted);">Não tem uma key?</p>
+                <button onclick="contatoWhatsApp(); fecharModalCodigo()" style="background: transparent; border: 1px solid var(--gold-primary); color: var(--gold-light); padding: 0.5rem 1rem; border-radius: 50px; margin-top: 0.5rem; cursor: pointer; width: 100%; font-size: 0.8rem;">
+                    <i class="fab fa-whatsapp"></i> Falar com o Capitão
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // ==========================================
+        // CONFIGURAÇÃO
+        // ==========================================
+        const API_BASE = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+        const CREDITS_KEY = 'marujo_credits';
+        const CONSULTAS_KEY = 'marujo_consultas';
+        let currentTab = 'cpf';
+        let dadosAtuais = null;
+
+        // ==========================================
+        // FUNÇÕES DE LIMPEZA DE DADOS
+        // ==========================================
+        function limparCPF(valor) {
+            let limpo = valor.replace(/[^\d]/g, '');
+            if(limpo.length !== 11) return null;
+            return limpo;
+        }
+
+        function limparCNPJ(valor) {
+            let limpo = valor.replace(/[^\d]/g, '');
+            if(limpo.length !== 14) return null;
+            return limpo;
+        }
+
+        function limparTelefone(valor) {
+            let limpo = valor.replace(/[^\d]/g, '');
+            
+            if(limpo.startsWith('55') && limpo.length > 10) {
+                limpo = limpo.substring(2);
+            }
+            
+            if(limpo.length === 10 || limpo.length === 11) {
+                return limpo;
+            }
+            
+            return null;
+        }
+
+        function formatarTelefoneInput(input) {
+            let valor = input.value;
+            let numeros = valor.replace(/[^\d]/g, '');
+            
+            if(numeros.startsWith('55') && numeros.length > 10) {
+                numeros = numeros.substring(2);
+            }
+            
+            const ajudaSpan = document.getElementById('telefoneAjuda');
+            if(numeros.length === 10) {
+                ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Telefone fixo válido: ${numeros.substring(0,2)} ${numeros.substring(2,6)}-${numeros.substring(6)}`;
+                ajudaSpan.style.color = '#10b981';
+            } else if(numeros.length === 11) {
+                ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Telefone celular válido: ${numeros.substring(0,2)} ${numeros.substring(2,7)}-${numeros.substring(7)}`;
+                ajudaSpan.style.color = '#10b981';
+            } else if(numeros.length > 0) {
+                ajudaSpan.innerHTML = `<i class="fas fa-info-circle"></i> Aguardando ${numeros.length}/10-11 dígitos. Exemplo: (21) 98904-7220 → 21989047220`;
+                ajudaSpan.style.color = '#eab308';
+            } else {
+                ajudaSpan.innerHTML = `<i class="fas fa-magic"></i> Aceita qualquer formato: (21) 98904-7220, 21 98904-7220, 21989047220`;
+                ajudaSpan.style.color = '#94a3b8';
+            }
+        }
+
+        // ==========================================
+        // SISTEMA DE CRÉDITOS (LOCAL)
+        // ==========================================
+        function getCreditos() { 
+            let c = localStorage.getItem(CREDITS_KEY); 
+            return c === null ? 3 : parseInt(c); 
+        }
+        
+        function setCreditos(val) { 
+            localStorage.setItem(CREDITS_KEY, val); 
+            atualizarInterface(); 
+        }
+        
+        function addCreditos(qtd) { 
+            let novo = getCreditos() + qtd; 
+            setCreditos(novo); 
+            return novo; 
+        }
+        
+        function consumirCredito() { 
+            let atual = getCreditos(); 
+            if(atual <= 0) return false; 
+            setCreditos(atual - 1); 
+            let consultas = (parseInt(localStorage.getItem(CONSULTAS_KEY)) || 0) + 1; 
+            localStorage.setItem(CONSULTAS_KEY, consultas); 
+            atualizarInterface();
+            return true; 
+        }
+
+        function atualizarInterface() { 
+            document.getElementById('creditsDisplay').textContent = getCreditos(); 
+            document.getElementById('statsConsultas').textContent = (parseInt(localStorage.getItem(CONSULTAS_KEY)) || 0); 
+        }
+
+        // ==========================================
+        // COMPRA DE CRÉDITOS
+        // ==========================================
+        function comprarCreditos(creditos, valor) {
+            let mensagem = `Olá! Gostaria de adquirir ${creditos} créditos por R$ ${valor.toFixed(2).replace('.', ',')} para o Marujo Consultas.`;
+            let numeroWhatsApp = '5521989047220';
+            let url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`;
+            window.open(url, '_blank');
+        }
+
+        // ==========================================
+        // ATIVAR CÓDIGO NO BACKEND
+        // ==========================================
+        async function ativarCodigo() {
+            let codigo = document.getElementById('codigoInput').value.trim().toUpperCase();
+            if(!codigo) { 
+                showToast('Digite um código válido.', 'error'); 
+                return; 
+            }
+            
+            const btn = event.target;
+            const textoOriginal = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validando...';
+            btn.disabled = true;
+            
+            try {
+                console.log('📤 Enviando código:', codigo);
+                
+                const response = await fetch(`http://br2.bronxyshost.com:4009/api/ativar-codigo`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ codigo: codigo })
+                });
+                
+                const data = await response.json();
+                console.log('📥 Resposta:', data);
+                
+                if (data.sucesso) {
+                    const creditosAdicionados = data.creditos;
+                    const novoTotal = addCreditos(creditosAdicionados);
+                    showToast(`🎉 ${data.mensagem} Agora você tem ${novoTotal} créditos!`, 'success');
+                    fecharModalCodigo();
+                    document.getElementById('codigoInput').value = '';
+                } else {
+                    showToast(`❌ ${data.erro}`, 'error');
+                }
+            } catch (error) {
+                console.error('❌ Erro:', error);
+                showToast('Erro ao conectar com o servidor', 'error');
+            } finally {
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+            }
+        }
+
+        // ==========================================
+        // REALIZAR CONSULTA - COM INTEGRAÇÃO DA NOVA API
+        // ==========================================
+        async function realizarConsulta() {
+            if(getCreditos() <= 0) { 
+                showToast('⚓ Saldo zerado! Adquira um dos planos acima para continuar navegando.', 'error'); 
+                return; 
+            }
+
+            let tipo = currentTab, valor = '', versao = null;
+
+            switch(currentTab) {
+                case 'cpf': 
+                    let cpfRaw = document.getElementById('cpf').value.trim();
+                    if(!cpfRaw) { showToast('Digite um CPF.', 'error'); return; }
+                    valor = limparCPF(cpfRaw);
+                    if(!valor) { showToast('CPF inválido. Use 11 dígitos: 12345678900 ou 123.456.789-00', 'error'); return; }
+                    versao = document.getElementById('cpfVersao').value; 
+                    break;
+                    
+                case 'cnpj': 
+                    let cnpjRaw = document.getElementById('cnpj').value.trim();
+                    if(!cnpjRaw) { showToast('Digite um CNPJ.', 'error'); return; }
+                    valor = limparCNPJ(cnpjRaw);
+                    if(!valor) { showToast('CNPJ inválido. Use 14 dígitos ou formato 00.000.000/0000-00', 'error'); return; }
+                    break;
+                    
+                case 'placa': 
+                    valor = document.getElementById('placa').value.trim().toUpperCase(); 
+                    if(!valor || valor.length < 7) { showToast('Placa inválida.', 'error'); return; } 
+                    versao = document.getElementById('placaVersao').value; 
+                    break;
+                    
+                case 'telefone': 
+                    let telRaw = document.getElementById('telefone').value.trim();
+                    if(!telRaw) { showToast('Digite um telefone.', 'error'); return; }
+                    valor = limparTelefone(telRaw);
+                    if(!valor) { 
+                        showToast('Telefone inválido. Use formatos como: (21) 98904-7220 ou 21989047220', 'error'); 
+                        return; 
+                    }
+                    break;
+                    
+                case 'veiculo': 
+                    tipo = document.getElementById('veiculoTipo').value; 
+                    valor = document.getElementById('veiculoValor').value.trim(); 
+                    if(!valor) { showToast('Digite a numeração.', 'error'); return; } 
+                    break;
+                    
+                case 'foto': 
+                    valor = document.getElementById('nomeFoto').value.trim(); 
+                    if(!valor) { showToast('Nome obrigatório.', 'error'); return; } 
+                    break;
+                    
+                case 'nome':
+                    valor = document.getElementById('nomeCompleto').value.trim().toUpperCase();
+                    if(!valor) { showToast('Digite um nome para buscar.', 'error'); return; }
+                    tipo = 'nome';
+                    break;
+            }
+
+            if(!consumirCredito()) return;
+            showLoader(true);
+
+            try {
+                let url;
+                
+                // Verifica se é a consulta por nome para usar a nova API
+                if (tipo) {
+                    url = `${API_BASE}/api/consultar?tipo=${tipo}&valor=${encodeURIComponent(valor)}`;
+                    if(versao) url += `&versao=${versao}`;
+                    console.log('📡 Consultando:', url);
+                }
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 20000); 
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                
+                if(!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                
+                if(data.status === 'true' || data.status === true) {
+                    mostrarSucesso(data);
+                    showToast('Rastreamento concluído.', 'success');
+                } else {
+                    mostrarErro(data.resposta || data.error || 'Nenhum dado localizado.');
+                    addCreditos(1); 
+                }
+            } catch(e) {
+                console.error('Erro:', e);
+                mostrarErro('Servidor inacessível no momento. Seus creditos foram devolvidos, pedimos que aguarde o servidor voltar a ativa.');
+                addCreditos(1);
+            } finally {
+                showLoader(false);
+            }
+        }
+
+        // ==========================================
+        // FUNÇÕES AUXILIARES
+        // ==========================================
+        function switchTab(tab, btnElement) { 
+            currentTab = tab; 
+            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active')); 
+            if(btnElement) btnElement.classList.add('active'); 
+            
+            document.querySelectorAll('.consulta-group').forEach(g => {
+                g.classList.remove('active');
+            }); 
+            document.getElementById(`${tab}Group`).classList.add('active'); 
+        }
+
+        function showToast(msg, type = 'success') { 
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div'); 
+            toast.className = `toast ${type}`; 
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i> <span>${msg}</span>`; 
+            container.appendChild(toast); 
+            setTimeout(() => { toast.style.animation = 'slideIn 0.3s reverse forwards'; setTimeout(() => toast.remove(), 300); }, 3500); 
+        }
+
+        function preencherDemo(id, val) { 
+            document.getElementById(id).value = val; 
+            if(id === 'telefone') {
+                formatarTelefoneInput(document.getElementById('telefone'));
+            }
+            showToast('Dados de teste inseridos.', 'success'); 
+        }
+
+        function showLoader(show) {
+            const loader = document.getElementById('loaderOverlay');
+            show ? loader.classList.add('active') : loader.classList.remove('active');
+        }
+
+        function abrirModalCodigo() { document.getElementById('codigoModal').classList.add('active'); }
+        function fecharModalCodigo() { document.getElementById('codigoModal').classList.remove('active'); }
+
+        function contatoWhatsApp() {
+            window.open('https://wa.me/5521989047220?text=Olá! Gostaria de adquirir um código VIP para o Marujo Consultas', '_blank');
+        }
+
+    function mostrarSucesso(dados) {
+    dadosAtuais = dados;
+    const container = document.getElementById('resultadoTerminal');
+    const body = document.getElementById('resultadoBody');
+    container.classList.add('active');
+    
+    let html = '';
+    
+    // Busca por Nome (formato especial)
+    if (dados.resultado && dados.resultado.resultados && Array.isArray(dados.resultado.resultados)) {
+        html += `<div style="margin-bottom: 1rem; padding: 0.5rem; background: rgba(20, 184, 166, 0.1); border-radius: 8px;">
+                    <i class="fas fa-info-circle"></i> ${dados.resposta || 'Resultados encontrados:'}
+                 </div>`;
+        
+        dados.resultado.resultados.forEach((pessoa, index) => {
+            html += `
+                <div class="resultado-item">
+                    <div class="resultado-nome">
+                        <i class="fas fa-user"></i> ${pessoa.nome || 'N/A'}
+                    </div>
+                    <div class="resultado-info">
+                        <div><span>📄 CPF:</span> ${pessoa.cpf || 'N/A'}</div>
+                        <div><span>⚥ Sexo:</span> ${pessoa.sexo || 'N/A'}</div>
+                        <div><span>🎂 Nascimento:</span> ${pessoa.nascimento || 'N/A'}</div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+    // Biometria (foto)
+    else if (dados.resultado && dados.resultado.foto) {
+        html = formatarResultadoBiometria(dados.resultado);
+    }
+    // CPF
+    else if (dados.resultado && dados.resultado.cpf && !dados.resultado.placa && !dados.resultado.telefone) {
+        html = formatarResultadoCPF(dados.resultado);
+    }
+    // CNPJ
+    else if (dados.resultado && dados.resultado.empresa) {
+        html = formatarResultadoCNPJ(dados.resultado);
+    }
+    // Placa
+    else if (dados.resultado && dados.resultado.placa) {
+        html = formatarResultadoPlaca(dados.resultado);
+    }
+    // Telefone
+    else if (dados.resultado && dados.resultado.telefone) {
+        html = formatarResultadoTelefone(dados.resultado);
+    }
+    // Motor/Chassi
+    else if (dados.resultado && dados.resultado.bases) {
+        html = formatarResultadoVeiculo(dados.resultado);
+    }
+    // Qualquer outro dado
+    else {
+        html = formatarDadosGenericos(dados.resultado || dados);
+    }
+    
+    // Adiciona informações do desenvolvedor
+    if (dados.developer) {
+        html += `<div style="margin-top: 1rem; padding: 0.8rem; font-size: 0.7rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                    <i class="fab fa-whatsapp"></i> Suporte: ${dados.developer}
+                </div>`;
+    }
+    
+    body.innerHTML = html;
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ==================== FUNÇÕES DE FORMATAÇÃO ====================
+
+function formatarResultadoCPF(data) {
+    let html = `
+        <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-id-card" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.3rem; font-weight: bold;">${data.nome || 'N/A'}</div>
+                    <div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-fingerprint"></i> CPF: ${data.cpf || 'N/A'}</div>
+                </div>
+            </div>
+        </div>
+        <div class="resultado-grid">
+            ${data.nascimento ? `<div class="info-card"><i class="fas fa-birthday-cake"></i> <strong>🎂 Nascimento:</strong> ${data.nascimento}</div>` : ''}
+            ${data.idade ? `<div class="info-card"><i class="fas fa-chart-line"></i> <strong>📊 Idade:</strong> ${data.idade} anos</div>` : ''}
+            ${data.signo ? `<div class="info-card"><i class="fas fa-star"></i> <strong>⭐ Signo:</strong> ${data.signo}</div>` : ''}
+            ${data.sexo ? `<div class="info-card"><i class="fas ${data.sexo === 'F' ? 'fa-venus' : 'fa-mars'}"></i> <strong>⚥ Sexo:</strong> ${data.sexo === 'F' ? 'Feminino' : 'Masculino'}</div>` : ''}
+            ${data.mae ? `<div class="info-card"><i class="fas fa-female"></i> <strong>👩 Mãe:</strong> ${data.mae}</div>` : ''}
+            ${data.pai ? `<div class="info-card"><i class="fas fa-male"></i> <strong>👨 Pai:</strong> ${data.pai}</div>` : ''}
+            ${data.municipio_nascimento ? `<div class="info-card"><i class="fas fa-map-marker-alt"></i> <strong>📍 Naturalidade:</strong> ${data.municipio_nascimento}</div>` : ''}
+            ${data.estado_receita ? `<div class="info-card"><i class="fas fa-check-circle"></i> <strong>✅ Situação:</strong> ${data.estado_receita}</div>` : ''}
+            ${data.score_estimado ? `<div class="info-card"><i class="fas fa-chart-simple"></i> <strong>📈 Score:</strong> ${data.score_estimado}</div>` : ''}
+            ${data.cns ? `<div class="info-card"><i class="fas fa-heartbeat"></i> <strong>🩺 CNS:</strong> ${data.cns}</div>` : ''}
+        </div>
+    `;
+    
+    // Telefones
+    if (data.telefones && data.telefones.length > 0) {
+        html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-phone-alt"></i> 📞 TELEFONES</div><div class="resultado-grid">`;
+        data.telefones.forEach(tel => {
+            html += `<div class="info-card"><i class="fas fa-phone"></i> ${tel}</div>`;
+        });
+        html += `</div></div>`;
+    }
+    
+    // Endereços
+    if (data.enderecos && data.enderecos.length > 0) {
+        html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-map-pin"></i> 📍 ENDEREÇOS</div>`;
+        data.enderecos.forEach(end => {
+            html += `
+                <div class="info-card" style="margin-bottom: 0.5rem;">
+                    <i class="fas fa-home"></i> 
+                    ${end.rua || ''}, ${end.numero || ''} - ${end.bairro || ''}, ${end.cidade || ''} ${end.uf || ''} - CEP: ${end.cep || ''}
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+    
+    return html;
+}
+
+function formatarResultadoCNPJ(data) {
+    const empresa = data.empresa || data;
+    let html = `
+        <div style="background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div style="background: var(--gold-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-building" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.3rem; font-weight: bold;">${empresa.razao_social || 'N/A'}</div>
+                    <div style="font-size: 0.8rem; color: var(--gold-light);"><i class="fas fa-building"></i> CNPJ: ${empresa.cnpj || 'N/A'}</div>
+                </div>
+            </div>
+        </div>
+        <div class="resultado-grid">
+            ${empresa.nome_fantasia ? `<div class="info-card"><i class="fas fa-tag"></i> <strong>🏷️ Fantasia:</strong> ${empresa.nome_fantasia}</div>` : ''}
+            ${empresa.fundacao ? `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>📅 Fundação:</strong> ${empresa.fundacao}</div>` : ''}
+            ${empresa.natureza ? `<div class="info-card"><i class="fas fa-briefcase"></i> <strong>🏢 Natureza:</strong> ${empresa.natureza}</div>` : ''}
+            ${empresa.capital_social ? `<div class="info-card"><i class="fas fa-dollar-sign"></i> <strong>💰 Capital:</strong> R$ ${parseFloat(empresa.capital_social).toLocaleString('pt-BR')}</div>` : ''}
+            ${empresa.qtd_funcionarios ? `<div class="info-card"><i class="fas fa-users"></i> <strong>👥 Funcionários:</strong> ${empresa.qtd_funcionarios}</div>` : ''}
+        </div>
+    `;
+    
+    // Funcionários/Sócios
+    if (data.funcionarios && data.funcionarios.length > 0) {
+        html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-users"></i> 👥 SÓCIOS E ADMINISTRADORES</div>`;
+        data.funcionarios.slice(0, 5).forEach(func => {
+            html += `
+                <div class="info-card" style="margin-bottom: 0.5rem;">
+                    <i class="fas fa-user-tie"></i> 
+                    <strong>${func.nome || 'N/A'}</strong> - ${func.cargo || func.funcao || 'Cargo não informado'}
+                    ${func.cpf ? `<span style="color: var(--text-muted);"> (CPF: ${func.cpf})</span>` : ''}
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+    
+    return html;
+}
+
+function formatarResultadoPlaca(data) {
+    const veiculo = data.veiculo || data;
+    const proprietario = data.proprietario || data.possuidor;
+    
+    let html = `
+        <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-car" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.3rem; font-weight: bold;">${veiculo.marca_modelo || veiculo.marca || 'Veículo'}</div>
+                    <div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-id-card"></i> Placa: ${data.placa || veiculo.placa || 'N/A'}</div>
+                </div>
+            </div>
+        </div>
+        <div class="resultado-grid">
+            ${veiculo.cor ? `<div class="info-card"><i class="fas fa-palette"></i> <strong>🎨 Cor:</strong> ${veiculo.cor}</div>` : ''}
+            ${veiculo.ano_fabricacao ? `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>🏭 Fab./Modelo:</strong> ${veiculo.ano_fabricacao}/${veiculo.ano_modelo || ''}</div>` : ''}
+            ${veiculo.combustivel ? `<div class="info-card"><i class="fas fa-gas-pump"></i> <strong>⛽ Combustível:</strong> ${veiculo.combustivel}</div>` : ''}
+            ${data.chassi ? `<div class="info-card"><i class="fas fa-barcode"></i> <strong>🔢 Chassi:</strong> ${data.chassi}</div>` : ''}
+            ${data.renavam ? `<div class="info-card"><i class="fas fa-qrcode"></i> <strong>📱 Renavam:</strong> ${data.renavam}</div>` : ''}
+            ${data.situacao ? `<div class="info-card"><i class="fas fa-check-circle"></i> <strong>✅ Situação:</strong> ${data.situacao === 'EM_CIRCULACAO' ? 'Em Circulação' : data.situacao}</div>` : ''}
+        </div>
+    `;
+    
+    if (proprietario) {
+        html += `
+            <div style="margin-top: 1rem;">
+                <div class="section-title"><i class="fas fa-user-check"></i> 👤 PROPRIETÁRIO</div>
+                <div class="resultado-grid">
+                    <div class="info-card"><i class="fas fa-user"></i> <strong>Nome:</strong> ${proprietario.nome || 'N/A'}</div>
+                    <div class="info-card"><i class="fas fa-id-card"></i> <strong>CPF/CNPJ:</strong> ${proprietario.cpf_cnpj || proprietario.documento || 'N/A'}</div>
+                </div>
+            </div>
+        `;
+    }
+    
+    if (data.restricoes && data.restricoes.length > 0) {
+        html += `<div style="margin-top: 1rem;"><div class="section-title" style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> ⚠️ RESTRIÇÕES</div>`;
+        data.restricoes.forEach(r => {
+            html += `<div class="info-card" style="background: rgba(239,68,68,0.1); border-left-color: #ef4444;"><i class="fas fa-ban"></i> ${r}</div>`;
+        });
+        html += `</div>`;
+    }
+    
+    return html;
+}
+
+function formatarResultadoTelefone(data) {
+    let html = `
+        <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-phone-alt" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.3rem; font-weight: bold;">${data.nome || 'Titular'}</div>
+                    <div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-phone"></i> Telefone: ${data.telefone || 'N/A'}</div>
+                </div>
+            </div>
+        </div>
+        <div class="resultado-grid">
+            ${data.cpf_cnpj ? `<div class="info-card"><i class="fas fa-id-card"></i> <strong>📄 CPF/CNPJ:</strong> ${data.cpf_cnpj}</div>` : ''}
+        </div>
+    `;
+    
+    if (data.endereco) {
+        html += `
+            <div style="margin-top: 1rem;">
+                <div class="section-title"><i class="fas fa-map-pin"></i> 📍 ENDEREÇO</div>
+                <div class="info-card">
+                    <i class="fas fa-home"></i> 
+                    ${data.endereco.logradouro || ''}, ${data.endereco.numero || ''} - ${data.endereco.bairro || ''}<br>
+                    ${data.endereco.cidade || ''} - ${data.endereco.estado || ''} | CEP: ${data.endereco.cep || ''}
+                </div>
+            </div>
+        `;
+    }
+    
+    return html;
+}
+
+function formatarResultadoVeiculo(data) {
+    let html = `
+        <div style="background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div style="background: var(--gold-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-microchip" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.3rem; font-weight: bold;">Consulta por ${data.tipo_consulta === 'motor' ? 'Motor' : 'Chassi'}</div>
+                    <div style="font-size: 0.8rem; color: var(--gold-light);"><i class="fas fa-barcode"></i> Valor: ${data.valor_consultado || 'N/A'}</div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    if (data.bases) {
+        let baseCount = 0;
+        for (let key in data.bases) {
+            const base = data.bases[key];
+            if (baseCount < 3) {
+                html += `
+                    <div style="margin-top: 1rem;">
+                        <div class="section-title"><i class="fas fa-database"></i> 📁 ${key}</div>
+                        <div class="resultado-grid">
+                            ${base.placa ? `<div class="info-card"><i class="fas fa-car"></i> <strong>Placa:</strong> ${base.placa}</div>` : ''}
+                            ${base.marca_modelo ? `<div class="info-card"><i class="fas fa-car-side"></i> <strong>Modelo:</strong> ${base.marca_modelo}</div>` : ''}
+                            ${base.cor ? `<div class="info-card"><i class="fas fa-palette"></i> <strong>Cor:</strong> ${base.cor}</div>` : ''}
+                            ${base.ano_fabricacao ? `<div class="info-card"><i class="fas fa-calendar"></i> <strong>Ano:</strong> ${base.ano_fabricacao}</div>` : ''}
+                            ${base.chassi ? `<div class="info-card"><i class="fas fa-barcode"></i> <strong>Chassi:</strong> ${base.chassi}</div>` : ''}
+                            ${base.proprietario ? `<div class="info-card"><i class="fas fa-user"></i> <strong>Proprietário:</strong> ${base.proprietario}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+                baseCount++;
+            }
+        }
+    }
+    
+    return html;
+}
+
+function formatarResultadoBiometria(data) {
+    let html = `
+        <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-camera-retro" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.3rem; font-weight: bold;">${data.pessoa?.nome || 'Biometria Facial'}</div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    if (data.foto && data.foto.data_uri) {
+        html += `<div style="text-align: center; margin-bottom: 1.5rem;">
+                    <img src="${data.foto.data_uri}" style="max-width: 150px; border-radius: 12px; border: 2px solid var(--aqua-primary); box-shadow: 0 0 20px rgba(20,184,166,0.3);">
+                </div>`;
+    }
+    
+    if (data.pessoa) {
+        html += `<div class="resultado-grid">
+            <div class="info-card"><i class="fas fa-user"></i> <strong>Nome:</strong> ${data.pessoa.nome || 'N/A'}</div>
+            <div class="info-card"><i class="fas fa-id-card"></i> <strong>Ficha:</strong> ${data.pessoa.ficha || 'N/A'}</div>
+            <div class="info-card"><i class="fas fa-check-circle"></i> <strong>Situação:</strong> ${data.pessoa.situacao || 'N/A'}</div>
+        </div>`;
+    }
+    
+    if (data.documento) {
+        html += `<div class="info-card"><i class="fas fa-calendar"></i> <strong>Data RG:</strong> ${data.documento.data_rg || 'N/A'}</div>`;
+    }
+    
+    return html;
+}
+
+function formatarDadosGenericos(data) {
+    if (!data) return '<div class="info-card">Nenhum dado encontrado</div>';
+    
+    let html = '<div style="display: flex; flex-direction: column; gap: 0.8rem;">';
+    
+    for (let [chave, valor] of Object.entries(data)) {
+        if (valor && typeof valor !== 'object') {
+            const icone = getIconeParaChave(chave);
+            html += `
+                <div class="info-card">
+                    <i class="${icone}"></i>
+                    <strong>${chave.replace(/_/g, ' ').toUpperCase()}:</strong>
+                    <span>${escapeHtml(String(valor))}</span>
+                </div>
+            `;
+        }
+    }
+    
+    html += '</div>';
+    return html;
+}
+
+function getIconeParaChave(chave) {
+    const icones = {
+        'nome': 'fas fa-user',
+        'cpf': 'fas fa-id-card',
+        'cnpj': 'fas fa-building',
+        'telefone': 'fas fa-phone',
+        'email': 'fas fa-envelope',
+        'endereco': 'fas fa-map-marker-alt',
+        'cidade': 'fas fa-city',
+        'uf': 'fas fa-map',
+        'cep': 'fas fa-mail-bulk',
+        'nascimento': 'fas fa-birthday-cake',
+        'sexo': 'fas fa-venus-mars',
+        'placa': 'fas fa-car',
+        'modelo': 'fas fa-car-side',
+        'marca': 'fas fa-trademark',
+        'ano': 'fas fa-calendar',
+        'chassi': 'fas fa-barcode',
+        'score': 'fas fa-chart-line'
+    };
+    return icones[chave] || 'fas fa-info-circle';
+}
+
+function escapeHtml(text) { 
+    let div = document.createElement('div'); 
+    div.textContent = text; 
+    return div.innerHTML; 
+}
+        function mostrarErro(msg) { 
+            const container = document.getElementById('resultadoTerminal');
+            container.classList.add('active');
+            document.getElementById('resultadoBody').innerHTML = `<span style="color: #ff5f56;">> ERRO: ${escapeHtml(msg)}</span>`;
+            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function limparResultados() {
+            dadosAtuais = null;
+            document.getElementById('resultadoTerminal').classList.remove('active');
+            showToast('Terminal apagado.', 'success');
+        }
+
+        function syntaxHighlightJSON(json) {
+            if (typeof json != 'string') json = JSON.stringify(json, undefined, 2);
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'json-number';
+                if (/^"/.test(match)) { cls = /:$/.test(match) ? 'json-key' : 'json-string'; } 
+                else if (/true|false|null/.test(match)) { cls = 'json-boolean'; }
+                return '<span class="' + cls + '">' + match + '</span>';
+            }).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
+        }
+
+        function escapeHtml(text) { let div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        function copiarJSON() { if(!dadosAtuais) return; navigator.clipboard.writeText(JSON.stringify(dadosAtuais.resultado || dadosAtuais, null, 2)); showToast('Copiado.', 'success'); }
+        function exportarPDF() { 
+            if(!dadosAtuais) return; 
+            showToast('Gerando PDF...', 'success');
+            html2pdf().set({ margin: 0.5, filename: `marujo_${Date.now()}.pdf`, html2canvas: { scale: 2, backgroundColor: '#090e17' } }).from(document.getElementById('resultadoTerminal')).save(); 
+        }
+
+        setInterval(() => { 
+            let el = document.getElementById('statTempo');
+            if(el) el.textContent = `${(Math.random() * 0.3 + 0.2).toFixed(1)}s`; 
+        }, 3000);
+
+        document.getElementById('placa')?.addEventListener('input', e => e.target.value = e.target.value.toUpperCase());
+        
+        atualizarInterface();
+    </script>
+</body>
+</html>
