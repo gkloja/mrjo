@@ -1953,25 +1953,98 @@ async function setCreditosPorUserId(userId, valor) {
 }
 
 // Verificar se tem código de afiliado na URL
+// ==========================================
+// VERIFICAR CÓDIGO DE AFILIADO NA URL (CORRIGIDO)
+// ==========================================
 function verificarCodigoAfiliado() {
     const urlParams = new URLSearchParams(window.location.search);
-    const codigo = urlParams.get(AFILIADO_REF_KEY);
+    let codigo = urlParams.get('ref') || urlParams.get('codigo') || urlParams.get('afiliado');
     
     if (codigo) {
-        console.log(`🔗 Link com código de afiliado detectado: ${codigo}`);
-        // Salva o código para usar depois no login
+        codigo = codigo.toUpperCase().trim();
+        console.log(`🔗 LINK DE AFILIADO DETECTADO: "${codigo}"`);
+        
+        // Salva o código para usar depois do login
         sessionStorage.setItem('pending_afiliado', codigo);
+        sessionStorage.setItem('pending_afiliado_timestamp', Date.now());
+        
+        // SE O USUÁRIO JÁ ESTIVER LOGADO, PROCESSAR IMEDIATAMENTE
+        if (currentUser) {
+            console.log(`👤 Usuário já logado, processando indicação agora...`);
+            setTimeout(() => {
+                processarIndicacaoPendente(currentUser.uid, currentUser.displayName);
+            }, 1000);
+        } else {
+            showToast(`🎁 Link de indicação detectado! Faça login para ganhar 1 crédito extra!`, 'info');
+        }
+        
+        return codigo;
     }
+    return null;
 }
 
 // Processar indicação após login
+// ==========================================
+// PROCESSAR INDICAÇÃO PENDENTE (CORRIGIDO)
+// ==========================================
 async function processarIndicacaoPendente(userId, nome) {
     const codigoPendente = sessionStorage.getItem('pending_afiliado');
     
-    if (codigoPendente) {
-        console.log(`🔄 Processando indicação pendente para ${nome} - Código: ${codigoPendente}`);
-        await processarIndicacao(codigoPendente, userId, nome);
-        sessionStorage.removeItem('pending_afiliado');
+    if (!codigoPendente) {
+        console.log('ℹ️ Nenhum código pendente encontrado');
+        return false;
+    }
+    
+    console.log(`🔄 Processando indicação pendente para ${nome} - Código: ${codigoPendente}`);
+    
+    try {
+        const response = await fetch(`${SERVER_API}/api/processar-indicacao`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                codigoAfiliado: codigoPendente,
+                novoUserId: userId,
+                novoNome: nome
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log(`✅ Indicação processada com sucesso!`);
+            showToast(`🎉 Você ganhou 1 crédito de boas-vindas!`, 'success');
+            
+            // Limpa o código pendente
+            sessionStorage.removeItem('pending_afiliado');
+            sessionStorage.removeItem('pending_afiliado_timestamp');
+            
+            // Recarrega créditos
+            const creditosServidor = await carregarCreditosDoServidor(userId);
+            if (creditosServidor !== null) {
+                localStorage.setItem(`${CREDITS_KEY}_${userId}`, creditosServidor);
+                atualizarInterface();
+            }
+            
+            return true;
+        } else {
+            console.log(`❌ Erro ao processar indicação: ${data.error}`);
+            
+            if (data.jaIndicado) {
+                console.log('ℹ️ Usuário já foi indicado anteriormente');
+                showToast(`ℹ️ Você já foi indicado por alguém antes.`, 'info');
+            } else if (data.error === 'Código de afiliado inválido') {
+                console.log('⚠️ Código de afiliado inválido');
+                showToast(`⚠️ Código de indicação inválido.`, 'error');
+            } else {
+                showToast(`❌ ${data.error}`, 'error');
+            }
+            
+            return false;
+        }
+    } catch (error) {
+        console.error('❌ Erro ao processar indicação:', error);
+        showToast('Erro ao processar indicação', 'error');
+        return false;
     }
 }
 
