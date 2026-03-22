@@ -1095,31 +1095,44 @@ const response = await fetch(url, { signal: controller.signal });
             }
         }
         
-        async function configurarUsuarioLogado(user) {
-            currentUser = user;
-            
-            // Carrega créditos do servidor
-            const creditosServidor = await carregarCreditosDoServidor(currentUser.uid);
-            if (creditosServidor !== null && creditosServidor !== undefined) {
-                const key = `${CREDITS_KEY}_${currentUser.uid}`;
-                localStorage.setItem(key, creditosServidor.toString());
-                showToast(`Bem-vindo de volta! Você tem ${creditosServidor} créditos`, 'success');
-            } else {
-                const key = `${CREDITS_KEY}_${currentUser.uid}`;
-                if (!localStorage.getItem(key)) {
-                    localStorage.setItem(key, '5');
-                }
-                await salvarCreditosNoServidor(currentUser.uid, getCreditos());
-                showToast(`Bem-vindo, ${currentUser.displayName?.split(' ')[0]}! Você ganhou 5 créditos`, 'success');
-            }
-            
-            // SALVA A SESSÃO COMPLETA (CRÍTICO!)
-            salvarSessaoCompleta();
-            
-            document.getElementById('loginOverlay').classList.remove('active');
-            atualizarPerfilUI();
-            atualizarInterface();
-        }
+async function configurarUsuarioLogado(user) {
+    const ipCheck = await fetch(`${SERVER_API}/api/verificar-ip`);
+    const ipData = await ipCheck.json();
+    
+    // Tenta registrar o usuário (se for novo IP)
+    const registerResponse = await fetch(`${SERVER_API}/api/registrar-usuario`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            userId: user.uid,
+            nome: user.displayName,
+            email: user.email,
+            creditosIniciais: 5
+        })
+    });
+    
+    const registerData = await registerResponse.json();
+    
+    if (!registerData.success && registerData.error?.includes('IP já possui')) {
+        showToast('❌ Este IP já possui uma conta! Não é permitido múltiplas contas.', 'error');
+        await fazerLogout();
+        return;
+    }
+    
+    currentUser = user;
+    
+    // Carrega créditos do servidor
+    const creditosServidor = await carregarCreditosDoServidor(currentUser.uid);
+    if (creditosServidor !== null) {
+        localStorage.setItem(`${CREDITS_KEY}_${currentUser.uid}`, creditosServidor);
+        showToast(`Bem-vindo! Você tem ${creditosServidor} créditos`, 'success');
+    }
+    
+    salvarSessaoCompleta();
+    document.getElementById('loginOverlay').classList.remove('active');
+    atualizarPerfilUI();
+    atualizarInterface();
+}
 
         function fazerLogout() {
             if(!window.fbOps) return;
