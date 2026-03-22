@@ -2541,7 +2541,7 @@ async function configurarUsuarioLogado(user) {
         } catch (e) {
             console.log('⚠️ Erro ao carregar créditos:', e);
         }
-        
+      await carregarIndicacoesDoBackend();
         salvarSessaoCompleta();
         document.getElementById('loginOverlay').classList.remove('active');
         atualizarPerfilUI();
@@ -2794,9 +2794,9 @@ function mostrarSucesso(dados) {
         html = formatarResultadoCNPJ(dados.resultado);
     }
     // Placa
-    else if (dados.resultado && dados.resultado.placa) {
-        html = formatarResultadoPlaca(dados.resultado);
-    }
+else if (dados.resultado && (dados.resultado.veiculo || dados.resultado.placa)) {
+    html = formatarResultadoPlaca(dados);
+}
     // Telefone
     else if (dados.resultado && dados.resultado.telefone) {
         html = formatarResultadoTelefone(dados.resultado);
@@ -3411,6 +3411,93 @@ function mostrarErro(msg) {
     // ROLA PARA BAIXO
     container.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+
+// ==========================================
+// FUNÇÃO PARA CARREGAR INDICAÇÕES DO BACKEND
+// ==========================================
+async function carregarIndicacoesDoBackend() {
+    if (!currentUser) return;
+    
+    try {
+        const response = await fetch(`${SERVER_API}/api/estatisticas-afiliado?userId=${currentUser.uid}`);
+        const data = await response.json();
+        
+        if (data.success && data.temAfiliado) {
+            console.log(`📊 Carregado do backend: ${data.afiliado.totalIndicacoes} indicações, ${data.afiliado.creditosGanhos} créditos ganhos`);
+            
+            // Atualiza o painel com os dados reais do servidor
+            document.getElementById('afiliadoTotalIndicacoes').textContent = data.afiliado.totalIndicacoes;
+            document.getElementById('afiliadoCreditosGanhos').textContent = data.afiliado.creditosGanhos;
+            
+            // Atualiza créditos
+            const creditosAtuais = data.afiliado.creditosAtuais;
+            if (creditosAtuais !== undefined) {
+                const key = `${CREDITS_KEY}_${currentUser.uid}`;
+                localStorage.setItem(key, creditosAtuais);
+                document.getElementById('creditsDisplay').textContent = creditosAtuais;
+                document.getElementById('afiliadoCreditosAtuais').textContent = creditosAtuais;
+            }
+            
+            // Atualiza cache local
+            const afiliados = carregarAfiliados();
+            if (afiliados[currentUser.uid]) {
+                afiliados[currentUser.uid].totalIndicacoes = data.afiliado.totalIndicacoes;
+                afiliados[currentUser.uid].creditosGanhos = data.afiliado.creditosGanhos;
+                salvarAfiliados(afiliados);
+            }
+        }
+    } catch (error) {
+        console.error('Erro ao carregar indicações:', error);
+    }
+}
+
+// Adicione esta função para debug
+async function verificarTodasIndicacoes() {
+    if (!currentUser) {
+        showToast('Faça login primeiro', 'error');
+        return;
+    }
+    
+    showLoader(true);
+    
+    try {
+        const response = await fetch(`${SERVER_API}/api/estatisticas-afiliado?userId=${currentUser.uid}`);
+        const data = await response.json();
+        
+        if (data.success && data.temAfiliado) {
+            const mensagem = `
+╔═══════════════════════════════════════╗
+║     📊 RELATÓRIO COMPLETO             ║
+╠═══════════════════════════════════════╣
+║ Código: ${data.afiliado.codigo}
+║ Indicações: ${data.afiliado.totalIndicacoes}
+║ Créditos ganhos: ${data.afiliado.creditosGanhos}
+║ Créditos atuais: ${data.afiliado.creditosAtuais}
+║ Desde: ${new Date(data.afiliado.dataCriacao).toLocaleDateString('pt-BR')}
+╚═══════════════════════════════════════╝
+            `;
+            console.log(mensagem);
+            showToast(`✅ Você tem ${data.afiliado.totalIndicacoes} indicações e ganhou ${data.afiliado.creditosGanhos} créditos!`, 'success');
+        } else {
+            showToast('Você ainda não tem nenhuma indicação registrada', 'info');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showToast('Erro ao carregar dados', 'error');
+    } finally {
+        showLoader(false);
+    }
+}
+
+// Modifique a função configurarUsuarioLogado para carregar indicações
+// Adicione esta linha no final do try, antes do salvarSessaoCompleta():
+
+// Adicione um botão de debug no menu do usuário
+// No toggleUserMenu, adicione este botão:
+// <button class="logout-btn" onclick="verificarTodasIndicacoes()" style="background: rgba(20,184,166,0.1); margin-bottom: 8px;">
+//     <i class="fas fa-chart-simple"></i> Verificar Indicações
+// </button>
 
         // ==========================================
         // INICIALIZAÇÃO - RESTAURA SESSÃO PRIMEIRO
