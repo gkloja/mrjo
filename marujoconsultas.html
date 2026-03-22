@@ -1021,11 +1021,34 @@
                         <div class="chips-container"><span class="chip" onclick="preencherDemo('telefone','21989047220')">Demo 1</span><span class="chip" onclick="preencherDemo('telefone','(21) 98904-7220')">Demo 2</span></div>
                     </div>
 
-                    <div id="veiculoGroup" class="consulta-group">
-                        <div class="form-label">PARÂMETROS DE BUSCA - CHASSI/MOTOR</div>
-                        <div class="input-wrapper"><div class="input-row"><i class="fas fa-cogs"></i><select id="veiculoTipo"><option value="motor">Busca por Numeração do Motor</option><option value="chassi">Busca por Chassi (VIN)</option></select></div><div class="divider"></div><div class="input-row"><i class="fas fa-barcode"></i><input type="text" id="veiculoValor" placeholder="Insira o código alfanumérico..."></div></div>
-                        <div class="chips-container"><span class="chip" onclick="preencherDemo('veiculoValor','UD316909')">Motor Teste</span></div>
-                    </div>
+<div id="veiculoGroup" class="consulta-group">
+    <div class="form-label">PARÂMETROS DE BUSCA - CHASSI/MOTOR</div>
+    <div class="input-wrapper">
+        <div class="input-row">
+            <i class="fas fa-cogs"></i>
+            <select id="veiculoTipo">
+                <option value="motor">Busca por Numeração do Motor</option>
+                <option value="chassi">Busca por Chassi (VIN)</option>
+            </select>
+        </div>
+        <div class="divider"></div>
+        <div class="input-row">
+            <i class="fas fa-barcode"></i>
+            <input type="text" id="veiculoValor" placeholder="Insira o código alfanumérico..." oninput="formatarMotorInput(this)">
+        </div>
+        <div class="telefone-formatado" id="motorAjuda" style="padding-left: 2.5rem;">
+            <i class="fas fa-info-circle"></i> Motor: 5-12 caracteres | Chassi: 17 caracteres
+        </div>
+    </div>
+    <div class="chips-container">
+        <span class="chip" onclick="preencherDemo('veiculoValor', 'UD316909')">
+            <i class="fas fa-microchip"></i> Motor Demo: UD316909
+        </span>
+        <span class="chip" onclick="preencherDemo('veiculoValor', '9BWZZZ30ZPP227569')">
+            <i class="fas fa-barcode"></i> Chassi Demo: 9BWZZZ30ZPP227569
+        </span>
+    </div>
+</div>
 
                     <div id="fotoGroup" class="consulta-group">
                         <div class="form-label"><span><i class="fas fa-camera-retro"></i> BIOMETRIA FACIAL</span><span class="badge-regional"><i class="fas fa-map-marker-alt"></i> Base: Pernambuco</span></div>
@@ -1507,7 +1530,7 @@ menu.innerHTML = `
         // ==========================================
         // REALIZAR CONSULTA
         // ==========================================
-        async function realizarConsulta() {
+async function realizarConsulta() {
     if (!currentUser) {
         showToast('🔒 Você precisa estar logado para realizar consultas!', 'error');
         document.getElementById('loginOverlay').classList.add('active');
@@ -1547,7 +1570,8 @@ menu.innerHTML = `
                 mostrarErro('❌ Placa inválida! A placa deve ter 7 caracteres.\n\nExemplo: ABC1D23 ou ABC-1234');
                 return; 
             }
-            versao = document.getElementById('placaVersao').value; 
+            // CORREÇÃO: Usar versão v2 por padrão para mais dados
+            versao = 'v2'; // Força usar a versão v2 que tem mais informações
             break;
         case 'telefone': 
             let telRaw = document.getElementById('telefone').value.trim();
@@ -1560,19 +1584,27 @@ menu.innerHTML = `
             }
             valor = telefoneValidado.numero;
             
-            // Adiciona dica se for telefone fixo (sem o 9)
             if(telefoneValidado.tipo === 'fixo') {
                 showToast('📞 Telefone fixo identificado. A consulta pode ter menos resultados.', 'info');
             }
             break;
-        case 'veiculo': 
-            tipo = document.getElementById('veiculoTipo').value; 
-            valor = document.getElementById('veiculoValor').value.trim(); 
-            if(!valor) { 
-                mostrarErro('❌ Digite o número do motor ou chassi para consultar.');
-                return; 
-            }
-            break;
+case 'veiculo': 
+    const veiculoTipo = document.getElementById('veiculoTipo').value;
+    tipo = veiculoTipo; // 'motor' ou 'chassi'
+    valor = document.getElementById('veiculoValor').value.trim().toUpperCase();
+    if(!valor) { 
+        mostrarErro('❌ Digite o número do motor ou chassi para consultar.');
+        return; 
+    }
+    if (veiculoTipo === 'motor' && valor.length < 5) {
+        mostrarErro('❌ Número do motor muito curto. O motor geralmente tem de 5 a 12 caracteres.\n\nExemplo: UD316909');
+        return;
+    }
+    if (veiculoTipo === 'chassi' && valor.length < 8) {
+        mostrarErro('❌ Chassi inválido! O chassi deve ter 17 caracteres.\n\nExemplo: 9BWZZZ30ZPP227569');
+        return;
+    }
+    break;
         case 'foto': 
             valor = document.getElementById('nomeFoto').value.trim(); 
             if(!valor) { 
@@ -1616,20 +1648,29 @@ menu.innerHTML = `
         
         // Verifica se encontrou dados
         const temDados = data.status === 'true' || data.status === true;
-        const temResultados = data.resultado && (
-            (data.resultado.resultados && data.resultado.resultados.length > 0) ||
-            (data.resultado.cpf) ||
-            (data.resultado.placa) ||
-            (data.resultado.telefone) ||
-            (data.resultado.empresa) ||
-            (data.resultado.bases)
-        );
+        
+        // CORREÇÃO: Verificação específica para placa v2
+        let temResultados = false;
+        
+        if (tipo === 'placa' && versao === 'v2') {
+            // Para versão v2, verifica se tem veiculo e identificacao
+            temResultados = data.resultado && 
+                (data.resultado.veiculo || data.resultado.identificacao);
+        } else {
+            temResultados = data.resultado && (
+                (data.resultado.resultados && data.resultado.resultados.length > 0) ||
+                (data.resultado.cpf) ||
+                (data.resultado.placa) ||
+                (data.resultado.telefone) ||
+                (data.resultado.empresa) ||
+                (data.resultado.bases)
+            );
+        }
         
         if (temDados && temResultados) {
             mostrarSucesso(data);
             showToast('✅ Rastreamento concluído com sucesso!', 'success');
         } else {
-            // Mensagem personalizada por tipo de consulta
             let msgNaoEncontrado = '';
             switch(currentTab) {
                 case 'cpf':
@@ -1639,7 +1680,7 @@ menu.innerHTML = `
                     msgNaoEncontrado = `📱 Nenhum dado encontrado para o telefone ${formatarTelefone(valor)}.\n\n💡 Dicas:\n• Verifique se o número está correto\n• Para celular, confira se tem o 9 na frente\n• Para fixo, confira se tem o DDD correto\n\nO número pode estar fora da base de dados.`;
                     break;
                 case 'placa':
-                    msgNaoEncontrado = `🚗 Nenhum dado encontrado para a placa ${valor}.\n\nPossíveis motivos:\n• Placa nãoregistrada\n• Veículo novo sem histórico\n• Placa de outro estado sem integração`;
+                    msgNaoEncontrado = `🚗 Nenhum dado encontrado para a placa ${valor}.\n\nPossíveis motivos:\n• Placa não registrada\n• Veículo novo sem histórico\n• Placa de outro estado sem integração`;
                     break;
                 case 'nome':
                     msgNaoEncontrado = `👤 Nenhum dado encontrado para o nome "${valor}".\n\n💡 Dicas:\n• Use o nome completo\n• Verifique a grafia\n• Tente com o nome da mãe ou informações adicionais`;
@@ -1648,7 +1689,7 @@ menu.innerHTML = `
                     msgNaoEncontrado = `🔍 Nenhum dado encontrado para esta consulta.\n\n💡 Verifique as informações e tente novamente.`;
             }
             mostrarErro(msgNaoEncontrado);
-            await addCreditos(1); // Devolve o crédito
+            await addCreditos(1);
         }
     } catch(e) {
         console.error('Erro:', e);
@@ -1828,12 +1869,19 @@ async function processarIndicacaoPendente(userId, nome) {
     }
 }
 
-// Gerar link de afiliado
 // Gerar link de afiliado (usando backend)
 async function gerarLinkAfiliado() {
     if (!currentUser) {
         showToast('🔒 Faça login para gerar seu link de afiliado!', 'error');
         return;
+    }
+    
+    // Mostra loading
+    const btn = event?.target;
+    const originalText = btn ? btn.innerHTML : 'Gerar Link';
+    if (btn) {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gerando...';
+        btn.disabled = true;
     }
     
     try {
@@ -1849,18 +1897,29 @@ async function gerarLinkAfiliado() {
         const data = await response.json();
         
         if (data.success) {
-            const link = `${window.location.origin}${window.location.pathname}?${AFILIADO_REF_KEY}=${data.codigo}`;
+            const link = `${window.location.origin}${window.location.pathname}?ref=${data.codigo}`;
+            
+            // Atualiza o painel
+            await atualizarPainelAfiliado();
+            
+            // Copia o link automaticamente
             navigator.clipboard.writeText(link);
-            showToast(`✅ Link copiado! Compartilhe e ganhe 1 crédito por cada amigo que se cadastrar!`, 'success');
+            showToast(`✅ Link gerado e copiado! Compartilhe e ganhe 1 crédito por cada amigo!`, 'success');
+            
             return link;
         } else {
-            showToast('Erro ao gerar link', 'error');
+            showToast('Erro ao gerar link: ' + (data.error || 'Tente novamente'), 'error');
             return null;
         }
     } catch (error) {
         console.error('Erro:', error);
         showToast('Erro ao conectar com o servidor', 'error');
         return null;
+    } finally {
+        if (btn) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
     }
 }
 
@@ -1909,6 +1968,22 @@ function formatarCPF(cpf) {
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
 }
 
+// Formata automaticamente o número do motor (pode ser útil)
+function formatarMotorInput(input) {
+    let valor = input.value.toUpperCase();
+    // Remove caracteres especiais
+    valor = valor.replace(/[^\w]/g, '');
+    input.value = valor;
+    
+    const ajudaSpan = document.getElementById('motorAjuda');
+    if (!ajudaSpan) return;
+    
+    if (valor.length >= 5 && valor.length <= 12) {
+        ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Número válido (${valor.length} caracteres)`;
+    } else if (valor.length > 0) {
+        ajudaSpan.innerHTML = `<i class="fas fa-info-circle"></i> Aguardando ${valor.length}/5-12 caracteres`;
+    }
+}
 function formatarTelefone(telefone) {
     if (telefone.length === 10) {
         return telefone.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
@@ -2233,6 +2308,7 @@ async function configurarUsuarioLogado(user) {
 }
 
 // Mostrar/Atualizar painel de afiliado
+// Mostrar/Atualizar painel de afiliado
 async function atualizarPainelAfiliado() {
     const panel = document.getElementById('afiliadoPanel');
     if (!currentUser) {
@@ -2241,6 +2317,7 @@ async function atualizarPainelAfiliado() {
     }
     
     try {
+        // Primeiro tenta carregar do backend
         const response = await fetch(`${SERVER_API}/api/estatisticas-afiliado?userId=${currentUser.uid}`);
         const data = await response.json();
         
@@ -2253,27 +2330,56 @@ async function atualizarPainelAfiliado() {
             
             const link = `${window.location.origin}${window.location.pathname}?ref=${data.afiliado.codigo}`;
             document.getElementById('afiliadoLinkInput').value = link;
-        } else {
-            panel.style.display = 'block';
-            document.getElementById('afiliadoCodigo').textContent = 'Gerar link...';
-            document.getElementById('afiliadoTotalIndicacoes').textContent = '0';
-            document.getElementById('afiliadoCreditosGanhos').textContent = '0';
-            document.getElementById('afiliadoCreditosAtuais').textContent = getCreditos();
-            document.getElementById('afiliadoLinkInput').value = 'Clique em "Gerar Link" para criar';
             
-            // Se não tem código, tenta gerar
-            await gerarLinkAfiliadoSilencioso();
+            // Salva no localStorage para cache
+            const afiliados = carregarAfiliados();
+            afiliados[currentUser.uid] = {
+                userId: currentUser.uid,
+                nome: currentUser.displayName || 'Marujo',
+                codigo: data.afiliado.codigo,
+                totalIndicacoes: data.afiliado.totalIndicacoes,
+                creditosGanhos: data.afiliado.creditosGanhos,
+                dataCriacao: data.afiliado.dataCriacao,
+                indicacoes: []
+            };
+            salvarAfiliados(afiliados);
+            
+        } else {
+            // Se não tem afiliado no backend, tenta localStorage
+            const afiliados = carregarAfiliados();
+            const afiliado = afiliados[currentUser.uid];
+            
+            if (afiliado && afiliado.codigo) {
+                panel.style.display = 'block';
+                document.getElementById('afiliadoCodigo').textContent = afiliado.codigo;
+                document.getElementById('afiliadoTotalIndicacoes').textContent = afiliado.totalIndicacoes || 0;
+                document.getElementById('afiliadoCreditosGanhos').textContent = afiliado.creditosGanhos || 0;
+                document.getElementById('afiliadoCreditosAtuais').textContent = getCreditos();
+                const link = `${window.location.origin}${window.location.pathname}?ref=${afiliado.codigo}`;
+                document.getElementById('afiliadoLinkInput').value = link;
+            } else {
+                panel.style.display = 'block';
+                document.getElementById('afiliadoCodigo').textContent = 'Gerar link...';
+                document.getElementById('afiliadoTotalIndicacoes').textContent = '0';
+                document.getElementById('afiliadoCreditosGanhos').textContent = '0';
+                document.getElementById('afiliadoCreditosAtuais').textContent = getCreditos();
+                document.getElementById('afiliadoLinkInput').value = 'Clique no botão "Gerar Link" para criar';
+                
+                // Tenta gerar link automaticamente
+                await gerarLinkAfiliadoSilencioso();
+            }
         }
     } catch (error) {
         console.error('Erro ao carregar painel:', error);
         // Fallback para localStorage
         const afiliados = carregarAfiliados();
         const afiliado = afiliados[currentUser.uid];
-        if (afiliado) {
+        
+        if (afiliado && afiliado.codigo) {
             panel.style.display = 'block';
             document.getElementById('afiliadoCodigo').textContent = afiliado.codigo;
-            document.getElementById('afiliadoTotalIndicacoes').textContent = afiliado.totalIndicacoes;
-            document.getElementById('afiliadoCreditosGanhos').textContent = afiliado.creditosGanhos;
+            document.getElementById('afiliadoTotalIndicacoes').textContent = afiliado.totalIndicacoes || 0;
+            document.getElementById('afiliadoCreditosGanhos').textContent = afiliado.creditosGanhos || 0;
             document.getElementById('afiliadoCreditosAtuais').textContent = getCreditos();
             const link = `${window.location.origin}${window.location.pathname}?ref=${afiliado.codigo}`;
             document.getElementById('afiliadoLinkInput').value = link;
@@ -2325,10 +2431,42 @@ function copiarLinkAfiliado() {
         navigator.clipboard.writeText(input.value);
         showToast('✅ Link copiado! Compartilhe e ganhe créditos!', 'success');
     } else {
+        // Se não tem link, tenta gerar
         gerarLinkAfiliado();
     }
 }
+// Verificar se o crédito foi adicionado corretamente (para debug)
+async function verificarCreditoAfiliado() {
+    if (!currentUser) {
+        showToast('Faça login primeiro', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${SERVER_API}/api/estatisticas-afiliado?userId=${currentUser.uid}`);
+        const data = await response.json();
+        
+        if (data.success && data.temAfiliado) {
+            const mensagem = `
+🔍 *VERIFICAÇÃO DE CRÉDITOS*
 
+👤 Seu código: ${data.afiliado.codigo}
+👥 Total de indicações: ${data.afiliado.totalIndicacoes}
+💰 Créditos ganhos como afiliado: ${data.afiliado.creditosGanhos}
+💎 Créditos totais na conta: ${data.afiliado.creditosAtuais}
+
+✅ Seus créditos estão corretos!
+            `;
+            showToast(`Você tem ${data.afiliado.totalIndicacoes} indicações e ganhou ${data.afiliado.creditosGanhos} créditos!`, 'success');
+            console.log(mensagem);
+        } else {
+            showToast('Você ainda não tem estatísticas de afiliado', 'info');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showToast('Erro ao verificar créditos', 'error');
+    }
+}
 // Copiar código do afiliado
 function copiarCodigoAfiliado() {
     const codigo = document.getElementById('afiliadoCodigo').textContent;
@@ -2387,6 +2525,10 @@ function mostrarSucesso(dados) {
             `;
         });
     }
+    // Motor/Chassi - NOVA CONDIÇÃO
+    else if (dados.resultado && dados.resultado.bases && Object.keys(dados.resultado.bases).length > 0) {
+        html = formatarResultadoMotorChassi(dados);
+    }
     // Biometria (foto)
     else if (dados.resultado && dados.resultado.foto) {
         html = formatarResultadoBiometria(dados.resultado);
@@ -2406,10 +2548,6 @@ function mostrarSucesso(dados) {
     // Telefone
     else if (dados.resultado && dados.resultado.telefone) {
         html = formatarResultadoTelefone(dados.resultado);
-    }
-    // Motor/Chassi
-    else if (dados.resultado && dados.resultado.bases) {
-        html = formatarResultadoVeiculo(dados.resultado);
     }
     // Qualquer outro dado
     else {
@@ -2524,8 +2662,158 @@ function formatarResultadoCNPJ(data) {
 }
 
 function formatarResultadoPlaca(data) {
-    const veiculo = data.veiculo || data;
-    const proprietario = data.proprietario || data.possuidor;
+    // Suporte para versão v2 da API (com estrutura mais completa)
+    const resultado = data.resultado || data;
+    
+    // Verifica se é a versão v2 (tem veiculo, identificacao, situacao, proprietario)
+    const isV2 = resultado.veiculo || resultado.identificacao || resultado.proprietario;
+    
+    if (isV2) {
+        return formatarResultadoPlacaV2(resultado);
+    } else {
+        return formatarResultadoPlacaV1(resultado);
+    }
+}
+
+function formatarResultadoMotorChassi(data) {
+    const resultado = data.resultado || data;
+    const tipo = resultado.tipo_consulta || (resultado.valor_consultado ? 'motor' : 'veiculo');
+    const valor = resultado.valor_consultado || 'N/A';
+    const bases = resultado.bases || {};
+    
+    let html = `
+        <div style="background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div style="background: var(--gold-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-microchip" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.3rem; font-weight: bold;">Consulta por ${tipo === 'motor' ? 'MOTOR' : 'CHASSI'}</div>
+                    <div style="font-size: 0.8rem; color: var(--gold-light);">
+                        <i class="fas ${tipo === 'motor' ? 'fa-microchip' : 'fa-barcode'}"></i> 
+                        Valor: ${valor}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Conta quantas bases encontrou
+    const numBases = Object.keys(bases).length;
+    if (numBases > 0) {
+        html += `<div style="margin-bottom: 1rem; padding: 0.5rem; background: rgba(234,179,8,0.1); border-radius: 8px; text-align: center;">
+            <i class="fas fa-database"></i> Encontrado em ${numBases} ${numBases === 1 ? 'base' : 'bases'} de dados
+        </div>`;
+    }
+    
+    // Para cada base encontrada
+    for (const [nomeBase, dados] of Object.entries(bases)) {
+        html += `
+            <div style="margin-top: 1.5rem; border-left: 3px solid var(--gold-primary); padding-left: 1rem;">
+                <div class="section-title" style="color: var(--gold-light); margin-bottom: 0.5rem;">
+                    <i class="fas fa-database"></i> 📁 ${nomeBase}
+                </div>
+                <div class="resultado-grid">
+        `;
+        
+        // Informações do veículo
+        if (dados.placa) {
+            html += `<div class="info-card"><i class="fas fa-car"></i> <strong>🚗 Placa:</strong> ${dados.placa}</div>`;
+        }
+        if (dados.chassi) {
+            html += `<div class="info-card"><i class="fas fa-barcode"></i> <strong>🔢 Chassi:</strong> ${dados.chassi}</div>`;
+        }
+        if (dados.numero_motor) {
+            html += `<div class="info-card"><i class="fas fa-microchip"></i> <strong>🔧 Nº Motor:</strong> ${dados.numero_motor}</div>`;
+        }
+        if (dados.renavam) {
+            html += `<div class="info-card"><i class="fas fa-qrcode"></i> <strong>📱 Renavam:</strong> ${dados.renavam}</div>`;
+        }
+        if (dados.marca_modelo) {
+            html += `<div class="info-card"><i class="fas fa-car-side"></i> <strong>🏷️ Modelo:</strong> ${dados.marca_modelo}</div>`;
+        }
+        if (dados.fabricante) {
+            html += `<div class="info-card"><i class="fas fa-industry"></i> <strong>🏭 Fabricante:</strong> ${dados.fabricante}</div>`;
+        }
+        if (dados.cor) {
+            html += `<div class="info-card"><i class="fas fa-palette"></i> <strong>🎨 Cor:</strong> ${dados.cor}</div>`;
+        }
+        if (dados.combustivel) {
+            html += `<div class="info-card"><i class="fas fa-gas-pump"></i> <strong>⛽ Combustível:</strong> ${dados.combustivel}</div>`;
+        }
+        if (dados.tipo_veiculo) {
+            html += `<div class="info-card"><i class="fas fa-truck"></i> <strong>🚘 Tipo:</strong> ${dados.tipo_veiculo}</div>`;
+        }
+        if (dados.ano_fabricacao) {
+            html += `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>🏭 Ano Fab.:</strong> ${dados.ano_fabricacao}</div>`;
+        }
+        if (dados.ano_modelo) {
+            html += `<div class="info-card"><i class="fas fa-calendar-check"></i> <strong>📅 Ano Modelo:</strong> ${dados.ano_modelo}</div>`;
+        }
+        
+        // Localização
+        if (dados.municipio_emplacamento) {
+            html += `<div class="info-card"><i class="fas fa-map-marker-alt"></i> <strong>📍 Município:</strong> ${dados.municipio_emplacamento}</div>`;
+        }
+        if (dados.uf_municipio || dados.uf_jurisdicao) {
+            const uf = dados.uf_municipio || dados.uf_jurisdicao;
+            html += `<div class="info-card"><i class="fas fa-map"></i> <strong>🗺️ UF:</strong> ${uf}</div>`;
+        }
+        if (dados.data_emplacamento) {
+            html += `<div class="info-card"><i class="fas fa-calendar-plus"></i> <strong>📅 Emplacamento:</strong> ${dados.data_emplacamento}</div>`;
+        }
+        
+        // Situação
+        if (dados.situacao_veiculo) {
+            const statusClass = dados.situacao_veiculo.includes('CIRCULACAO') ? '#10b981' : '#ef4444';
+            const statusIcon = dados.situacao_veiculo.includes('CIRCULACAO') ? 'fa-check-circle' : 'fa-exclamation-triangle';
+            html += `<div class="info-card"><i class="fas ${statusIcon}" style="color: ${statusClass}"></i> <strong>✅ Situação:</strong> ${dados.situacao_veiculo}</div>`;
+        }
+        if (dados.ultima_atualizacao) {
+            html += `<div class="info-card"><i class="fas fa-clock"></i> <strong>🔄 Última Atualização:</strong> ${dados.ultima_atualizacao}</div>`;
+        }
+        
+        // Documentos fiscais
+        if (dados.identificacao_faturado || dados.doc_faturado) {
+            const doc = dados.identificacao_faturado || dados.doc_faturado;
+            html += `<div class="info-card"><i class="fas fa-file-invoice"></i> <strong>📄 Doc. Faturado:</strong> ${doc}</div>`;
+        }
+        if (dados.uf_do_faturado) {
+            html += `<div class="info-card"><i class="fas fa-map-marked-alt"></i> <strong>🏭 UF Faturado:</strong> ${dados.uf_do_faturado}</div>`;
+        }
+        
+        html += `</div></div>`; // Fecha resultado-grid e a base
+    }
+    
+    // Se não encontrou nenhuma base
+    if (numBases === 0) {
+        html += `
+            <div style="margin-top: 1rem; padding: 1rem; background: rgba(239,68,68,0.1); border-radius: 12px; text-align: center;">
+                <i class="fas fa-search" style="color: #ef4444; font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                <p style="color: #f87171;">Nenhum veículo encontrado com este ${tipo === 'motor' ? 'número de motor' : 'chassi'}.</p>
+                <p style="color: #94a3b8; font-size: 0.75rem; margin-top: 0.5rem;">Verifique se o código está correto e tente novamente.</p>
+            </div>
+        `;
+    }
+    
+    // Adiciona aviso sobre bases de dados
+    if (numBases > 0) {
+        html += `
+            <div style="margin-top: 1.5rem; padding: 0.8rem; background: rgba(20,184,166,0.05); border-radius: 8px; font-size: 0.7rem; color: var(--text-muted); text-align: center;">
+                <i class="fas fa-info-circle"></i> Dados consolidados de múltiplas fontes. As informações podem variar entre as bases.
+            </div>
+        `;
+    }
+    
+    return html;
+}
+function formatarResultadoPlacaV2(data) {
+    const veiculo = data.veiculo || {};
+    const identificacao = data.identificacao || {};
+    const localizacao = data.localizacao || {};
+    const situacao = data.situacao || {};
+    const proprietario = data.proprietario || {};
+    const restricoes = data.restricoes || [];
     
     let html = `
         <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
@@ -2539,23 +2827,123 @@ function formatarResultadoPlaca(data) {
                 </div>
             </div>
         </div>
+    `;
+    
+    // INFORMAÇÕES DO VEÍCULO
+    html += `<div style="margin-top: 1rem;">
+        <div class="section-title"><i class="fas fa-info-circle"></i> 🚗 DADOS DO VEÍCULO</div>
         <div class="resultado-grid">
             ${veiculo.cor ? `<div class="info-card"><i class="fas fa-palette"></i> <strong>🎨 Cor:</strong> ${veiculo.cor}</div>` : ''}
-            ${veiculo.ano_fabricacao ? `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>🏭 Fab./Modelo:</strong> ${veiculo.ano_fabricacao}/${veiculo.ano_modelo || ''}</div>` : ''}
+            ${veiculo.ano_fabricacao ? `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>🏭 Ano Fabricação:</strong> ${veiculo.ano_fabricacao}</div>` : ''}
+            ${veiculo.ano_modelo ? `<div class="info-card"><i class="fas fa-calendar-check"></i> <strong>📅 Ano Modelo:</strong> ${veiculo.ano_modelo}</div>` : ''}
             ${veiculo.combustivel ? `<div class="info-card"><i class="fas fa-gas-pump"></i> <strong>⛽ Combustível:</strong> ${veiculo.combustivel}</div>` : ''}
+            ${veiculo.potencia ? `<div class="info-card"><i class="fas fa-tachometer-alt"></i> <strong>⚡ Potência:</strong> ${veiculo.potencia} cv</div>` : ''}
+            ${veiculo.cilindradas ? `<div class="info-card"><i class="fas fa-microchip"></i> <strong>🔧 Cilindradas:</strong> ${veiculo.cilindradas} cc</div>` : ''}
+            ${veiculo.tipo ? `<div class="info-card"><i class="fas fa-truck"></i> <strong>🚘 Tipo:</strong> ${veiculo.tipo}</div>` : ''}
+            ${veiculo.especie ? `<div class="info-card"><i class="fas fa-tag"></i> <strong>📌 Espécie:</strong> ${veiculo.especie}</div>` : ''}
+            ${veiculo.passageiros ? `<div class="info-card"><i class="fas fa-users"></i> <strong>👥 Passageiros:</strong> ${veiculo.passageiros}</div>` : ''}
+        </div>
+    </div>`;
+    
+    // IDENTIFICAÇÃO
+    html += `<div style="margin-top: 1rem;">
+        <div class="section-title"><i class="fas fa-barcode"></i> 🔢 IDENTIFICAÇÃO</div>
+        <div class="resultado-grid">
+            ${identificacao.chassi ? `<div class="info-card"><i class="fas fa-qrcode"></i> <strong>🔢 Chassi:</strong> ${identificacao.chassi}</div>` : ''}
+            ${identificacao.renavam ? `<div class="info-card"><i class="fas fa-id-card"></i> <strong>📱 Renavam:</strong> ${identificacao.renavam}</div>` : ''}
+            ${identificacao.motor ? `<div class="info-card"><i class="fas fa-microchip"></i> <strong>🔧 Motor:</strong> ${identificacao.motor}</div>` : ''}
+            ${identificacao.origem ? `<div class="info-card"><i class="fas fa-globe"></i> <strong>🌍 Origem:</strong> ${identificacao.origem}</div>` : ''}
+        </div>
+    </div>`;
+    
+    // LOCALIZAÇÃO
+    if (localizacao.municipio || localizacao.estado) {
+        html += `<div style="margin-top: 1rem;">
+            <div class="section-title"><i class="fas fa-map-marker-alt"></i> 📍 LOCALIZAÇÃO</div>
+            <div class="resultado-grid">
+                <div class="info-card"><i class="fas fa-city"></i> <strong>🏙️ Município:</strong> ${localizacao.municipio || 'N/A'}</div>
+                <div class="info-card"><i class="fas fa-map"></i> <strong>🗺️ Estado:</strong> ${localizacao.estado || 'N/A'}</div>
+                ${localizacao.municipio_fabricacao ? `<div class="info-card"><i class="fas fa-industry"></i> <strong>🏭 Fab. Município:</strong> ${localizacao.municipio_fabricacao}</div>` : ''}
+                ${localizacao.estado_fabricacao ? `<div class="info-card"><i class="fas fa-map"></i> <strong>🏭 Fab. Estado:</strong> ${localizacao.estado_fabricacao}</div>` : ''}
+            </div>
+        </div>`;
+    }
+    
+    // SITUAÇÃO
+    if (situacao.status || situacao.ultima_atualizacao) {
+        html += `<div style="margin-top: 1rem;">
+            <div class="section-title"><i class="fas fa-chart-line"></i> 📊 SITUAÇÃO</div>
+            <div class="resultado-grid">
+                <div class="info-card"><i class="fas ${situacao.status === 'EMCIRCULACAO' ? 'fa-check-circle' : 'fa-exclamation-triangle'}" style="color: ${situacao.status === 'EMCIRCULACAO' ? '#10b981' : '#ef4444'}"></i> <strong>✅ Status:</strong> ${situacao.status === 'EMCIRCULACAO' ? 'Em Circulação' : situacao.status || 'N/A'}</div>
+                ${situacao.ultima_atualizacao ? `<div class="info-card"><i class="fas fa-clock"></i> <strong>🔄 Última Atualização:</strong> ${situacao.ultima_atualizacao}</div>` : ''}
+                ${situacao.emissao_ultimo_crv ? `<div class="info-card"><i class="fas fa-file-alt"></i> <strong>📄 Emissão CRV:</strong> ${situacao.emissao_ultimo_crv}</div>` : ''}
+            </div>
+        </div>`;
+    }
+    
+    // PROPRIETÁRIO
+    if (proprietario.nome || proprietario.documento) {
+        html += `<div style="margin-top: 1rem;">
+            <div class="section-title"><i class="fas fa-user-check"></i> 👤 PROPRIETÁRIO</div>
+            <div class="resultado-grid">
+                <div class="info-card"><i class="fas fa-user"></i> <strong>Nome:</strong> ${proprietario.nome || 'N/A'}</div>
+                <div class="info-card"><i class="fas fa-id-card"></i> <strong>CPF/CNPJ:</strong> ${proprietario.documento || 'N/A'}</div>
+            </div>
+        </div>`;
+    }
+    
+    // RESTRIÇÕES
+    if (restricoes && restricoes.length > 0) {
+        html += `<div style="margin-top: 1rem;">
+            <div class="section-title" style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> ⚠️ RESTRIÇÕES</div>`;
+        restricoes.forEach(r => {
+            // Formata os códigos de restrição para texto legível
+            let textoRestricao = r;
+            if (r === 'ALIENACAOFIDUCIARIAFILEVEICULOS') {
+                textoRestricao = '🔒 Alienação Fiduciária - Veículo financiado';
+            } else if (r === 'INTENCAO VENDA') {
+                textoRestricao = '🏷️ Intenção de Venda - Veículo anunciado para venda';
+            }
+            html += `<div class="info-card" style="background: rgba(239,68,68,0.1); border-left: 3px solid #ef4444;">
+                <i class="fas fa-ban"></i> ${textoRestricao}
+            </div>`;
+        });
+        html += `</div>`;
+    }
+    
+    return html;
+}
+
+function formatarResultadoPlacaV1(data) {
+    let html = `
+        <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-car" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.3rem; font-weight: bold;">${data.marca_modelo || data.marca || 'Veículo'}</div>
+                    <div style="font-size: 0.8rem; color: var(--aqua-light);"><i class="fas fa-id-card"></i> Placa: ${data.placa || 'N/A'}</div>
+                </div>
+            </div>
+        </div>
+        <div class="resultado-grid">
+            ${data.cor ? `<div class="info-card"><i class="fas fa-palette"></i> <strong>🎨 Cor:</strong> ${data.cor}</div>` : ''}
+            ${data.ano_fabricacao ? `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>🏭 Fab./Modelo:</strong> ${data.ano_fabricacao}/${data.ano_modelo || ''}</div>` : ''}
+            ${data.combustivel ? `<div class="info-card"><i class="fas fa-gas-pump"></i> <strong>⛽ Combustível:</strong> ${data.combustivel}</div>` : ''}
             ${data.chassi ? `<div class="info-card"><i class="fas fa-barcode"></i> <strong>🔢 Chassi:</strong> ${data.chassi}</div>` : ''}
             ${data.renavam ? `<div class="info-card"><i class="fas fa-qrcode"></i> <strong>📱 Renavam:</strong> ${data.renavam}</div>` : ''}
             ${data.situacao ? `<div class="info-card"><i class="fas fa-check-circle"></i> <strong>✅ Situação:</strong> ${data.situacao === 'EM_CIRCULACAO' ? 'Em Circulação' : data.situacao}</div>` : ''}
         </div>
     `;
     
-    if (proprietario) {
+    if (data.proprietario) {
         html += `
             <div style="margin-top: 1rem;">
                 <div class="section-title"><i class="fas fa-user-check"></i> 👤 PROPRIETÁRIO</div>
                 <div class="resultado-grid">
-                    <div class="info-card"><i class="fas fa-user"></i> <strong>Nome:</strong> ${proprietario.nome || 'N/A'}</div>
-                    <div class="info-card"><i class="fas fa-id-card"></i> <strong>CPF/CNPJ:</strong> ${proprietario.cpf_cnpj || proprietario.documento || 'N/A'}</div>
+                    <div class="info-card"><i class="fas fa-user"></i> <strong>Nome:</strong> ${data.proprietario.nome || 'N/A'}</div>
+                    <div class="info-card"><i class="fas fa-id-card"></i> <strong>CPF/CNPJ:</strong> ${data.proprietario.cpf_cnpj || data.proprietario.documento || 'N/A'}</div>
                 </div>
             </div>
         `;
@@ -2564,7 +2952,13 @@ function formatarResultadoPlaca(data) {
     if (data.restricoes && data.restricoes.length > 0) {
         html += `<div style="margin-top: 1rem;"><div class="section-title" style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> ⚠️ RESTRIÇÕES</div>`;
         data.restricoes.forEach(r => {
-            html += `<div class="info-card" style="background: rgba(239,68,68,0.1); border-left-color: #ef4444;"><i class="fas fa-ban"></i> ${r}</div>`;
+            let textoRestricao = r;
+            if (r === 'ALIENACAO_FIDUCIARIA_FILE_VEICULOS') {
+                textoRestricao = '🔒 Alienação Fiduciária - Veículo financiado';
+            } else if (r === 'INTENCAO VENDA') {
+                textoRestricao = '🏷️ Intenção de Venda - Veículo anunciado para venda';
+            }
+            html += `<div class="info-card" style="background: rgba(239,68,68,0.1); border-left-color: #ef4444;"><i class="fas fa-ban"></i> ${textoRestricao}</div>`;
         });
         html += `</div>`;
     }
@@ -2733,7 +3127,7 @@ function escapeHtml(text) {
     return div.innerHTML; 
 }
 
-function mostrarErro(msg) { 
+functionmostrarErro(msg) { 
     const container = document.getElementById('resultadoTerminal');
     const body = document.getElementById('resultadoBody');
     
