@@ -651,7 +651,7 @@
         
         async function salvarCreditosNoServidor(userId, creditos) {
             try {
-                const response = await fetch(`${SERVER_API}/api/salvar-creditos`, {
+                const response = await fetch(`https://fabibot.vercel.app/api/salvar-creditos`, {
                     method: 'POST',
                     mode: 'cors',
                 headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -915,8 +915,7 @@
             try {
                 const response = await fetch(`https://fabibot.vercel.app/api/ativar-codigo`, {
                     method: 'POST',
-                    mode: 'cors',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    headers: { 'Accept': 'application/json' },
                     body: JSON.stringify({ codigo: codigo, userId: currentUser.uid })
                 });
                 const data = await response.json();
@@ -1108,10 +1107,9 @@ async function configurarUsuarioLogado(user) {
         
         // Tenta registrar (se falhar, continua mesmo assim)
         try {
-            const registerResponse = await fetch(`${SERVER_API}/api/registrar-usuario`, {
+            const registerResponse = await fetch(`https://fabibot.vercel.app/api/registrar-usuario`, {
                 method: 'POST',
-                mode: 'cors',
-                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     userId: user.uid,
                     nome: user.displayName,
