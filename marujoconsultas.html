@@ -27,14 +27,10 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         
-        // 🔥 IMPORTANTE: Configura para manter login mesmo após recarregar a página
+        // Configura persistência LOCAL (mantém login mesmo após recarregar)
         setPersistence(auth, browserLocalPersistence)
-            .then(() => {
-                console.log('✅ Persistência configurada: login mantido');
-            })
-            .catch((error) => {
-                console.error('❌ Erro na persistência:', error);
-            });
+            .then(() => console.log('✅ Persistência LOCAL configurada'))
+            .catch((error) => console.error('❌ Erro na persistência:', error));
         
         const googleProvider = new GoogleAuthProvider();
         googleProvider.setCustomParameters({ prompt: 'select_account' });
@@ -43,10 +39,11 @@
         window.googleProvider = googleProvider;
         window.fbOps = { signInWithPopup, signOut, onAuthStateChanged };
         
-        console.log('🔥 Firebase inicializado com persistência local');
+        console.log('🔥 Firebase inicializado com persistência LOCAL');
     </script>
     
     <style>
+        /* ... (mantenha todos os estilos existentes) ... */
         :root {
             --bg-deep: #020813;
             --bg-dark: #061428;
@@ -631,7 +628,8 @@
         const API_BASE = window.location.origin;
         const CREDITS_KEY = 'marujo_credits';
         const CONSULTAS_KEY = 'marujo_consultas';
-        const USER_DATA_KEY = 'marujo_user_data'; // Nova chave para salvar dados do usuário
+        const USER_SESSION_KEY = 'marujo_user_session'; // Chave para salvar a sessão completa
+        
         let currentTab = 'cpf';
         let dadosAtuais = null;
         let currentUser = null;
@@ -639,12 +637,13 @@
         // ==========================================
         // SERVIDOR API PARA CRÉDITOS
         // ==========================================
-        const SERVER_API = 'https://fabibot.vercel.app'
+        const SERVER_API = 'https://cors.eu.org/br2.bronxyshost.com:4009'
         
         async function salvarCreditosNoServidor(userId, creditos) {
             try {
                 const response = await fetch(`${SERVER_API}/api/salvar-creditos`, {
                     method: 'POST',
+                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userId, creditos })
                 });
@@ -673,7 +672,7 @@
         }
 
         // ==========================================
-        // SISTEMA DE CRÉDITOS COM LOCALSTORAGE E SERVIDOR
+        // SISTEMA DE CRÉDITOS COM SESSIONSTORAGE
         // ==========================================
         function getCreditos() { 
             if (!currentUser) return 0;
@@ -686,13 +685,8 @@
             if (!currentUser) return;
             const key = `${CREDITS_KEY}_${currentUser.uid}`;
             localStorage.setItem(key, val.toString());
-            
-            // Salva também no servidor
             await salvarCreditosNoServidor(currentUser.uid, val);
-            
-            // Salva os dados completos do usuário no localStorage para recuperação
-            salvarDadosUsuarioNoLocalStorage();
-            
+            salvarSessaoCompleta(); // Salva a sessão completa
             atualizarInterface(); 
         }
         
@@ -712,10 +706,18 @@
             return true; 
         }
         
-        // Nova função: salva os dados completos do usuário no localStorage
-        function salvarDadosUsuarioNoLocalStorage() {
-            if (!currentUser) return;
-            const userData = {
+        // ==========================================
+        // FUNÇÃO CRÍTICA: SALVAR SESSÃO COMPLETA
+        // ==========================================
+        function salvarSessaoCompleta() {
+            if (!currentUser) {
+                // Se não tem usuário, limpa a sessão
+                localStorage.removeItem(USER_SESSION_KEY);
+                sessionStorage.removeItem(USER_SESSION_KEY);
+                return;
+            }
+            
+            const sessao = {
                 uid: currentUser.uid,
                 displayName: currentUser.displayName,
                 email: currentUser.email,
@@ -724,28 +726,66 @@
                 consultas: parseInt(localStorage.getItem(CONSULTAS_KEY)) || 0,
                 timestamp: Date.now()
             };
-            localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
-            console.log('💾 Dados do usuário salvos no localStorage:', userData);
+            
+            // Salva em localStorage e sessionStorage (dupla proteção)
+            localStorage.setItem(USER_SESSION_KEY, JSON.stringify(sessao));
+            sessionStorage.setItem(USER_SESSION_KEY, JSON.stringify(sessao));
+            
+            console.log('💾 Sessão salva:', sessao.displayName, 'créditos:', sessao.credits);
         }
         
-        // Nova função: carrega dados do localStorage quando a página recarrega
-        function carregarDadosUsuarioDoLocalStorage() {
-            const savedData = localStorage.getItem(USER_DATA_KEY);
-            if (savedData) {
+        // ==========================================
+        // FUNÇÃO CRÍTICA: RESTAURAR SESSÃO
+        // ==========================================
+        function restaurarSessao() {
+            // Primeiro tenta sessionStorage (mais rápido)
+            let sessao = sessionStorage.getItem(USER_SESSION_KEY);
+            
+            // Se não tem, tenta localStorage
+            if (!sessao) {
+                sessao = localStorage.getItem(USER_SESSION_KEY);
+            }
+            
+            if (sessao) {
                 try {
-                    const userData = JSON.parse(savedData);
-                    console.log('📀 Dados do usuário carregados do localStorage:', userData);
-                    return userData;
+                    const dados = JSON.parse(sessao);
+                    console.log('🔄 Restaurando sessão:', dados.displayName);
+                    
+                    // Recria o objeto do usuário
+                    currentUser = {
+                        uid: dados.uid,
+                        displayName: dados.displayName,
+                        email: dados.email,
+                        photoURL: dados.photoURL
+                    };
+                    
+                    // Restaura créditos se necessário
+                    const key = `${CREDITS_KEY}_${dados.uid}`;
+                    if (!localStorage.getItem(key) && dados.credits !== undefined) {
+                        localStorage.setItem(key, dados.credits.toString());
+                    }
+                    
+                    // Restaura consultas
+                    if (dados.consultas !== undefined && !localStorage.getItem(CONSULTAS_KEY)) {
+                        localStorage.setItem(CONSULTAS_KEY, dados.consultas.toString());
+                    }
+                    
+                    // Atualiza a interface
+                    atualizarPerfilUI();
+                    atualizarInterface();
+                    
+                    return true;
                 } catch (e) {
-                    console.error('Erro ao carregar dados do localStorage:', e);
+                    console.error('Erro ao restaurar sessão:', e);
                 }
             }
-            return null;
+            
+            return false;
         }
         
         function atualizarInterface() { 
             const creditsSpan = document.getElementById('creditsDisplay');
-            if(creditsSpan) creditsSpan.textContent = getCreditos(); 
+            if(creditsSpan && currentUser) creditsSpan.textContent = getCreditos(); 
             document.getElementById('statsConsultas').textContent = (parseInt(localStorage.getItem(CONSULTAS_KEY)) || 0); 
             atualizarPerfilUI();
         }
@@ -861,6 +901,7 @@
             try {
                 const response = await fetch(`http://br2.bronxyshost.com:4009/api/ativar-codigo`, {
                     method: 'POST',
+                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({ codigo: codigo, userId: currentUser.uid })
                 });
@@ -1030,7 +1071,7 @@
         function exportarPDF() { if(!dadosAtuais) return; html2pdf().set({ margin: 0.5, filename: `marujo_${Date.now()}.pdf` }).from(document.getElementById('resultadoTerminal')).save(); }
 
         // ==========================================
-        // LOGIN COM GOOGLE (COM PERSISTÊNCIA)
+        // LOGIN COM GOOGLE (COM PERSISTÊNCIA TOTAL)
         // ==========================================
         async function fazerLoginGoogle() {
             if (!window.fbOps) {
@@ -1058,7 +1099,6 @@
                 localStorage.setItem(key, creditosServidor.toString());
                 showToast(`Bem-vindo de volta! Você tem ${creditosServidor} créditos`, 'success');
             } else {
-                // Primeiro login ou sem créditos no servidor
                 const key = `${CREDITS_KEY}_${currentUser.uid}`;
                 if (!localStorage.getItem(key)) {
                     localStorage.setItem(key, '5');
@@ -1067,8 +1107,8 @@
                 showToast(`Bem-vindo, ${currentUser.displayName?.split(' ')[0]}! Você ganhou 5 créditos`, 'success');
             }
             
-            // Salva dados completos no localStorage
-            salvarDadosUsuarioNoLocalStorage();
+            // SALVA A SESSÃO COMPLETA (CRÍTICO!)
+            salvarSessaoCompleta();
             
             document.getElementById('loginOverlay').classList.remove('active');
             atualizarPerfilUI();
@@ -1079,7 +1119,9 @@
             if(!window.fbOps) return;
             window.fbOps.signOut(window.auth).then(() => {
                 currentUser = null;
-                // Limpa dados do localStorage? Mantém para próxima vez, mas marca como não logado
+                // Limpa a sessão salva
+                localStorage.removeItem(USER_SESSION_KEY);
+                sessionStorage.removeItem(USER_SESSION_KEY);
                 showToast('Você deslogou da sua conta.', 'info');
                 atualizarPerfilUI();
                 atualizarInterface();
@@ -1125,72 +1167,51 @@
         }
 
         // ==========================================
-        // INICIALIZAÇÃO - RESTAURAÇÃO DE DADOS
+        // INICIALIZAÇÃO - RESTAURA SESSÃO PRIMEIRO
         // ==========================================
-        // Primeiro, tenta restaurar do localStorage
-        function tentarRestaurarDoLocalStorage() {
-            const savedData = carregarDadosUsuarioDoLocalStorage();
-            if (savedData && savedData.uid) {
-                console.log('🔄 Tentando restaurar usuário do localStorage:', savedData.displayName);
-                // Cria um objeto de usuário simulado para usar até o Firebase confirmar
-                currentUser = {
-                    uid: savedData.uid,
-                    displayName: savedData.displayName,
-                    email: savedData.email,
-                    photoURL: savedData.photoURL
-                };
-                
-                // Restaura créditos e consultas
-                const key = `${CREDITS_KEY}_${savedData.uid}`;
-                if (!localStorage.getItem(key) && savedData.credits !== undefined) {
-                    localStorage.setItem(key, savedData.credits.toString());
-                }
-                if (savedData.consultas !== undefined && !localStorage.getItem(CONSULTAS_KEY)) {
-                    localStorage.setItem(CONSULTAS_KEY, savedData.consultas.toString());
-                }
-                
-                atualizarPerfilUI();
-                atualizarInterface();
-                return true;
-            }
-            return false;
+        // PRIMEIRO: Restaura a sessão do sessionStorage/localStorage
+        const sessaoRestaurada = restaurarSessao();
+        
+        if (sessaoRestaurada) {
+            console.log('✅ Sessão restaurada com sucesso! Usuário já está logado.');
+        } else {
+            console.log('🔄 Nenhuma sessão encontrada, aguardando login...');
         }
         
-        // Configura listeners do Firebase
+        // SEGUNDO: Configura o listener do Firebase para sincronizar
         if (window.fbOps) {
-            // Tenta restaurar do localStorage primeiro (para UI instantânea)
-            tentarRestaurarDoLocalStorage();
-            
-            // Depois confirma com o Firebase
             window.fbOps.onAuthStateChanged(window.auth, async (user) => {
                 if (user) {
-                    // Usuário logado no Firebase
+                    // Se o Firebase tem um usuário, mas nosso currentUser é diferente, sincroniza
                     if (!currentUser || currentUser.uid !== user.uid) {
+                        console.log('🔄 Firebase detectou usuário, sincronizando...');
                         await configurarUsuarioLogado(user);
                     }
-                } else {
-                    // Não há usuário logado no Firebase
-                    if (currentUser) {
-                        // Usuário deslogado, limpa
-                        currentUser = null;
-                        atualizarPerfilUI();
-                        atualizarInterface();
-                    }
+                } else if (currentUser) {
+                    // Se o Firebase não tem usuário, mas nosso currentUser tem, é logout
+                    console.log('🔄 Firebase detectou logout, limpando sessão...');
+                    currentUser = null;
+                    localStorage.removeItem(USER_SESSION_KEY);
+                    sessionStorage.removeItem(USER_SESSION_KEY);
+                    atualizarPerfilUI();
+                    atualizarInterface();
                 }
             });
         }
         
-        // Adiciona listener para o botão de login
-        document.getElementById('googleLoginBtn')?.addEventListener('click', fazerLoginGoogle);
-        
-        // Timer para atualizar latência
+        // Timer para latência
         setInterval(() => { let el = document.getElementById('statTempo'); if(el) el.textContent = `${(Math.random() * 0.3 + 0.2).toFixed(1)}s`; }, 3000);
         
         // Auto uppercase para placa
         document.getElementById('placa')?.addEventListener('input', e => e.target.value = e.target.value.toUpperCase());
         
-        // Inicializa interface
+        // Botão de login
+        document.getElementById('googleLoginBtn')?.addEventListener('click', fazerLoginGoogle);
+        
+        // Atualiza interface final
         atualizarInterface();
+        
+        console.log('🚀 Sistema inicializado. Persistência ativa!');
     </script>
 </body>
 </html>
