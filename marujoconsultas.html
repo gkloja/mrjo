@@ -1497,7 +1497,7 @@
         }
     } catch(e) {
         console.error('Erro:', e);
-        mostrarErro(`⚠️ Erro na conexão com o servidor.\n\n1️⃣ Verifique sua internet\n2️⃣ Aguarde alguns segundos e tente novamente\n3️⃣ Se o problema persistir, contate o suporte\n\n✅ Seus créditos foram devolvidos.`);
+        mostrarErro(`⚠️ Erro na conexão com o servidor.\n\n1️⃣ Tente outro número\n2️⃣ Aguarde alguns segundos e tente novamente\n3️⃣ Se o problema persistir, contate o suporte\n\n✅ Seus créditos foram devolvidos.`);
         await addCreditos(1);
     } finally {
         showLoader(false);
@@ -1904,7 +1904,7 @@ function mostrarSucesso(dados) {
     // Adiciona informações do desenvolvedor
     if (dados.developer) {
         html += `<div style="margin-top: 1rem; padding: 0.8rem; font-size: 0.7rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-                    <i class="fab fa-whatsapp"></i> Suporte: ${dados.developer}
+                    <i class="fab fa-whatsapp"></i> Suporte: (21) 98904-7220
                 </div>`;
     }
     
