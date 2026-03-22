@@ -13,7 +13,7 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDruRISw56lL0dZpnKpFv2COaJkUmamgoc",
@@ -26,6 +26,16 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        
+        // 🔥 IMPORTANTE: Configura para manter login mesmo após recarregar a página
+        setPersistence(auth, browserLocalPersistence)
+            .then(() => {
+                console.log('✅ Persistência configurada: login mantido');
+            })
+            .catch((error) => {
+                console.error('❌ Erro na persistência:', error);
+            });
+        
         const googleProvider = new GoogleAuthProvider();
         googleProvider.setCustomParameters({ prompt: 'select_account' });
 
@@ -33,7 +43,7 @@
         window.googleProvider = googleProvider;
         window.fbOps = { signInWithPopup, signOut, onAuthStateChanged };
         
-        console.log('🔥 Firebase inicializado');
+        console.log('🔥 Firebase inicializado com persistência local');
     </script>
     
     <style>
@@ -467,6 +477,18 @@
         .user-menu-stats i { color: var(--gold-light); margin-right: 5px; }
         .logout-btn { width: 100%; padding: 8px; margin-top: 8px; background: rgba(255,77,77,0.2); border: 1px solid #ef4444; border-radius: 10px; color: #ef4444; cursor: pointer; transition: all 0.2s; }
         .logout-btn:hover { background: rgba(255,77,77,0.4); }
+        
+        /* Loading animation para o estado de carregamento */
+        .loading-spinner-small {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: var(--aqua-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
@@ -607,7 +629,7 @@
         // ==========================================
         // CONFIGURAÇÃO
         // ==========================================
-        const API_BASE = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+        const API_BASE = window.location.origin; // Usa o próprio servidor como proxy
         const CREDITS_KEY = 'marujo_credits';
         const CONSULTAS_KEY = 'marujo_consultas';
         let currentTab = 'cpf';
@@ -617,7 +639,7 @@
         // ==========================================
         // SERVIDOR API PARA CRÉDITOS
         // ==========================================
-        const SERVER_API = window.location.origin; // Usa o mesmo domínio
+        const SERVER_API = window.location.origin;
         
         async function salvarCreditosNoServidor(userId, creditos) {
             try {
@@ -663,7 +685,6 @@
             const key = currentUser ? `${CREDITS_KEY}_${currentUser.uid}` : CREDITS_KEY;
             localStorage.setItem(key, val);
             
-            // Salva no servidor se estiver logado
             if (currentUser) {
                 await salvarCreditosNoServidor(currentUser.uid, val);
             }
@@ -815,7 +836,7 @@
         }
 
         // ==========================================
-        // REALIZAR CONSULTA
+        // REALIZAR CONSULTA COM HEADERS DO USUÁRIO
         // ==========================================
         async function realizarConsulta() {
             if (!currentUser) {
@@ -871,50 +892,52 @@
                     break;
             }
 
-    if(!await consumirCredito()) return;
-    showLoader(true);
+            if(!await consumirCredito()) return;
+            showLoader(true);
 
-    try {
-        let url = `${API_BASE}/api/consultar?tipo=${tipo}&valor=${encodeURIComponent(valor)}`;
-        if(versao) url += `&versao=${versao}`;
-        
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
-        
-        // 🔥 ENVIA OS DADOS DO USUÁRIO NO HEADER
-        const response = await fetch(url, { 
-            signal: controller.signal,
-            headers: {
-                'X-User-Id': currentUser.uid,
-                'X-User-Email': currentUser.email,
-                'X-User-Name': currentUser.displayName || 'Marujo',
-                'X-User-Photo': currentUser.photoURL || ''
+            try {
+                // Usa o próprio servidor como proxy para evitar CORS
+                let url = `${SERVER_API}/api/consultar?tipo=${tipo}&valor=${encodeURIComponent(valor)}`;
+                if(versao) url += `&versao=${versao}`;
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 30000);
+                
+                // Envia os dados do usuário nos headers
+                const response = await fetch(url, { 
+                    signal: controller.signal,
+                    headers: {
+                        'X-User-Id': currentUser.uid,
+                        'X-User-Email': currentUser.email,
+                        'X-User-Name': currentUser.displayName || 'Marujo',
+                        'X-User-Photo': currentUser.photoURL || ''
+                    }
+                });
+                clearTimeout(timeoutId);
+                
+                if(!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                
+                // Mostra informações do usuário no console
+                if (data.usuario) {
+                    console.log(`✅ Consulta realizada por: ${data.usuario.nome} (${data.usuario.email})`);
+                    console.log(`💰 Créditos restantes: ${data.usuario.creditos_restantes}`);
+                }
+                
+                if(data.status === 'true' || data.status === true) {
+                    mostrarSucesso(data);
+                    showToast('Rastreamento concluído.', 'success');
+                } else {
+                    mostrarErro(data.resposta || data.error || 'Nenhum dado localizado.');
+                    await addCreditos(1); 
+                }
+            } catch(e) {
+                console.error('Erro:', e);
+                mostrarErro('Servidor inacessível no momento. Seus créditos foram devolvidos.');
+                await addCreditos(1);
+            } finally {
+                showLoader(false);
             }
-        });
-        clearTimeout(timeoutId);
-        
-        if(!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
-        
-        // Mostra informações do usuário no resultado
-        if (data.usuario) {
-            console.log(`✅ Consulta realizada por: ${data.usuario.nome} (${data.usuario.email})`);
-            console.log(`💰 Créditos restantes: ${data.usuario.creditos_restantes}`);
-        }
-        
-        if(data.status === 'true' || data.status === true) {
-            mostrarSucesso(data);
-            showToast('Rastreamento concluído.', 'success');
-        } else {
-            mostrarErro(data.resposta || data.error || 'Nenhum dado localizado.');
-            await addCreditos(1); 
-        }
-    } catch(e) {
-        mostrarErro('Servidor inacessível no momento. Seus créditos foram devolvidos.');
-        await addCreditos(1);
-    } finally {
-        showLoader(false);
-    }
         }
 
         // ==========================================
@@ -969,7 +992,7 @@
         function exportarPDF() { if(!dadosAtuais) return; html2pdf().set({ margin: 0.5, filename: `marujo_${Date.now()}.pdf` }).from(document.getElementById('resultadoTerminal')).save(); }
 
         // ==========================================
-        // LOGIN COM GOOGLE
+        // LOGIN COM GOOGLE (COM PERSISTÊNCIA)
         // ==========================================
         async function fazerLoginGoogle() {
             if (!window.fbOps) {
@@ -988,7 +1011,6 @@
                     localStorage.setItem(key, creditosServidor);
                     showToast(`Bem-vindo! Você tem ${creditosServidor} créditos`, 'success');
                 } else {
-                    // Novo usuário, salva os 5 créditos iniciais
                     await salvarCreditosNoServidor(currentUser.uid, 5);
                     showToast(`Bem-vindo, ${currentUser.displayName?.split(' ')[0]}! Você ganhou 5 créditos`, 'success');
                 }
@@ -1057,18 +1079,20 @@
         setInterval(() => { let el = document.getElementById('statTempo'); if(el) el.textContent = `${(Math.random() * 0.3 + 0.2).toFixed(1)}s`; }, 3000);
         document.getElementById('placa')?.addEventListener('input', e => e.target.value = e.target.value.toUpperCase());
         
-        // Listener de autenticação
+        // Listener de autenticação com persistência automática
         if (window.fbOps) {
             window.fbOps.onAuthStateChanged(window.auth, async (user) => {
                 currentUser = user;
                 if (user) {
-                    // Carrega créditos do servidor ao logar
+                    // Carrega créditos do servidor ao logar (ou ao recarregar a página)
                     const creditosServidor = await carregarCreditosDoServidor(user.uid);
                     if (creditosServidor !== null && creditosServidor !== undefined) {
                         const key = `${CREDITS_KEY}_${user.uid}`;
                         localStorage.setItem(key, creditosServidor);
                     }
                     console.log('✅ Usuário logado:', user.displayName);
+                } else {
+                    console.log('❌ Nenhum usuário logado');
                 }
                 atualizarPerfilUI();
                 atualizarInterface();
