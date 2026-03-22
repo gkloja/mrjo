@@ -654,7 +654,7 @@
                 const response = await fetch(`${SERVER_API}/api/salvar-creditos`, {
                     method: 'POST',
                     mode: 'cors',
-                    headers: { 'Content-Type': 'application/json' },
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userId, creditos })
                 });
                 const data = await response.json();
@@ -1110,7 +1110,8 @@ async function configurarUsuarioLogado(user) {
         try {
             const registerResponse = await fetch(`${SERVER_API}/api/registrar-usuario`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                mode: 'cors',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     userId: user.uid,
                     nome: user.displayName,
