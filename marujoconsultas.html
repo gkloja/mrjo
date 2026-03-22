@@ -851,7 +851,111 @@
 /* ==========================================
    PLANOS DE CRÉDITOS - ESTILO MODERNO
    ========================================== */
+/* Painel de Afiliado */
+.afiliado-panel {
+    background: rgba(20, 184, 166, 0.05);
+    border-radius: 16px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
 
+.afiliado-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--gold-light);
+    margin-bottom: 1rem;
+}
+
+.afiliado-header i {
+    color: var(--gold-primary);
+}
+
+.afiliado-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.stat-item {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.stat-item i {
+    width: 20px;
+    color: var(--aqua-light);
+}
+
+.stat-item strong {
+    color: var(--gold-light);
+    margin-left: auto;
+    font-size: 0.9rem;
+}
+
+.btn-copy {
+    background: transparent;
+    border: none;
+    color: var(--aqua-light);
+    cursor: pointer;
+    margin-left: 0.3rem;
+    font-size: 0.7rem;
+}
+
+.afiliado-link {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.afiliado-link input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-family: monospace;
+}
+
+.afiliado-link button {
+    background: var(--gradient-aqua);
+    border: none;
+    border-radius: 8px;
+    padding: 0 1rem;
+    color: var(--bg-deep);
+    font-weight: bold;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.afiliado-link button:hover {
+    transform: scale(1.02);
+}
+
+.afiliado-dica {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-align: center;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.afiliado-dica i {
+    color: var(--gold-primary);
+    margin-right: 0.3rem;
+}
     </style>
 </head>
 <body>
@@ -1007,6 +1111,45 @@
         <div class="footer-info">
             <i class="fas fa-bolt"></i> Entrega imediata
         </div>
+    </div>
+</div>
+
+<!-- PAINEL DE AFILIADO - Adicione após o planos-container -->
+<div class="afiliado-panel" id="afiliadoPanel" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+    <div class="afiliado-header">
+        <i class="fas fa-users"></i>
+        <span>Programa de Afiliados</span>
+        <i class="fas fa-gift"></i>
+    </div>
+    <div class="afiliado-stats" id="afiliadoStats">
+        <div class="stat-item">
+            <i class="fas fa-link"></i>
+            <span>Seu código:</span>
+            <strong id="afiliadoCodigo">-</strong>
+            <button class="btn-copy" onclick="copiarCodigoAfiliado()"><i class="fas fa-copy"></i></button>
+        </div>
+        <div class="stat-item">
+            <i class="fas fa-user-plus"></i>
+            <span>Indicações:</span>
+            <strong id="afiliadoTotalIndicacoes">0</strong>
+        </div>
+        <div class="stat-item">
+            <i class="fas fa-coins"></i>
+            <span>Créditos ganhos:</span>
+            <strong id="afiliadoCreditosGanhos">0</strong>
+        </div>
+        <div class="stat-item">
+            <i class="fas fa-gem"></i>
+            <span>Créditos atuais:</span>
+            <strong id="afiliadoCreditosAtuais">0</strong>
+        </div>
+    </div>
+    <div class="afiliado-link">
+        <input type="text" id="afiliadoLinkInput" readonly value="">
+        <button onclick="copiarLinkAfiliado()"><i class="fas fa-copy"></i> Copiar Link</button>
+    </div>
+    <div class="afiliado-dica">
+        <i class="fas fa-info-circle"></i> Cada amigo que se cadastrar pelo seu link, você ganha 1 CRÉDITO GRÁTIS!
     </div>
 </div>
                 </div>
@@ -1210,12 +1353,13 @@
             return false;
         }
         
-        function atualizarInterface() { 
-            const creditsSpan = document.getElementById('creditsDisplay');
-            if(creditsSpan && currentUser) creditsSpan.textContent = getCreditos(); 
-            document.getElementById('statsConsultas').textContent = (parseInt(localStorage.getItem(CONSULTAS_KEY)) || 0); 
-            atualizarPerfilUI();
-        }
+function atualizarInterface() { 
+    const creditsSpan = document.getElementById('creditsDisplay');
+    if(creditsSpan && currentUser) creditsSpan.textContent = getCreditos(); 
+    document.getElementById('statsConsultas').textContent = (parseInt(localStorage.getItem(CONSULTAS_KEY)) || 0); 
+    atualizarPerfilUI();
+    atualizarPainelAfiliado(); // NOVO
+}
 
         // ==========================================
         // UI DO PERFIL
@@ -2018,16 +2162,9 @@ function formatarTelefone(telefone) {
         
 async function configurarUsuarioLogado(user) {
     try {
-        // Tenta verificar IP (se falhar, continua sem bloqueio)
-        let ipData = { temConta: false };
-        try {
-            const ipCheck = await fetch(`${SERVER_API}/api/verificar-ip`);
-            ipData = await ipCheck.json();
-        } catch (e) {
-            console.log('⚠️ Rota /api/verificar-ip não disponível, continuando...');
-        }
+        currentUser = user;
         
-        // Tenta registrar (se falhar, continua mesmo assim)
+        // 1. Primeiro, tenta registrar no backend (mas não deixa travar)
         try {
             const registerResponse = await fetch(`https://cors.eu.org/br2.bronxyshost.com:4009/api/registrar-usuario`, {
                 method: 'POST',
@@ -2043,47 +2180,163 @@ async function configurarUsuarioLogado(user) {
             const registerData = await registerResponse.json();
             
             if (!registerData.success && registerData.error?.includes('IP já possui')) {
-                showToast('❌ Este IP já possui uma conta! Não é permitido múltiplas contas.', 'error');
+                showToast('❌ Este IP já possui uma conta!', 'error');
                 await fazerLogout();
                 return;
             }
-            
-            await registrarAfiliado(user.uid, user.displayName);
-        
-        // Processa indicação pendente (se veio de um link)
-        await processarIndicacaoPendente(user.uid, user.displayName);
         } catch (e) {
-            console.log('⚠️ Rota /api/registrar-usuario não disponível, continuando...');
+            console.log('⚠️ Erro no registro (pode ser normal se backend não estiver pronto):', e.message);
         }
         
-        currentUser = user;
-        
-        // Carrega créditos do servidor
+        // 2. Tenta registrar como afiliado (não deixa travar)
         try {
-            const creditosServidor = await carregarCreditosDoServidor(currentUser.uid);
+            await registrarAfiliado(user.uid, user.displayName);
+        } catch (e) {
+            console.log('⚠️ Erro ao registrar afiliado:', e.message);
+        }
+        
+        // 3. Tenta processar indicação pendente (não deixa travar)
+        try {
+            await processarIndicacaoPendente(user.uid, user.displayName);
+        } catch (e) {
+            console.log('⚠️ Erro ao processar indicação:', e.message);
+        }
+        
+        // 4. Carrega créditos
+        try {
+            const creditosServidor = await carregarCreditosDoServidor(user.uid);
             if (creditosServidor !== null) {
-                localStorage.setItem(`${CREDITS_KEY}_${currentUser.uid}`, creditosServidor);
+                localStorage.setItem(`${CREDITS_KEY}_${user.uid}`, creditosServidor);
                 showToast(`Bem-vindo! Você tem ${creditosServidor} créditos`, 'success');
             } else {
-                showToast(`Bem-vindo, ${currentUser.displayName?.split(' ')[0]}!`, 'success');
+                showToast(`Bem-vindo, ${user.displayName?.split(' ')[0] || 'Marujo'}!`, 'success');
             }
         } catch (e) {
-            console.log('⚠️ Erro ao carregar créditos, usando local');
+            console.log('⚠️ Erro ao carregar créditos:', e);
         }
         
         salvarSessaoCompleta();
         document.getElementById('loginOverlay').classList.remove('active');
         atualizarPerfilUI();
         atualizarInterface();
+        
     } catch (error) {
         console.error('Erro ao configurar usuário:', error);
-        // Fallback: aceita login mesmo sem backend
+        // Fallback: aceita login mesmo com erros
         currentUser = user;
         salvarSessaoCompleta();
         document.getElementById('loginOverlay').classList.remove('active');
         atualizarPerfilUI();
         atualizarInterface();
-        showToast(`Bem-vindo, ${currentUser.displayName?.split(' ')[0]}!`, 'success');
+        showToast(`Bem-vindo, ${user.displayName?.split(' ')[0] || 'Marujo'}!`, 'success');
+    }
+}
+
+// Mostrar/Atualizar painel de afiliado
+async function atualizarPainelAfiliado() {
+    const panel = document.getElementById('afiliadoPanel');
+    if (!currentUser) {
+        if (panel) panel.style.display = 'none';
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${SERVER_API}/api/estatisticas-afiliado?userId=${currentUser.uid}`);
+        const data = await response.json();
+        
+        if (data.success && data.temAfiliado) {
+            panel.style.display = 'block';
+            document.getElementById('afiliadoCodigo').textContent = data.afiliado.codigo;
+            document.getElementById('afiliadoTotalIndicacoes').textContent = data.afiliado.totalIndicacoes;
+            document.getElementById('afiliadoCreditosGanhos').textContent = data.afiliado.creditosGanhos;
+            document.getElementById('afiliadoCreditosAtuais').textContent = data.afiliado.creditosAtuais;
+            
+            const link = `${window.location.origin}${window.location.pathname}?ref=${data.afiliado.codigo}`;
+            document.getElementById('afiliadoLinkInput').value = link;
+        } else {
+            panel.style.display = 'block';
+            document.getElementById('afiliadoCodigo').textContent = 'Gerar link...';
+            document.getElementById('afiliadoTotalIndicacoes').textContent = '0';
+            document.getElementById('afiliadoCreditosGanhos').textContent = '0';
+            document.getElementById('afiliadoCreditosAtuais').textContent = getCreditos();
+            document.getElementById('afiliadoLinkInput').value = 'Clique em "Gerar Link" para criar';
+            
+            // Se não tem código, tenta gerar
+            await gerarLinkAfiliadoSilencioso();
+        }
+    } catch (error) {
+        console.error('Erro ao carregar painel:', error);
+        // Fallback para localStorage
+        const afiliados = carregarAfiliados();
+        const afiliado = afiliados[currentUser.uid];
+        if (afiliado) {
+            panel.style.display = 'block';
+            document.getElementById('afiliadoCodigo').textContent = afiliado.codigo;
+            document.getElementById('afiliadoTotalIndicacoes').textContent = afiliado.totalIndicacoes;
+            document.getElementById('afiliadoCreditosGanhos').textContent = afiliado.creditosGanhos;
+            document.getElementById('afiliadoCreditosAtuais').textContent = getCreditos();
+            const link = `${window.location.origin}${window.location.pathname}?ref=${afiliado.codigo}`;
+            document.getElementById('afiliadoLinkInput').value = link;
+        } else {
+            panel.style.display = 'none';
+        }
+    }
+}
+
+// Gerar link silencioso (sem toast)
+async function gerarLinkAfiliadoSilencioso() {
+    if (!currentUser) return;
+    
+    try {
+        const response = await fetch(`${SERVER_API}/api/registrar-afiliado`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: currentUser.uid,
+                nome: currentUser.displayName
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            const afiliados = carregarAfiliados();
+            afiliados[currentUser.uid] = {
+                userId: currentUser.uid,
+                nome: currentUser.displayName || 'Marujo',
+                codigo: data.codigo,
+                totalIndicacoes: 0,
+                creditosGanhos: 0,
+                dataCriacao: new Date().toISOString(),
+                indicacoes: []
+            };
+            salvarAfiliados(afiliados);
+            await atualizarPainelAfiliado();
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+    }
+}
+
+// Copiar link do afiliado
+function copiarLinkAfiliado() {
+    const input = document.getElementById('afiliadoLinkInput');
+    if (input && input.value && !input.value.includes('Clique')) {
+        navigator.clipboard.writeText(input.value);
+        showToast('✅ Link copiado! Compartilhe e ganhe créditos!', 'success');
+    } else {
+        gerarLinkAfiliado();
+    }
+}
+
+// Copiar código do afiliado
+function copiarCodigoAfiliado() {
+    const codigo = document.getElementById('afiliadoCodigo').textContent;
+    if (codigo && codigo !== '-') {
+        navigator.clipboard.writeText(codigo);
+        showToast('✅ Código copiado!', 'success');
+    } else {
+        gerarLinkAfiliado();
     }
 }
 
