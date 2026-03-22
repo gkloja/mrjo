@@ -29,7 +29,6 @@
         const googleProvider = new GoogleAuthProvider();
         googleProvider.setCustomParameters({ prompt: 'select_account' });
 
-        // EXPORTA PARA O ESCOPO GLOBAL
         window.auth = auth;
         window.googleProvider = googleProvider;
         window.fbOps = { signInWithPopup, signOut, onAuthStateChanged };
@@ -48,7 +47,6 @@
             --gold-light: #fef08a;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            
             --glass-bg: rgba(10, 20, 35, 0.6);
             --glass-border: rgba(45, 212, 191, 0.2);
             --gradient-aqua: linear-gradient(135deg, var(--aqua-light), var(--aqua-primary));
@@ -102,7 +100,6 @@
         .logo-text h1 { font-size: 1.3rem; color: var(--text-main); }
         .logo-text span { font-size: 0.6rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; }
 
-        /* Perfil do Usuário */
         .user-profile {
             display: flex;
             align-items: center;
@@ -125,23 +122,10 @@
             object-fit: cover;
             border: 2px solid var(--aqua-primary);
         }
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.3;
-        }
-        .user-name {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-        .user-credits {
-            font-size: 0.7rem;
-            color: var(--gold-light);
-        }
-        .user-credits i {
-            margin-right: 3px;
-        }
+        .user-info { display: flex; flex-direction: column; line-height: 1.3; }
+        .user-name { font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
+        .user-credits { font-size: 0.7rem; color: var(--gold-light); }
+        .user-credits i { margin-right: 3px; }
         .login-btn {
             background: rgba(234, 179, 8, 0.1);
             border: 1px solid rgba(234, 179, 8, 0.3);
@@ -153,36 +137,14 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .login-btn:hover {
-            background: rgba(234, 179, 8, 0.2);
-            transform: translateY(-2px);
-        }
+        .login-btn:hover { background: rgba(234, 179, 8, 0.2); transform: translateY(-2px); }
         .login-btn i { color: var(--gold-primary); }
         .login-btn span { font-size: 0.85rem; font-weight: 500; color: var(--gold-light); }
 
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 6rem 5% 4rem;
-        }
-
-        .dashboard-layout {
-            display: flex;
-            gap: 3rem;
-            align-items: stretch;
-        }
-
-        .hero-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .panel-section {
-            flex: 1.3;
-            animation: slideInRight 0.8s ease-out;
-        }
+        .container { max-width: 1300px; margin: 0 auto; padding: 6rem 5% 4rem; }
+        .dashboard-layout { display: flex; gap: 3rem; align-items: stretch; }
+        .hero-section { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .panel-section { flex: 1.3; animation: slideInRight 0.8s ease-out; }
 
         @media (max-width: 992px) {
             .dashboard-layout { flex-direction: column; gap: 2rem; }
@@ -202,9 +164,7 @@
         .hero-section h1 { font-size: clamp(2.2rem, 4vw, 3.5rem); margin-bottom: 1rem; }
         .hero-section p { color: var(--text-muted); font-size: 1rem; max-width: 500px; margin-bottom: 2rem; }
 
-        .stats-grid {
-            display: flex; flex-wrap: wrap; gap: 1rem;
-        }
+        .stats-grid { display: flex; flex-wrap: wrap; gap: 1rem; }
         .stat-card {
             background: var(--glass-bg);
             border: 1px solid rgba(255,255,255,0.05);
@@ -234,7 +194,6 @@
             gap: 0.8rem;
             margin-bottom: 2rem;
         }
-
         @media (max-width: 600px) {
             .selection-grid { grid-template-columns: repeat(2, 1fr); }
             .app-panel { padding: 1.5rem; }
@@ -249,17 +208,10 @@
             cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--text-muted);
         }
-
         .type-btn i { font-size: 1.3rem; transition: transform 0.3s; }
         .type-btn span { font-size: 0.75rem; font-weight: 600; }
-
-        .type-btn:hover {
-            background: rgba(20, 184, 166, 0.1);
-            color: var(--text-main);
-            border-color: rgba(20, 184, 166, 0.3);
-        }
+        .type-btn:hover { background: rgba(20, 184, 166, 0.1); color: var(--text-main); border-color: rgba(20, 184, 166, 0.3); }
         .type-btn:hover i { transform: scale(1.1); color: var(--aqua-light); }
-
         .type-btn.active {
             background: var(--gradient-aqua);
             color: var(--bg-deep);
@@ -304,7 +256,6 @@
         select option { background: var(--bg-deep); color: var(--text-main); }
 
         .divider { height: 1px; background: rgba(255,255,255,0.05); margin: 0 1rem; }
-
         .chips-container { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
         .chip {
             background: rgba(255, 255, 255, 0.05);
@@ -329,18 +280,13 @@
             box-shadow: 0 4px 15px rgba(20, 184, 166, 0.2);
         }
         .btn-executar:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(20, 184, 166, 0.4); }
-        .btn-executar:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .btn-executar:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
         .planos-container {
             margin-top: 1.5rem;
             padding-top: 1.5rem;
             border-top: 1px solid rgba(255,255,255,0.1);
         }
-
         .planos-title {
             font-size: 0.85rem;
             color: var(--text-muted);
@@ -351,13 +297,11 @@
             justify-content: center;
             gap: 0.5rem;
         }
-
         .planos-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 0.8rem;
         }
-
         .plano-card {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255,255,255,0.05);
@@ -367,20 +311,15 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
         .plano-card:hover {
             border-color: var(--gold-primary);
             background: rgba(234, 179, 8, 0.05);
             transform: translateY(-2px);
         }
-
         .plano-creditos { font-size: 1.2rem; font-weight: 700; color: var(--gold-light); }
         .plano-preco { font-size: 1rem; font-weight: 600; color: var(--aqua-light); margin-top: 0.3rem; }
         .plano-bonus { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.3rem; }
-
-        @media (max-width: 500px) {
-            .planos-grid { grid-template-columns: 1fr; gap: 0.5rem; }
-        }
+        @media (max-width: 500px) { .planos-grid { grid-template-columns: 1fr; gap: 0.5rem; } }
 
         .results-container {
             background: #090e17;
@@ -450,7 +389,6 @@
         .resultado-nome { color: var(--gold-light); font-weight: bold; font-size: 1rem; }
         .resultado-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; font-size: 0.85rem; }
         .resultado-info span { color: var(--aqua-light); }
-        
         .resultado-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.8rem; margin-top: 0.5rem; }
         .section-title { font-size: 0.9rem; font-weight: bold; color: var(--aqua-light); margin-bottom: 0.8rem; padding-bottom: 0.3rem; border-bottom: 1px solid rgba(20, 184, 166, 0.3); display: flex; align-items: center; gap: 0.5rem; }
         .info-card { background: rgba(255, 255, 255, 0.03); border-radius: 10px; padding: 0.8rem; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.2s ease; }
@@ -474,10 +412,7 @@
             visibility: hidden;
             transition: all 0.3s ease;
         }
-        .login-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
+        .login-overlay.active { opacity: 1; visibility: visible; }
         .login-card {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
@@ -490,11 +425,7 @@
             box-shadow: var(--shadow-card);
             animation: slideUp 0.5s ease;
         }
-        .login-card i {
-            font-size: 4rem;
-            color: var(--gold-primary);
-            margin-bottom: 1rem;
-        }
+        .login-card i { font-size: 4rem; color: var(--gold-primary); margin-bottom: 1rem; }
         .login-card h2 { margin-bottom: 0.5rem; }
         .login-card p { color: var(--text-muted); margin-bottom: 1.5rem; }
         .btn-google {
@@ -511,13 +442,9 @@
             gap: 12px;
             transition: all 0.3s;
         }
-        .btn-google:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255,255,255,0.2);
-        }
+        .btn-google:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(255,255,255,0.2); }
         .btn-google img { width: 20px; height: 20px; }
 
-        /* Menu Dropdown */
         .user-menu {
             position: fixed;
             top: 70px;
@@ -532,52 +459,14 @@
             box-shadow: var(--shadow-card);
             animation: slideIn 0.2s ease;
         }
-        .user-menu-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 8px;
-        }
-        .user-menu-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--aqua-primary);
-        }
-        .user-menu-info .user-menu-name {
-            font-weight: bold;
-            color: var(--text-main);
-        }
-        .user-menu-info .user-menu-email {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-        .user-menu-stats {
-            padding: 8px 0;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
-        .user-menu-stats i {
-            color: var(--gold-light);
-            margin-right: 5px;
-        }
-        .logout-btn {
-            width: 100%;
-            padding: 8px;
-            margin-top: 8px;
-            background: rgba(255,77,77,0.2);
-            border: 1px solid #ef4444;
-            border-radius: 10px;
-            color: #ef4444;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .logout-btn:hover {
-            background: rgba(255,77,77,0.4);
-        }
+        .user-menu-header { display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 8px; }
+        .user-menu-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--aqua-primary); }
+        .user-menu-info .user-menu-name { font-weight: bold; color: var(--text-main); }
+        .user-menu-info .user-menu-email { font-size: 0.7rem; color: var(--text-muted); }
+        .user-menu-stats { padding: 8px 0; color: var(--text-muted); font-size: 0.8rem; }
+        .user-menu-stats i { color: var(--gold-light); margin-right: 5px; }
+        .logout-btn { width: 100%; padding: 8px; margin-top: 8px; background: rgba(255,77,77,0.2); border: 1px solid #ef4444; border-radius: 10px; color: #ef4444; cursor: pointer; transition: all 0.2s; }
+        .logout-btn:hover { background: rgba(255,77,77,0.4); }
     </style>
 </head>
 <body>
@@ -592,34 +481,19 @@
 
     <main class="container">
         <div class="dashboard-layout">
-            
             <div class="hero-section">
                 <div class="badge"><i class="fas fa-satellite-dish"></i> Status: Online & Seguro</div>
                 <h1>A verdade <span class="text-gradient">revelada</span> em segundos.</h1>
                 <p>O sistema de inteligência mais rápido do mercado. Escolha a base de dados ao lado e inicie o rastreamento em tempo real.</p>
-                
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-database"></i></div>
-                        <div class="stat-value">19+</div>
-                        <div class="stat-label">Bases Integradas</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-bolt"></i></div>
-                        <div class="stat-value" id="statTempo">0.4s</div>
-                        <div class="stat-label">Latência</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-chart-line" style="color:var(--gold-primary)"></i></div>
-                        <div class="stat-value" id="statsConsultas">0</div>
-                        <div class="stat-label">Consultas</div>
-                    </div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-database"></i></div><div class="stat-value">19+</div><div class="stat-label">Bases Integradas</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-bolt"></i></div><div class="stat-value" id="statTempo">0.4s</div><div class="stat-label">Latência</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-chart-line" style="color:var(--gold-primary)"></i></div><div class="stat-value" id="statsConsultas">0</div><div class="stat-label">Consultas</div></div>
                 </div>
             </div>
 
             <div class="panel-section">
                 <div class="app-panel">
-                    
                     <div class="selection-grid">
                         <button class="type-btn active" onclick="switchTab('cpf', this)"><i class="fas fa-id-card"></i><span>CPF</span></button>
                         <button class="type-btn" onclick="switchTab('cnpj', this)"><i class="fas fa-building"></i><span>CNPJ</span></button>
@@ -741,45 +615,78 @@
         let currentUser = null;
 
         // ==========================================
-        // FUNÇÕES DE LIMPEZA DE DADOS
+        // SERVIDOR API PARA CRÉDITOS
         // ==========================================
-        function limparCPF(valor) { let limpo = valor.replace(/[^\d]/g, ''); return limpo.length === 11 ? limpo : null; }
-        function limparCNPJ(valor) { let limpo = valor.replace(/[^\d]/g, ''); return limpo.length === 14 ? limpo : null; }
-        function limparTelefone(valor) { let limpo = valor.replace(/[^\d]/g, ''); if(limpo.startsWith('55') && limpo.length > 10) limpo = limpo.substring(2); return (limpo.length === 10 || limpo.length === 11) ? limpo : null; }
+        const SERVER_API = window.location.origin; // Usa o mesmo domínio
         
-        function formatarTelefoneInput(input) {
-            let numeros = input.value.replace(/[^\d]/g, '');
-            if(numeros.startsWith('55') && numeros.length > 10) numeros = numeros.substring(2);
-            const ajudaSpan = document.getElementById('telefoneAjuda');
-            if(numeros.length === 10) ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Telefone fixo válido`;
-            else if(numeros.length === 11) ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Telefone celular válido`;
-            else if(numeros.length > 0) ajudaSpan.innerHTML = `<i class="fas fa-info-circle"></i> Aguardando ${numeros.length}/10-11 dígitos`;
-            else ajudaSpan.innerHTML = `<i class="fas fa-magic"></i> Aceita qualquer formato`;
+        async function salvarCreditosNoServidor(userId, creditos) {
+            try {
+                const response = await fetch(`${SERVER_API}/api/salvar-creditos`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, creditos })
+                });
+                const data = await response.json();
+                console.log('💾 Créditos salvos no servidor:', data);
+                return data;
+            } catch (error) {
+                console.error('Erro ao salvar créditos no servidor:', error);
+                return null;
+            }
+        }
+
+        async function carregarCreditosDoServidor(userId) {
+            try {
+                const response = await fetch(`${SERVER_API}/api/carregar-creditos?userId=${encodeURIComponent(userId)}`);
+                const data = await response.json();
+                if (data.success && data.creditos !== undefined) {
+                    console.log('📥 Créditos carregados do servidor:', data.creditos);
+                    return data.creditos;
+                }
+                return null;
+            } catch (error) {
+                console.error('Erro ao carregar créditos do servidor:', error);
+                return null;
+            }
         }
 
         // ==========================================
-        // SISTEMA DE CRÉDITOS
+        // SISTEMA DE CRÉDITOS COM SERVIDOR
         // ==========================================
         function getCreditos() { 
             const key = currentUser ? `${CREDITS_KEY}_${currentUser.uid}` : CREDITS_KEY;
             let c = localStorage.getItem(key); 
             return c === null ? 5 : parseInt(c); 
         }
-        function setCreditos(val) { 
+        
+        async function setCreditos(val) { 
             const key = currentUser ? `${CREDITS_KEY}_${currentUser.uid}` : CREDITS_KEY;
-            localStorage.setItem(key, val); 
+            localStorage.setItem(key, val);
+            
+            // Salva no servidor se estiver logado
+            if (currentUser) {
+                await salvarCreditosNoServidor(currentUser.uid, val);
+            }
+            
             atualizarInterface(); 
         }
-        function addCreditos(qtd) { let novo = getCreditos() + qtd; setCreditos(novo); return novo; }
-        function consumirCredito() { 
+        
+        async function addCreditos(qtd) { 
+            let novo = getCreditos() + qtd; 
+            await setCreditos(novo); 
+            return novo; 
+        }
+        
+        async function consumirCredito() { 
             let atual = getCreditos(); 
             if(atual <= 0) return false; 
-            setCreditos(atual - 1); 
+            await setCreditos(atual - 1); 
             let consultas = (parseInt(localStorage.getItem(CONSULTAS_KEY)) || 0) + 1; 
             localStorage.setItem(CONSULTAS_KEY, consultas); 
             atualizarInterface();
             return true; 
         }
+        
         function atualizarInterface() { 
             const creditsSpan = document.getElementById('creditsDisplay');
             if(creditsSpan) creditsSpan.textContent = getCreditos(); 
@@ -800,7 +707,7 @@
                         <img src="${currentUser.photoURL || 'https://via.placeholder.com/38'}" class="user-avatar" onerror="this.src='https://via.placeholder.com/38'">
                         <div class="user-info">
                             <span class="user-name">${currentUser.displayName?.split(' ')[0] || 'Marujo'}</span>
-                            <span class="user-credits"><i class="fas fa-gem"></i> ${getCreditos()} créditos</span>
+                            <span class="user-credits" id="creditsDisplay"><i class="fas fa-gem"></i> ${getCreditos()} créditos</span>
                         </div>
                         <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: var(--text-muted);"></i>
                     </div>
@@ -892,7 +799,7 @@
                 });
                 const data = await response.json();
                 if (data.sucesso) {
-                    const novoTotal = addCreditos(data.creditos);
+                    const novoTotal = await addCreditos(data.creditos);
                     showToast(`🎉 ${data.mensagem} Agora você tem ${novoTotal} créditos!`, 'success');
                     fecharModalCodigo();
                     document.getElementById('codigoInput').value = '';
@@ -964,39 +871,69 @@
                     break;
             }
 
-            if(!consumirCredito()) return;
-            showLoader(true);
+    if(!await consumirCredito()) return;
+    showLoader(true);
 
-            try {
-                let url = `${API_BASE}/api/consultar?tipo=${tipo}&valor=${encodeURIComponent(valor)}`;
-                if(versao) url += `&versao=${versao}`;
-                
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 20000); 
-                const response = await fetch(url, { signal: controller.signal });
-                clearTimeout(timeoutId);
-                
-                if(!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                
-                if(data.status === 'true' || data.status === true) {
-                    mostrarSucesso(data);
-                    showToast('Rastreamento concluído.', 'success');
-                } else {
-                    mostrarErro(data.resposta || data.error || 'Nenhum dado localizado.');
-                    addCreditos(1); 
-                }
-            } catch(e) {
-                mostrarErro('Servidor inacessível no momento. Seus créditos foram devolvidos.');
-                addCreditos(1);
-            } finally {
-                showLoader(false);
+    try {
+        let url = `${API_BASE}/api/consultar?tipo=${tipo}&valor=${encodeURIComponent(valor)}`;
+        if(versao) url += `&versao=${versao}`;
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        
+        // 🔥 ENVIA OS DADOS DO USUÁRIO NO HEADER
+        const response = await fetch(url, { 
+            signal: controller.signal,
+            headers: {
+                'X-User-Id': currentUser.uid,
+                'X-User-Email': currentUser.email,
+                'X-User-Name': currentUser.displayName || 'Marujo',
+                'X-User-Photo': currentUser.photoURL || ''
             }
+        });
+        clearTimeout(timeoutId);
+        
+        if(!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        
+        // Mostra informações do usuário no resultado
+        if (data.usuario) {
+            console.log(`✅ Consulta realizada por: ${data.usuario.nome} (${data.usuario.email})`);
+            console.log(`💰 Créditos restantes: ${data.usuario.creditos_restantes}`);
+        }
+        
+        if(data.status === 'true' || data.status === true) {
+            mostrarSucesso(data);
+            showToast('Rastreamento concluído.', 'success');
+        } else {
+            mostrarErro(data.resposta || data.error || 'Nenhum dado localizado.');
+            await addCreditos(1); 
+        }
+    } catch(e) {
+        mostrarErro('Servidor inacessível no momento. Seus créditos foram devolvidos.');
+        await addCreditos(1);
+    } finally {
+        showLoader(false);
+    }
         }
 
         // ==========================================
         // FUNÇÕES AUXILIARES
         // ==========================================
+        function limparCPF(valor) { let limpo = valor.replace(/[^\d]/g, ''); return limpo.length === 11 ? limpo : null; }
+        function limparCNPJ(valor) { let limpo = valor.replace(/[^\d]/g, ''); return limpo.length === 14 ? limpo : null; }
+        function limparTelefone(valor) { let limpo = valor.replace(/[^\d]/g, ''); if(limpo.startsWith('55') && limpo.length > 10) limpo = limpo.substring(2); return (limpo.length === 10 || limpo.length === 11) ? limpo : null; }
+        
+        function formatarTelefoneInput(input) {
+            let numeros = input.value.replace(/[^\d]/g, '');
+            if(numeros.startsWith('55') && numeros.length > 10) numeros = numeros.substring(2);
+            const ajudaSpan = document.getElementById('telefoneAjuda');
+            if(numeros.length === 10) ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Telefone fixo válido`;
+            else if(numeros.length === 11) ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Telefone celular válido`;
+            else if(numeros.length > 0) ajudaSpan.innerHTML = `<i class="fas fa-info-circle"></i> Aguardando ${numeros.length}/10-11 dígitos`;
+            else ajudaSpan.innerHTML = `<i class="fas fa-magic"></i> Aceita qualquer formato`;
+        }
+
         function switchTab(tab, btnElement) { 
             currentTab = tab; 
             document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active')); 
@@ -1043,7 +980,19 @@
                 showToast('Abrindo porta de embarque...', 'info');
                 const result = await window.fbOps.signInWithPopup(window.auth, window.googleProvider);
                 currentUser = result.user;
-                showToast(`Bem-vindo, ${currentUser.displayName?.split(' ')[0]}!`, 'success');
+                
+                // Carrega créditos do servidor
+                const creditosServidor = await carregarCreditosDoServidor(currentUser.uid);
+                if (creditosServidor !== null && creditosServidor !== undefined) {
+                    const key = `${CREDITS_KEY}_${currentUser.uid}`;
+                    localStorage.setItem(key, creditosServidor);
+                    showToast(`Bem-vindo! Você tem ${creditosServidor} créditos`, 'success');
+                } else {
+                    // Novo usuário, salva os 5 créditos iniciais
+                    await salvarCreditosNoServidor(currentUser.uid, 5);
+                    showToast(`Bem-vindo, ${currentUser.displayName?.split(' ')[0]}! Você ganhou 5 créditos`, 'success');
+                }
+                
                 document.getElementById('loginOverlay').classList.remove('active');
                 atualizarPerfilUI();
                 atualizarInterface();
@@ -1110,12 +1059,19 @@
         
         // Listener de autenticação
         if (window.fbOps) {
-            window.fbOps.onAuthStateChanged(window.auth, (user) => {
+            window.fbOps.onAuthStateChanged(window.auth, async (user) => {
                 currentUser = user;
+                if (user) {
+                    // Carrega créditos do servidor ao logar
+                    const creditosServidor = await carregarCreditosDoServidor(user.uid);
+                    if (creditosServidor !== null && creditosServidor !== undefined) {
+                        const key = `${CREDITS_KEY}_${user.uid}`;
+                        localStorage.setItem(key, creditosServidor);
+                    }
+                    console.log('✅ Usuário logado:', user.displayName);
+                }
                 atualizarPerfilUI();
                 atualizarInterface();
-                if (user) console.log('✅ Usuário logado:', user.displayName);
-                else console.log('❌ Usuário não logado');
             });
         }
         
