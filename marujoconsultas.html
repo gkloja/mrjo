@@ -161,6 +161,7 @@
     
     <!-- GOOGLE ADSENSE -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <!-- ONESIGNAL NOTIFICAÇÕES -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
@@ -1486,7 +1487,104 @@ const response = await fetch(url, { signal: controller.signal });
         function contatoWhatsApp() { window.open('https://wa.me/5521989047220?text=Olá! Gostaria de adquirir um código VIP', '_blank'); }
         function limparResultados() { dadosAtuais = null; document.getElementById('resultadoTerminal').classList.remove('active'); showToast('Terminal apagado.', 'success'); }
         function copiarJSON() { if(!dadosAtuais) return; navigator.clipboard.writeText(JSON.stringify(dadosAtuais.resultado || dadosAtuais, null, 2)); showToast('Copiado.', 'success'); }
-        function exportarPDF() { if(!dadosAtuais) return; html2pdf().set({ margin: 0.5, filename: `marujo_${Date.now()}.pdf` }).from(document.getElementById('resultadoTerminal')).save(); }
+        function exportarPDF() {
+    if (!dadosAtuais) {
+        showToast('Nenhum resultado para exportar!', 'error');
+        return;
+    }
+    
+    // Mostra loading
+    const btn = event?.target;
+    const textoOriginal = btn ? btn.innerHTML : 'Exportar';
+    if (btn) {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gerando PDF...';
+        btn.disabled = true;
+    }
+    
+    try {
+        // Cria um elemento temporário para o PDF
+        const element = document.getElementById('resultadoTerminal');
+        
+        if (!element) {
+            throw new Error('Elemento não encontrado');
+        }
+        
+        // Opções do PDF
+        const opt = {
+            margin: [0.5, 0.5, 0.5, 0.5],
+            filename: `marujo_consulta_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, letterRendering: true, useCORS: true },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+        
+        // Adiciona cabeçalho personalizado
+        const header = document.createElement('div');
+        header.style.textAlign = 'center';
+        header.style.marginBottom = '20px';
+        header.style.padding = '10px';
+        header.style.borderBottom = '2px solid #14b8a6';
+        header.innerHTML = `
+            <h2 style="color: #14b8a6; margin: 0;">MARUJO CONSULTAS</h2>
+            <p style="color: #94a3b8; margin: 5px 0;">Relatório de Consulta</p>
+            <p style="color: #64748b; font-size: 10px;">Gerado em: ${new Date().toLocaleString('pt-BR')}</p>
+        `;
+        
+        // Adiciona rodapé
+        const footer = document.createElement('div');
+        footer.style.textAlign = 'center';
+        footer.style.marginTop = '20px';
+        footer.style.padding = '10px';
+        footer.style.borderTop = '1px solid #334155';
+        footer.style.fontSize = '10px';
+        footer.style.color = '#64748b';
+        footer.innerHTML = `
+            <p>Marujo Consultas - Sistema de Inteligência Náutica</p>
+            <p>Suporte: (21) 98904-7220</p>
+        `;
+        
+        // Clona o conteúdo para não alterar o original
+        const content = element.cloneNode(true);
+        
+        // Remove botões e ações desnecessárias
+        const actions = content.querySelector('.terminal-actions');
+        if (actions) actions.remove();
+        
+        // Insere cabeçalho e rodapé
+        content.insertBefore(header, content.firstChild);
+        content.appendChild(footer);
+        
+        // Aplica estilos para o PDF
+        content.style.background = '#0f172a';
+        content.style.color = '#f1f5f9';
+        content.style.padding = '20px';
+        content.style.borderRadius = '8px';
+        
+        // Converte para PDF
+        html2pdf().set(opt).from(content).save()
+            .then(() => {
+                showToast('PDF gerado com sucesso!', 'success');
+            })
+            .catch((error) => {
+                console.error('Erro ao gerar PDF:', error);
+                showToast('Erro ao gerar PDF. Tente novamente.', 'error');
+            })
+            .finally(() => {
+                if (btn) {
+                    btn.innerHTML = textoOriginal;
+                    btn.disabled = false;
+                }
+            });
+            
+    } catch (error) {
+        console.error('Erro:', error);
+        showToast('Erro ao gerar PDF: ' + error.message, 'error');
+        if (btn) {
+            btn.innerHTML = textoOriginal;
+            btn.disabled = false;
+        }
+    }
+}
 
         // ==========================================
         // LOGIN COM GOOGLE (COM PERSISTÊNCIA TOTAL)
