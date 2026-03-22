@@ -956,6 +956,113 @@
     color: var(--gold-primary);
     margin-right: 0.3rem;
 }
+/* CORREÇÃO DE RESPONSIVIDADE - PAINEL DE AFILIADO */
+@media (max-width: 768px) {
+    .afiliado-panel {
+        margin-top: 1rem;
+        padding: 0.8rem;
+        width: 100%;
+        overflow-x: hidden;
+    }
+    
+    .afiliado-stats {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .stat-item {
+        font-size: 0.7rem;
+        padding: 0.4rem;
+        justify-content: space-between;
+    }
+    
+    .stat-item strong {
+        font-size: 0.8rem;
+        min-width: 60px;
+        text-align: right;
+    }
+    
+    .afiliado-link {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .afiliado-link input {
+        width: 100%;
+        font-size: 0.65rem;
+        padding: 0.4rem;
+    }
+    
+    .afiliado-link button {
+        width: 100%;
+        padding: 0.5rem;
+    }
+    
+    .afiliado-dica {
+        font-size: 0.6rem;
+        padding-top: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .afiliado-panel {
+        margin: 0.5rem 0;
+        padding: 0.6rem;
+    }
+    
+    .afiliado-header {
+        font-size: 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .stat-item {
+        font-size: 0.65rem;
+    }
+    
+    .stat-item i {
+        font-size: 0.8rem;
+    }
+    
+    .stat-item strong {
+        font-size: 0.75rem;
+    }
+    
+    .afiliado-link input {
+        font-size: 0.6rem;
+    }
+}
+
+/* Modal de Estatísticas */
+#modalStats .modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+#modalStats .modal-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+#modalStats .modal-content::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+}
+
+#modalStats .modal-content::-webkit-scrollbar-thumb {
+    background: var(--aqua-primary);
+    border-radius: 10px;
+}
+
+/* Responsividade do modal de estatísticas */
+@media (max-width: 500px) {
+    #modalStats .modal-content {
+        padding: 1rem;
+        width: 95%;
+    }
+    
+    #modalStats .modal-content > div:first-child + div {
+        grid-template-columns: 1fr;
+    }
+}
     </style>
 </head>
 <body>
@@ -1448,10 +1555,9 @@ menu.innerHTML = `
     <div class="user-menu-stats">
         <i class="fas fa-chart-line"></i> ${localStorage.getItem(CONSULTAS_KEY) || 0} consultas
     </div>
-    <!-- BOTÃO DE AFILIADO - NOVO -->
-    <button class="logout-btn" onclick="gerarLinkAfiliado()" style="background: rgba(20,184,166,0.2); border-color: var(--aqua-primary); color: var(--aqua-light); margin-bottom: 8px;">
-        <i class="fas fa-link"></i> Gerar Link de Afiliado
-    </button>
+<button class="logout-btn" onclick="gerarLinkAfiliadoDireto()" style="background: rgba(20,184,166,0.2); border-color: var(--aqua-primary); color: var(--aqua-light); margin-bottom: 8px;">
+    <i class="fas fa-link"></i> Gerar Link de Afiliado
+</button>
     <button class="logout-btn" onclick="mostrarEstatisticasAfiliado()" style="background: rgba(20,184,166,0.1); border-color: var(--aqua-primary); color: var(--aqua-light); margin-bottom: 8px;">
         <i class="fas fa-chart-simple"></i> Minhas Estatísticas
     </button>
@@ -1869,6 +1975,22 @@ async function processarIndicacaoPendente(userId, nome) {
     }
 }
 
+// Função para verificar se o botão "Gerar Link" deve redirecionar
+function gerarLinkAfiliadoDireto() {
+    if (!currentUser) {
+        showToast('🔒 Faça login para gerar seu link de afiliado!', 'error');
+        document.getElementById('loginOverlay').classList.add('active');
+        return;
+    }
+    
+    // Chama a função existente
+    gerarLinkAfiliado();
+    
+    // Após gerar, abre o painel de estatísticas
+    setTimeout(() => {
+        mostrarEstatisticasAfiliado();
+    }, 1000);
+}
 // Gerar link de afiliado (usando backend)
 async function gerarLinkAfiliado() {
     if (!currentUser) {
@@ -1925,42 +2047,172 @@ async function gerarLinkAfiliado() {
 
 // Mostrar estatísticas do afiliado
 // Mostrar estatísticas do afiliado (usando backend)
+// Mostrar estatísticas do afiliado (versão melhorada)
 async function mostrarEstatisticasAfiliado() {
     if (!currentUser) {
         showToast('🔒 Faça login para ver suas estatísticas!', 'error');
         return;
     }
     
+    // Mostra loading
+    showLoader(true);
+    
     try {
         const response = await fetch(`${SERVER_API}/api/estatisticas-afiliado?userId=${currentUser.uid}`);
         const data = await response.json();
         
         if (data.success && data.temAfiliado) {
-            const mensagem = `
-📊 *MINHAS ESTATÍSTICAS DE AFILIADO*
-
-🔗 Seu código: ${data.afiliado.codigo}
-👥 Total de indicações: ${data.afiliado.totalIndicacoes}
-💰 Créditos ganhos: ${data.afiliado.creditosGanhos}
-🎁 Créditos atuais: ${data.afiliado.creditosAtuais}
-
-💡 Cada amigo que se cadastrar pelo seu link,
-você ganha 1 CRÉDITO GRÁTIS!
-
-Compartilhe seu link e ganhe mais créditos!
+            // Cria um painel de estatísticas em modal
+            const modalStats = document.createElement('div');
+            modalStats.id = 'modalStats';
+            modalStats.className = 'modal';
+            modalStats.style.display = 'flex';
+            modalStats.style.alignItems = 'center';
+            modalStats.style.justifyContent = 'center';
+            
+            // Calcula progresso para próximo bônus (a cada 10 indicações)
+            const indicacoes = data.afiliado.totalIndicacoes;
+            const proximoBonus = Math.ceil((indicacoes + 1) / 10) * 10;
+            const progresso = (indicacoes % 10) / 10 * 100;
+            
+            modalStats.innerHTML = `
+                <div class="modal-content" style="max-width: 450px; width: 90%; padding: 1.5rem;">
+                    <button class="modal-close" onclick="fecharModalStats()"><i class="fas fa-times"></i></button>
+                    
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <div style="background: linear-gradient(135deg, var(--gold-primary), var(--gold-light)); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto;">
+                            <i class="fas fa-users" style="font-size: 1.8rem; color: var(--bg-deep);"></i>
+                        </div>
+                        <h3 style="color: var(--gold-light); margin-bottom: 0.25rem;">📊 Minhas Estatísticas</h3>
+                        <p style="color: var(--text-muted); font-size: 0.75rem;">Programa de Afiliados Marujo</p>
+                    </div>
+                    
+                    <!-- Cards de Estatísticas -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem;">
+                        <div style="background: rgba(20,184,166,0.1); border-radius: 12px; padding: 0.8rem; text-align: center;">
+                            <i class="fas fa-link" style="font-size: 1.2rem; color: var(--aqua-light); margin-bottom: 0.3rem; display: block;"></i>
+                            <div style="font-size: 0.6rem; color: var(--text-muted);">SEU CÓDIGO</div>
+                            <div style="font-weight: bold; font-family: monospace; font-size: 0.8rem;">${data.afiliado.codigo}</div>
+                        </div>
+                        <div style="background: rgba(20,184,166,0.1); border-radius: 12px; padding: 0.8rem; text-align: center;">
+                            <i class="fas fa-calendar" style="font-size: 1.2rem; color: var(--aqua-light); margin-bottom: 0.3rem; display: block;"></i>
+                            <div style="font-size: 0.6rem; color: var(--text-muted);">DESDE</div>
+                            <div style="font-weight: bold; font-size: 0.7rem;">${new Date(data.afiliado.dataCriacao).toLocaleDateString('pt-BR')}</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Principais Métricas -->
+                    <div style="background: rgba(0,0,0,0.3); border-radius: 16px; padding: 1rem; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <span><i class="fas fa-user-plus" style="color: var(--gold-light);"></i> Total de Indicações</span>
+                            <strong style="font-size: 1.3rem; color: var(--gold-light);">${data.afiliado.totalIndicacoes}</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem;">
+                            <span><i class="fas fa-coins" style="color: var(--aqua-light);"></i> Créditos Ganhos</span>
+                            <strong style="color: var(--aqua-light);">${data.afiliado.creditosGanhos} créditos</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span><i class="fas fa-gem" style="color: var(--gold-light);"></i> Créditos Atuais</span>
+                            <strong style="color: var(--gold-light);">${data.afiliado.creditosAtuais} créditos</strong>
+                        </div>
+                    </div>
+                    
+                    <!-- Barra de Progresso -->
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 0.3rem;">
+                            <span><i class="fas fa-trophy"></i> Próximo bônus:</span>
+                            <span><strong>${indicacoes}/10</strong> indicações</span>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); border-radius: 10px; height: 8px; overflow: hidden;">
+                            <div style="background: linear-gradient(90deg, var(--gold-primary), var(--gold-light)); width: ${progresso}%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                        <p style="font-size: 0.6rem; color: var(--text-muted); margin-top: 0.3rem;">
+                            ${proximoBonus - indicacoes} indicações para ganhar ${Math.floor(proximoBonus / 10) * 5} créditos extras!
+                        </p>
+                    </div>
+                    
+                    <!-- Link para Compartilhar -->
+                    <div style="margin-bottom: 1rem;">
+                        <div style="font-size: 0.7rem; color: var(--aqua-light); margin-bottom: 0.3rem;">
+                            <i class="fas fa-share-alt"></i> Seu link exclusivo:
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="text" id="modalLinkAfiliado" value="${window.location.origin}${window.location.pathname}?ref=${data.afiliado.codigo}" readonly style="flex: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem; font-size: 0.7rem; color: var(--text-muted); font-family: monospace;">
+                            <button onclick="copiarLinkModal()" style="background: var(--gradient-aqua); border: none; border-radius: 8px; padding: 0 1rem; color: var(--bg-deep); font-weight: bold; cursor: pointer;">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Dicas e Bônus -->
+                    <div style="background: rgba(234,179,8,0.1); border-radius: 12px; padding: 0.8rem; margin-bottom: 1rem;">
+                        <div style="font-size: 0.7rem; font-weight: bold; color: var(--gold-light); margin-bottom: 0.5rem;">
+                            <i class="fas fa-gift"></i> Como ganhar mais:
+                        </div>
+                        <ul style="font-size: 0.65rem; color: var(--text-muted); margin-left: 1.2rem; line-height: 1.4;">
+                            <li>✓ Cada amigo que se cadastrar = 1 crédito grátis</li>
+                            <li>✓ A cada 10 indicações = +5 créditos bônus</li>
+                            <li>✓ Compartilhe em grupos e redes sociais</li>
+                            <li>✓ Use seu código personalizado para rastrear indicações</li>
+                        </ul>
+                    </div>
+                    
+                    <button onclick="compartilharWhatsApp()" style="width: 100%; padding: 0.8rem; background: linear-gradient(135deg, #25D366, #128C7E); border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <i class="fab fa-whatsapp"></i> Compartilhar no WhatsApp
+                    </button>
+                </div>
             `;
             
-            const link = `${window.location.origin}${window.location.pathname}?${AFILIADO_REF_KEY}=${data.afiliado.codigo}`;
-            const whatsappLink = `https://wa.me/?text=${encodeURIComponent(mensagem + '\n\nLink: ' + link)}`;
-            window.open(whatsappLink, '_blank');
+            document.body.appendChild(modalStats);
+            modalStats.classList.add('active');
+            
         } else {
             showToast(data.mensagem || 'Você ainda não é afiliado. Compartilhe seu link!', 'info');
-            // Se não é afiliado, gera o link automaticamente
             gerarLinkAfiliado();
         }
     } catch (error) {
         console.error('Erro:', error);
         showToast('Erro ao carregar estatísticas', 'error');
+    } finally {
+        showLoader(false);
+    }
+}
+
+// Função para fechar o modal de estatísticas
+function fecharModalStats() {
+    const modal = document.getElementById('modalStats');
+    if (modal) {
+        modal.classList.remove('active');
+        setTimeout(() => modal.remove(), 300);
+    }
+}
+
+// Função para copiar link do modal
+function copiarLinkModal() {
+    const input = document.getElementById('modalLinkAfiliado');
+    if (input) {
+        navigator.clipboard.writeText(input.value);
+        showToast('✅ Link copiado!', 'success');
+    }
+}
+
+// Função para compartilhar no WhatsApp
+async function compartilharWhatsApp() {
+    if (!currentUser) return;
+    
+    try {
+        const response = await fetch(`${SERVER_API}/api/estatisticas-afiliado?userId=${currentUser.uid}`);
+        const data = await response.json();
+        
+        if (data.success && data.temAfiliado) {
+            const link = `${window.location.origin}${window.location.pathname}?ref=${data.afiliado.codigo}`;
+            const mensagem = `🌟 *MARUJO CONSULTAS - PROGRAMA DE AFILIADOS* 🌟\n\nOlá! Eu estou usando o Marujo Consultas e ganhando créditos GRÁTIS!\n\n🔗 Meu link exclusivo: ${link}\n\n💰 Ganhe 1 CRÉDITO GRÁTIS ao se cadastrar por este link!\n\n⚓ Consulte CPF, CNPJ, placa, telefone e muito mais!\n\n#MarujoConsultas #CréditosGrátis`;
+            
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showToast('Erro ao compartilhar', 'error');
     }
 }
 
