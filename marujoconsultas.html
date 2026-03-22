@@ -1353,99 +1353,200 @@
         // REALIZAR CONSULTA
         // ==========================================
         async function realizarConsulta() {
-            if (!currentUser) {
-                showToast('🔒 Você precisa estar logado para realizar consultas!', 'error');
-                document.getElementById('loginOverlay').classList.add('active');
-                return;
-            }
-            if(getCreditos() <= 0) { 
-                showToast('⚓ Saldo zerado! Adquira um dos planos acima.', 'error'); 
+    if (!currentUser) {
+        showToast('🔒 Você precisa estar logado para realizar consultas!', 'error');
+        document.getElementById('loginOverlay').classList.add('active');
+        return;
+    }
+    if(getCreditos() <= 0) { 
+        showToast('⚓ Saldo zerado! Adquira um dos planos acima.', 'error'); 
+        return; 
+    }
+
+    let tipo = currentTab, valor = '', versao = null;
+
+    switch(currentTab) {
+        case 'cpf': 
+            let cpfRaw = document.getElementById('cpf').value.trim();
+            if(!cpfRaw) { mostrarErro('❌ Digite um CPF para consultar.'); return; }
+            valor = limparCPF(cpfRaw);
+            if(!valor) { 
+                mostrarErro('❌ CPF inválido! O CPF deve ter 11 dígitos numéricos.\n\nExemplo: 123.456.789-00 ou 12345678900');
                 return; 
             }
+            versao = document.getElementById('cpfVersao').value; 
+            break;
+        case 'cnpj': 
+            let cnpjRaw = document.getElementById('cnpj').value.trim();
+            if(!cnpjRaw) { mostrarErro('❌ Digite um CNPJ para consultar.'); return; }
+            valor = limparCNPJ(cnpjRaw);
+            if(!valor) { 
+                mostrarErro('❌ CNPJ inválido! O CNPJ deve ter 14 dígitos numéricos.\n\nExemplo: 00.000.000/0000-00 ou 00000000000000');
+                return; 
+            }
+            break;
+        case 'placa': 
+            valor = document.getElementById('placa').value.trim().toUpperCase(); 
+            if(!valor) { mostrarErro('❌ Digite uma placa para consultar.'); return; }
+            if(valor.length < 7) { 
+                mostrarErro('❌ Placa inválida! A placa deve ter 7 caracteres.\n\nExemplo: ABC1D23 ou ABC-1234');
+                return; 
+            }
+            versao = document.getElementById('placaVersao').value; 
+            break;
+        case 'telefone': 
+            let telRaw = document.getElementById('telefone').value.trim();
+            if(!telRaw) { mostrarErro('❌ Digite um telefone para consultar.'); return; }
+            
+            const telefoneValidado = limparTelefone(telRaw);
+            if(!telefoneValidado.valido) {
+                mostrarErro(`❌ ${telefoneValidado.erro}\n\n💡 Dica: ${telefoneValidado.dica}`);
+                return;
+            }
+            valor = telefoneValidado.numero;
+            
+            // Adiciona dica se for telefone fixo (sem o 9)
+            if(telefoneValidado.tipo === 'fixo') {
+                showToast('📞 Telefone fixo identificado. A consulta pode ter menos resultados.', 'info');
+            }
+            break;
+        case 'veiculo': 
+            tipo = document.getElementById('veiculoTipo').value; 
+            valor = document.getElementById('veiculoValor').value.trim(); 
+            if(!valor) { 
+                mostrarErro('❌ Digite o número do motor ou chassi para consultar.');
+                return; 
+            }
+            break;
+        case 'foto': 
+            valor = document.getElementById('nomeFoto').value.trim(); 
+            if(!valor) { 
+                mostrarErro('❌ Digite o nome completo para consulta biométrica.');
+                return; 
+            }
+            if(valor.length < 5) {
+                mostrarErro('❌ Nome muito curto. Digite o nome completo para melhores resultados.');
+                return;
+            }
+            break;
+        case 'nome':
+            valor = document.getElementById('nomeCompleto').value.trim().toUpperCase();
+            if(!valor) { 
+                mostrarErro('❌ Digite um nome para buscar.\n\nExemplo: PEDRO HENRIQUE');
+                return; 
+            }
+            if(valor.length < 5) {
+                mostrarErro('❌ Nome muito curto. Digite o nome completo para melhores resultados.');
+                return;
+            }
+            tipo = 'nome';
+            break;
+    }
 
-            let tipo = currentTab, valor = '', versao = null;
+    if(!await consumirCredito()) return;
+    showLoader(true);
 
+    try {
+        let url = `${SERVER_API}/api/consultar?tipo=${tipo}&valor=${encodeURIComponent(valor)}`;
+        if(versao) url += `&versao=${versao}`;
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        if(!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        
+        // Verifica se encontrou dados
+        const temDados = data.status === 'true' || data.status === true;
+        const temResultados = data.resultado && (
+            (data.resultado.resultados && data.resultado.resultados.length > 0) ||
+            (data.resultado.cpf) ||
+            (data.resultado.placa) ||
+            (data.resultado.telefone) ||
+            (data.resultado.empresa) ||
+            (data.resultado.bases)
+        );
+        
+        if (temDados && temResultados) {
+            mostrarSucesso(data);
+            showToast('✅ Rastreamento concluído com sucesso!', 'success');
+        } else {
+            // Mensagem personalizada por tipo de consulta
+            let msgNaoEncontrado = '';
             switch(currentTab) {
-                case 'cpf': 
-                    let cpfRaw = document.getElementById('cpf').value.trim();
-                    if(!cpfRaw) { showToast('Digite um CPF.', 'error'); return; }
-                    valor = limparCPF(cpfRaw);
-                    if(!valor) { showToast('CPF inválido.', 'error'); return; }
-                    versao = document.getElementById('cpfVersao').value; 
+                case 'cpf':
+                    msgNaoEncontrado = `🔍 Nenhum dado encontrado para o CPF ${formatarCPF(valor)}.\n\nPossíveis motivos:\n• CPF não cadastrado\n• CPF irregular ou suspenso\n• Dados não disponíveis na base`;
                     break;
-                case 'cnpj': 
-                    let cnpjRaw = document.getElementById('cnpj').value.trim();
-                    if(!cnpjRaw) { showToast('Digite um CNPJ.', 'error'); return; }
-                    valor = limparCNPJ(cnpjRaw);
-                    if(!valor) { showToast('CNPJ inválido.', 'error'); return; }
+                case 'telefone':
+                    msgNaoEncontrado = `📱 Nenhum dado encontrado para o telefone ${formatarTelefone(valor)}.\n\n💡 Dicas:\n• Verifique se o número está correto\n• Para celular, confira se tem o 9 na frente\n• Para fixo, confira se tem o DDD correto\n\nO número pode estar fora da base de dados.`;
                     break;
-                case 'placa': 
-                    valor = document.getElementById('placa').value.trim().toUpperCase(); 
-                    if(!valor || valor.length < 7) { showToast('Placa inválida.', 'error'); return; } 
-                    versao = document.getElementById('placaVersao').value; 
-                    break;
-                case 'telefone': 
-                    let telRaw = document.getElementById('telefone').value.trim();
-                    if(!telRaw) { showToast('Digite um telefone.', 'error'); return; }
-                    valor = limparTelefone(telRaw);
-                    if(!valor) { showToast('Telefone inválido.', 'error'); return; }
-                    break;
-                case 'veiculo': 
-                    tipo = document.getElementById('veiculoTipo').value; 
-                    valor = document.getElementById('veiculoValor').value.trim(); 
-                    if(!valor) { showToast('Digite a numeração.', 'error'); return; } 
-                    break;
-                case 'foto': 
-                    valor = document.getElementById('nomeFoto').value.trim(); 
-                    if(!valor) { showToast('Nome obrigatório.', 'error'); return; } 
+                case 'placa':
+                    msgNaoEncontrado = `🚗 Nenhum dado encontrado para a placa ${valor}.\n\nPossíveis motivos:\n• Placa não registrada\n• Veículo novo sem histórico\n• Placa de outro estado sem integração`;
                     break;
                 case 'nome':
-                    valor = document.getElementById('nomeCompleto').value.trim().toUpperCase();
-                    if(!valor) { showToast('Digite um nome para buscar.', 'error'); return; }
-                    tipo = 'nome';
+                    msgNaoEncontrado = `👤 Nenhum dado encontrado para o nome "${valor}".\n\n💡 Dicas:\n• Use o nome completo\n• Verifique a grafia\n• Tente com o nome da mãe ou informações adicionais`;
                     break;
+                default:
+                    msgNaoEncontrado = `🔍 Nenhum dado encontrado para esta consulta.\n\n💡 Verifique as informações e tente novamente.`;
             }
-
-            if(!await consumirCredito()) return;
-            showLoader(true);
-
-            try {
-                let url = `${SERVER_API}/api/consultar?tipo=${tipo}&valor=${encodeURIComponent(valor)}`;
-                if(versao) url += `&versao=${versao}`;
-                
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 30000);
-                
-const response = await fetch(url, { signal: controller.signal });
-                clearTimeout(timeoutId);
-                
-                if(!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                
-                if(data.status === 'true' || data.status === true) {
-                mostrarSucesso(data);
-                    showToast('Rastreamento concluído.', 'success');
-                } else {
-                    mostrarErro(data.resposta || data.error || 'Nenhum dado localizado.');
-                    await addCreditos(1); 
-                }
-            } catch(e) {
-                console.error('Erro:', e);
-                mostrarErro(`1° Verifica se as informações estão corretas! 
-                2° Servidor pode está inacessível no momento.
-                OBS: Seus créditos foram devolvidos.`);
-                await addCreditos(1);
-            } finally {
-                showLoader(false);
-            }
+            mostrarErro(msgNaoEncontrado);
+            await addCreditos(1); // Devolve o crédito
         }
+    } catch(e) {
+        console.error('Erro:', e);
+        mostrarErro(`⚠️ Erro na conexão com o servidor.\n\n1️⃣ Verifique sua internet\n2️⃣ Aguarde alguns segundos e tente novamente\n3️⃣ Se o problema persistir, contate o suporte\n\n✅ Seus créditos foram devolvidos.`);
+        await addCreditos(1);
+    } finally {
+        showLoader(false);
+    }
+}
 
+function formatarCPF(cpf) {
+    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+}
+
+function formatarTelefone(telefone) {
+    if (telefone.length === 10) {
+        return telefone.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+    } else if (telefone.length === 11) {
+        return telefone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    }
+    return telefone;
+}
         // ==========================================
         // FUNÇÕES AUXILIARES
         // ==========================================
         function limparCPF(valor) { let limpo = valor.replace(/[^\d]/g, ''); return limpo.length === 11 ? limpo : null; }
         function limparCNPJ(valor) { let limpo = valor.replace(/[^\d]/g, ''); return limpo.length === 14 ? limpo : null; }
-        function limparTelefone(valor) { let limpo = valor.replace(/[^\d]/g, ''); if(limpo.startsWith('55') && limpo.length > 10) limpo = limpo.substring(2); return (limpo.length === 10 || limpo.length === 11) ? limpo : null; }
+        function limparTelefone(valor) {
+    let limpo = valor.replace(/[^\d]/g, '');
+    if(limpo.startsWith('55') && limpo.length > 10) limpo = limpo.substring(2);
+    
+    // Validação mais detalhada
+    if (limpo.length === 10) {
+        return { valido: true, numero: limpo, tipo: 'fixo' };
+    } else if (limpo.length === 11) {
+        return { valido: true, numero: limpo, tipo: 'celular' };
+    } else if (limpo.length === 8 || limpo.length === 9) {
+        // Número sem DDD
+        return { 
+            valido: false, 
+            numero: limpo, 
+            erro: 'Telefone sem DDD. Inclua o DDD (ex: 21) antes do número.',
+            dica: 'Adicione o DDD na frente. Ex: 21' + limpo
+        };
+    } else {
+        return { 
+            valido: false, 
+            numero: limpo, 
+            erro: 'Telefone inválido. O número deve ter 10 ou 11 dígitos.',
+            dica: 'Para celular: DDD + 9 + número (ex: 21999999999). Para fixo: DDD + número (ex: 2133333333)'
+        };
+    }
+}
         
         function formatarTelefoneInput(input) {
             let numeros = input.value.replace(/[^\d]/g, '');
@@ -2124,23 +2225,29 @@ function mostrarErro(msg) {
     // Ativa o container
     container.classList.add('active');
     
+    // Processa a mensagem para quebrar linhas
+    const mensagemFormatada = msg.replace(/\\n/g, '<br>').split('\n').join('<br>');
+    
     // Mostra a mensagem de erro com estilo
     body.innerHTML = `
         <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
             <div style="display: flex; align-items: center; gap: 0.5rem; color: #ef4444; margin-bottom: 0.5rem;">
                 <i class="fas fa-exclamation-triangle"></i>
-                <strong style="font-size: 0.9rem;">ERRO NA CONSULTA</strong>
+                <strong style="font-size: 0.9rem;">⚠️ INFORMAÇÃO NÃO ENCONTRADA</strong>
             </div>
-            <div style="color: #f87171; font-size: 0.85rem;">
-                ${msg}
+            <div style="color: #f87171; font-size: 0.85rem; line-height: 1.5;">
+                ${mensagemFormatada}
             </div>
         </div>
         <div style="margin-top: 1rem; padding: 0.5rem; background: rgba(0,0,0,0.3); border-radius: 6px; font-size: 0.7rem; color: #94a3b8;">
             <i class="fas fa-info-circle"></i> Dica: Verifique os dados informados e tente novamente.
         </div>
+        <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(20, 184, 166, 0.1); border-radius: 6px; font-size: 0.7rem; color: #5eead4;">
+            <i class="fas fa-coins"></i> Seus créditos foram devolvidos. Tente novamente com informações mais precisas.
+        </div>
     `;
     
-    // ROLA PARA BAIXO IGUAL AO SUCESSO
+    // ROLA PARA BAIXO
     container.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
