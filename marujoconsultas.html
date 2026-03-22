@@ -949,45 +949,48 @@
     </div>
 
     <div class="planos-grid">
-        <!-- 5 consultas -->
-        <div class="plano-card" onclick="comprarCreditos(5, 2.50)">
-            <div class="plano-creditos">🔹 5 Consultas</div>
-            <div class="plano-preco">2,50</div>
-            <div class="plano-preco-detalhe">R$ 0,50 por consulta</div>
+        <!-- 1 consulta -->
+        <div class="plano-card" onclick="comprarCreditos(1, 1.00)">
+            <div class="plano-creditos">🔹 1 Consulta</div>
+            <div class="plano-preco">1,00</div>
+            <div class="plano-preco-detalhe">R$ 1,00 por consulta</div>
         </div>
 
         <!-- 10 consultas -->
-        <div class="plano-card" onclick="comprarCreditos(10, 4.50)">
+        <div class="plano-card" onclick="comprarCreditos(10, 7.00)">
             <div class="plano-creditos">⭐ 10 Consultas</div>
-            <div class="plano-preco">4,50</div>
-            <div class="plano-preco-detalhe">R$ 0,45 por consulta <span class="desconto">(10% OFF)</span></div>
+            <div class="plano-preco">7,00</div>
+            <div class="plano-preco-detalhe">R$ 0,70 por consulta <span class="desconto">(30% OFF)</span></div>
         </div>
 
-        <!-- 20 consultas -->
-        <div class="plano-card popular" onclick="comprarCreditos(20, 8.00)">
+        <!-- 30 consultas -->
+        <div class="plano-card popular" onclick="comprarCreditos(30, 18.00)">
             <div class="popular-badge">
                 <i class="fas fa-fire"></i> MAIS VENDIDO
             </div>
-            <div class="plano-creditos">💎 20 Consultas</div>
-            <div class="plano-preco">8,00</div>
-            <div class="plano-preco-detalhe">R$ 0,40 por consulta <span class="desconto">(20% OFF)</span></div>
+            <div class="plano-creditos">💎 30 Consultas</div>
+            <div class="plano-preco">18,00</div>
+            <div class="plano-preco-detalhe">R$ 0,60 por consulta <span class="desconto">(40% OFF)</span></div>
+            <div class="plano-bonus">
+                <i class="fas fa-gift"></i> +3 créditos grátis
+            </div>
         </div>
 
-        <!-- 50 consultas -->
-        <div class="plano-card" onclick="comprarCreditos(50, 17.50)">
-            <div class="plano-creditos">🏆 50 Consultas</div>
-            <div class="plano-preco">17,50</div>
-            <div class="plano-preco-detalhe">R$ 0,35 por consulta <span class="desconto">(30% OFF)</span></div>
+        <!-- 60 consultas -->
+        <div class="plano-card" onclick="comprarCreditos(60, 30.00)">
+            <div class="plano-creditos">🏆 60 Consultas</div>
+            <div class="plano-preco">30,00</div>
+            <div class="plano-preco-detalhe">R$ 0,50 por consulta <span class="desconto">(50% OFF)</span></div>
             <div class="plano-bonus">
-                <i class="fas fa-gift"></i> +5 créditos grátis
+                <i class="fas fa-gift"></i> +6 créditos grátis
             </div>
         </div>
 
         <!-- 100 consultas -->
-        <div class="plano-card" onclick="comprarCreditos(100, 30.00)">
+        <div class="plano-card" onclick="comprarCreditos(100, 45.00)">
             <div class="plano-creditos">👑 100 Consultas</div>
-            <div class="plano-preco">30,00</div>
-            <div class="plano-preco-detalhe">R$ 0,30 por consulta <span class="desconto">(40% OFF)</span></div>
+            <div class="plano-preco">45,00</div>
+            <div class="plano-preco-detalhe">R$ 0,45 por consulta <span class="desconto">(55% OFF)</span></div>
             <div class="plano-bonus">
                 <i class="fas fa-gift"></i> +10 créditos grátis
             </div>
@@ -1263,27 +1266,35 @@
     menu = document.createElement('div');
     menu.id = 'userMenu';
     menu.className = 'user-menu';
-    menu.innerHTML = `
-        <div class="user-menu-header">
-            <img src="${currentUser.photoURL || 'https://via.placeholder.com/45'}" class="user-menu-avatar" onerror="this.src='https://via.placeholder.com/45'">
-            <div class="user-menu-info">
-                <div class="user-menu-name">${currentUser.displayName || 'Marujo'}</div>
-                <div class="user-menu-email">${currentUser.email || ''}</div>
-            </div>
+   // No menu do usuário, adicione após o botão de código
+menu.innerHTML = `
+    <div class="user-menu-header">
+        <img src="${currentUser.photoURL || 'https://via.placeholder.com/45'}" class="user-menu-avatar">
+        <div class="user-menu-info">
+            <div class="user-menu-name">${currentUser.displayName || 'Marujo'}</div>
+            <div class="user-menu-email">${currentUser.email || ''}</div>
         </div>
-        <div class="user-menu-stats">
-            <i class="fas fa-gem"></i> ${getCreditos()} créditos disponíveis
-        </div>
-        <div class="user-menu-stats">
-            <i class="fas fa-chart-line"></i> ${localStorage.getItem(CONSULTAS_KEY) || 0} consultas realizadas
-        </div>
-        <button class="logout-btn" onclick="abrirModalCodigo()" style="background: rgba(234,179,8,0.2); border-color: var(--gold-primary); color: var(--gold-light); margin-bottom: 8px;">
-            <i class="fas fa-key"></i> Ativar Código Premium
-        </button>
-        <button class="logout-btn" onclick="fazerLogout()">
-            <i class="fas fa-sign-out-alt"></i> Sair da conta
-        </button>
-    `;
+    </div>
+    <div class="user-menu-stats">
+        <i class="fas fa-gem"></i> ${getCreditos()} créditos
+    </div>
+    <div class="user-menu-stats">
+        <i class="fas fa-chart-line"></i> ${localStorage.getItem(CONSULTAS_KEY) || 0} consultas
+    </div>
+    <!-- BOTÃO DE AFILIADO - NOVO -->
+    <button class="logout-btn" onclick="gerarLinkAfiliado()" style="background: rgba(20,184,166,0.2); border-color: var(--aqua-primary); color: var(--aqua-light); margin-bottom: 8px;">
+        <i class="fas fa-link"></i> Gerar Link de Afiliado
+    </button>
+    <button class="logout-btn" onclick="mostrarEstatisticasAfiliado()" style="background: rgba(20,184,166,0.1); border-color: var(--aqua-primary); color: var(--aqua-light); margin-bottom: 8px;">
+        <i class="fas fa-chart-simple"></i> Minhas Estatísticas
+    </button>
+    <button class="logout-btn" onclick="abrirModalCodigo()" style="background: rgba(234,179,8,0.2); border-color: var(--gold-primary); color: var(--gold-light); margin-bottom: 8px;">
+        <i class="fas fa-key"></i> Ativar Código Premium
+    </button>
+    <button class="logout-btn" onclick="fazerLogout()">
+        <i class="fas fa-sign-out-alt"></i> Sair da conta
+    </button>
+`;
     document.body.appendChild(menu);
     
     setTimeout(() => {
@@ -1484,7 +1495,7 @@
                     msgNaoEncontrado = `📱 Nenhum dado encontrado para o telefone ${formatarTelefone(valor)}.\n\n💡 Dicas:\n• Verifique se o número está correto\n• Para celular, confira se tem o 9 na frente\n• Para fixo, confira se tem o DDD correto\n\nO número pode estar fora da base de dados.`;
                     break;
                 case 'placa':
-                    msgNaoEncontrado = `🚗 Nenhum dado encontrado para a placa ${valor}.\n\nPossíveis motivos:\n• Placa não registrada\n• Veículo novo sem histórico\n• Placa de outro estado sem integração`;
+                    msgNaoEncontrado = `🚗 Nenhum dado encontrado para a placa ${valor}.\n\nPossíveis motivos:\n• Placa nãoregistrada\n• Veículo novo sem histórico\n• Placa de outro estado sem integração`;
                     break;
                 case 'nome':
                     msgNaoEncontrado = `👤 Nenhum dado encontrado para o nome "${valor}".\n\n💡 Dicas:\n• Use o nome completo\n• Verifique a grafia\n• Tente com o nome da mãe ou informações adicionais`;
@@ -1501,6 +1512,252 @@
         await addCreditos(1);
     } finally {
         showLoader(false);
+    }
+}
+// ==========================================
+// SISTEMA DE AFILIADOS
+// ==========================================
+
+// Chave para armazenar dados de afiliados
+const AFILIADOS_KEY = 'marujo_afiliados';
+const AFILIADO_REF_KEY = 'ref';
+
+// Estrutura de dados dos afiliados
+// Cada afiliado terá: { userId, codigo, totalIndicacoes, creditosGanhos, dataCriacao }
+
+// Gerar código de afiliado único
+function gerarCodigoAfiliado(userId) {
+    // Pega os primeiros 8 caracteres do userId + timestamp
+    const parte1 = userId.substring(0, 6);
+    const parte2 = Date.now().toString(36).toUpperCase();
+    return `${parte1}${parte2}`.toUpperCase();
+}
+
+// Salvar dados de afiliados
+function salvarAfiliados(dados) {
+    localStorage.setItem(AFILIADOS_KEY, JSON.stringify(dados));
+}
+
+// Carregar dados de afiliados
+function carregarAfiliados() {
+    const dados = localStorage.getItem(AFILIADOS_KEY);
+    return dados ? JSON.parse(dados) : {};
+}
+
+// Registrar novo afiliado (quando usuário faz login)
+// Registrar novo afiliado (usando backend)
+async function registrarAfiliado(userId, nome) {
+    try {
+        const response = await fetch(`${SERVER_API}/api/registrar-afiliado`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId, nome })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Salva localmente também para cache
+            const afiliados = carregarAfiliados();
+            afiliados[userId] = {
+                userId: userId,
+                nome: nome || 'Marujo',
+                codigo: data.codigo,
+                totalIndicacoes: 0,
+                creditosGanhos: 0,
+                dataCriacao: new Date().toISOString(),
+                indicacoes: []
+            };
+            salvarAfiliados(afiliados);
+            console.log(`🎉 Afiliado registrado: ${nome} - Código: ${data.codigo}`);
+            return afiliados[userId];
+        }
+        return null;
+    } catch (error) {
+        console.error('Erro ao registrar afiliado:', error);
+        // Fallback para localStorage
+        const afiliados = carregarAfiliados();
+        if (!afiliados[userId]) {
+            const codigo = gerarCodigoAfiliado(userId);
+            afiliados[userId] = {
+                userId: userId,
+                nome: nome || 'Marujo',
+                codigo: codigo,
+                totalIndicacoes: 0,
+                creditosGanhos: 0,
+                dataCriacao: new Date().toISOString(),
+                indicacoes: []
+            };
+            salvarAfiliados(afiliados);
+        }
+        return afiliados[userId];
+    }
+}
+
+// Processar indicação (quando alguém entra pelo link)
+// Processar indicação (usando backend)
+async function processarIndicacao(afiliadoCodigo, novoUserId, novoNome) {
+    try {
+        const response = await fetch(`${SERVER_API}/api/processar-indicacao`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                codigoAfiliado: afiliadoCodigo,
+                novoUserId: novoUserId,
+                novoNome: novoNome
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log(`✅ ${data.afiliado.nome} ganhou 1 crédito por indicar ${novoNome || novoUserId}`);
+            console.log(`📊 Total de indicações: ${data.afiliado.totalIndicacoes}`);
+            
+            // Atualiza localStorage do afiliado se estiver logado
+            if (currentUser && currentUser.uid === data.afiliado.id) {
+                const afiliados = carregarAfiliados();
+                if (afiliados[currentUser.uid]) {
+                    afiliados[currentUser.uid].totalIndicacoes = data.afiliado.totalIndicacoes;
+                    afiliados[currentUser.uid].creditosGanhos = data.afiliado.creditosGanhos;
+                    salvarAfiliados(afiliados);
+                }
+                showToast(`🎉 Você ganhou 1 crédito! ${novoNome || 'Alguém'} entrou pelo seu link.`, 'success');
+                await carregarCreditosDoServidor(currentUser.uid);
+                atualizarInterface();
+            }
+            return true;
+        } else {
+            console.log('❌ Erro ao processar indicação:', data.error);
+            return false;
+        }
+    } catch (error) {
+        console.error('Erro ao processar indicação:', error);
+        return false;
+    }
+}
+
+// Função auxiliar para pegar créditos por userId (sem depender do currentUser)
+function getCreditosPorUserId(userId) {
+    const key = `${CREDITS_KEY}_${userId}`;
+    const credits = localStorage.getItem(key);
+    return credits ? parseInt(credits) : 5;
+}
+
+// Função auxiliar para setar créditos por userId
+async function setCreditosPorUserId(userId, valor) {
+    const key = `${CREDITS_KEY}_${userId}`;
+    localStorage.setItem(key, valor.toString());
+    
+    // Salva no servidor também
+    try {
+        await fetch(`${SERVER_API}/api/salvar-creditos`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId, creditos: valor })
+        });
+    } catch(e) {
+        console.log('Erro ao salvar no servidor:', e);
+    }
+}
+
+// Verificar se tem código de afiliado na URL
+function verificarCodigoAfiliado() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const codigo = urlParams.get(AFILIADO_REF_KEY);
+    
+    if (codigo) {
+        console.log(`🔗 Link com código de afiliado detectado: ${codigo}`);
+        // Salva o código para usar depois no login
+        sessionStorage.setItem('pending_afiliado', codigo);
+    }
+}
+
+// Processar indicação após login
+async function processarIndicacaoPendente(userId, nome) {
+    const codigoPendente = sessionStorage.getItem('pending_afiliado');
+    
+    if (codigoPendente) {
+        console.log(`🔄 Processando indicação pendente para ${nome} - Código: ${codigoPendente}`);
+        await processarIndicacao(codigoPendente, userId, nome);
+        sessionStorage.removeItem('pending_afiliado');
+    }
+}
+
+// Gerar link de afiliado
+// Gerar link de afiliado (usando backend)
+async function gerarLinkAfiliado() {
+    if (!currentUser) {
+        showToast('🔒 Faça login para gerar seu link de afiliado!', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${SERVER_API}/api/registrar-afiliado`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: currentUser.uid,
+                nome: currentUser.displayName
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            const link = `${window.location.origin}${window.location.pathname}?${AFILIADO_REF_KEY}=${data.codigo}`;
+            navigator.clipboard.writeText(link);
+            showToast(`✅ Link copiado! Compartilhe e ganhe 1 crédito por cada amigo que se cadastrar!`, 'success');
+            return link;
+        } else {
+            showToast('Erro ao gerar link', 'error');
+            return null;
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showToast('Erro ao conectar com o servidor', 'error');
+        return null;
+    }
+}
+
+// Mostrar estatísticas do afiliado
+// Mostrar estatísticas do afiliado (usando backend)
+async function mostrarEstatisticasAfiliado() {
+    if (!currentUser) {
+        showToast('🔒 Faça login para ver suas estatísticas!', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${SERVER_API}/api/estatisticas-afiliado?userId=${currentUser.uid}`);
+        const data = await response.json();
+        
+        if (data.success && data.temAfiliado) {
+            const mensagem = `
+📊 *MINHAS ESTATÍSTICAS DE AFILIADO*
+
+🔗 Seu código: ${data.afiliado.codigo}
+👥 Total de indicações: ${data.afiliado.totalIndicacoes}
+💰 Créditos ganhos: ${data.afiliado.creditosGanhos}
+🎁 Créditos atuais: ${data.afiliado.creditosAtuais}
+
+💡 Cada amigo que se cadastrar pelo seu link,
+você ganha 1 CRÉDITO GRÁTIS!
+
+Compartilhe seu link e ganhe mais créditos!
+            `;
+            
+            const link = `${window.location.origin}${window.location.pathname}?${AFILIADO_REF_KEY}=${data.afiliado.codigo}`;
+            const whatsappLink = `https://wa.me/?text=${encodeURIComponent(mensagem + '\n\nLink: ' + link)}`;
+            window.open(whatsappLink, '_blank');
+        } else {
+            showToast(data.mensagem || 'Você ainda não é afiliado. Compartilhe seu link!', 'info');
+            // Se não é afiliado, gera o link automaticamente
+            gerarLinkAfiliado();
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showToast('Erro ao carregar estatísticas', 'error');
     }
 }
 
@@ -1790,6 +2047,11 @@ async function configurarUsuarioLogado(user) {
                 await fazerLogout();
                 return;
             }
+            
+            await registrarAfiliado(user.uid, user.displayName);
+        
+        // Processa indicação pendente (se veio de um link)
+        await processarIndicacaoPendente(user.uid, user.displayName);
         } catch (e) {
             console.log('⚠️ Rota /api/registrar-usuario não disponível, continuando...');
         }
@@ -2297,6 +2559,13 @@ function mostrarErro(msg) {
         atualizarInterface();
         
         console.log('🚀 Sistema inicializado. Persistência ativa!');
+        // Inicializar sistema de afiliados
+verificarCodigoAfiliado();
+
+// Registrar afiliado se já estiver logado
+if (currentUser) {
+    registrarAfiliado(currentUser.uid, currentUser.displayName);
+}
     </script>
 </body>
 </html>
