@@ -1959,17 +1959,6 @@ async function verificarPagamentoPendente() {
 
 // Adicionar rota no backend para buscar transação por ID
 // (coloque isso no seu backend)
-app.get('/api/doacoes/transacao/:transactionId', (req, res) => {
-    const { transactionId } = req.params;
-    const transacoes = lerJSON(ARQUIVO_TRANSACOES_PIX);
-    const transacao = transacoes.find(t => t.id === transactionId);
-    
-    if (!transacao) {
-        return res.status(404).json({ success: false, error: 'Transação não encontrada' });
-    }
-    
-    res.json({ success: true, transacao: transacao });
-});
 
 // Função para reabrir o modal PIX
 function reabrirModalPIX(transacao, creditos) {
