@@ -1593,6 +1593,48 @@ function iniciarVerificacaoPIX(transactionId, creditos) {
     }, 6000); // Verifica a cada 6 segundos
 }
 
+// ==========================================
+// FUNÇÃO PARA REPROCESSAR COMPRAS PENDENTES
+// ==========================================
+async function reprocessarComprasPendentes() {
+    if (!currentUser) {
+        showToast('Faça login primeiro', 'error');
+        return;
+    }
+    
+    showLoader(true);
+    
+    try {
+        const response = await fetch(`${SERVER_API}/api/reprocessar-pagamentos`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: currentUser.uid })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            if (data.reprocessados > 0) {
+                showToast(`✅ ${data.reprocessados} compras recuperadas!`, 'success');
+                // Recarrega os créditos
+                const creditosServidor = await carregarCreditosDoServidor(currentUser.uid);
+                if (creditosServidor !== null) {
+                    localStorage.setItem(`${CREDITS_KEY}_${currentUser.uid}`, creditosServidor);
+                    atualizarInterface();
+                }
+            } else {
+                showToast(`ℹ️ Nenhuma compra pendente encontrada.`, 'info');
+            }
+        } else {
+            showToast('Erro ao reprocessar', 'error');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showToast('Erro ao reprocessar compras', 'error');
+    } finally {
+        showLoader(false);
+    }
+}
 // Função para iniciar timer de expiração
 function iniciarTimerPIX(dataExpiracao) {
     const timerElement = document.getElementById('pixTimer');
@@ -1852,6 +1894,9 @@ menu.innerHTML = `
     <div class="user-menu-stats">
         <i class="fas fa-chart-line"></i> ${localStorage.getItem(CONSULTAS_KEY) || 0} consultas
     </div>
+  <button class="logout-btn" onclick="reprocessarComprasPendentes()" style="background: rgba(20,184,166,0.1); border-color: var(--aqua-primary); color: var(--aqua-light); margin-bottom: 8px;">
+    <i class="fas fa-sync-alt"></i> Recuperar Compras Pendentes
+</button>
 <button class="logout-btn" onclick="gerarLinkAfiliadoDireto()" style="background: rgba(20,184,166,0.2); border-color: var(--aqua-primary); color: var(--aqua-light); margin-bottom: 8px;">
     <i class="fas fa-link"></i> Gerar Link de Afiliado
 </button>
