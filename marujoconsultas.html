@@ -1412,6 +1412,11 @@ async function abrirModalPIX(creditos, valor) {
             throw new Error(data.error || 'Erro ao gerar PIX');
         }
         
+        // SALVA NO SESSION STORAGE PARA VERIFICAR DEPOIS
+        sessionStorage.setItem('pending_transaction', data.transactionId);
+        sessionStorage.setItem('pending_creditos', creditos);
+        sessionStorage.setItem('pending_timestamp', Date.now());
+        
         // Cria o modal do PIX
         const modalPIX = document.createElement('div');
         modalPIX.id = 'modalPIX';
@@ -1482,15 +1487,7 @@ async function abrirModalPIX(creditos, valor) {
         document.body.appendChild(modalPIX);
         modalPIX.classList.add('active');
         
-        // Guarda os dados da transação para verificação
-        window.pixTransaction = {
-            id: data.transactionId,
-            creditos: creditos,
-            valor: valor,
-            interval: null
-        };
-        
-        // Inicia a verificação automática
+        // Inicia a verificação automática a cada 30 segundos
         iniciarVerificacaoPIX(data.transactionId, creditos);
         
         // Inicia o timer de expiração
@@ -1513,7 +1510,6 @@ function copiarPix() {
     }
 }
 
-// Função para fechar modal PIX
 function fecharModalPIX() {
     const modal = document.getElementById('modalPIX');
     if (modal) {
@@ -1523,74 +1519,139 @@ function fecharModalPIX() {
         }
         modal.classList.remove('active');
         setTimeout(() => modal.remove(), 300);
-        window.pixTransaction = null;
+        
+        // NÃO LIMPA O SESSION STORAGE AQUI!
+        // Deixa para verificar depois quando o usuário reentrar
     }
 }
 
 // Função para iniciar verificação automática do pagamento
+// ==========================================
+// FUNÇÃO DE VERIFICAÇÃO DE PAGAMENTO (CORRIGIDA)
+// ==========================================
 function iniciarVerificacaoPIX(transactionId, creditos) {
     let tentativas = 0;
-    const maxTentativas = 60; // 10 minutos (6 segundos * 60 = 360 segundos)
+    const maxTentativas = 60; // 30 minutos (30s * 60 = 1800s)
+    let verificacaoAtiva = true;
     
-    window.pixTransaction.interval = setInterval(async () => {
-        tentativas++;
+    // Salva a transação para verificar depois mesmo se fechar o modal
+    sessionStorage.setItem('pending_transaction', transactionId);
+    sessionStorage.setItem('pending_creditos', creditos);
+    sessionStorage.setItem('pending_timestamp', Date.now());
+    
+    window.pixTransaction = {
+        id: transactionId,
+        creditos: creditos,
+        interval: null,
+        ativa: true
+    };
+    
+    function verificar() {
+        if (!verificacaoAtiva) return;
         
-        try {
-            const response = await fetch(`${SERVER_API}/api/doacoes/verificar-pagamento/${transactionId}`);
-            const data = await response.json();
-            
-            const statusDiv = document.getElementById('pixStatus');
-            
-            if (data.status === 'approved') {
-                // Pagamento confirmado!
-                clearInterval(window.pixTransaction.interval);
+        tentativas++;
+        console.log(`🔍 Verificando pagamento... (${tentativas}/${maxTentativas})`);
+        
+        fetch(`${SERVER_API}/api/doacoes/verificar-pagamento/${transactionId}`)
+            .then(response => response.json())
+            .then(async (data) => {
+                const statusDiv = document.getElementById('pixStatus');
                 
-                statusDiv.innerHTML = `
-                    <i class="fas fa-check-circle" style="color: #10b981;"></i> 
-                    Pagamento confirmado! Adicionando ${creditos} créditos...
-                `;
+                if (data.status === 'approved') {
+                    // Pagamento confirmado!
+                    verificacaoAtiva = false;
+                    if (window.pixTransaction.interval) {
+                        clearInterval(window.pixTransaction.interval);
+                    }
+                    
+                    if (statusDiv) {
+                        statusDiv.innerHTML = `
+                            <i class="fas fa-check-circle" style="color: #10b981;"></i> 
+                            Pagamento confirmado! Adicionando ${data.creditos || creditos} créditos...
+                        `;
+                    }
+                    
+                    // Adiciona os créditos
+                    const creditosGanhos = data.creditos || creditos;
+                    await addCreditos(creditosGanhos);
+                    
+                    // Limpa sessão
+                    sessionStorage.removeItem('pending_transaction');
+                    sessionStorage.removeItem('pending_creditos');
+                    sessionStorage.removeItem('pending_timestamp');
+                    
+                    showToast(`✅ Pagamento confirmado! ${creditosGanhos} créditos adicionados!`, 'success');
+                    
+                    // Fecha o modal após 3 segundos
+                    setTimeout(() => {
+                        fecharModalPIX();
+                    }, 3000);
+                    
+                } else if (data.status === 'expired') {
+                    // Pagamento expirado
+                    verificacaoAtiva = false;
+                    if (window.pixTransaction.interval) {
+                        clearInterval(window.pixTransaction.interval);
+                    }
+                    
+                    if (statusDiv) {
+                        statusDiv.innerHTML = `
+                            <i class="fas fa-times-circle" style="color: #ef4444;"></i> 
+                            Pagamento expirado. Gere um novo PIX para continuar.
+                        `;
+                    }
+                    
+                    sessionStorage.removeItem('pending_transaction');
+                    sessionStorage.removeItem('pending_creditos');
+                    sessionStorage.removeItem('pending_timestamp');
+                    
+                    showToast('⏰ PIX expirado! Gere um novo código.', 'error');
+                    
+                } else if (data.status === 'pending') {
+                    // Ainda aguardando
+                    if (statusDiv) {
+                        const segundos = tentativas * 6;
+                        const minutos = Math.floor(segundos / 60);
+                        const segundosRest = segundos % 60;
+                        statusDiv.innerHTML = `
+                            <i class="fas fa-spinner fa-spin"></i> 
+                            Aguardando pagamento... (${minutos}:${segundosRest.toString().padStart(2, '0')})
+                        `;
+                    }
+                    
+                } else if (data.status === 'error') {
+                    console.log('Erro na verificação, tentando novamente...');
+                }
                 
-                // Adiciona os créditos
-                await addCreditos(creditos);
-                
-                showToast(`✅ Pagamento confirmado! ${creditos} créditos adicionados!`, 'success');
-                
-                // Fecha o modal após 3 segundos
-                setTimeout(() => {
-                    fecharModalPIX();
-                }, 3000);
-                
-            } else if (data.status === 'expired') {
-                // Pagamento expirado
-                clearInterval(window.pixTransaction.interval);
-                
-                statusDiv.innerHTML = `
-                    <i class="fas fa-times-circle" style="color: #ef4444;"></i> 
-                    Pagamento expirado. Gere um novo PIX para continuar.
-                `;
-                
-                showToast('⏰ PIX expirado! Gere um novo código.', 'error');
-                
-            } else if (tentativas >= maxTentativas) {
-                // Máximo de tentativas atingido
-                clearInterval(window.pixTransaction.interval);
-                
-                statusDiv.innerHTML = `
-                    <i class="fas fa-clock"></i> 
-                    Verificação encerrada. Se você pagou, entre em contato com o suporte.
-                `;
-            } else {
-                // Ainda aguardando
-                statusDiv.innerHTML = `
-                    <i class="fas fa-spinner fa-spin"></i> 
-                    Aguardando pagamento... (${Math.floor(tentativas / 10)}s)
-                `;
-            }
-            
-        } catch (error) {
-            console.error('Erro ao verificar:', error);
-        }
-    }, 6000); // Verifica a cada 6 segundos
+                if (tentativas >= maxTentativas && verificacaoAtiva) {
+                    verificacaoAtiva = false;
+                    if (window.pixTransaction.interval) {
+                        clearInterval(window.pixTransaction.interval);
+                    }
+                    if (statusDiv) {
+                        statusDiv.innerHTML = `
+                            <i class="fas fa-clock"></i> 
+                            Verificação encerrada. Se você pagou, recarregue a página.
+                        `;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao verificar:', error);
+                if (statusDiv) {
+                    statusDiv.innerHTML = `
+                        <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> 
+                        Erro ao verificar. Tentando novamente...
+                    `;
+                }
+            });
+    }
+    
+    // Verifica imediatamente
+    verificar();
+    
+    // Configura verificação a cada 30 segundos
+    window.pixTransaction.interval = setInterval(verificar, 30000);
 }
 
 // ==========================================
@@ -1828,6 +1889,163 @@ function atualizarInterface() {
     document.getElementById('statsConsultas').textContent = (parseInt(localStorage.getItem(CONSULTAS_KEY)) || 0); 
     atualizarPerfilUI();
     atualizarPainelAfiliado(); // NOVO
+}
+
+// ==========================================
+// VERIFICA SE HÁ PAGAMENTO PENDENTE AO CARREGAR
+// ==========================================
+async function verificarPagamentoPendente() {
+    const transactionId = sessionStorage.getItem('pending_transaction');
+    const creditos = sessionStorage.getItem('pending_creditos');
+    const timestamp = sessionStorage.getItem('pending_timestamp');
+    
+    if (!transactionId) {
+        console.log('ℹ️ Nenhum pagamento pendente encontrado');
+        return;
+    }
+    
+    // Verifica se já passou mais de 1 hora (3600000 ms)
+    if (timestamp && (Date.now() - parseInt(timestamp) > 3600000)) {
+        console.log('⏰ Pagamento pendente expirado (mais de 1 hora)');
+        sessionStorage.removeItem('pending_transaction');
+        sessionStorage.removeItem('pending_creditos');
+        sessionStorage.removeItem('pending_timestamp');
+        return;
+    }
+    
+    console.log(`🔍 Verificando pagamento pendente: ${transactionId}`);
+    
+    try {
+        const response = await fetch(`${SERVER_API}/api/doacoes/verificar-pagamento/${transactionId}`);
+        const data = await response.json();
+        
+        if (data.status === 'approved') {
+            console.log(`✅ Pagamento pendente confirmado! Adicionando ${data.creditos || creditos} créditos`);
+            
+            const creditosGanhos = data.creditos || parseInt(creditos) || 1;
+            await addCreditos(creditosGanhos);
+            
+            showToast(`✅ Pagamento confirmado! ${creditosGanhos} créditos adicionados!`, 'success');
+            
+            // Limpa a pendência
+            sessionStorage.removeItem('pending_transaction');
+            sessionStorage.removeItem('pending_creditos');
+            sessionStorage.removeItem('pending_timestamp');
+            
+        } else if (data.status === 'pending') {
+            console.log(`⏳ Pagamento ainda pendente: ${transactionId}`);
+            
+            // Se ainda está pendente, pergunta se quer reabrir o modal
+            if (confirm('Você tem um pagamento pendente. Deseja reabrir o QR Code para finalizar?')) {
+                // Buscar os dados da transação
+                const transacoes = await fetch(`${SERVER_API}/api/doacoes/transacao/${transactionId}`).then(r => r.json());
+                if (transacoes.success) {
+                    reabrirModalPIX(transacoes.transacao, parseInt(creditos));
+                }
+            }
+            
+        } else if (data.status === 'expired') {
+            console.log(`⏰ Pagamento expirado: ${transactionId}`);
+            sessionStorage.removeItem('pending_transaction');
+            sessionStorage.removeItem('pending_creditos');
+            sessionStorage.removeItem('pending_timestamp');
+            showToast('⏰ Seu PIX expirou. Gere um novo para continuar.', 'info');
+        }
+        
+    } catch (error) {
+        console.error('Erro ao verificar pagamento pendente:', error);
+    }
+}
+
+// Adicionar rota no backend para buscar transação por ID
+// (coloque isso no seu backend)
+app.get('/api/doacoes/transacao/:transactionId', (req, res) => {
+    const { transactionId } = req.params;
+    const transacoes = lerJSON(ARQUIVO_TRANSACOES_PIX);
+    const transacao = transacoes.find(t => t.id === transactionId);
+    
+    if (!transacao) {
+        return res.status(404).json({ success: false, error: 'Transação não encontrada' });
+    }
+    
+    res.json({ success: true, transacao: transacao });
+});
+
+// Função para reabrir o modal PIX
+function reabrirModalPIX(transacao, creditos) {
+    const modalPIX = document.createElement('div');
+    modalPIX.id = 'modalPIX';
+    modalPIX.className = 'modal';
+    modalPIX.style.display = 'flex';
+    modalPIX.style.alignItems = 'center';
+    modalPIX.style.justifyContent = 'center';
+    
+    const expiracao = new Date(transacao.expiraEm);
+    const tempoRestante = Math.floor((expiracao - Date.now()) / 1000);
+    const minutos = Math.floor(tempoRestante / 60);
+    const segundos = tempoRestante % 60;
+    
+    modalPIX.innerHTML = `
+        <div class="modal-content" style="max-width: 450px; width: 90%; padding: 1.5rem; text-align: center;">
+            <button class="modal-close" onclick="fecharModalPIX()"><i class="fas fa-times"></i></button>
+            
+            <div style="margin-bottom: 1rem;">
+                <div style="background: linear-gradient(135deg, var(--gold-primary), var(--gold-light)); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto;">
+                    <i class="fas fa-qrcode" style="font-size: 1.8rem; color: var(--bg-deep);"></i>
+                </div>
+                <h3 style="color: var(--gold-light); margin-bottom: 0.25rem;">PAGAMENTO PENDENTE</h3>
+                <p style="color: var(--text-muted); font-size: 0.75rem;">R$ ${transacao.valor.toFixed(2).replace('.', ',')}</p>
+            </div>
+            
+            <!-- QR Code -->
+            <div style="background: white; padding: 1rem; border-radius: 16px; margin-bottom: 1rem;">
+                <img src="${transacao.qrCode}" style="width: 200px; height: 200px; margin: 0 auto; display: block;">
+            </div>
+            
+            <!-- Código copia e cola -->
+            <div style="margin-bottom: 1rem;">
+                <div style="font-size: 0.7rem; color: var(--aqua-light); margin-bottom: 0.3rem;">
+                    <i class="fas fa-copy"></i> Código PIX:
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="pixCopiaCola" value="${transacao.copyPaste}" readonly style="flex: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem; font-size: 0.65rem; color: var(--text-muted); font-family: monospace;">
+                    <button onclick="copiarPix()" style="background: var(--gradient-aqua); border: none; border-radius: 8px; padding: 0 1rem; color: var(--bg-deep); font-weight: bold; cursor: pointer;">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Timer -->
+            <div style="margin-bottom: 1rem; padding: 0.8rem; background: rgba(0,0,0,0.3); border-radius: 12px;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="font-size: 0.7rem;"><i class="fas fa-hourglass-half"></i> Expira em:</span>
+                    <span id="pixTimer" style="font-size: 0.8rem; font-weight: bold; color: var(--gold-light);">${minutos}:${segundos.toString().padStart(2, '0')}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                    <span style="font-size: 0.7rem;"><i class="fas fa-gem"></i> Você receberá:</span>
+                    <span style="font-size: 0.8rem; font-weight: bold; color: var(--aqua-light);">${creditos} créditos</span>
+                </div>
+            </div>
+            
+            <!-- Status -->
+            <div id="pixStatus" style="margin-bottom: 1rem; padding: 0.5rem; background: rgba(20,184,166,0.1); border-radius: 8px;">
+                <i class="fas fa-spinner fa-spin"></i> Aguardando pagamento...
+            </div>
+            
+            <button onclick="fecharModalPIX()" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-muted); cursor: pointer;">
+                Fechar
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modalPIX);
+    modalPIX.classList.add('active');
+    
+    // Inicia a verificação novamente
+    iniciarVerificacaoPIX(transactionId, creditos);
+    
+    // Inicia o timer
+    iniciarTimerPIX(expiracao);
 }
 
         // ==========================================
