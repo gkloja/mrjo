@@ -3151,6 +3151,9 @@ async function configurarUsuarioLogado(user) {
         // Dentro de configurarUsuarioLogado, após carregar créditos
 // Verifica e reprocessa compras pendentes do usuário automaticamente
 try {
+  setTimeout(() => {
+            verificarPagamentoPendente();
+        }, 1000);
     const reprocessResponse = await fetch(`${SERVER_API}/api/reprocessar-todas-compras`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
@@ -4145,6 +4148,9 @@ async function verificarTodasIndicacoes() {
         
         if (sessaoRestaurada) {
             console.log('✅ Sessão restaurada com sucesso! Usuário já está logado.');
+            setTimeout(() => {
+            verificarPagamentoPendente();
+        }, 1000);
         } else {
             console.log('🔄 Nenhuma sessão encontrada, aguardando login...');
         }
