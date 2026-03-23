@@ -1894,66 +1894,74 @@ function atualizarInterface() {
 // ==========================================
 // VERIFICA SE HÁ PAGAMENTO PENDENTE AO CARREGAR
 // ==========================================
+// ==========================================
+// VERIFICA TODOS OS PAGAMENTOS PENDENTES DO USUÁRIO
+// ==========================================
 async function verificarPagamentoPendente() {
-    const transactionId = sessionStorage.getItem('pending_transaction');
-    const creditos = sessionStorage.getItem('pending_creditos');
-    const timestamp = sessionStorage.getItem('pending_timestamp');
-    
-    if (!transactionId) {
-        console.log('ℹ️ Nenhum pagamento pendente encontrado');
+    if (!currentUser) {
+        console.log('ℹ️ Usuário não logado');
         return;
     }
     
-    // Verifica se já passou mais de 1 hora (3600000 ms)
-    if (timestamp && (Date.now() - parseInt(timestamp) > 3600000)) {
-        console.log('⏰ Pagamento pendente expirado (mais de 1 hora)');
-        sessionStorage.removeItem('pending_transaction');
-        sessionStorage.removeItem('pending_creditos');
-        sessionStorage.removeItem('pending_timestamp');
-        return;
-    }
-    
-    console.log(`🔍 Verificando pagamento pendente: ${transactionId}`);
+    console.log(`🔍 Verificando TODOS os pagamentos pendentes do usuário: ${currentUser.uid}`);
+    showLoader(true);
     
     try {
-        const response = await fetch(`${SERVER_API}/api/doacoes/verificar-pagamento/${transactionId}`);
+        const response = await fetch(`${SERVER_API}/api/doacoes/verificar-todos-pagamentos`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: currentUser.uid })
+        });
+        
         const data = await response.json();
         
-        if (data.status === 'approved') {
-            console.log(`✅ Pagamento pendente confirmado! Adicionando ${data.creditos || creditos} créditos`);
-            
-            const creditosGanhos = data.creditos || parseInt(creditos) || 1;
-            await addCreditos(creditosGanhos);
-            
-            showToast(`✅ Pagamento confirmado! ${creditosGanhos} créditos adicionados!`, 'success');
-            
-            // Limpa a pendência
-            sessionStorage.removeItem('pending_transaction');
-            sessionStorage.removeItem('pending_creditos');
-            sessionStorage.removeItem('pending_timestamp');
-            
-        } else if (data.status === 'pending') {
-            console.log(`⏳ Pagamento ainda pendente: ${transactionId}`);
-            
-            // Se ainda está pendente, pergunta se quer reabrir o modal
-            if (confirm('Você tem um pagamento pendente. Deseja reabrir o QR Code para finalizar?')) {
-                // Buscar os dados da transação
-                const transacoes = await fetch(`${SERVER_API}/api/doacoes/transacao/${transactionId}`).then(r => r.json());
-                if (transacoes.success) {
-                    reabrirModalPIX(transacoes.transacao, parseInt(creditos));
+        if (data.success) {
+            if (data.processadas > 0) {
+                console.log(`🎉 ${data.processadas} pagamentos processados! +${data.creditosAdicionados} créditos!`);
+                showToast(`✅ ${data.processadas} pagamentos confirmados! +${data.creditosAdicionados} créditos!`, 'success');
+                
+                // Recarrega os créditos do servidor
+                const creditosServidor = await carregarCreditosDoServidor(currentUser.uid);
+                if (creditosServidor !== null) {
+                    localStorage.setItem(`${CREDITS_KEY}_${currentUser.uid}`, creditosServidor);
+                    atualizarInterface();
                 }
+            } else if (data.pendentes > 0) {
+                console.log(`⏳ ${data.pendentes} pagamentos ainda pendentes`);
+                
+                // Verifica se tem alguma transação pendente para perguntar
+                const transacoesResponse = await fetch(`${SERVER_API}/api/doacoes/transacoes-pendentes?userId=${currentUser.uid}`);
+                const transacoesData = await transacoesResponse.json();
+                
+                if (transacoesData.success && transacoesData.transacoes.length > 0) {
+                    if (confirm(`Você tem ${transacoesData.transacoes.length} pagamento(s) pendente(s). Deseja reabrir o QR Code para finalizar?`)) {
+                        // Reabre o modal com a primeira transação pendente
+                        reabrirModalPIX(transacoesData.transacoes[0], transacoesData.transacoes[0].creditos);
+                    }
+                }
+            } else {
+                console.log('ℹ️ Nenhum pagamento pendente encontrado');
             }
+        }
+        
+        // Limpa sessionStorage antigo
+        const transactionId = sessionStorage.getItem('pending_transaction');
+        if (transactionId) {
+            // Verifica se essa transação ainda existe e está pendente
+            const checkResponse = await fetch(`${SERVER_API}/api/doacoes/verificar-pagamento/${transactionId}`);
+            const checkData = await checkResponse.json();
             
-        } else if (data.status === 'expired') {
-            console.log(`⏰ Pagamento expirado: ${transactionId}`);
-            sessionStorage.removeItem('pending_transaction');
-            sessionStorage.removeItem('pending_creditos');
-            sessionStorage.removeItem('pending_timestamp');
-            showToast('⏰ Seu PIX expirou. Gere um novo para continuar.', 'info');
+            if (checkData.status === 'approved') {
+                sessionStorage.removeItem('pending_transaction');
+                sessionStorage.removeItem('pending_creditos');
+                sessionStorage.removeItem('pending_timestamp');
+            }
         }
         
     } catch (error) {
-        console.error('Erro ao verificar pagamento pendente:', error);
+        console.error('Erro ao verificar pagamentos:', error);
+    } finally {
+        showLoader(false);
     }
 }
 
