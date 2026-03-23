@@ -1894,9 +1894,6 @@ menu.innerHTML = `
     <div class="user-menu-stats">
         <i class="fas fa-chart-line"></i> ${localStorage.getItem(CONSULTAS_KEY) || 0} consultas
     </div>
-  <button class="logout-btn" onclick="reprocessarComprasPendentes()" style="background: rgba(20,184,166,0.1); border-color: var(--aqua-primary); color: var(--aqua-light); margin-bottom: 8px;">
-    <i class="fas fa-sync-alt"></i> Recuperar Compras Pendentes
-</button>
 <button class="logout-btn" onclick="gerarLinkAfiliadoDireto()" style="background: rgba(20,184,166,0.2); border-color: var(--aqua-primary); color: var(--aqua-light); margin-bottom: 8px;">
     <i class="fas fa-link"></i> Gerar Link de Afiliado
 </button>
@@ -2936,6 +2933,25 @@ async function configurarUsuarioLogado(user) {
             console.log('⚠️ Erro ao processar indicação:', e.message);
         }
         
+        // Dentro de configurarUsuarioLogado, após carregar créditos
+// Verifica e reprocessa compras pendentes do usuário automaticamente
+try {
+    const reprocessResponse = await fetch(`${SERVER_API}/api/reprocessar-todas-compras`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    });
+    const reprocessData = await reprocessResponse.json();
+    if (reprocessData.success && reprocessData.reprocessados > 0) {
+        console.log(`🎉 ${reprocessData.reprocessados} compras recuperadas automaticamente!`);
+        // Recarrega os créditos
+        const creditosServidor = await carregarCreditosDoServidor(user.uid);
+        if (creditosServidor !== null) {
+            localStorage.setItem(`${CREDITS_KEY}_${user.uid}`, creditosServidor);
+        }
+    }
+} catch (e) {
+    console.log('⚠️ Erro ao verificar compras pendentes:', e.message);
+}
         // 4. Carrega créditos
         try {
             const creditosServidor = await carregarCreditosDoServidor(user.uid);
