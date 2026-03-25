@@ -2182,6 +2182,131 @@ menu.innerHTML = `
         // ==========================================
         // REALIZAR CONSULTA
         // ==========================================
+    // Adicione esta nova função antes de realizarConsulta()
+async function consultarCPFCompleto(cpf) {
+    console.log('🔍 Iniciando consulta híbrida CPF v3 + v4...');
+    
+    try {
+        // Faz ambas as consultas em paralelo para ser mais rápido
+        const [resV3, resV4] = await Promise.all([
+            fetch(`${SERVER_API}/api/consultar?tipo=cpf&valor=${cpf}&versao=v3`),
+            fetch(`${SERVER_API}/api/consultar?tipo=cpf&valor=${cpf}&versao=v4`)
+        ]);
+        
+        if (!resV3.ok || !resV4.ok) {
+            throw new Error('Erro ao consultar APIs');
+        }
+        
+        const dadosV3 = await resV3.json();
+        const dadosV4 = await resV4.json();
+        
+        // Verifica se pelo menos uma das consultas foi bem sucedida
+        const temDadosV3 = dadosV3.status === 'true' && dadosV3.resultado;
+        const temDadosV4 = dadosV4.status === 'true' && dadosV4.resultado;
+        
+        if (!temDadosV3 && !temDadosV4) {
+            return { 
+                status: 'false', 
+                mensagem: 'Nenhum dado encontrado nas bases v3 e v4' 
+            };
+        }
+        
+        // Mescla os dados (priorizando v4 que tem mais informações)
+        const resultadoMesclado = {
+            status: 'true',
+            resposta: 'Consulta híbrida realizada com sucesso (v3 + v4)',
+            developer: dadosV4.developer || dadosV3.developer,
+            developer2: dadosV4.developer2 || dadosV3.developer2,
+            resultado: {}
+        };
+        
+        // Mescla os dados do v3 e v4
+        const baseV3 = dadosV3.resultado || {};
+        const baseV4 = dadosV4.resultado || {};
+        
+        // Dados básicos (prioridade v4)
+        resultadoMesclado.resultado.cpf = baseV4.cpf || baseV3.cpf;
+        resultadoMesclado.resultado.nome = baseV4.nome || baseV3.nome;
+        resultadoMesclado.resultado.nascimento = baseV4.nascimento || baseV3.nascimento;
+        resultadoMesclado.resultado.idade = baseV4.idade || baseV3.idade;
+        resultadoMesclado.resultado.signo = baseV4.signo || baseV3.signo;
+        resultadoMesclado.resultado.mae = baseV4.mae || baseV3.mae;
+        resultadoMesclado.resultado.pai = baseV4.pai || baseV3.pai;
+        resultadoMesclado.resultado.nacionalidade = baseV4.nacionalidade || baseV3.nacionalidade;
+        resultadoMesclado.resultado.escolaridade = baseV4.escolaridade || baseV3.escolaridade;
+        resultadoMesclado.resultado.estado_civil = baseV4.estado_civil || baseV3.estado_civil;
+        resultadoMesclado.resultado.profissao = baseV4.profissao || baseV3.profissao;
+        resultadoMesclado.resultado.renda_presumida = baseV4.renda_presumida || baseV3.renda_presumida;
+        resultadoMesclado.resultado.status_receita = baseV4.status_receita || baseV3.status_receita;
+        resultadoMesclado.resultado.score = baseV4.score || baseV3.score;
+        resultadoMesclado.resultado.faixa_risco = baseV4.faixa_risco || baseV3.faixa_risco;
+        
+        // Documentos (prioridade v4)
+        resultadoMesclado.resultado.documentos = {
+            pis: baseV4.documentos?.pis || baseV3.documentos?.pis || '',
+            titulo_eleitoral: baseV4.documentos?.titulo_eleitoral || baseV3.documentos?.titulo_eleitoral || '',
+            rg: baseV4.documentos?.rg || baseV3.documentos?.rg || '',
+            data_expedicao: baseV4.documentos?.data_expedicao || baseV3.documentos?.data_expedicao || '',
+            orgao_expedidor: baseV4.documentos?.orgao_expedidor || baseV3.documentos?.orgao_expedidor || '',
+            uf_rg: baseV4.documentos?.uf_rg || baseV3.documentos?.uf_rg || ''
+        };
+        
+        // EMAILS - Prioridade v4, mas mantém os da v3 também
+        const emailsSet = new Set();
+        if (baseV4.emails && Array.isArray(baseV4.emails)) {
+            baseV4.emails.forEach(email => emailsSet.add(email));
+        }
+        if (baseV3.emails && Array.isArray(baseV3.emails)) {
+            baseV3.emails.forEach(email => emailsSet.add(email));
+        }
+        resultadoMesclado.resultado.emails = Array.from(emailsSet);
+        
+        // ENDEREÇOS - Prioridade v4, mas mantém os da v3 também
+        const enderecosSet = new Set();
+        if (baseV4.enderecos && Array.isArray(baseV4.enderecos)) {
+            baseV4.enderecos.forEach(end => enderecosSet.add(end));
+        }
+        if (baseV3.enderecos && Array.isArray(baseV3.enderecos)) {
+            baseV3.enderecos.forEach(end => enderecosSet.add(end));
+        }
+        resultadoMesclado.resultado.enderecos = Array.from(enderecosSet);
+        
+        // TELEFONES - PRIORIDADE ABSOLUTA da v4! (é o que você quer)
+        const telefonesSet = new Set();
+        if (baseV4.telefones && Array.isArray(baseV4.telefones)) {
+            baseV4.telefones.forEach(tel => telefonesSet.add(tel));
+            console.log(`📞 Encontrados ${baseV4.telefones.length} telefones na v4`);
+        }
+        if (baseV3.telefones && Array.isArray(baseV3.telefones)) {
+            baseV3.telefones.forEach(tel => telefonesSet.add(tel));
+        }
+        resultadoMesclado.resultado.telefones = Array.from(telefonesSet);
+        
+        // Parentes, vizinhos, participações, vínculos (prioridade v4)
+        resultadoMesclado.resultado.parentes = baseV4.parentes || baseV3.parentes || [];
+        resultadoMesclado.resultado.vizinhos = baseV4.vizinhos || baseV3.vizinhos || [];
+        resultadoMesclado.resultado.participacoes_societarias = baseV4.participacoes_societarias || baseV3.participacoes_societarias || [];
+        resultadoMesclado.resultado.vinculos_empregaticios = baseV4.vinculos_empregaticios || baseV3.vinculos_empregaticios || [];
+        
+        // ADICIONA METADADOS SOBRE A CONSULTA HÍBRIDA
+        resultadoMesclado.resultado.metadados_consulta = {
+            hibrido: true,
+            versoes_consultadas: ['v3', 'v4'],
+            fonte_telefones: baseV4.telefones ? 'v4' : (baseV3.telefones ? 'v3' : 'nenhum'),
+            total_telefones_encontrados: resultadoMesclado.resultado.telefones.length,
+            consulta_realizada_em: new Date().toISOString()
+        };
+        
+        return resultadoMesclado;
+        
+    } catch (error) {
+        console.error('Erro na consulta híbrida:', error);
+        return { 
+            status: 'false', 
+            mensagem: 'Erro ao realizar consulta híbrida: ' + error.message 
+        };
+    }
+}
 async function realizarConsulta() {
     if (!currentUser) {
         showToast('🔒 Você precisa estar logado para realizar consultas!', 'error');
@@ -2204,7 +2329,9 @@ async function realizarConsulta() {
                 mostrarErro('❌ CPF inválido! O CPF deve ter 11 dígitos numéricos.\n\nExemplo: 123.456.789-00 ou 12345678900');
                 return; 
             }
-            versao = document.getElementById('cpfVersao').value; 
+            // IGNORA a versão selecionada e força consulta híbrida
+            versao = null;
+            tipo = 'cpf_hibrido'; // Marca como híbrido
             break;
         case 'cnpj': 
             let cnpjRaw = document.getElementById('cnpj').value.trim();
@@ -2222,8 +2349,7 @@ async function realizarConsulta() {
                 mostrarErro('❌ Placa inválida! A placa deve ter 7 caracteres.\n\nExemplo: ABC1D23 ou ABC-1234');
                 return; 
             }
-            // CORREÇÃO: Usar versão v2 por padrão para mais dados
-            versao = 'v2'; // Força usar a versão v2 que tem mais informações
+            versao = 'v2';
             break;
         case 'telefone': 
             let telRaw = document.getElementById('telefone').value.trim();
@@ -2240,23 +2366,23 @@ async function realizarConsulta() {
                 showToast('📞 Telefone fixo identificado. A consulta pode ter menos resultados.', 'info');
             }
             break;
-case 'veiculo': 
-    const veiculoTipo = document.getElementById('veiculoTipo').value;
-    tipo = veiculoTipo; // 'motor' ou 'chassi'
-    valor = document.getElementById('veiculoValor').value.trim().toUpperCase();
-    if(!valor) { 
-        mostrarErro('❌ Digite o número do motor ou chassi para consultar.');
-        return; 
-    }
-    if (veiculoTipo === 'motor' && valor.length < 5) {
-        mostrarErro('❌ Número do motor muito curto. O motor geralmente tem de 5 a 12 caracteres.\n\nExemplo: UD316909');
-        return;
-    }
-    if (veiculoTipo === 'chassi' && valor.length < 8) {
-        mostrarErro('❌ Chassi inválido! O chassi deve ter 17 caracteres.\n\nExemplo: 9BWZZZ30ZPP227569');
-        return;
-    }
-    break;
+        case 'veiculo': 
+            const veiculoTipo = document.getElementById('veiculoTipo').value;
+            tipo = veiculoTipo;
+            valor = document.getElementById('veiculoValor').value.trim().toUpperCase();
+            if(!valor) { 
+                mostrarErro('❌ Digite o número do motor ou chassi para consultar.');
+                return; 
+            }
+            if (veiculoTipo === 'motor' && valor.length < 5) {
+                mostrarErro('❌ Número do motor muito curto. O motor geralmente tem de 5 a 12 caracteres.\n\nExemplo: UD316909');
+                return;
+            }
+            if (veiculoTipo === 'chassi' && valor.length < 8) {
+                mostrarErro('❌ Chassi inválido! O chassi deve ter 17 caracteres.\n\nExemplo: 9BWZZZ30ZPP227569');
+                return;
+            }
+            break;
         case 'foto': 
             valor = document.getElementById('nomeFoto').value.trim(); 
             if(!valor) { 
@@ -2286,26 +2412,47 @@ case 'veiculo':
     showLoader(true);
 
     try {
-        let url = `${SERVER_API}/api/consultar?tipo=${tipo}&valor=${encodeURIComponent(valor)}`;
-        if(versao) url += `&versao=${versao}`;
+        let data = null;
         
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
-        
-        const response = await fetch(url, { signal: controller.signal });
-        clearTimeout(timeoutId);
-        
-        if(!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
+        // ==========================================
+        // CONSULTA HÍBRIDA PARA CPF (v3 + v4)
+        // ==========================================
+        if (tipo === 'cpf_hibrido') {
+            console.log('🔄 Usando consulta híbrida v3+v4 para CPF:', valor);
+            data = await consultarCPFCompleto(valor);
+            
+            // Verifica se a consulta foi bem sucedida
+            if (data.status !== 'true' || !data.resultado) {
+                throw new Error(data.mensagem || 'Nenhum dado encontrado');
+            }
+            
+        } else {
+            // ==========================================
+            // CONSULTA NORMAL PARA OUTROS TIPOS
+            // ==========================================
+            let url = `${SERVER_API}/api/consultar?tipo=${tipo}&valor=${encodeURIComponent(valor)}`;
+            if(versao) url += `&versao=${versao}`;
+            
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000);
+            
+            const response = await fetch(url, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            
+            if(!response.ok) throw new Error(`HTTP ${response.status}`);
+            data = await response.json();
+        }
         
         // Verifica se encontrou dados
         const temDados = data.status === 'true' || data.status === true;
         
-        // CORREÇÃO: Verificação específica para placa v2
+        // Verificação específica para cada tipo
         let temResultados = false;
         
-        if (tipo === 'placa' && versao === 'v2') {
-            // Para versão v2, verifica se tem veiculo e identificacao
+        if (tipo === 'cpf_hibrido') {
+            // Para consulta híbrida, verifica se tem dados básicos
+            temResultados = data.resultado && (data.resultado.nome || data.resultado.cpf);
+        } else if (tipo === 'placa' && versao === 'v2') {
             temResultados = data.resultado && 
                 (data.resultado.veiculo || data.resultado.identificacao);
         } else {
@@ -3397,6 +3544,15 @@ function mostrarSucesso(dados) {
     
     let html = '';
     
+    
+    // Dentro de mostrarSucesso(), adicione uma verificação para CPF híbrido:
+
+// Adicione esta verificação antes das outras:
+if (dados.resultado && dados.resultado.metadados_consulta && dados.resultado.metadados_consulta.hibrido) {
+    html = formatarResultadoCPFHibrido(dados);
+}
+// Resto das condições...
+    
     // Busca por Nome (formato especial)
     if (dados.resultado && dados.resultado.resultados && Array.isArray(dados.resultado.resultados)) {
         html += `<div style="margin-bottom: 1rem; padding: 0.5rem; background: rgba(20, 184, 166, 0.1); border-radius: 8px;">
@@ -3459,8 +3615,135 @@ else if (dados.resultado && (dados.resultado.veiculo || dados.resultado.placa)) 
 }
 
 // ==================== FUNÇÕES DE FORMATAÇÃO ====================
-
-function formatarResultadoCPF(data) {
+// Adicione esta função antes de mostrarSucesso()
+function formatarResultadoCPFHibrido(data) {
+    const resultado = data.resultado || {};
+    const meta = resultado.metadados_consulta || {};
+    
+    let html = `
+        <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div style="background: var(--aqua-primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-id-card" style="font-size: 1.5rem; color: var(--bg-deep);"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.3rem; font-weight: bold;">${resultado.nome || 'N/A'}</div>
+                    <div style="font-size: 0.8rem; color: var(--aqua-light);">
+                        <i class="fas fa-fingerprint"></i> CPF: ${resultado.cpf || 'N/A'}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Badge de consulta híbrida -->
+        <div style="margin-bottom: 1rem; padding: 0.5rem; background: rgba(234,179,8,0.1); border-radius: 8px; text-align: center;">
+            <i class="fas fa-code-branch" style="color: var(--gold-primary);"></i>
+            <span style="color: var(--gold-light); font-size: 0.75rem;"> Consulta híbrida v3 + v4 </span>
+            <span style="color: var(--text-muted); font-size: 0.7rem; margin-left: 0.5rem;">
+                (${meta.total_telefones_encontrados || 0} telefones encontrados)
+            </span>
+        </div>
+        
+        <div class="resultado-grid">
+            ${resultado.nascimento ? `<div class="info-card"><i class="fas fa-birthday-cake"></i> <strong>🎂 Nascimento:</strong> ${resultado.nascimento}</div>` : ''}
+            ${resultado.idade ? `<div class="info-card"><i class="fas fa-chart-line"></i> <strong>📊 Idade:</strong> ${resultado.idade} anos</div>` : ''}
+            ${resultado.signo ? `<div class="info-card"><i class="fas fa-star"></i> <strong>⭐ Signo:</strong> ${resultado.signo}</div>` : ''}
+            ${resultado.nacionalidade ? `<div class="info-card"><i class="fas fa-globe"></i> <strong>🌍 Nacionalidade:</strong> ${resultado.nacionalidade}</div>` : ''}
+            ${resultado.estado_civil ? `<div class="info-card"><i class="fas fa-heart"></i> <strong>💑 Estado Civil:</strong> ${resultado.estado_civil}</div>` : ''}
+            ${resultado.profissao ? `<div class="info-card"><i class="fas fa-briefcase"></i> <strong>💼 Profissão:</strong> ${resultado.profissao}</div>` : ''}
+            ${resultado.renda_presumida ? `<div class="info-card"><i class="fas fa-dollar-sign"></i> <strong>💰 Renda Presumida:</strong> R$ ${resultado.renda_presumida}</div>` : ''}
+            ${resultado.status_receita ? `<div class="info-card"><i class="fas fa-check-circle"></i> <strong>✅ Situação Receita:</strong> ${resultado.status_receita}</div>` : ''}
+            ${resultado.score ? `<div class="info-card"><i class="fas fa-chart-simple"></i> <strong>📈 Score:</strong> ${resultado.score}</div>` : ''}
+        </div>
+    `;
+    
+    // TELEFONES (DESTAQUE ESPECIAL)
+    if (resultado.telefones && resultado.telefones.length > 0) {
+        html += `
+            <div style="margin-top: 1.5rem;">
+                <div class="section-title" style="background: linear-gradient(135deg, var(--gold-primary), var(--gold-light)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                    <i class="fas fa-phone-alt"></i> 📞 TELEFONES ENCONTRADOS (${resultado.telefones.length})
+                </div>
+                <div style="display: grid; gap: 0.8rem;">
+        `;
+        
+        resultado.telefones.forEach((tel, index) => {
+            const isCelular = tel.length > 10 || tel.includes('9');
+            const tipoIcon = isCelular ? 'fa-mobile-alt' : 'fa-phone';
+            html += `
+                <div class="info-card" style="border-left: 3px solid var(--gold-primary);">
+                    <i class="fas ${tipoIcon}" style="color: var(--gold-primary);"></i>
+                    <strong>Telefone ${index + 1}:</strong>
+                    <span style="font-family: monospace; font-size: 1rem;">${tel}</span>
+                    <button onclick="copiarTexto('${tel}')" style="margin-left: auto; background: rgba(20,184,166,0.2); border: none; border-radius: 6px; padding: 0.2rem 0.5rem; cursor: pointer; font-size: 0.7rem;">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            `;
+        });
+        
+        html += `</div></div>`;
+    } else {
+        html += `
+            <div style="margin-top: 1rem; padding: 0.8rem; background: rgba(239,68,68,0.1); border-radius: 8px;">
+                <i class="fas fa-info-circle"></i> Nenhum telefone encontrado nas bases consultadas.
+            </div>
+        `;
+    }
+    
+    // EMAILS
+    if (resultado.emails && resultado.emails.length > 0) {
+        html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-envelope"></i> 📧 EMAILS</div><div class="resultado-grid">`;
+        resultado.emails.forEach(email => {
+            html += `<div class="info-card"><i class="fas fa-envelope"></i> ${email}</div>`;
+        });
+        html += `</div></div>`;
+    }
+    
+    // ENDEREÇOS
+    if (resultado.enderecos && resultado.enderecos.length > 0) {
+        html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-map-pin"></i> 📍 ENDEREÇOS</div>`;
+        resultado.enderecos.forEach(end => {
+            html += `<div class="info-card" style="margin-bottom: 0.5rem;"><i class="fas fa-home"></i> ${end}</div>`;
+        });
+        html += `</div>`;
+    }
+    
+    // MAE E PAI
+    if (resultado.mae || resultado.pai) {
+        html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-family"></i> 👨‍👩‍👧 FILIAÇÃO</div><div class="resultado-grid">`;
+        if (resultado.mae) html += `<div class="info-card"><i class="fas fa-female"></i> <strong>Mãe:</strong> ${resultado.mae}</div>`;
+        if (resultado.pai) html += `<div class="info-card"><i class="fas fa-male"></i> <strong>Pai:</strong> ${resultado.pai}</div>`;
+        html += `</div></div>`;
+    }
+    
+    // DOCUMENTOS
+    if (resultado.documentos && Object.values(resultado.documentos).some(v => v)) {
+        html += `<div style="margin-top: 1rem;"><div class="section-title"><i class="fas fa-id-card"></i> 📄 DOCUMENTOS</div><div class="resultado-grid">`;
+        for (let [key, value] of Object.entries(resultado.documentos)) {
+            if (value) {
+                const labels = {
+                    pis: 'PIS/PASEP',
+                    titulo_eleitoral: 'Título Eleitoral',
+                    rg: 'RG',
+                    orgao_expedidor: 'Órgão Expedidor'
+                };
+                html += `<div class="info-card"><i class="fas fa-${key === 'rg' ? 'id-card' : 'file-alt'}"></i> <strong>${labels[key] || key}:</strong> ${value}</div>`;
+            }
+        }
+        html += `</div></div>`;
+    }
+    
+    // AVISO SOBRE AS BASES
+    html += `
+        <div style="margin-top: 1.5rem; padding: 0.6rem; background: rgba(20,184,166,0.05); border-radius: 8px; font-size: 0.65rem; color: var(--text-muted); text-align: center;">
+            <i class="fas fa-info-circle"></i> Dados consolidados das versões v3 e v4 da API.
+            <span style="color: var(--aqua-light);">${meta.fonte_telefones === 'v4' ? 'Telefones obtidos da versão v4' : 'Telefones não encontrados'}</span>
+        </div>
+    `;
+    
+    return html;
+}function formatarResultadoCPF(data) {
     let html = `
         <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;">
             <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
