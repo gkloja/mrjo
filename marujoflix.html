@@ -6243,7 +6243,7 @@ processarDados: function(data) {
     return this.todosItens.filter(item => {
         const titulo = (item.titulo || '').toUpperCase();
         const categoria = (item.categoriaLimpa || '').toUpperCase();
-        return titulo.includes('JOGOS DO DIA') || categoria.includes('JOGOS DO DIA') || categoria.includes('BRASILEIRAO');
+        return titulo.includes('JOGOS DO DIA') || categoria.includes('JOGOS DO DIA') || titulo.includes('JOGOS EM DESTAQUE') || categoria.includes('JOGOS EM DESTAQUE') || categoria.includes('BRASILEIRAO');
     });
 },
         
