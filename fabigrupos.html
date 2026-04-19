@@ -323,40 +323,113 @@
             pointer-events: none;
             z-index: 9999;
         }
+        /* Canal Fabi Banner */
+.fabi-channel-banner {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.fabi-channel-banner:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.3);
+}
+.fabi-channel-banner::before {
+    content: '📢';
+    position: absolute;
+    font-size: 80px;
+    opacity: 0.1;
+    right: -20px;
+    bottom: -20px;
+    transform: rotate(-10deg);
+}
+.fabi-channel-banner::after {
+    content: '💬';
+    position: absolute;
+    font-size: 60px;
+    opacity: 0.1;
+    left: -10px;
+    top: -10px;
+    transform: rotate(15deg);
+}
+
+/* Menu Dropdown */
+.dropdown-menu {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+.dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
     </style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <header class="sticky top-0 z-50 w-full border-b border-purple-100 bg-white/95 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex h-14 sm:h-16 items-center justify-between">
-                <a href="#" onclick="resetToHome(); return false;" class="flex items-center gap-2 cursor-pointer group">
-                    <div class="relative">
-                        <div class="w-9 h-9 rounded-xl gradient-bg flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
-                            <i class="fas fa-comment-dots text-white text-sm"></i>
-                        </div>
-                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+<!-- HEADER -->
+<header class="sticky top-0 z-50 w-full border-b border-purple-100 bg-white/95 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex h-14 sm:h-16 items-center justify-between">
+            <a href="#" onclick="resetToHome(); return false;" class="flex items-center gap-2 cursor-pointer group">
+                <div class="relative">
+                    <div class="w-9 h-9 rounded-xl gradient-bg flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
+                        <i class="fas fa-comment-dots text-white text-sm"></i>
                     </div>
-                    <div>
-                        <span class="text-gray-800 font-bold text-xl">Fabi</span>
-                        <span class="gradient-text font-bold text-xl">Grupos</span>
-                    </div>
-                </a>
-                
-                <div class="hidden md:flex items-center gap-2 bg-gray-100/80 rounded-full p-1">
-                    <button onclick="resetToHome()" class="px-4 py-1.5 rounded-full text-sm font-medium text-purple-700 bg-white shadow-sm">Explorar</button>
-                    <button class="px-4 py-1.5 rounded-full text-sm font-medium text-gray-600 hover:text-purple-600 transition">Ranking</button>
-                    <button class="px-4 py-1.5 rounded-full text-sm font-medium text-gray-600 hover:text-purple-600 transition">Novidades</button>
+                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
                 </div>
-                
-                <button class="gradient-bg text-white px-4 py-2 rounded-xl text-sm font-semibold hover:opacity-90 transition flex items-center gap-2 shadow-md">
-                    <i class="fas fa-plus-circle"></i>
-                    <span class="hidden sm:inline">Divulgar grupo</span>
+                <div>
+                    <span class="text-gray-800 font-bold text-xl">Fabi</span>
+                    <span class="gradient-text font-bold text-xl">Grupos</span>
+                </div>
+            </a>
+            
+            <!-- Menu Desktop -->
+            <div class="hidden md:flex items-center gap-2 bg-gray-100/80 rounded-full p-1">
+                <button onclick="resetToHome()" class="px-4 py-1.5 rounded-full text-sm font-medium text-purple-700 bg-white shadow-sm">Explorar</button>
+                <button onclick="scrollToHots()" class="px-4 py-1.5 rounded-full text-sm font-medium text-gray-600 hover:text-purple-600 transition">🔥 Hots</button>
+                <button onclick="scrollToNews()" class="px-4 py-1.5 rounded-full text-sm font-medium text-gray-600 hover:text-purple-600 transition">🆕 Novidades</button>
+            </div>
+            
+            <!-- Botão do Menu (Desktop e Mobile) -->
+            <div class="relative">
+                <button id="menuButton" class="gradient-bg text-white w-9 h-9 rounded-xl flex items-center justify-center shadow-md hover:shadow-lg transition-all">
+                    <i class="fas fa-bars text-white"></i>
                 </button>
+                
+                <!-- Dropdown Menu -->
+                <div id="dropdownMenu" class="dropdown-menu absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                    <div class="p-2">
+                        <a href="#" onclick="showAboutModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
+                            <i class="fas fa-info-circle text-purple-500 w-5"></i>
+                            <span class="text-sm font-medium">Sobre a Fabi Grupos</span>
+                        </a>
+                        <a href="#" onclick="showContactModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
+                            <i class="fas fa-envelope text-purple-500 w-5"></i>
+                            <span class="text-sm font-medium">Contato</span>
+                        </a>
+                        <a href="#" onclick="showTermsModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
+                            <i class="fas fa-file-alt text-purple-500 w-5"></i>
+                            <span class="text-sm font-medium">Termos de Uso</span>
+                        </a>
+                        <a href="#" onclick="showPrivacyModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
+                            <i class="fas fa-shield-alt text-purple-500 w-5"></i>
+                            <span class="text-sm font-medium">Privacidade</span>
+                        </a>
+                        <div class="border-t border-gray-100 my-1"></div>
+                        <a href="#" onclick="showAdvertiseModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
+                            <i class="fas fa-chart-line text-purple-500 w-5"></i>
+                            <span class="text-sm font-medium">Anuncie seu grupo</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
-    </header>
+    </div>
+</header>
 
     <main id="appContent">
         <!-- BANNER DE DESTAQUE (aparece quando tem grupo campeão) -->
@@ -376,6 +449,32 @@
                 </div>
             </div>
         </div>
+        
+        <!-- CANAL DA FABI - DESTAQUE ESPECIAL -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+    <div onclick="openFabiChannel()" class="fabi-channel-banner rounded-2xl p-4 shadow-lg cursor-pointer relative z-10">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur">
+                    <i class="fab fa-whatsapp text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold text-sm sm:text-base flex items-center gap-2">
+                        <i class="fas fa-crown crown-icon text-yellow-300"></i>
+                        Canal Oficial da Fabi
+                        <i class="fas fa-check-circle text-blue-300 text-xs"></i>
+                    </h3>
+                    <p class="text-white/90 text-xs sm:text-sm">📢 Últimos grupos divulgados aqui! Entre agora mesmo ➜</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 bg-white/20 backdrop-blur rounded-full px-3 py-1.5">
+                <i class="fab fa-whatsapp text-white text-sm"></i>
+                <span class="text-white text-xs font-bold">GRUPOS NOVOS TODOS OS DIAS</span>
+                <i class="fas fa-arrow-right text-white text-xs animate-pulse"></i>
+            </div>
+        </div>
+    </div>
+</div>
 
         <!-- HERO -->
         <section class="relative overflow-hidden pt-12 sm:pt-16 lg:pt-20 pb-12 px-4">
@@ -789,111 +888,192 @@
         }
         
         // ==================== RENDERIZAÇÃO DE GRUPOS COM DESTAQUE ====================
-        function renderGroups() {
-            if (!allGroups.length) return;
-            
-            let displayGroups = [...allGroups];
-            if (currentCategory !== 'Todos') displayGroups = displayGroups.filter(g => g.categoria === currentCategory);
-            if (currentSearch.trim()) {
-                const searchLower = currentSearch.toLowerCase();
-                displayGroups = displayGroups.filter(g => 
-                    (g.nome && g.nome.toLowerCase().includes(searchLower)) || 
-                    (g.descricao && g.descricao.toLowerCase().includes(searchLower)) ||
-                    (g.categoria && g.categoria.toLowerCase().includes(searchLower))
-                );
-            }
-            
-            // Ordenar: grupos em destaque primeiro, depois por participantes
-            displayGroups.sort((a, b) => {
-                if (a.emDestaque && !b.emDestaque) return -1;
-                if (!a.emDestaque && b.emDestaque) return 1;
-                return (b.participantes || 0) - (a.participantes || 0);
-            });
-            
-            resultCountSpan.textContent = `${displayGroups.length} grupo${displayGroups.length !== 1 ? 's' : ''}`;
-            sectionTitle.innerHTML = currentCategory === 'Todos' ? 
-                '<i class="fas fa-fire text-orange-500 mr-2"></i>Grupos em destaque' : 
-                `<i class="fas ${getCategoryIcon(currentCategory)} text-purple-500 mr-2"></i>${currentCategory}`;
-            
-            clearFiltersBtn.classList.toggle('hidden', currentCategory === 'Todos' && !currentSearch);
-            
-            if (displayGroups.length === 0) {
-                groupsGrid.innerHTML = `
-                    <div class="col-span-full text-center py-16 bg-white rounded-2xl shadow-sm">
-                        <i class="fas fa-search text-5xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500 text-lg font-medium">Nenhum grupo encontrado</p>
-                        <p class="text-gray-400 text-sm">Tente outra categoria ou palavra-chave</p>
-                        <button onclick="resetToHome()" class="mt-4 gradient-bg text-white px-5 py-2 rounded-lg text-sm">Ver todos os grupos</button>
-                    </div>`;
-                return;
-            }
-            
-            groupsGrid.innerHTML = displayGroups.map((group, index) => {
-                const isChampion = group.emDestaque === true;
-                const championCardClass = isChampion ? 'card-champion border-2 border-yellow-400' : '';
-                const championBadge = isChampion ? `
-                    <div class="absolute -top-2 -right-2 z-10">
-                        ${group.tipoDestaque === 'maisAtivo' ? `
-                            <div class="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full px-3 py-1 text-xs font-bold shadow-lg animate-pulse flex items-center gap-1">
-                                <i class="fas fa-fire"></i> 🔥 MAIS ATIVO
-                            </div>
-                        ` : group.tipoDestaque === 'maisRico' ? `
-                            <div class="bg-gradient-to-r from-yellow-500 to-amber-600 text-white rounded-full px-3 py-1 text-xs font-bold shadow-lg animate-pulse flex items-center gap-1">
-                                <i class="fas fa-crown crown-icon"></i> 💎 MAIS RICO
-                            </div>
-                        ` : ''}
+function renderGroups() {
+    if (!allGroups.length) return;
+    
+    let displayGroups = [...allGroups];
+    if (currentCategory !== 'Todos') displayGroups = displayGroups.filter(g => g.categoria === currentCategory);
+    if (currentSearch.trim()) {
+        const searchLower = currentSearch.toLowerCase();
+        displayGroups = displayGroups.filter(g => 
+            (g.nome && g.nome.toLowerCase().includes(searchLower)) || 
+            (g.descricao && g.descricao.toLowerCase().includes(searchLower)) ||
+            (g.categoria && g.categoria.toLowerCase().includes(searchLower))
+        );
+    }
+    
+    // ========== NOVA LÓGICA DE ORDENAÇÃO ==========
+    // 1. Separar grupos em destaque
+    const gruposDestaque = displayGroups.filter(g => g.emDestaque === true);
+    
+    // 2. Separar grupos que NÃO são destaque, que têm:
+    //    - dataCriacao válida
+    //    - mesesAtivo NÃO é "?"
+    //    - PELO MENOS 10 PARTICIPANTES
+    const gruposComDataValida = displayGroups.filter(g => {
+        return !g.emDestaque && 
+               g.dataCriacao && 
+               g.dataCriacao !== '?' && 
+               g.dataCriacao !== '' &&
+               g.mesesAtivo !== '?' &&
+               g.mesesAtivo !== null &&
+               g.mesesAtivo !== undefined &&
+               (g.participantes && g.participantes >= 10);
+    });
+    
+    // 3. Pegar os 3 grupos mais novos (ordenados por dataCriacao decrescente)
+    const gruposMaisNovos = [...gruposComDataValida]
+        .sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao))
+        .slice(0, 3);
+    
+    // 4. Separar grupos Hots (Top 3 com mais participantes)
+    //    Excluindo: grupos em destaque e os que já estão nos mais novos
+    const idsMaisNovos = new Set(gruposMaisNovos.map(g => g.grupoID));
+    const gruposParaHots = displayGroups.filter(g => {
+        return !g.emDestaque && !idsMaisNovos.has(g.grupoID);
+    });
+    
+    // Pegar os 3 com MAIS participantes
+    const gruposHots = [...gruposParaHots]
+        .sort((a, b) => (b.participantes || 0) - (a.participantes || 0))
+        .slice(0, 3);
+    
+    // 5. Separar o restante (excluindo destaques, mais novos e hots)
+    const idsHots = new Set(gruposHots.map(g => g.grupoID));
+    let gruposRestantes = displayGroups.filter(g => {
+        return !g.emDestaque && !idsMaisNovos.has(g.grupoID) && !idsHots.has(g.grupoID);
+    });
+    
+    // 6. Embaralhar (aleatório) o restante
+    for (let i = gruposRestantes.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [gruposRestantes[i], gruposRestantes[j]] = [gruposRestantes[j], gruposRestantes[i]];
+    }
+    
+    // 7. Montar array final: destaques + 3 mais novos + 3 hots + restante aleatório
+    displayGroups = [...gruposDestaque, ...gruposMaisNovos, ...gruposHots, ...gruposRestantes];
+    // =============================================
+    
+    resultCountSpan.textContent = `${displayGroups.length} grupo${displayGroups.length !== 1 ? 's' : ''}`;
+    sectionTitle.innerHTML = currentCategory === 'Todos' ? 
+        '<i class="fas fa-fire text-orange-500 mr-2"></i>Grupos em destaque' : 
+        `<i class="fas ${getCategoryIcon(currentCategory)} text-purple-500 mr-2"></i>${currentCategory}`;
+    
+    clearFiltersBtn.classList.toggle('hidden', currentCategory === 'Todos' && !currentSearch);
+    
+    if (displayGroups.length === 0) {
+        groupsGrid.innerHTML = `
+            <div class="col-span-full text-center py-16 bg-white rounded-2xl shadow-sm">
+                <i class="fas fa-search text-5xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500 text-lg font-medium">Nenhum grupo encontrado</p>
+                <p class="text-gray-400 text-sm">Tente outra categoria ou palavra-chave</p>
+                <button onclick="resetToHome()" class="mt-4 gradient-bg text-white px-5 py-2 rounded-lg text-sm">Ver todos os grupos</button>
+            </div>`;
+        return;
+    }
+    
+    groupsGrid.innerHTML = displayGroups.map((group, index) => {
+        const isChampion = group.emDestaque === true;
+        const championCardClass = isChampion ? 'card-champion border-2 border-yellow-400' : '';
+        const championBadge = isChampion ? `
+            <div class="absolute -top-2 -right-2 z-10">
+                ${group.tipoDestaque === 'maisAtivo' ? `
+                    <div class="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full px-3 py-1 text-xs font-bold shadow-lg animate-pulse flex items-center gap-1">
+                        <i class="fas fa-fire"></i> 🔥 MAIS ATIVO
                     </div>
-                ` : '';
-                
-                return `
-                    <div class="group bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative ${championCardClass}" data-group-index="${index}">
-                        ${championBadge}
-                        <div class="p-5">
-                            <div class="flex gap-4">
-                                <div class="relative w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center shadow-sm">
-                                    ${group.imagem ? 
-                                        `<img src="${group.imagem}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" 
-                                              onerror="this.parentElement.innerHTML='<i class=\\'fas fa-users text-3xl text-purple-400\\'></i>'">` : 
-                                        `<i class="fas fa-users text-3xl text-purple-400"></i>`
-                                    }
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <h3 class="font-bold text-gray-800 text-base sm:text-lg line-clamp-1 group-hover:text-purple-600 transition">${(group.nome || 'Sem nome').substring(0, 45)}</h3>
-                                    <div class="flex flex-wrap items-center gap-2 mt-2">
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-700 text-xs rounded-full">
-                                            <i class="fas ${getCategoryIcon(group.categoria)} text-xs"></i> ${group.categoria || 'Geral'}
-                                        </span>
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
-                                            <i class="fas fa-user-friends text-xs"></i> ${formatNumber(group.participantes)}
-                                        </span>
-                                        ${isChampion ? `
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded-full">
-                                                <i class="fas fa-star"></i> Destaque
-                                            </span>
-                                        ` : ''}
-                                    </div>
-                                    <p class="text-gray-500 text-xs sm:text-sm mt-2 line-clamp-2">${cleanDescription(group.descricao, 80)}</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center justify-between">
-                                <div class="flex items-center gap-1 text-xs text-gray-400">
-                                    <i class="fas fa-chart-line"></i>
-                                    <span>${group.mesesAtivo || '?'} meses ativo</span>
-                                </div>
-                                <span class="text-purple-500 text-xs font-medium group-hover:translate-x-1 transition flex items-center gap-1">
-                                    Ver detalhes <i class="fas fa-arrow-right text-xs"></i>
+                ` : group.tipoDestaque === 'maisRico' ? `
+                    <div class="bg-gradient-to-r from-yellow-500 to-amber-600 text-white rounded-full px-3 py-1 text-xs font-bold shadow-lg animate-pulse flex items-center gap-1">
+                        <i class="fas fa-crown crown-icon"></i> 💎 MAIS RICO
+                    </div>
+                ` : ''}
+            </div>
+        ` : '';
+        
+        // Verificar se é um dos grupos mais novos
+        const isNewGroup = gruposMaisNovos.some(g => g.grupoID === group.grupoID);
+        const newBadge = isNewGroup ? `
+            <div class="absolute -top-2 -left-2 z-10">
+                <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full px-2 py-0.5 text-xs font-bold shadow-lg flex items-center gap-1">
+                    <i class="fas fa-clock"></i> NOVO
+                </div>
+            </div>
+        ` : '';
+        
+        // Verificar se é um dos grupos Hots
+        const isHotGroup = gruposHots.some(g => g.grupoID === group.grupoID);
+        const hotBadge = isHotGroup ? `
+            <div class="absolute -top-2 -left-2 z-10">
+                <div class="bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full px-2 py-0.5 text-xs font-bold shadow-lg flex items-center gap-1 animate-pulse">
+                    <i class="fas fa-fire"></i> HOT
+                </div>
+            </div>
+        ` : '';
+        
+        // Escolher qual badge exibir (prioridade: HOT > NOVO)
+        const positionBadge = isHotGroup ? hotBadge : (isNewGroup ? newBadge : '');
+        
+        return `
+            <div class="group bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative ${championCardClass}" data-group-index="${index}">
+                ${championBadge}
+                ${positionBadge}
+                <div class="p-5">
+                    <div class="flex gap-4">
+                        <div class="relative w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center shadow-sm">
+                            ${group.imagem ? 
+                                `<img src="${group.imagem}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" 
+                                      onerror="this.parentElement.innerHTML='<i class=\\'fas fa-users text-3xl text-purple-400\\'></i>'">` : 
+                                `<i class="fas fa-users text-3xl text-purple-400"></i>`
+                            }
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-bold text-gray-800 text-base sm:text-lg line-clamp-1 group-hover:text-purple-600 transition">${(group.nome || 'Sem nome').substring(0, 45)}</h3>
+                            <div class="flex flex-wrap items-center gap-2 mt-2">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-700 text-xs rounded-full">
+                                    <i class="fas ${getCategoryIcon(group.categoria)} text-xs"></i> ${group.categoria || 'Geral'}
                                 </span>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
+                                    <i class="fas fa-user-friends text-xs"></i> ${formatNumber(group.participantes)}
+                                </span>
+                                ${isChampion ? `
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded-full">
+                                        <i class="fas fa-star"></i> Destaque
+                                    </span>
+                                ` : ''}
+                                ${isHotGroup ? `
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">
+                                        <i class="fas fa-fire"></i> Hot
+                                    </span>
+                                ` : ''}
+                                ${isNewGroup && !isHotGroup ? `
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">
+                                        <i class="fas fa-clock"></i> Recente
+                                    </span>
+                                ` : ''}
                             </div>
+                            <p class="text-gray-500 text-xs sm:text-sm mt-2 line-clamp-2">${cleanDescription(group.descricao, 80)}</p>
                         </div>
                     </div>
-                `;
-            }).join('');
-            
-            document.querySelectorAll('[data-group-index]').forEach(el => {
-                const index = parseInt(el.dataset.groupIndex);
-                el.addEventListener('click', () => openModal(displayGroups[index]));
-            });
-        }
+                    <div class="mt-3 flex items-center justify-between">
+                        <div class="flex items-center gap-1 text-xs text-gray-400">
+                            <i class="fas fa-chart-line"></i>
+                            <span>${group.mesesAtivo && group.mesesAtivo !== '?' ? group.mesesAtivo : '?'} meses ativo</span>
+                            <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+                            <span><i class="fas fa-users"></i> ${formatNumber(group.participantes)} membros</span>
+                        </div>
+                        <span class="text-purple-500 text-xs font-medium group-hover:translate-x-1 transition flex items-center gap-1">
+                            Ver detalhes <i class="fas fa-arrow-right text-xs"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    document.querySelectorAll('[data-group-index]').forEach(el => {
+        const index = parseInt(el.dataset.groupIndex);
+        el.addEventListener('click', () => openModal(displayGroups[index]));
+    });
+}
         
         function renderCategories() {
             const categoriesSet = new Set(allGroups.map(g => g.categoria).filter(c => c));
@@ -957,6 +1137,258 @@
                 championBanner.classList.add('hidden');
             }
         }
+        
+        // ==================== FUNÇÕES DO MENU E CANAL ====================
+function openFabiChannel() {
+    const channelLink = 'https://whatsapp.com/channel/0029VatppnH4o7qSzKKm0X3x';
+    window.open(channelLink, '_blank');
+    showToast('📢 Redirecionando para o Canal da Fabi!', 'success');
+}
+
+// Scroll para os grupos Hots
+function scrollToHots() {
+    const hotsSection = document.getElementById('sectionTitle');
+    if (hotsSection) {
+        hotsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        showToast('🔥 Confira os grupos mais populares!', 'success');
+    }
+}
+
+// Scroll para as novidades
+function scrollToNews() {
+    const newsSection = document.getElementById('sectionTitle');
+    if (newsSection) {
+        newsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        showToast('🆕 Veja os grupos mais recentes!', 'success');
+    }
+}
+
+// Modais do Menu
+function showAboutModal() {
+    modalContent.innerHTML = `
+        <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-2xl font-bold gradient-text">Sobre a Fabi Grupos</h2>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4 text-gray-600">
+                <p>✨ <strong>Fabi Grupos</strong> é a maior plataforma de descoberta de grupos de WhatsApp do Brasil!</p>
+                <p>📱 Com mais de <strong>100 comunidades ativas</strong>, conectamos pessoas com interesses em comum através de grupos autênticos e moderados.</p>
+                <p>🎯 <strong>Nossa missão:</strong> Facilitar a descoberta de comunidades incríveis, desde amizade e tecnologia até música e esportes.</p>
+                <p>💜 <strong>Diferenciais:</strong></p>
+                <ul class="list-disc list-inside space-y-1 ml-2">
+                    <li>✓ Grupos verificados e ativos</li>
+                    <li>✓ Atualização diária de links</li>
+                    <li>✓ Categorias organizadas</li>
+                    <li>✓ Sistema de destaque para os melhores grupos</li>
+                </ul>
+                <p class="pt-2 text-sm text-purple-600">© 2026 Fabi Grupos - Criado com 💜 por ๖ۣۜCabral™</></p>
+            </div>
+        </div>
+    `;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function showContactModal() {
+    modalContent.innerHTML = `
+        <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-2xl font-bold gradient-text">Contato</h2>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4 text-gray-600">
+                <p>📧 <strong>E-mail:</strong>gbscabral@gmail.com</p>
+                <p>📱 <strong>WhatsApp:</strong> (21) 98904-7220</p>
+                <p>📢 <strong>Canal Oficial:</strong> <a href="#" onclick="openFabiChannel(); return false;" class="text-green-600 hover:underline">Clique aqui para entrar no canal</a></p>
+                <p>🌐 <strong>Redes Sociais:</strong></p>
+                <div class="flex gap-3">
+                    <a href="#" class="text-blue-500 hover:text-blue-600"><i class="fab fa-instagram text-2xl"></i></a>
+                    <a href="#" class="text-blue-500 hover:text-blue-600"><i class="fab fa-twitter text-2xl"></i></a>
+                    <a href="#" class="text-blue-500 hover:text-blue-600"><i class="fab fa-facebook text-2xl"></i></a>
+                </div>
+                <p class="text-sm text-gray-400 mt-4">📌 Respondemos em até 24h úteis</p>
+            </div>
+        </div>
+    `;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function showTermsModal() {
+    modalContent.innerHTML = `
+        <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-2xl font-bold gradient-text">Termos de Uso</h2>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-3 text-gray-600 max-h-96 overflow-y-auto">
+                <p><strong>1. Aceitação dos Termos</strong><br>Ao acessar a Fabi Grupos, você concorda com estes termos.</p>
+                <p><strong>2. Links de Grupos</strong><br>Não nos responsabilizamos pelo conteúdo dos grupos de WhatsApp divulgados.</p>
+                <p><strong>3. Conduta</strong><br>Seja respeitoso nas comunidades. Grupos com práticas ilegais serão removidos.</p>
+                <p><strong>4. Privacidade</strong><br>Seus dados não são compartilhados com terceiros sem consentimento.</p>
+                <p><strong>5. Alterações</strong><br>Podemos modificar os termos a qualquer momento.</p>
+                <p class="text-sm text-gray-400 mt-4">Última atualização: Janeiro/2026</p>
+            </div>
+        </div>
+    `;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function showPrivacyModal() {
+    modalContent.innerHTML = `
+        <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-2xl font-bold gradient-text">Política de Privacidade</h2>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-3 text-gray-600 max-h-96 overflow-y-auto">
+                <p><strong>📊 Coleta de Dados</strong><br>Apenas dados estatísticos anônimos (navegação, cliques).</p>
+                <p><strong>🔒 Segurança</strong><br>Utilizamos criptografia e boas práticas para proteger suas informações.</p>
+                <p><strong>🍪 Cookies</strong><br>Usamos cookies para melhorar sua experiência e exibir anúncios relevantes.</p>
+                <p><strong>📢 Anúncios</strong><br>Parceiros podem coletar dados para personalização (Google Adsense).</p>
+                <p><strong>🔗 Links Externos</strong><br>Não nos responsabilizamos por políticas de sites de terceiros.</p>
+                <p><strong>✉️ Contato</strong><br>Dúvidas? Envie e-mail para privacidade@fabigrupos.com.br</p>
+            </div>
+        </div>
+    `;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function showAdvertiseModal() {
+    modalContent.innerHTML = `
+        <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-2xl font-bold gradient-text">🚀 Divulgue seu Grupo</h2>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-5 text-gray-600">
+                <!-- Diferencial FabiBot -->
+                <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 gradient-bg rounded-full flex items-center justify-center">
+                            <i class="fas fa-robot text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-purple-700">🤖 Diferencial Exclusivo FabiBot</h3>
+                            <p class="text-xs text-purple-600">Proteção inteligente para seu grupo</p>
+                        </div>
+                    </div>
+                    <p class="text-sm mb-2">✅ <strong>Proteção automática contra:</strong></p>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="px-2 py-1 bg-red-100 text-red-600 text-xs rounded-full">🔞 Anti-Pornô</span>
+                        <span class="px-2 py-1 bg-orange-100 text-orange-600 text-xs rounded-full">🛡️ Anti-Spam</span>
+                        <span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">🚫 Anti-Fake</span>
+                        <span class="px-2 py-1 bg-green-100 text-green-600 text-xs rounded-full">📊 Anti-Link suspeito</span>
+                        <span class="px-2 py-1 bg-purple-100 text-purple-600 text-xs rounded-full">👋 Boas-vindas automáticas</span>
+                    </div>
+                    <div class="bg-white rounded-lg p-2 text-center">
+                        <p class="text-xs text-gray-500">✨ <strong>Diferente de outros sites:</strong> Ao alugar a FabiBot, seu grupo <span class="text-purple-600 font-bold">ganha divulgação AUTOMÁTICA</span> na Fabi Grupos!</p>
+                    </div>
+                </div>
+                
+                <!-- Planos -->
+                <div>
+                    <p class="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                        <i class="fas fa-tag text-purple-500"></i> Planos de Destaque
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="bg-gray-50 rounded-xl p-3 text-center hover:shadow-md transition">
+                            <div class="text-2xl mb-1">⭐</div>
+                            <div class="font-bold text-gray-800">Básico</div>
+                            <div class="text-purple-600 font-bold text-lg">R$ 9,90</div>
+                            <div class="text-xs text-gray-500">/mês</div>
+                            <div class="text-xs text-gray-400 mt-1">Destaque na lista</div>
+                        </div>
+                        <div class="bg-gradient-to-b from-orange-50 to-white rounded-xl p-3 text-center border border-orange-200 shadow-md">
+                            <div class="text-2xl mb-1">🔥</div>
+                            <div class="font-bold text-gray-800">Hot</div>
+                            <div class="text-orange-600 font-bold text-lg">R$ 19,90</div>
+                            <div class="text-xs text-gray-500">/mês</div>
+                            <div class="text-xs text-orange-600 font-semibold mt-1">✨ Aparece no TOPO</div>
+                        </div>
+                        <div class="bg-gradient-to-b from-yellow-50 to-white rounded-xl p-3 text-center border border-yellow-300 shadow-md">
+                            <div class="text-2xl mb-1">👑</div>
+                            <div class="font-bold text-gray-800">Campeão</div>
+                            <div class="text-yellow-600 font-bold text-lg">R$ 29,90</div>
+                            <div class="text-xs text-gray-500">/mês</div>
+                            <div class="text-xs text-yellow-600 font-semibold mt-1">🏆 Banner exclusivo</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Como funciona -->
+                <div class="bg-blue-50 rounded-xl p-3">
+                    <p class="font-semibold text-blue-700 mb-2 flex items-center gap-2">
+                        <i class="fas fa-cogs"></i> Como funciona?
+                    </p>
+                    <ol class="text-xs space-y-1 text-gray-600 list-decimal list-inside">
+                        <li>📲 Acesse <strong class="text-purple-600">FabiBot.vercel.app</strong> e alugue a robô</li>
+                        <li>🤖 Instale a FabiBot no seu grupo do WhatsApp</li>
+                        <li>✨ Seu grupo é <strong>automaticamente divulgado</strong> na Fabi Grupos</li>
+                        <li>🚀 Pronto! Milhares de pessoas vão encontrar seu grupo</li>
+                    </ol>
+                </div>
+                
+                <!-- Contato -->
+                <div class="bg-green-50 rounded-xl p-3">
+                    <p class="font-semibold text-green-700 mb-2 flex items-center gap-2">
+                        <i class="fab fa-whatsapp"></i> Suporte e Informações
+                    </p>
+                    <a href="https://wa.me/5521989047220" target="_blank" class="flex items-center justify-between gap-2 bg-green-600 hover:bg-green-700 text-white rounded-lg px-4 py-2 transition">
+                        <span class="flex items-center gap-2">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                            <span class="font-semibold">Fale com a Fabi</span>
+                        </span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <p class="text-xs text-gray-500 mt-2 text-center">
+                        📌 Dúvidas sobre a FabiBot? Acesse <a href="https://Fabibot.vercel.app" target="_blank" class="text-purple-600 font-semibold hover:underline">Fabibot.vercel.app</a>
+                    </p>
+                </div>
+                
+                <p class="text-xs text-gray-400 text-center pt-2">
+                    🚀 Mais de <strong>500 grupos protegidos</strong> pela FabiBot! Garanta já a segurança e visibilidade do seu grupo.
+                </p>
+            </div>
+        </div>
+    `;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+// Controle do menu dropdown
+document.addEventListener('DOMContentLoaded', function() {
+    const menuButton = document.getElementById('menuButton');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    
+    if (menuButton && dropdownMenu) {
+        menuButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+        
+        // Fechar ao clicar fora
+        document.addEventListener('click', function(e) {
+            if (!menuButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+    }
+});
         
         async function loadGroups() {
             try {
