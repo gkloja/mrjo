@@ -431,6 +431,81 @@
     </div>
 </header>
 
+<!-- ==================== VÍDEO DE DIVULGAÇÃO ==================== -->
+<style>
+.video-tutorial {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 20px auto;
+    max-width: 800px;
+    box-shadow: 0 20px 35px -10px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+.video-tutorial:hover {
+    transform: translateY(-5px);
+}
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    overflow: hidden;
+}
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+.video-label {
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+    padding: 12px 20px;
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.video-label i {
+    font-size: 18px;
+    color: #ff6b6b;
+    animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+}
+@media (max-width: 640px) {
+    .video-label { font-size: 11px; padding: 8px 12px; }
+}
+</style>
+
+<!-- INSIRA ESTE BLOCO LOGO APÓS O <main> OU ANTES DO BANNER DO CANAL -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+    <div class="video-tutorial">
+        <div class="video-wrapper">
+            <iframe 
+                src="https://www.youtube.com/embed/EY8Qrp9JBCY?si=SKI9cNIvF7cVSGcJ" 
+                title="Como divulgar seu grupo no WhatsApp - Tutorial Fabi Grupos"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <div class="video-label">
+            <i class="fas fa-play-circle"></i>
+            📺 ASSISTA: Como divulgar seu grupo e conseguir +100 membros em dias!
+            <i class="fas fa-chart-line"></i>
+        </div>
+    </div>
+</div>
     <main id="appContent">
         <!-- BANNER DE DESTAQUE (aparece quando tem grupo campeão) -->
         <div id="championBanner" class="hidden hero-banner mx-4 mt-4 rounded-2xl overflow-hidden shadow-2xl animate-slide-up">
@@ -1265,6 +1340,7 @@ function showPrivacyModal() {
     document.body.style.overflow = 'hidden';
 }
 
+// Função melhorada para Divulgação de grupos
 function showAdvertiseModal() {
     modalContent.innerHTML = `
         <div class="p-6">
@@ -1276,93 +1352,129 @@ function showAdvertiseModal() {
             </div>
             
             <div class="space-y-5 text-gray-600">
-                <!-- Diferencial FabiBot -->
-                <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
+                <!-- MÉTODO GRATUITO - DESTAQUE PRINCIPAL -->
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-5 border-2 border-green-300 shadow-lg relative overflow-hidden">
+                    <div class="absolute -top-3 -right-3">
+                        <span class="bg-green-500 text-white text-xs px-3 py-1 rounded-full shadow-lg">⭐ GRATUITO</span>
+                    </div>
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 gradient-bg rounded-full flex items-center justify-center">
-                            <i class="fas fa-robot text-white text-lg"></i>
+                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center shadow-md">
+                            <i class="fab fa-whatsapp text-white text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-purple-700">🤖 Diferencial Exclusivo FabiBot</h3>
-                            <p class="text-xs text-purple-600">Proteção inteligente para seu grupo</p>
+                            <h3 class="font-bold text-green-700 text-lg">Método Grátis</h3>
+                            <p class="text-xs text-green-600">Cadastro automático • Sem custo • Divulgação garantida</p>
                         </div>
                     </div>
-                    <p class="text-sm mb-2">✅ <strong>Proteção automática contra:</strong></p>
-                    <div class="flex flex-wrap gap-2 mb-3">
-                        <span class="px-2 py-1 bg-red-100 text-red-600 text-xs rounded-full">🔞 Anti-Pornô</span>
-                        <span class="px-2 py-1 bg-orange-100 text-orange-600 text-xs rounded-full">🛡️ Anti-Spam</span>
-                        <span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">🚫 Anti-Fake</span>
-                        <span class="px-2 py-1 bg-green-100 text-green-600 text-xs rounded-full">📊 Anti-Link suspeito</span>
-                        <span class="px-2 py-1 bg-purple-100 text-purple-600 text-xs rounded-full">👋 Boas-vindas automáticas</span>
-                    </div>
-                    <div class="bg-white rounded-lg p-2 text-center">
-                        <p class="text-xs text-gray-500">✨ <strong>Diferente de outros sites:</strong> Ao alugar a FabiBot, seu grupo <span class="text-purple-600 font-bold">ganha divulgação AUTOMÁTICA</span> na Fabi Grupos!</p>
-                    </div>
-                </div>
-                
-                <!-- Planos -->
-                <div>
-                    <p class="font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <i class="fas fa-tag text-purple-500"></i> Planos de Destaque
-                    </p>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div class="bg-gray-50 rounded-xl p-3 text-center hover:shadow-md transition">
-                            <div class="text-2xl mb-1">⭐</div>
-                            <div class="font-bold text-gray-800">Básico</div>
-                            <div class="text-purple-600 font-bold text-lg">R$ 9,90</div>
-                            <div class="text-xs text-gray-500">/mês</div>
-                            <div class="text-xs text-gray-400 mt-1">Destaque na lista</div>
+                    
+                    <div class="space-y-3">
+                        <p class="text-sm font-semibold text-gray-700">📋 Como funciona (passo a passo):</p>
+                        <ol class="space-y-2 text-sm">
+                            <li class="flex items-start gap-2">
+                                <span class="bg-green-100 text-green-700 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">1</span>
+                                <span>Clique no botão abaixo para falar com o robô 🤖</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="bg-green-100 text-green-700 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">2</span>
+                                <span><strong>Salve o contato</strong> do robô no seu WhatsApp (ele vai te responder automaticamente)</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="bg-green-100 text-green-700 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">3</span>
+                                <span><strong>Adicione o robô no seu grupo</strong> do WhatsApp (ele vai entrar como membro)</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="bg-green-100 text-green-700 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">4</span>
+                                <span>⚠️ <strong class="text-amber-600">Sobre o link do grupo:</strong></span>
+                            </li>
+                        </ol>
+                        
+                        <!-- Opções de link público/privado -->
+                        <div class="bg-white rounded-lg p-3 space-y-2 mt-1">
+                            <p class="text-xs font-semibold text-gray-700 mb-1">📌 Duas opções para o link do seu grupo:</p>
+                            
+                            <div class="flex items-start gap-2 p-2 bg-green-50 rounded-lg">
+                                <i class="fas fa-globe text-green-600 text-sm mt-0.5"></i>
+                                <div>
+                                    <p class="text-xs font-medium text-green-800">🌍 Opção 1 - Link Público (Recomendado)</p>
+                                    <p class="text-xs text-gray-600">Deixe o <strong>link de convite visível para todos</strong> no grupo. O robô lê e cadastra automaticamente! ☺️</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-2 p-2 bg-blue-50 rounded-lg">
+                                <i class="fas fa-lock text-blue-600 text-sm mt-0.5"></i>
+                                <div>
+                                    <p class="text-xs font-medium text-blue-800">🔒 Opção 2 - Link Privado</p>
+                                    <p class="text-xs text-gray-600">Se preferir deixar o grupo privado, <strong>adicione o robô como ADMINISTRADOR</strong> para ele conseguir ver o link e cadastrar.</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="bg-gradient-to-b from-orange-50 to-white rounded-xl p-3 text-center border border-orange-200 shadow-md">
-                            <div class="text-2xl mb-1">🔥</div>
-                            <div class="font-bold text-gray-800">Hot</div>
-                            <div class="text-orange-600 font-bold text-lg">R$ 19,90</div>
-                            <div class="text-xs text-gray-500">/mês</div>
-                            <div class="text-xs text-orange-600 font-semibold mt-1">✨ Aparece no TOPO</div>
-                        </div>
-                        <div class="bg-gradient-to-b from-yellow-50 to-white rounded-xl p-3 text-center border border-yellow-300 shadow-md">
-                            <div class="text-2xl mb-1">👑</div>
-                            <div class="font-bold text-gray-800">Campeão</div>
-                            <div class="text-yellow-600 font-bold text-lg">R$ 29,90</div>
-                            <div class="text-xs text-gray-500">/mês</div>
-                            <div class="text-xs text-yellow-600 font-semibold mt-1">🏆 Banner exclusivo</div>
+                        
+                        <div class="bg-amber-50 rounded-lg p-3 mt-1">
+                            <p class="text-xs text-amber-800 flex items-start gap-2">
+                                <i class="fas fa-smile-wink text-amber-600 mt-0.5"></i>
+                                <span><strong>Pronto! ☺️</strong> Feito isso, o robô vai cadastrar seu grupo automaticamente na Fabi Grupos. Seu grupo aparecerá no site em até 24h, totalmente grátis!</span>
+                            </p>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Como funciona -->
-                <div class="bg-blue-50 rounded-xl p-3">
-                    <p class="font-semibold text-blue-700 mb-2 flex items-center gap-2">
-                        <i class="fas fa-cogs"></i> Como funciona?
-                    </p>
-                    <ol class="text-xs space-y-1 text-gray-600 list-decimal list-inside">
-                        <li>📲 Acesse <strong class="text-purple-600">FabiBot.vercel.app</strong> e alugue a robô</li>
-                        <li>🤖 Instale a FabiBot no seu grupo do WhatsApp</li>
-                        <li>✨ Seu grupo é <strong>automaticamente divulgado</strong> na Fabi Grupos</li>
-                        <li>🚀 Pronto! Milhares de pessoas vão encontrar seu grupo</li>
-                    </ol>
-                </div>
-                
-                <!-- Contato -->
-                <div class="bg-green-50 rounded-xl p-3">
-                    <p class="font-semibold text-green-700 mb-2 flex items-center gap-2">
-                        <i class="fab fa-whatsapp"></i> Suporte e Informações
-                    </p>
-                    <a href="https://wa.me/5521989047220" target="_blank" class="flex items-center justify-between gap-2 bg-green-600 hover:bg-green-700 text-white rounded-lg px-4 py-2 transition">
-                        <span class="flex items-center gap-2">
-                            <i class="fab fa-whatsapp text-lg"></i>
-                            <span class="font-semibold">Fale com a Fabi</span>
-                        </span>
-                        <i class="fas fa-arrow-right"></i>
+                    
+                    <!-- BOTÃO COM MENSAGEM EXPLICATIVA -->
+                    <a href="https://wa.me/558393817110?text=Ol%C3%A1%20%F0%9F%A4%96%20Eu%20sou%20a%20Rob%C3%B4%20da%20Fabi%20Grupos%21%0A%0AMuito%20bem%2C%20agora%20%C3%A9%20s%C3%B3%20voc%C3%AA%20salvar%20meu%20contato%20aqui%20e%20me%20adicionar%20no%20seu%20grupo%20do%20WhatsApp.%0A%0A%E2%98%BA%EF%B8%8F%20N%C3%A3o%20esquece%20de%20deixar%20seu%20link%20do%20grupo%20p%C3%BAblico%20para%20qualquer%20pessoa%20pegar.%20Ou%20se%20preferir%20deixar%20privado%2C%20me%20coloca%20como%20Administradora%20que%20eu%20consigo%20ver%20o%20link%20e%20cadastrar%20do%20mesmo%20jeito%21%0A%0APode%20deixar%20que%20eu%20cuido%20do%20resto%20%F0%9F%9A%80%20Assim%20que%20eu%20entrar%20no%20seu%20grupo%2C%20vou%20cadastrar%20ele%20automaticamente%20na%20Fabi%20Grupos%20e%20come%C3%A7ar%20a%20divulgar%20para%20todo%20mundo%21%0A%0AJuntos%20vamos%20fazer%20seu%20grupo%20crescer%20%F0%9F%92%9C" 
+                       target="_blank" 
+                       class="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition-all duration-300 mt-4 shadow-md">
+                        <i class="fab fa-whatsapp text-xl"></i>
+                        🤖 Começar agora - Falar com o robô
                     </a>
-                    <p class="text-xs text-gray-500 mt-2 text-center">
-                        📌 Dúvidas sobre a FabiBot? Acesse <a href="https://Fabibot.vercel.app" target="_blank" class="text-purple-600 font-semibold hover:underline">Fabibot.vercel.app</a>
+                    
+                    <p class="text-xs text-center text-gray-500 mt-2">
+                        ⚡ O robô responde automaticamente! Depois de salvar o contato, adicione ele no seu grupo.
                     </p>
                 </div>
-                
-                <p class="text-xs text-gray-400 text-center pt-2">
-                    🚀 Mais de <strong>500 grupos protegidos</strong> pela FabiBot! Garanta já a segurança e visibilidade do seu grupo.
-                </p>
+
+                <!-- MÉTODO PAGO - DESTAQUE ESPECIAL -->
+                <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-200">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 gradient-bg rounded-full flex items-center justify-center">
+                            <i class="fas fa-crown text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-purple-700">🚀 Destaque Especial (Pago)</h3>
+                            <p class="text-xs text-purple-600">Seu grupo no TOPO + Selo de destaque + Proteção avançada</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm mb-3">Ao alugar a <strong class="text-purple-700">FabiBot Premium</strong>, seu grupo ganha:</p>
+                    <ul class="space-y-1 text-sm mb-3">
+                        <li class="flex items-center gap-2">✅ <span>🏆 <strong>Banner exclusivo</strong> no topo do site</span></li>
+                        <li class="flex items-center gap-2">✅ <span>🔥 Selo <strong>"Grupo em Destaque"</strong> com animação</span></li>
+                        <li class="flex items-center gap-2">✅ <span>📊 Prioridade na lista de grupos</span></li>
+                        <li class="flex items-center gap-2">✅ <span>🛡️ Proteção anti-spam, anti-pornô e anti-fake</span></li>
+                        <li class="flex items-center gap-2">✅ <span>👋 Mensagem de boas-vindas automática</span></li>
+                        <li class="flex items-center gap-2">✅ <span>🚫 Bloqueio de links suspeitos</span></li>
+                    </ul>
+                    
+                    <div class="bg-white rounded-lg p-3 text-center mb-3">
+                        <p class="text-sm font-semibold text-purple-700">🔥 A partir de <span class="text-2xl">R$ 9,90</span>/mês</p>
+                        <p class="text-xs text-gray-500">Divulgação automática garantida enquanto o robô estiver no grupo</p>
+                    </div>
+                    
+                    <a href="https://Fabibot.vercel.app" 
+                       target="_blank" 
+                       class="flex items-center justify-center gap-2 gradient-bg hover:gradient-bg-hover text-white font-bold py-2.5 rounded-xl transition-all duration-300 shadow-md">
+                        <i class="fas fa-rocket text-sm"></i>
+                        Conhecer a FabiBot Premium
+                    </a>
+                </div>
+
+                <!-- COMPARAÇÃO RÁPIDA -->
+                <div class="bg-gray-50 rounded-xl p-3 text-center">
+                    <p class="text-xs text-gray-500">
+                        💡 <strong>Dúvidas?</strong> O robô gratuito cadastra seu grupo sem custo, mas sem destaque visual.<br>
+                        O plano pago garante <strong class="text-purple-600">maior visibilidade e proteção avançada</strong> para seu grupo!
+                    </p>
+                    <p class="text-xs text-gray-400 mt-2">
+                        📌 Mais de <strong>500 grupos já cadastrados</strong> através do nosso robô automático!
+                    </p>
+                </div>
             </div>
         </div>
     `;
