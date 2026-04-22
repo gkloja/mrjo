@@ -366,6 +366,21 @@
     visibility: visible;
     transform: translateY(0);
 }
+/* Animação para o expandir/recolher */
+#ativosRestante, #ricosRestante {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+#ativosRestante.hidden, #ricosRestante.hidden {
+    display: none;
+}
+
+/* Efeito hover nos botões */
+#btnVerMaisAtivos:hover, #btnVerMaisRicos:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
+}
     </style>
 </head>
 <body>
@@ -615,7 +630,115 @@
                 </div>
             </div>
         </section>
-
+<!-- SEÇÃO RANKING DIÁRIO - VERSÃO PROFISSIONAL -->
+<section class="px-4 sm:px-6 lg:px-8 mt-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+            <!-- Cabeçalho com gradiente e animação -->
+            <div class="gradient-bg px-6 py-5 relative overflow-hidden">
+                <div class="absolute top-0 right-0 opacity-10">
+                    <i class="fas fa-chart-line text-7xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between flex-wrap gap-3">
+                        <div>
+                            <h2 class="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2">
+                                <i class="fas fa-trophy fa-fw"></i> 
+                                Ranking do Dia
+                                <span class="text-xs bg-white/20 px-2 py-1 rounded-full">🔥 AO VIVO</span>
+                            </h2>
+                            <p class="text-purple-100 text-sm mt-1 flex items-center gap-2">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span id="rankingData">Carregando data...</span>
+                                <span class="w-1 h-1 bg-purple-300 rounded-full"></span>
+                                <i class="fas fa-chart-simple"></i>
+                                Grupos mais ativos e mais ricos do dia
+                            </p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="scrollToHots()" class="bg-white/20 hover:bg-white/30 text-white text-sm px-3 py-1.5 rounded-full transition flex items-center gap-1">
+                                <i class="fas fa-fire"></i> Ver Hots
+                            </button>
+                            <button onclick="scrollToNews()" class="bg-white/20 hover:bg-white/30 text-white text-sm px-3 py-1.5 rounded-full transition flex items-center gap-1">
+                                <i class="fas fa-clock"></i> Novidades
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Grid de Rankings -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
+                <!-- TOP 10 MAIS ATIVOS -->
+                <div class="p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                            <i class="fas fa-fire text-orange-500 text-xl"></i>
+                            Mais Ativos do Dia
+                            <span class="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full">🔥</span>
+                        </h3>
+                        <span class="text-xs text-gray-400">últimas 24h</span>
+                    </div>
+                    
+                    <div id="topAtivosList" class="space-y-2">
+                        <!-- Skeleton Loading -->
+                        <div class="animate-pulse space-y-2">
+                            <div class="h-14 bg-gray-100 rounded-lg"></div>
+                            <div class="h-14 bg-gray-100 rounded-lg"></div>
+                            <div class="h-14 bg-gray-100 rounded-lg"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 text-center">
+                        <a href="#" onclick="scrollToGroups(); return false;" class="text-purple-500 text-sm hover:text-purple-700 transition flex items-center justify-center gap-1">
+                            Ver todos os grupos <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- TOP 10 MAIS RICOS -->
+                <div class="p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                            <i class="fas fa-gem text-yellow-500 text-xl"></i>
+                            Mais Ricos do Dia
+                            <span class="text-xs bg-yellow-100 text-yellow-600 px-2 py-0.5 rounded-full">💰</span>
+                        </h3>
+                        <span class="text-xs text-gray-400">média por membro</span>
+                    </div>
+                    
+                    <div id="topRicosList" class="space-y-2">
+                        <!-- Skeleton Loading -->
+                        <div class="animate-pulse space-y-2">
+                            <div class="h-14 bg-gray-100 rounded-lg"></div>
+                            <div class="h-14 bg-gray-100 rounded-lg"></div>
+                            <div class="h-14 bg-gray-100 rounded-lg"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 text-center">
+                        <a href="#" onclick="scrollToGroups(); return false;" class="text-purple-500 text-sm hover:text-purple-700 transition flex items-center justify-center gap-1">
+                            Explorar comunidades <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer do Ranking -->
+            <div class="bg-gray-50 px-5 py-3 border-t border-gray-100 flex flex-wrap justify-between items-center gap-2 text-xs text-gray-500">
+                <div class="flex items-center gap-3">
+                    <span><i class="fas fa-chart-line text-purple-500"></i> Total de grupos ativos hoje: <strong id="totalAtivos">0</strong></span>
+                    <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+                    <span><i class="fas fa-coins text-yellow-500"></i> Grupos com golds: <strong id="totalRicos">0</strong></span>
+                </div>
+                <div>
+                    <i class="fas fa-sync-alt text-gray-400 text-xs"></i>
+                    <span>Atualizado diariamente às 21h</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
         <!-- CATEGORIAS -->
         <section class="px-4 sm:px-6 lg:px-8 mt-8">
             <div class="max-w-7xl mx-auto">
@@ -1219,6 +1342,182 @@ function openFabiChannel() {
     window.open(channelLink, '_blank');
     showToast('📢 Redirecionando para o Canal da Fabi!', 'success');
 }
+// Carregar ranking diário
+// Carregar ranking diário
+// Carregar ranking diário
+async function carregarRanking() {
+    try {
+        const response = await fetch('https://cors.eu.org/br2.bronxyshost.com:4009/ranking.json');
+        if (!response.ok) throw new Error('Ranking não disponível');
+        const ranking = await response.json();
+        
+        // Atualizar data
+        const dataElement = document.getElementById('rankingData');
+        if (dataElement && ranking.data) {
+            dataElement.innerHTML = ranking.data;
+        }
+        
+        // Atualizar estatísticas
+        if (ranking.estatisticas) {
+            const totalAtivosEl = document.getElementById('totalAtivos');
+            const totalRicosEl = document.getElementById('totalRicos');
+            if (totalAtivosEl) totalAtivosEl.innerHTML = ranking.estatisticas.totalGruposAtivos || 0;
+            if (totalRicosEl) totalRicosEl.innerHTML = ranking.estatisticas.totalGruposRicos || 0;
+        }
+        
+        // Função para truncar nomes longos
+        const truncateName = (name, maxLength = 35) => {
+            if (!name) return 'Grupo';
+            return name.length > maxLength ? name.substring(0, maxLength) + '...' : name;
+        };
+        
+        // Função para gerar HTML de um item do ranking
+        const gerarItemHTML = (g, tipo) => {
+            const medalhaIcon = g.posicao === 1 ? '🥇' : g.posicao === 2 ? '🥈' : g.posicao === 3 ? '🥉' : '';
+            const bgColor = g.posicao === 1 ? 'bg-gradient-to-r from-yellow-50 to-transparent' : 
+                           g.posicao === 2 ? 'bg-gradient-to-r from-gray-50 to-transparent' :
+                           g.posicao === 3 ? 'bg-gradient-to-r from-orange-50 to-transparent' : '';
+            
+            const groupLink = g.link ? `https://chat.whatsapp.com/${g.link.split('/').pop()}` : null;
+            
+            if (tipo === 'ativo') {
+                return `
+                    <div class="flex items-center justify-between p-3 rounded-xl hover:shadow-md transition-all duration-200 ${bgColor} border border-gray-50 hover:border-purple-100 ${groupLink ? 'cursor-pointer' : ''}" 
+                         onclick="${groupLink ? `window.open('${groupLink}', '_blank')` : ''}">
+                        <div class="flex items-center gap-3 flex-1 min-w-0">
+                            <div class="w-8 text-center">
+                                ${medalhaIcon ? `<span class="text-xl">${medalhaIcon}</span>` : `<span class="text-sm font-bold text-gray-400">#${g.posicao}</span>`}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-semibold text-gray-800 text-sm truncate" title="${g.nome.replace(/[^\x20-\x7E\u00C0-\u00FF]/g, '')}">
+                                    ${truncateName(g.nome)}
+                                </p>
+                                <div class="flex items-center gap-2 mt-0.5">
+                                    <span class="text-xs text-gray-400">${g.categoria || 'Geral'}</span>
+                                    <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+                                    <span class="text-xs text-gray-400"><i class="fas fa-users"></i> ${g.participantes}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right ml-3">
+                            <span class="text-orange-600 font-bold text-sm">${g.atividade.toLocaleString()}</span>
+                            <span class="text-xs text-gray-400 block">interações</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const formatGolds = (value) => {
+                    if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
+                    if (value >= 1000) return (value / 1000).toFixed(1) + 'K';
+                    return value.toLocaleString();
+                };
+                
+                return `
+                    <div class="flex items-center justify-between p-3 rounded-xl hover:shadow-md transition-all duration-200 ${bgColor} border border-gray-50 hover:border-purple-100 ${groupLink ? 'cursor-pointer' : ''}" 
+                         onclick="${groupLink ? `window.open('${groupLink}', '_blank')` : ''}">
+                        <div class="flex items-center gap-3 flex-1 min-w-0">
+                            <div class="w-8 text-center">
+                                ${medalhaIcon ? `<span class="text-xl">${medalhaIcon}</span>` : `<span class="text-sm font-bold text-gray-400">#${g.posicao}</span>`}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-semibold text-gray-800 text-sm truncate" title="${g.nome.replace(/[^\x20-\x7E\u00C0-\u00FF]/g, '')}">
+                                    ${truncateName(g.nome)}
+                                </p>
+                                <div class="flex items-center gap-2 mt-0.5">
+                                    <span class="text-xs text-gray-400">${g.categoria || 'Geral'}</span>
+                                    <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+                                    <span class="text-xs text-gray-400"><i class="fas fa-users"></i> ${g.participantes}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right ml-3">
+                            <span class="text-yellow-600 font-bold text-sm">${formatGolds(g.mediaGolds)}</span>
+                            <span class="text-xs text-gray-400 block">golds/membro</span>
+                        </div>
+                    </div>
+                `;
+            }
+        };
+        
+        // ========== TOP 10 ATIVOS ==========
+        const top3Ativos = ranking.top10Ativos.slice(0, 3);
+        const restanteAtivos = ranking.top10Ativos.slice(3);
+        
+        const top3AtivosHtml = top3Ativos.map(g => gerarItemHTML(g, 'ativo')).join('');
+        const restanteAtivosHtml = restanteAtivos.map(g => gerarItemHTML(g, 'ativo')).join('');
+        
+        const ativosContainer = `
+            <div id="ativosTop3" class="space-y-2">${top3AtivosHtml}</div>
+            <div id="ativosRestante" class="space-y-2 hidden">${restanteAtivosHtml}</div>
+            ${restanteAtivos.length > 0 ? `
+                <button onclick="toggleAtivos()" id="btnVerMaisAtivos" class="w-full mt-3 py-2 text-purple-600 hover:text-purple-700 text-sm font-medium transition flex items-center justify-center gap-2 border border-purple-200 rounded-lg hover:bg-purple-50">
+                    <i class="fas fa-chevron-down"></i> Ver mais ${restanteAtivos.length} grupos
+                </button>
+            ` : ''}
+        `;
+        
+        // ========== TOP 10 RICOS ==========
+        const top3Ricos = ranking.top10Ricos.slice(0, 3);
+        const restanteRicos = ranking.top10Ricos.slice(3);
+        
+        const top3RicosHtml = top3Ricos.map(g => gerarItemHTML(g, 'rico')).join('');
+        const restanteRicosHtml = restanteRicos.map(g => gerarItemHTML(g, 'rico')).join('');
+        
+        const ricosContainer = `
+            <div id="ricosTop3" class="space-y-2">${top3RicosHtml}</div>
+            <div id="ricosRestante" class="space-y-2 hidden">${restanteRicosHtml}</div>
+            ${restanteRicos.length > 0 ? `
+                <button onclick="toggleRicos()" id="btnVerMaisRicos" class="w-full mt-3 py-2 text-purple-600 hover:text-purple-700 text-sm font-medium transition flex items-center justify-center gap-2 border border-purple-200 rounded-lg hover:bg-purple-50">
+                    <i class="fas fa-chevron-down"></i> Ver mais ${restanteRicos.length} grupos
+                </button>
+            ` : ''}
+        `;
+        
+        const topAtivosDiv = document.getElementById('topAtivosList');
+        const topRicosDiv = document.getElementById('topRicosList');
+        
+        if (topAtivosDiv) topAtivosDiv.innerHTML = ativosContainer;
+        if (topRicosDiv) topRicosDiv.innerHTML = ricosContainer;
+        
+        console.log('✅ Ranking carregado com sucesso!');
+        
+    } catch (error) {
+        console.error('Erro ao carregar ranking:', error);
+        const topAtivosDiv = document.getElementById('topAtivosList');
+        const topRicosDiv = document.getElementById('topRicosList');
+        if (topAtivosDiv) topAtivosDiv.innerHTML = '<p class="text-gray-500 text-center py-4">⏳ Ranking será atualizado às 21h</p>';
+        if (topRicosDiv) topRicosDiv.innerHTML = '<p class="text-gray-500 text-center py-4">⏳ Ranking será atualizado às 21h</p>';
+    }
+}
+
+// Funções para expandir/recolher os rankings
+function toggleAtivos() {
+    const restante = document.getElementById('ativosRestante');
+    const btn = document.getElementById('btnVerMaisAtivos');
+    
+    if (restante.classList.contains('hidden')) {
+        restante.classList.remove('hidden');
+        btn.innerHTML = '<i class="fas fa-chevron-up"></i> Ver menos';
+    } else {
+        restante.classList.add('hidden');
+        btn.innerHTML = '<i class="fas fa-chevron-down"></i> Ver mais 7 grupos';
+    }
+}
+
+function toggleRicos() {
+    const restante = document.getElementById('ricosRestante');
+    const btn = document.getElementById('btnVerMaisRicos');
+    
+    if (restante.classList.contains('hidden')) {
+        restante.classList.remove('hidden');
+        btn.innerHTML = '<i class="fas fa-chevron-up"></i> Ver menos';
+    } else {
+        restante.classList.add('hidden');
+        btn.innerHTML = '<i class="fas fa-chevron-down"></i> Ver mais 7 grupos';
+    }
+}
+
+// Chamar ao carregar a página (após loadGroups)
 
 // Scroll para os grupos Hots
 function scrollToHots() {
@@ -1237,7 +1536,13 @@ function scrollToNews() {
         showToast('🆕 Veja os grupos mais recentes!', 'success');
     }
 }
-
+function scrollToGroups() {
+    const groupsSection = document.getElementById('groupsGrid');
+    if (groupsSection) {
+        groupsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        showToast('📋 Confira todos os grupos disponíveis!', 'success');
+    }
+}
 // Modais do Menu
 function showAboutModal() {
     modalContent.innerHTML = `
@@ -1486,7 +1791,7 @@ function showAdvertiseModal() {
 document.addEventListener('DOMContentLoaded', function() {
     const menuButton = document.getElementById('menuButton');
     const dropdownMenu = document.getElementById('dropdownMenu');
-    
+    carregarRanking();
     if (menuButton && dropdownMenu) {
         menuButton.addEventListener('click', function(e) {
             e.stopPropagation();
