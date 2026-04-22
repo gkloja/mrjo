@@ -562,115 +562,7 @@
 
 
 
-<!-- SEÇÃO DE DESTAQUES COMPACTA -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-    <!-- Banner do Campeão do Dia (compacto) -->
-    <div id="championBanner" class="hidden mb-3">
-        <div class="bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl p-3 shadow-md">
-            <div class="flex items-center justify-between flex-wrap gap-2">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                        <i class="fas fa-trophy text-yellow-300 text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="text-white text-[10px] font-bold">🏆 CAMPEÃO DO DIA</p>
-                        <p class="text-white text-sm font-bold leading-tight" id="championName">Carregando...</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-white/80 text-[11px] hidden sm:inline" id="championDescription">Grupo mais ativo</span>
-                    <button id="championButton" class="bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1.5 rounded-lg transition flex items-center gap-1">
-                        <i class="fab fa-whatsapp text-xs"></i> Entrar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Canal da Fabi (compacto) -->
-    <div onclick="openFabiChannel()" class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-3 shadow-md cursor-pointer hover:shadow-lg transition">
-        <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                    <i class="fab fa-whatsapp text-white text-sm"></i>
-                </div>
-                <div>
-                    <p class="text-white text-[10px] font-bold">📢 CANAL OFICIAL</p>
-                    <p class="text-white text-sm font-semibold leading-tight">Fabi Grupos no WhatsApp</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-1">
-                <span class="text-white/80 text-[11px] hidden sm:inline">Entrar →</span>
-                <i class="fas fa-arrow-right text-white text-xs animate-pulse"></i>
-            </div>
-        </div>
-    </div>
-</div>
-
-        <!-- HERO -->
-        <section class="relative overflow-hidden pt-12 sm:pt-16 lg:pt-20 pb-12 px-4">
-            <div class="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
-            <div class="absolute bottom-10 right-10 w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style="animation-delay: 2s;"></div>
-            
-            <div class="max-w-7xl mx-auto text-center relative z-10">
-                <div class="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-purple-700 text-sm font-medium mb-6 shadow-sm border border-purple-100">
-                    <i class="fas fa-chart-line text-purple-500"></i>
-                    <span id="totalGroupsBadge" class="font-bold">Carregando...</span>
-                    <span class="w-1 h-1 bg-purple-300 rounded-full"></span>
-                    <span><i class="fas fa-user-friends mr-1"></i> <span id="totalMembersBadge">0</span> membros</span>
-                    <span class="w-1 h-1 bg-purple-300 rounded-full"></span>
-                    <span><i class="fas fa-fire"></i> <span id="activeGroupsBadge">0</span> ativos</span>
-                </div>
-                
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight max-w-4xl mx-auto leading-tight">
-                    Encontre sua 
-                    <span class="gradient-text">tribo</span>
-                    <br>no WhatsApp
-                </h1>
-                <p class="text-gray-500 text-base sm:text-lg max-w-2xl mx-auto mt-4">
-                    Mais de <span id="featuredCount" class="font-bold text-purple-600">0</span> comunidades ativas esperando por você
-                </p>
-                
-                <div class="max-w-xl mx-auto mt-8">
-                    <div class="relative group">
-                        <div class="absolute inset-0 gradient-bg rounded-xl blur opacity-20 group-hover:opacity-30 transition"></div>
-                        <div class="relative flex items-center bg-white rounded-xl shadow-lg border border-gray-100 focus-within:border-purple-300 focus-within:ring-2 focus-within:ring-purple-200 transition">
-                            <i class="fas fa-search absolute left-4 text-gray-400"></i>
-                            <input type="text" id="searchInput" placeholder="Buscar por nome, categoria ou interesse..." 
-                                   class="w-full pl-11 pr-4 py-3.5 rounded-xl outline-none text-gray-700 bg-transparent">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- STATS CARDS -->
-        <section class="px-4 sm:px-6 lg:px-8 -mt-4">
-            <div class="max-w-7xl mx-auto">
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div class="stat-card bg-white/80 backdrop-blur-sm rounded-xl p-3 text-center shadow-sm border border-purple-100">
-                        <i class="fas fa-users text-2xl text-purple-500 mb-1"></i>
-                        <p class="text-2xl font-bold text-gray-800" id="statGroups">0</p>
-                        <p class="text-xs text-gray-500">Grupos</p>
-                    </div>
-                    <div class="stat-card bg-white/80 backdrop-blur-sm rounded-xl p-3 text-center shadow-sm border border-purple-100">
-                        <i class="fas fa-user-friends text-2xl text-pink-500 mb-1"></i>
-                        <p class="text-2xl font-bold text-gray-800" id="statMembers">0</p>
-                        <p class="text-xs text-gray-500">Membros</p>
-                    </div>
-                    <div class="stat-card bg-white/80 backdrop-blur-sm rounded-xl p-3 text-center shadow-sm border border-purple-100">
-                        <i class="fas fa-tags text-2xl text-indigo-500 mb-1"></i>
-                        <p class="text-2xl font-bold text-gray-800" id="statCategories">0</p>
-                        <p class="text-xs text-gray-500">Categorias</p>
-                    </div>
-                    <div class="stat-card bg-white/80 backdrop-blur-sm rounded-xl p-3 text-center shadow-sm border border-purple-100">
-                        <i class="fas fa-chart-line text-2xl text-green-500 mb-1"></i>
-                        <p class="text-2xl font-bold text-gray-800" id="statAvgMembers">0</p>
-                        <p class="text-xs text-gray-500">Média/grupo</p>
-                    </div>
-                </div>
-            </div>
-        </section>
 <!-- SEÇÃO RANKING DIÁRIO - VERSÃO COM BOTÃO VER RANKING -->
 <section class="px-4 sm:px-6 lg:px-8 mt-8">
     <div class="max-w-7xl mx-auto">
@@ -791,6 +683,46 @@
         </div>
     </div>
 </section>
+
+        <!-- HERO -->
+        <section class="relative overflow-hidden pt-12 sm:pt-16 lg:pt-20 pb-12 px-4">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
+            <div class="absolute bottom-10 right-10 w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style="animation-delay: 2s;"></div>
+            
+            <div class="max-w-7xl mx-auto text-center relative z-10">
+                <div class="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 text-purple-700 text-sm font-medium mb-6 shadow-sm border border-purple-100">
+                    <i class="fas fa-chart-line text-purple-500"></i>
+                    <span id="totalGroupsBadge" class="font-bold">Carregando...</span>
+                    <span class="w-1 h-1 bg-purple-300 rounded-full"></span>
+                    <span><i class="fas fa-user-friends mr-1"></i> <span id="totalMembersBadge">0</span> membros</span>
+                    <span class="w-1 h-1 bg-purple-300 rounded-full"></span>
+                    <span><i class="fas fa-fire"></i> <span id="activeGroupsBadge">0</span> ativos</span>
+                </div>
+                
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight max-w-4xl mx-auto leading-tight">
+                    Encontre sua 
+                    <span class="gradient-text">tribo</span>
+                    <br>no WhatsApp
+                </h1>
+                <p class="text-gray-500 text-base sm:text-lg max-w-2xl mx-auto mt-4">
+                    Mais de <span id="featuredCount" class="font-bold text-purple-600">0</span> comunidades ativas esperando por você
+                </p>
+                
+                <div class="max-w-xl mx-auto mt-8">
+                    <div class="relative group">
+                        <div class="absolute inset-0 gradient-bg rounded-xl blur opacity-20 group-hover:opacity-30 transition"></div>
+                        <div class="relative flex items-center bg-white rounded-xl shadow-lg border border-gray-100 focus-within:border-purple-300 focus-within:ring-2 focus-within:ring-purple-200 transition">
+                            <i class="fas fa-search absolute left-4 text-gray-400"></i>
+                            <input type="text" id="searchInput" placeholder="Buscar por nome, categoria ou interesse..." 
+                                   class="w-full pl-11 pr-4 py-3.5 rounded-xl outline-none text-gray-700 bg-transparent">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
         <!-- CATEGORIAS -->
         <section class="px-4 sm:px-6 lg:px-8 mt-8">
             <div class="max-w-7xl mx-auto">
@@ -825,6 +757,33 @@
                     <div class="bg-white rounded-2xl overflow-hidden shadow-md shimmer" style="height: 280px;"></div>
                     <div class="bg-white rounded-2xl overflow-hidden shadow-md shimmer" style="height: 280px;"></div>
                     <div class="bg-white rounded-2xl overflow-hidden shadow-md shimmer" style="height: 280px;"></div>
+                </div>
+            </div>
+        </section>
+                <!-- STATS CARDS -->
+        <section class="px-4 sm:px-6 lg:px-8 -mt-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="stat-card bg-white/80 backdrop-blur-sm rounded-xl p-3 text-center shadow-sm border border-purple-100">
+                        <i class="fas fa-users text-2xl text-purple-500 mb-1"></i>
+                        <p class="text-2xl font-bold text-gray-800" id="statGroups">0</p>
+                        <p class="text-xs text-gray-500">Grupos</p>
+                    </div>
+                    <div class="stat-card bg-white/80 backdrop-blur-sm rounded-xl p-3 text-center shadow-sm border border-purple-100">
+                        <i class="fas fa-user-friends text-2xl text-pink-500 mb-1"></i>
+                        <p class="text-2xl font-bold text-gray-800" id="statMembers">0</p>
+                        <p class="text-xs text-gray-500">Membros</p>
+                    </div>
+                    <div class="stat-card bg-white/80 backdrop-blur-sm rounded-xl p-3 text-center shadow-sm border border-purple-100">
+                        <i class="fas fa-tags text-2xl text-indigo-500 mb-1"></i>
+                        <p class="text-2xl font-bold text-gray-800" id="statCategories">0</p>
+                        <p class="text-xs text-gray-500">Categorias</p>
+                    </div>
+                    <div class="stat-card bg-white/80 backdrop-blur-sm rounded-xl p-3 text-center shadow-sm border border-purple-100">
+                        <i class="fas fa-chart-line text-2xl text-green-500 mb-1"></i>
+                        <p class="text-2xl font-bold text-gray-800" id="statAvgMembers">0</p>
+                        <p class="text-xs text-gray-500">Média/grupo</p>
+                    </div>
                 </div>
             </div>
         </section>
