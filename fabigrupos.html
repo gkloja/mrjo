@@ -499,67 +499,108 @@
 @media (max-width: 640px) {
     .video-label { font-size: 11px; padding: 8px 12px; }
 }
+
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+}
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+.video-label {
+    padding: 10px 16px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
 </style>
 
-<!-- INSIRA ESTE BLOCO LOGO APÓS O <main> OU ANTES DO BANNER DO CANAL -->
+<!-- VÍDEO RECOLHÍVEL -->
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-    <div class="video-tutorial">
-        <div class="video-wrapper">
-            <iframe 
-                src="https://www.youtube.com/embed/EY8Qrp9JBCY?si=SKI9cNIvF7cVSGcJ" 
-                title="Como divulgar seu grupo no WhatsApp - Tutorial Fabi Grupos"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen>
-            </iframe>
-        </div>
-        <div class="video-label">
-            <i class="fas fa-play-circle"></i>
-            📺 ASSISTA: Como divulgar seu grupo e conseguir +100 membros em dias!
-            <i class="fas fa-chart-line"></i>
+    <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+        <button onclick="toggleVideo()" class="w-full px-5 py-3 flex items-center justify-between bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 transition">
+            <div class="flex items-center gap-2">
+                <i class="fab fa-youtube text-red-500 text-xl"></i>
+                <span class="font-semibold text-gray-700">📺 Tutorial: Como divulgar seu grupo</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span id="videoBadge" class="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">Clique para assistir</span>
+                <i id="videoIcon" class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+            </div>
+        </button>
+        <div id="videoContainer" class="hidden">
+            <div class="video-wrapper">
+                <iframe 
+                    src="https://www.youtube.com/embed/EY8Qrp9JBCY?si=SKI9cNIvF7cVSGcJ" 
+                    title="Como divulgar seu grupo no WhatsApp - Tutorial Fabi Grupos"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <div class="video-label bg-gray-50">
+                <i class="fas fa-play-circle text-purple-500"></i>
+                🚀 +100 membros em dias! Assista e aprenda
+            </div>
         </div>
     </div>
 </div>
-    <main id="appContent">
-        <!-- BANNER DE DESTAQUE (aparece quando tem grupo campeão) -->
-        <div id="championBanner" class="hidden hero-banner mx-4 mt-4 rounded-2xl overflow-hidden shadow-2xl animate-slide-up">
-            <div class="px-6 py-8 text-center relative z-10">
-                <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur rounded-full px-4 py-2 mb-4">
-                    <i class="fas fa-trophy text-yellow-300 text-xl trophy-text"></i>
-                    <span class="text-white font-bold">CAMPEÃO DO DIA</span>
-                    <i class="fas fa-crown text-yellow-300 crown-icon"></i>
+
+
+
+
+<!-- SEÇÃO DE DESTAQUES COMPACTA -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+    <!-- Banner do Campeão do Dia (compacto) -->
+    <div id="championBanner" class="hidden mb-3">
+        <div class="bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl p-3 shadow-md">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-trophy text-yellow-300 text-sm"></i>
+                    </div>
+                    <div>
+                        <p class="text-white text-[10px] font-bold">🏆 CAMPEÃO DO DIA</p>
+                        <p class="text-white text-sm font-bold leading-tight" id="championName">Carregando...</p>
+                    </div>
                 </div>
-                <h3 class="text-white text-2xl font-bold mb-2" id="championName">Carregando...</h3>
-                <p class="text-white/90 text-sm mb-4" id="championDescription">Grupo mais ativo do dia</p>
-                <div class="flex gap-3 justify-center">
-                    <button id="championButton" class="bg-white text-purple-600 px-6 py-2 rounded-full font-bold hover:scale-105 transition shadow-lg">
-                        <i class="fab fa-whatsapp mr-2"></i>Conhecer grupo campeão
+                <div class="flex items-center gap-2">
+                    <span class="text-white/80 text-[11px] hidden sm:inline" id="championDescription">Grupo mais ativo</span>
+                    <button id="championButton" class="bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+                        <i class="fab fa-whatsapp text-xs"></i> Entrar
                     </button>
                 </div>
             </div>
         </div>
-        
-        <!-- CANAL DA FABI - DESTAQUE ESPECIAL -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-    <div onclick="openFabiChannel()" class="fabi-channel-banner rounded-2xl p-4 shadow-lg cursor-pointer relative z-10">
-        <div class="flex items-center justify-between gap-4 flex-wrap">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur">
-                    <i class="fab fa-whatsapp text-white text-2xl"></i>
+    </div>
+
+    <!-- Canal da Fabi (compacto) -->
+    <div onclick="openFabiChannel()" class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-3 shadow-md cursor-pointer hover:shadow-lg transition">
+        <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                    <i class="fab fa-whatsapp text-white text-sm"></i>
                 </div>
                 <div>
-                    <h3 class="text-white font-bold text-sm sm:text-base flex items-center gap-2">
-                        <i class="fas fa-crown crown-icon text-yellow-300"></i>
-                        Canal Oficial da Fabi
-                        <i class="fas fa-check-circle text-blue-300 text-xs"></i>
-                    </h3>
-                    <p class="text-white/90 text-xs sm:text-sm">📢 Últimos grupos divulgados aqui! Entre agora mesmo ➜</p>
+                    <p class="text-white text-[10px] font-bold">📢 CANAL OFICIAL</p>
+                    <p class="text-white text-sm font-semibold leading-tight">Fabi Grupos no WhatsApp</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2 bg-white/20 backdrop-blur rounded-full px-3 py-1.5">
-                <i class="fab fa-whatsapp text-white text-sm"></i>
-                <span class="text-white text-xs font-bold">GRUPOS NOVOS TODOS OS DIAS</span>
+            <div class="flex items-center gap-1">
+                <span class="text-white/80 text-[11px] hidden sm:inline">Entrar →</span>
                 <i class="fas fa-arrow-right text-white text-xs animate-pulse"></i>
             </div>
         </div>
@@ -630,110 +671,121 @@
                 </div>
             </div>
         </section>
-<!-- SEÇÃO RANKING DIÁRIO - VERSÃO PROFISSIONAL -->
+<!-- SEÇÃO RANKING DIÁRIO - VERSÃO COM BOTÃO VER RANKING -->
 <section class="px-4 sm:px-6 lg:px-8 mt-8">
     <div class="max-w-7xl mx-auto">
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-            <!-- Cabeçalho com gradiente e animação -->
-            <div class="gradient-bg px-6 py-5 relative overflow-hidden">
+            <!-- Cabeçalho com botão VER RANKING -->
+            <div class="gradient-bg px-6 py-4 relative overflow-hidden">
                 <div class="absolute top-0 right-0 opacity-10">
                     <i class="fas fa-chart-line text-7xl"></i>
                 </div>
                 <div class="relative z-10">
                     <div class="flex items-center justify-between flex-wrap gap-3">
                         <div>
-                            <h2 class="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2">
-                                <i class="fas fa-trophy fa-fw"></i> 
-                                Ranking do Dia
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-trophy text-white text-2xl"></i>
+                                <h2 class="text-xl sm:text-2xl font-bold text-white">Ranking do Dia</h2>
                                 <span class="text-xs bg-white/20 px-2 py-1 rounded-full">🔥 AO VIVO</span>
-                            </h2>
-                            <p class="text-purple-100 text-sm mt-1 flex items-center gap-2">
+                            </div>
+                            <p class="text-purple-100 text-xs sm:text-sm mt-1 flex items-center gap-2">
                                 <i class="fas fa-calendar-alt"></i>
                                 <span id="rankingData">Carregando data...</span>
-                                <span class="w-1 h-1 bg-purple-300 rounded-full"></span>
-                                <i class="fas fa-chart-simple"></i>
-                                Grupos mais ativos e mais ricos do dia
                             </p>
                         </div>
-                        <div class="flex gap-2">
-                            <button onclick="scrollToHots()" class="bg-white/20 hover:bg-white/30 text-white text-sm px-3 py-1.5 rounded-full transition flex items-center gap-1">
-                                <i class="fas fa-fire"></i> Ver Hots
-                            </button>
-                            <button onclick="scrollToNews()" class="bg-white/20 hover:bg-white/30 text-white text-sm px-3 py-1.5 rounded-full transition flex items-center gap-1">
-                                <i class="fas fa-clock"></i> Novidades
-                            </button>
+                        
+                        <!-- BOTÃO VER RANKING -->
+                        <button onclick="toggleRanking()" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-bold px-5 py-2.5 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg group">
+                            <i class="fas fa-chart-simple text-white group-hover:scale-110 transition"></i>
+                            <span>Ver ranking</span>
+                            <i id="rankingIcon" class="fas fa-chevron-down text-white text-sm transition-transform duration-300 ml-1"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Mini estatísticas -->
+                    <div class="flex gap-3 mt-3">
+                        <div class="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1">
+                            <i class="fas fa-fire text-orange-300 text-xs"></i>
+                            <span class="text-white text-xs">Ativos: <strong id="totalAtivosMini">0</strong></span>
+                        </div>
+                        <div class="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1">
+                            <i class="fas fa-gem text-yellow-300 text-xs"></i>
+                            <span class="text-white text-xs">Ricos: <strong id="totalRicosMini">0</strong></span>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Grid de Rankings -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
-                <!-- TOP 10 MAIS ATIVOS -->
-                <div class="p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                            <i class="fas fa-fire text-orange-500 text-xl"></i>
-                            Mais Ativos do Dia
-                            <span class="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full">🔥</span>
-                        </h3>
-                        <span class="text-xs text-gray-400">últimas 24h</span>
-                    </div>
-                    
-                    <div id="topAtivosList" class="space-y-2">
-                        <!-- Skeleton Loading -->
-                        <div class="animate-pulse space-y-2">
-                            <div class="h-14 bg-gray-100 rounded-lg"></div>
-                            <div class="h-14 bg-gray-100 rounded-lg"></div>
-                            <div class="h-14 bg-gray-100 rounded-lg"></div>
+            <!-- Conteúdo do Ranking (recolhido por padrão) -->
+            <div id="rankingContent" class="hidden">
+                <!-- Grid de Rankings -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
+                    <!-- TOP 10 MAIS ATIVOS -->
+                    <div class="p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                                <i class="fas fa-fire text-orange-500 text-xl"></i>
+                                Mais Ativos do Dia
+                                <span class="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full">🔥</span>
+                            </h3>
+                            <span class="text-xs text-gray-400">últimas 24h</span>
+                        </div>
+                        
+                        <div id="topAtivosList" class="space-y-2">
+                            <!-- Skeleton Loading -->
+                            <div class="animate-pulse space-y-2">
+                                <div class="h-14 bg-gray-100 rounded-lg"></div>
+                                <div class="h-14 bg-gray-100 rounded-lg"></div>
+                                <div class="h-14 bg-gray-100 rounded-lg"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <a href="#" onclick="scrollToGroups(); return false;" class="text-purple-500 text-sm hover:text-purple-700 transition flex items-center justify-center gap-1">
+                                Ver todos os grupos <i class="fas fa-arrow-right text-xs"></i>
+                            </a>
                         </div>
                     </div>
                     
-                    <div class="mt-4 text-center">
-                        <a href="#" onclick="scrollToGroups(); return false;" class="text-purple-500 text-sm hover:text-purple-700 transition flex items-center justify-center gap-1">
-                            Ver todos os grupos <i class="fas fa-arrow-right text-xs"></i>
-                        </a>
+                    <!-- TOP 10 MAIS RICOS -->
+                    <div class="p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                                <i class="fas fa-gem text-yellow-500 text-xl"></i>
+                                Mais Ricos do Dia
+                                <span class="text-xs bg-yellow-100 text-yellow-600 px-2 py-0.5 rounded-full">💰</span>
+                            </h3>
+                            <span class="text-xs text-gray-400">média por membro</span>
+                        </div>
+                        
+                        <div id="topRicosList" class="space-y-2">
+                            <!-- Skeleton Loading -->
+                            <div class="animate-pulse space-y-2">
+                                <div class="h-14 bg-gray-100 rounded-lg"></div>
+                                <div class="h-14 bg-gray-100 rounded-lg"></div>
+                                <div class="h-14 bg-gray-100 rounded-lg"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <a href="#" onclick="scrollToGroups(); return false;" class="text-purple-500 text-sm hover:text-purple-700 transition flex items-center justify-center gap-1">
+                                Explorar comunidades <i class="fas fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- TOP 10 MAIS RICOS -->
-                <div class="p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                            <i class="fas fa-gem text-yellow-500 text-xl"></i>
-                            Mais Ricos do Dia
-                            <span class="text-xs bg-yellow-100 text-yellow-600 px-2 py-0.5 rounded-full">💰</span>
-                        </h3>
-                        <span class="text-xs text-gray-400">média por membro</span>
+                <!-- Footer do Ranking -->
+                <div class="bg-gray-50 px-5 py-3 border-t border-gray-100 flex flex-wrap justify-between items-center gap-2 text-xs text-gray-500">
+                    <div class="flex items-center gap-3">
+                        <span><i class="fas fa-chart-line text-purple-500"></i> Total de grupos ativos hoje: <strong id="totalAtivos">0</strong></span>
+                        <span class="w-1 h-1 bg-gray-300 rounded-full hidden sm:block"></span>
+                        <span class="hidden sm:flex items-center gap-1"><i class="fas fa-coins text-yellow-500"></i> Grupos com golds: <strong id="totalRicos">0</strong></span>
                     </div>
-                    
-                    <div id="topRicosList" class="space-y-2">
-                        <!-- Skeleton Loading -->
-                        <div class="animate-pulse space-y-2">
-                            <div class="h-14 bg-gray-100 rounded-lg"></div>
-                            <div class="h-14 bg-gray-100 rounded-lg"></div>
-                            <div class="h-14 bg-gray-100 rounded-lg"></div>
-                        </div>
+                    <div>
+                        <i class="fas fa-sync-alt text-gray-400 text-xs"></i>
+                        <span>Atualizado diariamente às 21h</span>
                     </div>
-                    
-                    <div class="mt-4 text-center">
-                        <a href="#" onclick="scrollToGroups(); return false;" class="text-purple-500 text-sm hover:text-purple-700 transition flex items-center justify-center gap-1">
-                            Explorar comunidades <i class="fas fa-arrow-right text-xs"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Footer do Ranking -->
-            <div class="bg-gray-50 px-5 py-3 border-t border-gray-100 flex flex-wrap justify-between items-center gap-2 text-xs text-gray-500">
-                <div class="flex items-center gap-3">
-                    <span><i class="fas fa-chart-line text-purple-500"></i> Total de grupos ativos hoje: <strong id="totalAtivos">0</strong></span>
-                    <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
-                    <span><i class="fas fa-coins text-yellow-500"></i> Grupos com golds: <strong id="totalRicos">0</strong></span>
-                </div>
-                <div>
-                    <i class="fas fa-sync-alt text-gray-400 text-xs"></i>
-                    <span>Atualizado diariamente às 21h</span>
                 </div>
             </div>
         </div>
@@ -1311,30 +1363,42 @@ function renderGroups() {
         }
         
         // Função para identificar e mostrar grupos campeões
-        function identificarGruposCampeoes() {
-            const gruposComDestaque = allGroups.filter(g => g.emDestaque === true);
-            
-            grupoMaisAtivo = gruposComDestaque.find(g => g.tipoDestaque === 'maisAtivo');
-            grupoMaisRico = gruposComDestaque.find(g => g.tipoDestaque === 'maisRico');
-            
-            // Mostrar banner do grupo campeão (prioridade para mais ativo)
-            const grupoDestaque = grupoMaisAtivo || grupoMaisRico;
-            
-            if (grupoDestaque) {
-                championName.textContent = grupoDestaque.nome;
-                championDescription.textContent = grupoDestaque.tipoDestaque === 'maisAtivo' 
-                    ? `🏆 Grupo mais ativo do dia com ${formatNumber(grupoDestaque.participantes)} membros! 🔥` 
-                    : `💎 Grupo mais rico do dia! Média de riqueza impressionante! 👑`;
-                championBanner.classList.remove('hidden');
-                
-                championButton.onclick = () => openModal(grupoDestaque);
-                
-                // Criar confete ao carregar
-                setTimeout(() => createConfetti(), 500);
-            } else {
-                championBanner.classList.add('hidden');
-            }
+// Função para identificar e mostrar grupos campeões (versão compacta)
+function identificarGruposCampeoes() {
+    const gruposComDestaque = allGroups.filter(g => g.emDestaque === true);
+    
+    const grupoMaisAtivo = gruposComDestaque.find(g => g.tipoDestaque === 'maisAtivo');
+    const grupoMaisRico = gruposComDestaque.find(g => g.tipoDestaque === 'maisRico');
+    
+    // Prioridade para mais ativo
+    const grupoDestaque = grupoMaisAtivo || grupoMaisRico;
+    currentChampion = grupoDestaque;
+    
+    if (grupoDestaque) {
+        const championName = document.getElementById('championName');
+        const championDescription = document.getElementById('championDescription');
+        const championBanner = document.getElementById('championBanner');
+        
+        if (championName) championName.textContent = grupoDestaque.nome;
+        if (championDescription) {
+            championDescription.textContent = grupoDestaque.tipoDestaque === 'maisAtivo' 
+                ? `🔥 ${formatNumber(grupoDestaque.participantes)} membros` 
+                : `💎 Grupo mais rico`;
         }
+        if (championBanner) championBanner.classList.remove('hidden');
+        
+        const championButton = document.getElementById('championButton');
+        if (championButton) {
+            championButton.onclick = (e) => {
+                e.stopPropagation();
+                openModal(grupoDestaque);
+            };
+        }
+        
+        // Confete apenas uma vez
+        setTimeout(() => createConfetti(), 500);
+    }
+}
         
         // ==================== FUNÇÕES DO MENU E CANAL ====================
 function openFabiChannel() {
@@ -1343,8 +1407,33 @@ function openFabiChannel() {
     showToast('📢 Redirecionando para o Canal da Fabi!', 'success');
 }
 // Carregar ranking diário
-// Carregar ranking diário
-// Carregar ranking diário
+// Função para expandir/recolher o ranking com animação e toast
+let rankingExpanded = false;
+
+function toggleRanking() {
+    const content = document.getElementById('rankingContent');
+    const icon = document.getElementById('rankingIcon');
+    const btnText = document.querySelector('#rankingContent')?.previousElementSibling?.querySelector('span');
+    
+    if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+        rankingExpanded = true;
+        showToast('📊 Rankings expandidos! Confira os grupos mais ativos e ricos do dia.', 'success');
+        
+        // Scroll suave até o ranking quando expandir
+        setTimeout(() => {
+            document.querySelector('.gradient-bg').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    } else {
+        content.classList.add('hidden');
+        icon.style.transform = 'rotate(0deg)';
+        rankingExpanded = false;
+        showToast('📊 Rankings recolhido', 'info');
+    }
+}
+
+// Modifique a função carregarRanking para atualizar também os mini contadores
 async function carregarRanking() {
     try {
         const response = await fetch('https://cors.eu.org/br2.bronxyshost.com:4009/ranking.json');
@@ -1361,8 +1450,13 @@ async function carregarRanking() {
         if (ranking.estatisticas) {
             const totalAtivosEl = document.getElementById('totalAtivos');
             const totalRicosEl = document.getElementById('totalRicos');
+            const totalAtivosMini = document.getElementById('totalAtivosMini');
+            const totalRicosMini = document.getElementById('totalRicosMini');
+            
             if (totalAtivosEl) totalAtivosEl.innerHTML = ranking.estatisticas.totalGruposAtivos || 0;
             if (totalRicosEl) totalRicosEl.innerHTML = ranking.estatisticas.totalGruposRicos || 0;
+            if (totalAtivosMini) totalAtivosMini.innerHTML = ranking.estatisticas.totalGruposAtivos || 0;
+            if (totalRicosMini) totalRicosMini.innerHTML = ranking.estatisticas.totalGruposRicos || 0;
         }
         
         // Função para truncar nomes longos
@@ -1487,6 +1581,25 @@ async function carregarRanking() {
         const topRicosDiv = document.getElementById('topRicosList');
         if (topAtivosDiv) topAtivosDiv.innerHTML = '<p class="text-gray-500 text-center py-4">⏳ Ranking será atualizado às 21h</p>';
         if (topRicosDiv) topRicosDiv.innerHTML = '<p class="text-gray-500 text-center py-4">⏳ Ranking será atualizado às 21h</p>';
+    }
+}
+function toggleVideo() {
+    const container = document.getElementById('videoContainer');
+    const icon = document.getElementById('videoIcon');
+    const badge = document.getElementById('videoBadge');
+    
+    if (container.classList.contains('hidden')) {
+        container.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+        badge.textContent = '▲ Clique para fechar';
+        badge.classList.remove('bg-green-500');
+        badge.classList.add('bg-purple-500');
+    } else {
+        container.classList.add('hidden');
+        icon.style.transform = 'rotate(0deg)';
+        badge.textContent = 'Clique para assistir';
+        badge.classList.remove('bg-purple-500');
+        badge.classList.add('bg-green-500');
     }
 }
 
