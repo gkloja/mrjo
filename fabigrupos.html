@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -528,36 +529,8 @@
 
 </style>
 
-<!-- VÍDEO RECOLHÍVEL -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-    <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
-        <button onclick="toggleVideo()" class="w-full px-5 py-3 flex items-center justify-between bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 transition">
-            <div class="flex items-center gap-2">
-                <i class="fab fa-youtube text-red-500 text-xl"></i>
-                <span class="font-semibold text-gray-700">📺 Tutorial: Como divulgar seu grupo</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <span id="videoBadge" class="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">Clique para assistir</span>
-                <i id="videoIcon" class="fas fa-chevron-down text-gray-500 transition-transform"></i>
-            </div>
-        </button>
-        <div id="videoContainer" class="hidden">
-            <div class="video-wrapper">
-                <iframe 
-                    src="https://www.youtube.com/embed/EY8Qrp9JBCY?si=SKI9cNIvF7cVSGcJ" 
-                    title="Como divulgar seu grupo no WhatsApp - Tutorial Fabi Grupos"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen>
-                </iframe>
-            </div>
-            <div class="video-label bg-gray-50">
-                <i class="fas fa-play-circle text-purple-500"></i>
-                🚀 +100 membros em dias! Assista e aprenda
-            </div>
-        </div>
-    </div>
-</div>
+
+
 
 
 
@@ -594,17 +567,17 @@
                         </button>
                     </div>
                     
-                    <!-- Mini estatísticas -->
-                    <div class="flex gap-3 mt-3">
-                        <div class="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1">
-                            <i class="fas fa-fire text-orange-300 text-xs"></i>
-                            <span class="text-white text-xs">Ativos: <strong id="totalAtivosMini">0</strong></span>
-                        </div>
-                        <div class="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1">
-                            <i class="fas fa-gem text-yellow-300 text-xs"></i>
-                            <span class="text-white text-xs">Ricos: <strong id="totalRicosMini">0</strong></span>
-                        </div>
-                    </div>
+<!-- Mini estatísticas com valores reais -->
+<div class="flex gap-3 mt-3 flex-wrap">
+    <div class="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1">
+        <i class="fas fa-fire text-orange-300 text-xs"></i>
+        <span class="text-white text-xs">🔥 #1 Ativo: <strong id="topAtivoValor" class="text-orange-300">---</strong></span>
+    </div>
+    <div class="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1">
+        <i class="fas fa-gem text-yellow-300 text-xs"></i>
+        <span class="text-white text-xs">💰 #1 Rico: <strong id="topRicoValor" class="text-yellow-300">---</strong></span>
+    </div>
+</div>
                 </div>
             </div>
             
@@ -667,18 +640,20 @@
                     </div>
                 </div>
                 
-                <!-- Footer do Ranking -->
-                <div class="bg-gray-50 px-5 py-3 border-t border-gray-100 flex flex-wrap justify-between items-center gap-2 text-xs text-gray-500">
-                    <div class="flex items-center gap-3">
-                        <span><i class="fas fa-chart-line text-purple-500"></i> Total de grupos ativos hoje: <strong id="totalAtivos">0</strong></span>
-                        <span class="w-1 h-1 bg-gray-300 rounded-full hidden sm:block"></span>
-                        <span class="hidden sm:flex items-center gap-1"><i class="fas fa-coins text-yellow-500"></i> Grupos com golds: <strong id="totalRicos">0</strong></span>
-                    </div>
-                    <div>
-                        <i class="fas fa-sync-alt text-gray-400 text-xs"></i>
-                        <span>Atualizado diariamente às 21h</span>
-                    </div>
-                </div>
+<!-- Footer do Ranking -->
+<div class="bg-gray-50 px-5 py-3 border-t border-gray-100 flex flex-wrap justify-between items-center gap-2 text-xs text-gray-500">
+    <div class="flex items-center gap-3 flex-wrap">
+        <span><i class="fas fa-chart-line text-purple-500"></i> 📊 Ranking atualizado diariamente</span>
+        <span class="w-1 h-1 bg-gray-300 rounded-full hidden sm:block"></span>
+        <span class="flex items-center gap-1"><i class="fas fa-fire text-orange-500"></i> <strong id="totalAtivosFooter">0</strong> grupos ativos</span>
+        <span class="w-1 h-1 bg-gray-300 rounded-full hidden sm:block"></span>
+        <span class="flex items-center gap-1"><i class="fas fa-coins text-yellow-500"></i> <strong id="totalRicosFooter">0</strong> grupos com golds</span>
+    </div>
+    <div>
+        <i class="fas fa-sync-alt text-gray-400 text-xs"></i>
+        <span>Atualizado diariamente às 21h</span>
+    </div>
+</div>
             </div>
         </div>
     </div>
@@ -1181,103 +1156,112 @@ function renderGroups() {
         return;
     }
     
-    groupsGrid.innerHTML = displayGroups.map((group, index) => {
-        const isChampion = group.emDestaque === true;
-        const championCardClass = isChampion ? 'card-champion border-2 border-yellow-400' : '';
-        const championBadge = isChampion ? `
-            <div class="absolute -top-2 -right-2 z-10">
-                ${group.tipoDestaque === 'maisAtivo' ? `
-                    <div class="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full px-3 py-1 text-xs font-bold shadow-lg animate-pulse flex items-center gap-1">
-                        <i class="fas fa-fire"></i> 🔥 MAIS ATIVO
+groupsGrid.innerHTML = displayGroups.map((group, index) => {
+    const isChampion = group.emDestaque === true;
+    const championCardClass = isChampion ? 'card-champion border-2 border-yellow-400' : '';
+    
+    // Definições ANTES de usar
+    const isNewGroup = gruposMaisNovos.some(g => g.grupoID === group.grupoID);
+    const isHotGroup = gruposHots.some(g => g.grupoID === group.grupoID);
+    
+    // ========== BADGE COMPACTO E ELEGANTE NO LADO ESQUERDO ==========
+    let topBadge = '';
+    
+    if (isChampion) {
+        if (group.tipoDestaque === 'maisAtivo') {
+            topBadge = `
+                <div class="absolute top-1 left-3 z-20">
+                    <div class="flex items-center gap-1 bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-0.5 rounded-md shadow-lg">
+                        <i class="fas fa-fire text-[10px] animate-pulse"></i>
+                        <span class="text-[9px] font-black uppercase tracking-tighter">🔥 MAIS ATIVO</span>
                     </div>
-                ` : group.tipoDestaque === 'maisRico' ? `
-                    <div class="bg-gradient-to-r from-yellow-500 to-amber-600 text-white rounded-full px-3 py-1 text-xs font-bold shadow-lg animate-pulse flex items-center gap-1">
-                        <i class="fas fa-crown crown-icon"></i> 💎 MAIS RICO
-                    </div>
-                ` : ''}
-            </div>
-        ` : '';
-        
-        // Verificar se é um dos grupos mais novos
-        const isNewGroup = gruposMaisNovos.some(g => g.grupoID === group.grupoID);
-        const newBadge = isNewGroup ? `
-            <div class="absolute -top-2 -left-2 z-10">
-                <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full px-2 py-0.5 text-xs font-bold shadow-lg flex items-center gap-1">
-                    <i class="fas fa-clock"></i> NOVO
                 </div>
-            </div>
-        ` : '';
-        
-        // Verificar se é um dos grupos Hots
-        const isHotGroup = gruposHots.some(g => g.grupoID === group.grupoID);
-        const hotBadge = isHotGroup ? `
-            <div class="absolute -top-2 -left-2 z-10">
-                <div class="bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full px-2 py-0.5 text-xs font-bold shadow-lg flex items-center gap-1 animate-pulse">
-                    <i class="fas fa-fire"></i> HOT
+            `;
+        } else if (group.tipoDestaque === 'maisRico') {
+            topBadge = `
+                <div class="absolute top-1 left-3 z-20">
+                    <div class="flex items-center gap-1 bg-gradient-to-r from-yellow-500 to-amber-600 text-white px-2 py-0.5 rounded-md shadow-lg">
+                        <i class="fas fa-crown text-[10px] crown-icon"></i>
+                        <span class="text-[9px] font-black uppercase tracking-tighter">💎 MAIS RICO</span>
+                    </div>
                 </div>
-            </div>
-        ` : '';
-        
-        // Escolher qual badge exibir (prioridade: HOT > NOVO)
-        const positionBadge = isHotGroup ? hotBadge : (isNewGroup ? newBadge : '');
-        
-        return `
-            <div class="group bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative ${championCardClass}" data-group-index="${index}">
-                ${championBadge}
-                ${positionBadge}
-                <div class="p-5">
-                    <div class="flex gap-4">
-                        <div class="relative w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center shadow-sm">
-                            ${group.imagem ? 
-                                `<img src="${group.imagem}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" 
-                                      onerror="this.parentElement.innerHTML='<i class=\\'fas fa-users text-3xl text-purple-400\\'></i>'">` : 
-                                `<i class="fas fa-users text-3xl text-purple-400"></i>`
-                            }
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <h3 class="font-bold text-gray-800 text-base sm:text-lg line-clamp-1 group-hover:text-purple-600 transition">${(group.nome || 'Sem nome').substring(0, 45)}</h3>
-                            <div class="flex flex-wrap items-center gap-2 mt-2">
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-700 text-xs rounded-full">
-                                    <i class="fas ${getCategoryIcon(group.categoria)} text-xs"></i> ${group.categoria || 'Geral'}
-                                </span>
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
-                                    <i class="fas fa-user-friends text-xs"></i> ${formatNumber(group.participantes)}
-                                </span>
-                                ${isChampion ? `
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded-full">
-                                        <i class="fas fa-star"></i> Destaque
-                                    </span>
-                                ` : ''}
-                                ${isHotGroup ? `
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">
-                                        <i class="fas fa-fire"></i> Hot
-                                    </span>
-                                ` : ''}
-                                ${isNewGroup && !isHotGroup ? `
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">
-                                        <i class="fas fa-clock"></i> Recente
-                                    </span>
-                                ` : ''}
-                            </div>
-                            <p class="text-gray-500 text-xs sm:text-sm mt-2 line-clamp-2">${cleanDescription(group.descricao, 80)}</p>
-                        </div>
-                    </div>
-                    <div class="mt-3 flex items-center justify-between">
-                        <div class="flex items-center gap-1 text-xs text-gray-400">
-                            <i class="fas fa-chart-line"></i>
-                            <span>${group.mesesAtivo && group.mesesAtivo !== '?' ? group.mesesAtivo : '?'} meses ativo</span>
-                            <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
-                            <span><i class="fas fa-users"></i> ${formatNumber(group.participantes)} membros</span>
-                        </div>
-                        <span class="text-purple-500 text-xs font-medium group-hover:translate-x-1 transition flex items-center gap-1">
-                            Ver detalhes <i class="fas fa-arrow-right text-xs"></i>
-                        </span>
-                    </div>
+            `;
+        }
+    } else if (isHotGroup) {
+        topBadge = `
+            <div class="absolute top-1 left-3 z-20">
+                <div class="flex items-center gap-1 bg-gradient-to-r from-red-500 to-orange-500 text-white px-2 py-0.5 rounded-md shadow-lg">
+                    <i class="fas fa-fire text-[10px] animate-pulse"></i>
+                    <span class="text-[9px] font-black uppercase tracking-tighter">HOT</span>
                 </div>
             </div>
         `;
-    }).join('');
+    } else if (isNewGroup) {
+        topBadge = `
+            <div class="absolute top-1 left-3 z-20">
+                <div class="flex items-center gap-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-2 py-0.5 rounded-md shadow-lg">
+                    <i class="fas fa-clock text-[10px]"></i>
+                    <span class="text-[9px] font-black uppercase tracking-tighter">NOVO</span>
+                </div>
+            </div>
+        `;
+    }
     
+    return `
+        <div class="group bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative ${championCardClass}" data-group-index="${index}">
+            ${topBadge}
+            <div class="p-5">
+                <div class="flex gap-4">
+                    <div class="relative w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center shadow-sm">
+                        ${group.imagem ? 
+                            `<img src="${group.imagem}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" 
+                                  onerror="this.parentElement.innerHTML='<i class=\\'fas fa-users text-3xl text-purple-400\\'></i>'">` : 
+                            `<i class="fas fa-users text-3xl text-purple-400"></i>`
+                        }
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-bold text-gray-800 text-base sm:text-lg line-clamp-1 group-hover:text-purple-600 transition">${(group.nome || 'Sem nome').substring(0, 45)}</h3>
+                        <div class="flex flex-wrap items-center gap-2 mt-2">
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-700 text-xs rounded-full">
+                                <i class="fas ${getCategoryIcon(group.categoria)} text-xs"></i> ${group.categoria || 'Geral'}
+                            </span>
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
+                                <i class="fas fa-user-friends text-xs"></i> ${formatNumber(group.participantes)}
+                            </span>
+                            ${isChampion ? `
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded-full">
+                                    <i class="fas fa-star"></i> Destaque
+                                </span>
+                            ` : ''}
+                            ${isHotGroup && !isChampion ? `
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">
+                                    <i class="fas fa-fire"></i> Hot
+                                </span>
+                            ` : ''}
+                            ${isNewGroup && !isChampion && !isHotGroup ? `
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">
+                                    <i class="fas fa-clock"></i> Recente
+                                </span>
+                            ` : ''}
+                        </div>
+                        <p class="text-gray-500 text-xs sm:text-sm mt-2 line-clamp-2">${cleanDescription(group.descricao, 80)}</p>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center justify-between">
+                    <div class="flex items-center gap-1 text-xs text-gray-400">
+                        <i class="fas fa-chart-line"></i>
+                        <span>${group.mesesAtivo && group.mesesAtivo !== '?' ? group.mesesAtivo : '?'} meses ativo</span>
+                        <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+                        <span><i class="fas fa-users"></i> ${formatNumber(group.participantes)} membros</span>
+                    </div>
+                    <span class="text-purple-500 text-xs font-medium group-hover:translate-x-1 transition flex items-center gap-1">
+                        Ver detalhes <i class="fas fa-arrow-right text-xs"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+    `;
+}).join('');
     document.querySelectorAll('[data-group-index]').forEach(el => {
         const index = parseInt(el.dataset.groupIndex);
         el.addEventListener('click', () => openModal(displayGroups[index]));
@@ -1321,44 +1305,106 @@ function renderGroups() {
             featuredCount.textContent = total;
         }
         
-        // Função para identificar e mostrar grupos campeões
+        // Função paraidentificar e mostrar grupos campeões
 // Função para identificar e mostrar grupos campeões (versão compacta)
+// Função para sincronizar os grupos campeões com o ranking
+// Função para identificar e mostrar grupos campeões (agora com OS DOIS)
 function identificarGruposCampeoes() {
-    const gruposComDestaque = allGroups.filter(g => g.emDestaque === true);
+    const grupoMaisAtivo = allGroups.find(g => g.tipoDestaque === 'maisAtivo');
+    const grupoMaisRico = allGroups.find(g => g.tipoDestaque === 'maisRico');
     
-    const grupoMaisAtivo = gruposComDestaque.find(g => g.tipoDestaque === 'maisAtivo');
-    const grupoMaisRico = gruposComDestaque.find(g => g.tipoDestaque === 'maisRico');
-    
-    // Prioridade para mais ativo
-    const grupoDestaque = grupoMaisAtivo || grupoMaisRico;
-    currentChampion = grupoDestaque;
-    
-    if (grupoDestaque) {
-        const championName = document.getElementById('championName');
-        const championDescription = document.getElementById('championDescription');
-        const championBanner = document.getElementById('championBanner');
+    // Atualizar o banner do MAIS ATIVO
+    if (grupoMaisAtivo) {
+        const championNameAtivo = document.getElementById('championName');
+        const championDescriptionAtivo = document.getElementById('championDescription');
+        const championBannerAtivo = document.getElementById('championBanner');
         
-        if (championName) championName.textContent = grupoDestaque.nome;
-        if (championDescription) {
-            championDescription.textContent = grupoDestaque.tipoDestaque === 'maisAtivo' 
-                ? `🔥 ${formatNumber(grupoDestaque.participantes)} membros` 
-                : `💎 Grupo mais rico`;
+        if (championNameAtivo) championNameAtivo.textContent = grupoMaisAtivo.nome;
+        if (championDescriptionAtivo) {
+            championDescriptionAtivo.textContent = `🔥 #1 EM ATIVIDADE - ${formatNumber(grupoMaisAtivo.participantes)} membros`;
         }
-        if (championBanner) championBanner.classList.remove('hidden');
+        if (championBannerAtivo) championBannerAtivo.classList.remove('hidden');
         
-        const championButton = document.getElementById('championButton');
-        if (championButton) {
-            championButton.onclick = (e) => {
+        const championButtonAtivo = document.getElementById('championButton');
+        if (championButtonAtivo) {
+            championButtonAtivo.onclick = (e) => {
                 e.stopPropagation();
-                openModal(grupoDestaque);
+                openModal(grupoMaisAtivo);
             };
         }
-        
-        // Confete apenas uma vez
+    }
+    
+    // Atualizar o banner do MAIS RICO (se existir e for diferente)
+    
+    // Confete apenas se tiver pelo menos um campeão
+    if (grupoMaisAtivo || grupoMaisRico) {
         setTimeout(() => createConfetti(), 500);
     }
 }
+// Função para sincronizar os grupos campeões com o ranking
+async function sincronizarCampeoesComRanking() {
+    try {
+        const response = await fetch('https://cors.eu.org/br2.bronxyshost.com:4009/ranking.json');
+        if (!response.ok) throw new Error('Ranking não disponível');
+        const ranking = await response.json();
         
+        // Pega o #1 do ranking de ATIVOS
+        const grupoAtivoRanking = ranking.top10Ativos?.[0];
+        // Pega o #1 do ranking de RICOS
+        const grupoRicoRanking = ranking.top10Ricos?.[0];
+        
+        console.log('🏆 #1 Ativo do ranking:', grupoAtivoRanking?.nome);
+        console.log('💰 #1 Rico do ranking:', grupoRicoRanking?.nome);
+        
+        if (!grupoAtivoRanking && !grupoRicoRanking) return;
+        
+        // Remove todos os emDestaque existentes
+        allGroups.forEach(g => {
+            g.emDestaque = false;
+            g.tipoDestaque = null;
+        });
+        
+        // Marca o grupo mais ativo (baseado no ranking)
+        if (grupoAtivoRanking && grupoAtivoRanking.nome) {
+            const grupoAtivo = allGroups.find(g => 
+                g.nome === grupoAtivoRanking.nome || 
+                g.grupoID === grupoAtivoRanking.grupoID ||
+                g.link === grupoAtivoRanking.link
+            );
+            if (grupoAtivo) {
+                grupoAtivo.emDestaque = true;
+                grupoAtivo.tipoDestaque = 'maisAtivo';
+                console.log('✅ Grupo MAIS ATIVO sincronizado:', grupoAtivo.nome);
+            } else {
+                console.warn('⚠️ Grupo MAIS ATIVO não encontrado na lista:', grupoAtivoRanking.nome);
+            }
+        }
+        
+        // Marca o grupo mais rico (baseado no ranking) - PODE SER O MESMO OU DIFERENTE
+        if (grupoRicoRanking && grupoRicoRanking.nome) {
+            const grupoRico = allGroups.find(g => 
+                g.nome === grupoRicoRanking.nome || 
+                g.grupoID === grupoRicoRanking.grupoID ||
+                g.link === grupoRicoRanking.link
+            );
+            if (grupoRico) {
+                grupoRico.emDestaque = true;
+                grupoRico.tipoDestaque = 'maisRico';
+                console.log('✅ Grupo MAIS RICO sincronizado:', grupoRico.nome);
+            } else {
+                console.warn('⚠️ Grupo MAIS RICO não encontrado na lista:', grupoRicoRanking.nome);
+            }
+        }
+        
+        // Se após a sincronização não tiver nenhum, tenta usar o primeiro do ranking
+        if (!allGroups.some(g => g.emDestaque === true)) {
+            console.warn('⚠️ Nenhum grupo campeão encontrado!');
+        }
+        
+    } catch (error) {
+        console.error('Erro ao sincronizar com ranking:', error);
+    }
+}
         // ==================== FUNÇÕES DO MENU E CANAL ====================
 function openFabiChannel() {
     const channelLink = 'https://whatsapp.com/channel/0029VatppnH4o7qSzKKm0X3x';
@@ -1405,17 +1451,37 @@ async function carregarRanking() {
             dataElement.innerHTML = ranking.data;
         }
         
-        // Atualizar estatísticas
+        // PEGAR O #1 DE CADA RANKING
+        const topAtivo = ranking.top10Ativos?.[0];
+        const topRico = ranking.top10Ricos?.[0];
+        
+        // Mostrar o valor do #1 Ativo (interações)
+        const topAtivoValor = document.getElementById('topAtivoValor');
+        if (topAtivoValor && topAtivo) {
+            const atividades = topAtivo.atividade || 0;
+            topAtivoValor.innerHTML = atividades >= 1000 ? (atividades/1000).toFixed(1) + 'k' : atividades;
+            topAtivoValor.title = `${atividades.toLocaleString()} interações nas últimas 24h`;
+        } else if (topAtivoValor) {
+            topAtivoValor.innerHTML = '--';
+        }
+        
+        // Mostrar o valor do #1 Rico (golds por membro)
+        const topRicoValor = document.getElementById('topRicoValor');
+        if (topRicoValor && topRico) {
+            const golds = topRico.mediaGolds || 0;
+            topRicoValor.innerHTML = golds >= 1000 ? (golds/1000).toFixed(1) + 'k' : golds.toLocaleString();
+            topRicoValor.title = `${golds.toLocaleString()} golds por membro (média)`;
+        } else if (topRicoValor) {
+            topRicoValor.innerHTML = '--';
+        }
+        
+        // Atualizar estatísticas dos footers
         if (ranking.estatisticas) {
-            const totalAtivosEl = document.getElementById('totalAtivos');
-            const totalRicosEl = document.getElementById('totalRicos');
-            const totalAtivosMini = document.getElementById('totalAtivosMini');
-            const totalRicosMini = document.getElementById('totalRicosMini');
+            const totalAtivosFooter = document.getElementById('totalAtivosFooter');
+            const totalRicosFooter = document.getElementById('totalRicosFooter');
             
-            if (totalAtivosEl) totalAtivosEl.innerHTML = ranking.estatisticas.totalGruposAtivos || 0;
-            if (totalRicosEl) totalRicosEl.innerHTML = ranking.estatisticas.totalGruposRicos || 0;
-            if (totalAtivosMini) totalAtivosMini.innerHTML = ranking.estatisticas.totalGruposAtivos || 0;
-            if (totalRicosMini) totalRicosMini.innerHTML = ranking.estatisticas.totalGruposRicos || 0;
+            if (totalAtivosFooter) totalAtivosFooter.innerHTML = ranking.estatisticas.totalGruposAtivos || 0;
+            if (totalRicosFooter) totalRicosFooter.innerHTML = ranking.estatisticas.totalGruposRicos || 0;
         }
         
         // Função para truncar nomes longos
@@ -1533,6 +1599,9 @@ async function carregarRanking() {
         if (topRicosDiv) topRicosDiv.innerHTML = ricosContainer;
         
         console.log('✅ Ranking carregado com sucesso!');
+        
+        // Re-sincroniza os destaques
+        await sincronizarCampeoesComRanking();
         
     } catch (error) {
         console.error('Erro ao carregar ranking:', error);
@@ -1717,139 +1786,158 @@ function showPrivacyModal() {
     document.body.style.overflow = 'hidden';
 }
 
-// Função melhorada para Divulgação de grupos
 function showAdvertiseModal() {
     modalContent.innerHTML = `
-        <div class="p-6">
-            <div class="flex justify-between items-start mb-4">
-                <h2 class="text-2xl font-bold gradient-text">🚀 Divulgue seu Grupo</h2>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
+        <div class="relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition z-20 shadow-lg">
+                <i class="fas fa-times text-gray-600"></i>
+            </button>
             
-            <div class="space-y-5 text-gray-600">
-                <!-- MÉTODO GRATUITO - DESTAQUE PRINCIPAL -->
-                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-5 border-2 border-green-300 shadow-lg relative overflow-hidden">
-                    <div class="absolute -top-3 -right-3">
-                        <span class="bg-green-500 text-white text-xs px-3 py-1 rounded-full shadow-lg">⭐ GRATUITO</span>
+            <div class="p-6">
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-16 h-16 gradient-bg rounded-2xl shadow-lg mb-3">
+                        <i class="fas fa-chart-line text-white text-3xl"></i>
                     </div>
+                    <h2 class="text-2xl sm:text-3xl font-bold gradient-text">🚀 Divulgue seu Grupo</h2>
+                    <p class="text-gray-500 text-sm mt-1">Escolha a melhor forma de impulsionar sua comunidade</p>
+                </div>
+                
+                <!-- ========== VÍDEO TUTORIAL ========== -->
+                <div class="mb-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100">
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center shadow-md">
-                            <i class="fab fa-whatsapp text-white text-2xl"></i>
+                        <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center shadow-md">
+                            <i class="fab fa-youtube text-white text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-green-700 text-lg">Método Grátis</h3>
-                            <p class="text-xs text-green-600">Cadastro automático • Sem custo • Divulgação garantida</p>
+                            <h3 class="font-bold text-gray-800">📺 Tutorial completo</h3>
+                            <p class="text-xs text-gray-500">Aprenda como divulgar seu grupo em menos de 2 minutos</p>
+                        </div>
+                    </div>
+                    <div class="relative rounded-xl overflow-hidden shadow-lg">
+                        <div class="video-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0;">
+                            <iframe 
+                                src="https://www.youtube.com/embed/EY8Qrp9JBCY?si=SKI9cNIvF7cVSGcJ" 
+                                title="Como divulgar seu grupo no WhatsApp - Tutorial Fabi Grupos"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px;">
+                            </iframe>
+                        </div>
+                    </div>
+                    <p class="text-xs text-center text-gray-500 mt-2">
+                        <i class="fas fa-play-circle text-purple-500"></i> Assista e siga o passo a passo
+                    </p>
+                </div>
+                
+                <!-- ========== MÉTODO GRATUITO ========== -->
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-5 border-2 border-green-300 shadow-lg relative overflow-hidden mb-6">
+                    <div class="absolute -top-3 -right-3">
+                        <span class="bg-green-500 text-white text-xs px-3 py-1 rounded-full shadow-lg animate-pulse">⭐ GRATUITO</span>
+                    </div>
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg">
+                            <i class="fab fa-whatsapp text-white text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-green-700 text-xl">Método Automático</h3>
+                            <p class="text-sm text-green-600">Cadastro 100% gratuito • Sem complicação</p>
                         </div>
                     </div>
                     
                     <div class="space-y-3">
-                        <p class="text-sm font-semibold text-gray-700">📋 Como funciona (passo a passo):</p>
-                        <ol class="space-y-2 text-sm">
-                            <li class="flex items-start gap-2">
-                                <span class="bg-green-100 text-green-700 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">1</span>
-                                <span>Clique no botão abaixo para falar com o robô 🤖</span>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <span class="bg-green-100 text-green-700 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">2</span>
-                                <span><strong>Salve o contato</strong> do robô no seu WhatsApp (ele vai te responder automaticamente)</span>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <span class="bg-green-100 text-green-700 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">3</span>
-                                <span><strong>Adicione o robô no seu grupo</strong> do WhatsApp (ele vai entrar como membro)</span>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <span class="bg-green-100 text-green-700 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">4</span>
-                                <span>⚠️ <strong class="text-amber-600">Sobre o link do grupo:</strong></span>
-                            </li>
-                        </ol>
-                        
-                        <!-- Opções de link público/privado -->
-                        <div class="bg-white rounded-lg p-3 space-y-2 mt-1">
-                            <p class="text-xs font-semibold text-gray-700 mb-1">📌 Duas opções para o link do seu grupo:</p>
-                            
-                            <div class="flex items-start gap-2 p-2 bg-green-50 rounded-lg">
-                                <i class="fas fa-globe text-green-600 text-sm mt-0.5"></i>
-                                <div>
-                                    <p class="text-xs font-medium text-green-800">🌍 Opção 1 - Link Público (Recomendado)</p>
-                                    <p class="text-xs text-gray-600">Deixe o <strong>link de convite visível para todos</strong> no grupo. O robô lê e cadastra automaticamente! ☺️</p>
-                                </div>
+                        <p class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                            <i class="fas fa-list-check text-green-600"></i> Passo a passo:
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="flex items-start gap-2 bg-white/60 rounded-xl p-2">
+                                <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">1</span>
+                                <span class="text-xs">Clique no botão verde abaixo</span>
                             </div>
-                            
-                            <div class="flex items-start gap-2 p-2 bg-blue-50 rounded-lg">
-                                <i class="fas fa-lock text-blue-600 text-sm mt-0.5"></i>
-                                <div>
-                                    <p class="text-xs font-medium text-blue-800">🔒 Opção 2 - Link Privado</p>
-                                    <p class="text-xs text-gray-600">Se preferir deixar o grupo privado, <strong>adicione o robô como ADMINISTRADOR</strong> para ele conseguir ver o link e cadastrar.</p>
-                                </div>
+                            <div class="flex items-start gap-2 bg-white/60 rounded-xl p-2">
+                                <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">2</span>
+                                <span class="text-xs">Salve o contato do robô 🤖</span>
+                            </div>
+                            <div class="flex items-start gap-2 bg-white/60 rounded-xl p-2">
+                                <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">3</span>
+                                <span class="text-xs">Adicione o robô no seu grupo</span>
+                            </div>
+                            <div class="flex items-start gap-2 bg-white/60 rounded-xl p-2">
+                                <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">4</span>
+                                <span class="text-xs">Aguarde o cadastro automático</span>
                             </div>
                         </div>
                         
-                        <div class="bg-amber-50 rounded-lg p-3 mt-1">
+                        <div class="bg-amber-50 rounded-xl p-3 mt-2">
                             <p class="text-xs text-amber-800 flex items-start gap-2">
-                                <i class="fas fa-smile-wink text-amber-600 mt-0.5"></i>
-                                <span><strong>Pronto! ☺️</strong> Feito isso, o robô vai cadastrar seu grupo automaticamente na Fabi Grupos. Seu grupo aparecerá no site em até 24h, totalmente grátis!</span>
+                                <i class="fas fa-lightbulb text-amber-500 mt-0.5"></i>
+                                <span><strong>Dica importante:</strong> Deixe o link do grupo público ou adicione o robô como administrador se for privado.</span>
                             </p>
                         </div>
                     </div>
                     
-                    <!-- BOTÃO COM MENSAGEM EXPLICATIVA -->
                     <a href="https://wa.me/558393817110?text=Ol%C3%A1%20%F0%9F%A4%96%20Eu%20sou%20a%20Rob%C3%B4%20da%20Fabi%20Grupos%21%0A%0AMuito%20bem%2C%20agora%20%C3%A9%20s%C3%B3%20voc%C3%AA%20salvar%20meu%20contato%20aqui%20e%20me%20adicionar%20no%20seu%20grupo%20do%20WhatsApp.%0A%0A%E2%98%BA%EF%B8%8F%20N%C3%A3o%20esquece%20de%20deixar%20seu%20link%20do%20grupo%20p%C3%BAblico%20para%20qualquer%20pessoa%20pegar.%20Ou%20se%20preferir%20deixar%20privado%2C%20me%20coloca%20como%20Administradora%20que%20eu%20consigo%20ver%20o%20link%20e%20cadastrar%20do%20mesmo%20jeito%21%0A%0APode%20deixar%20que%20eu%20cuido%20do%20resto%20%F0%9F%9A%80%20Assim%20que%20eu%20entrar%20no%20seu%20grupo%2C%20vou%20cadastrar%20ele%20automaticamente%20na%20Fabi%20Grupos%20e%20come%C3%A7ar%20a%20divulgar%20para%20todo%20mundo%21%0A%0AJuntos%20vamos%20fazer%20seu%20grupo%20crescer%20%F0%9F%92%9C" 
                        target="_blank" 
-                       class="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition-all duration-300 mt-4 shadow-md">
+                       class="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition-all duration-300 mt-4 shadow-md w-full">
                         <i class="fab fa-whatsapp text-xl"></i>
-                        🤖 Começar agora - Falar com o robô
+                        🤖 Falar com o robô agora
                     </a>
-                    
-                    <p class="text-xs text-center text-gray-500 mt-2">
-                        ⚡ O robô responde automaticamente! Depois de salvar o contato, adicione ele no seu grupo.
-                    </p>
                 </div>
-
-                <!-- MÉTODO PAGO - DESTAQUE ESPECIAL -->
-                <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-200">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 gradient-bg rounded-full flex items-center justify-center">
-                            <i class="fas fa-crown text-white text-lg"></i>
+                
+                <!-- ========== MÉTODO PREMIUM ========== -->
+                <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-5 border-2 border-purple-300 shadow-lg relative overflow-hidden">
+                    <div class="absolute -top-3 -right-3">
+                        <span class="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-3 py-1 rounded-full shadow-lg animate-pulse">🏆 PREMIUM</span>
+                    </div>
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-crown text-white text-3xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-purple-700">🚀 Destaque Especial (Pago)</h3>
-                            <p class="text-xs text-purple-600">Seu grupo no TOPO + Selo de destaque + Proteção avançada</p>
+                            <h3 class="font-bold text-purple-700 text-xl">Destaque Especial</h3>
+                            <p class="text-sm text-purple-600">Máxima visibilidade + Proteção avançada</p>
                         </div>
                     </div>
                     
-                    <p class="text-sm mb-3">Ao alugar a <strong class="text-purple-700">FabiBot Premium</strong>, seu grupo ganha:</p>
-                    <ul class="space-y-1 text-sm mb-3">
-                        <li class="flex items-center gap-2">✅ <span>🏆 <strong>Banner exclusivo</strong> no topo do site</span></li>
-                        <li class="flex items-center gap-2">✅ <span>🔥 Selo <strong>"Grupo em Destaque"</strong> com animação</span></li>
-                        <li class="flex items-center gap-2">✅ <span>📊 Prioridade na lista de grupos</span></li>
-                        <li class="flex items-center gap-2">✅ <span>🛡️ Proteção anti-spam, anti-pornô e anti-fake</span></li>
-                        <li class="flex items-center gap-2">✅ <span>👋 Mensagem de boas-vindas automática</span></li>
-                        <li class="flex items-center gap-2">✅ <span>🚫 Bloqueio de links suspeitos</span></li>
-                    </ul>
+                    <div class="grid grid-cols-2 gap-2 mb-4">
+                        <div class="bg-white/60 rounded-xl p-2 text-center">
+                            <i class="fas fa-chart-line text-purple-500 text-lg"></i>
+                            <p class="text-xs font-semibold mt-1">Topo do site</p>
+                        </div>
+                        <div class="bg-white/60 rounded-xl p-2 text-center">
+                            <i class="fas fa-fire text-orange-500 text-lg"></i>
+                            <p class="text-xs font-semibold mt-1">Selo animado</p>
+                        </div>
+                        <div class="bg-white/60 rounded-xl p-2 text-center">
+                            <i class="fas fa-shield-alt text-green-500 text-lg"></i>
+                            <p class="text-xs font-semibold mt-1">Anti-spam</p>
+                        </div>
+                        <div class="bg-white/60 rounded-xl p-2 text-center">
+                            <i class="fas fa-robot text-blue-500 text-lg"></i>
+                            <p class="text-xs font-semibold mt-1">Moderação 24h</p>
+                        </div>
+                    </div>
                     
-                    <div class="bg-white rounded-lg p-3 text-center mb-3">
-                        <p class="text-sm font-semibold text-purple-700">🔥 A partir de <span class="text-2xl">R$ 9,90</span>/mês</p>
-                        <p class="text-xs text-gray-500">Divulgação automática garantida enquanto o robô estiver no grupo</p>
+                    <div class="bg-white rounded-xl p-3 text-center mb-4">
+                        <p class="text-sm font-semibold text-purple-700">🔥 A partir de <span class="text-3xl font-bold">R$ 30,00</span>/mês</p>
+                        <p class="text-xs text-gray-500">Investimento com retorno garantido</p>
                     </div>
                     
                     <a href="https://Fabibot.vercel.app" 
                        target="_blank" 
-                       class="flex items-center justify-center gap-2 gradient-bg hover:gradient-bg-hover text-white font-bold py-2.5 rounded-xl transition-all duration-300 shadow-md">
-                        <i class="fas fa-rocket text-sm"></i>
-                        Conhecer a FabiBot Premium
+                       class="flex items-center justify-center gap-2 gradient-bg hover:gradient-bg-hover text-white font-bold py-3 rounded-xl transition-all duration-300 shadow-md w-full">
+                        <i class="fas fa-rocket text-lg"></i>
+                        Quero ser Premium
                     </a>
                 </div>
-
-                <!-- COMPARAÇÃO RÁPIDA -->
-                <div class="bg-gray-50 rounded-xl p-3 text-center">
-                    <p class="text-xs text-gray-500">
-                        💡 <strong>Dúvidas?</strong> O robô gratuito cadastra seu grupo sem custo, mas sem destaque visual.<br>
-                        O plano pago garante <strong class="text-purple-600">maior visibilidade e proteção avançada</strong> para seu grupo!
+                
+                <!-- ========== RODAPÉ INFORMATIVO ========== -->
+                <div class="mt-6 text-center">
+                    <p class="text-xs text-gray-400">
+                        📢 Mais de <strong class="text-purple-600">500 grupos</strong> já foram cadastrados através do nosso robô
                     </p>
-                    <p class="text-xs text-gray-400 mt-2">
-                        📌 Mais de <strong>500 grupos já cadastrados</strong> através do nosso robô automático!
+                    <p class="text-xs text-gray-400 mt-1">
+                        Dúvidas? Fale conosco pelo WhatsApp ou no canal oficial
                     </p>
                 </div>
             </div>
@@ -1858,7 +1946,6 @@ function showAdvertiseModal() {
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
-
 // Controle do menu dropdown
 document.addEventListener('DOMContentLoaded', function() {
     const menuButton = document.getElementById('menuButton');
@@ -1889,10 +1976,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 allGroups = data.filter(g => g.link && g.link.trim() && g.link.startsWith('https://chat.whatsapp.com/'));
                 allGroups.sort((a, b) => (b.participantes || 0) - (a.participantes || 0));
-                
-                updateStats();
-                identificarGruposCampeoes();
-                
+
+// Sincronizar com ranking ANTES de identificar campeões
+await sincronizarCampeoesComRanking();
+updateStats();
+identificarGruposCampeoes();
                 if (!allGroups.length) throw new Error('Nenhum grupo com link encontrado');
                 
                 renderCategories();
