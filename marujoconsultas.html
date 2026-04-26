@@ -1163,12 +1163,22 @@
                         <div class="input-wrapper"><div class="input-row"><i class="fas fa-car-side"></i><input type="text" id="placa" placeholder="EX: ABC1D23" maxlength="7" style="text-transform:uppercase;"></div><div class="divider"></div><div class="input-row"><i class="fas fa-filter"></i><select id="placaVersao"><option value="v2">V2 - Proprietário e Débitos</option></select></div></div>
                     </div>
 
-                    <div id="telefoneGroup" class="consulta-group">
-                        <div class="form-label">PARÂMETROS DE BUSCA - TELEFONE</div>
-                        <div class="input-wrapper"><div class="input-row"><i class="fas fa-satellite"></i><input type="text" id="telefone" placeholder="Cole qualquer formato: (21) 98904-7220 ou 21989047220" oninput="formatarTelefoneInput(this)"></div><div class="telefone-formatado" id="telefoneAjuda"><i class="fas fa-magic"></i> Aceita qualquer formato</div></div>
-                        <div class="chips-container"><span class="chip" onclick="preencherDemo('telefone','21989047220')">Demo 1</span><span class="chip" onclick="preencherDemo('telefone','(21) 98904-7220')">Demo 2</span></div>
-                    </div>
-
+<div id="telefoneGroup" class="consulta-group">
+    <div class="form-label">PARÂMETROS DE BUSCA - TELEFONE V2</div>
+    <div class="input-wrapper">
+        <div class="input-row">
+            <i class="fas fa-satellite"></i>
+            <input type="text" id="telefone" placeholder="Ex: 21989047220 ou (21) 98904-7220" oninput="formatarTelefoneInput(this)">
+        </div>
+        <div class="telefone-formatado" id="telefoneAjuda">
+            <i class="fas fa-info-circle"></i> ⚠️ NÃO USE 55 antes do número! Apenas DDD + número.
+        </div>
+    </div>
+    <div class="chips-container">
+        <span class="chip" onclick="preencherDemo('telefone','21989047220')">Demo 1</span>
+        <span class="chip" onclick="preencherDemo('telefone','(21) 98904-7220')">Demo 2</span>
+    </div>
+</div>
 <div id="veiculoGroup" class="consulta-group">
     <div class="form-label">PARÂMETROS DE BUSCA - CHASSI/MOTOR</div>
     <div class="input-wrapper">
@@ -2869,42 +2879,70 @@ function formatarTelefone(telefone) {
         // ==========================================
         function limparCPF(valor) { let limpo = valor.replace(/[^\d]/g, ''); return limpo.length === 11 ? limpo : null; }
         function limparCNPJ(valor) { let limpo = valor.replace(/[^\d]/g, ''); return limpo.length === 14 ? limpo : null; }
-        function limparTelefone(valor) {
+function limparTelefone(valor) {
     let limpo = valor.replace(/[^\d]/g, '');
-    if(limpo.startsWith('55') && limpo.length > 10) limpo = limpo.substring(2);
     
-    // Validação mais detalhada
+    // BLOQUEIA NÚMERO COM 55
+    if (limpo.startsWith('55')) {
+        return { 
+            valido: false, 
+            numero: limpo, 
+            erro: '❌ NÃO é permitido usar o código 55 antes do telefone!',
+            dica: 'Remova o 55. Use apenas DDD + número. Exemplo: 21999999999 (celular) ou 2133333333 (fixo)'
+        };
+    }
+    
     if (limpo.length === 10) {
         return { valido: true, numero: limpo, tipo: 'fixo' };
     } else if (limpo.length === 11) {
         return { valido: true, numero: limpo, tipo: 'celular' };
     } else if (limpo.length === 8 || limpo.length === 9) {
-        // Número sem DDD
         return { 
             valido: false, 
             numero: limpo, 
-            erro: 'Telefone sem DDD. Inclua o DDD (ex: 21) antes do número.',
+            erro: '❌ Telefone sem DDD. Inclua o DDD (ex: 21) antes do número.',
             dica: 'Adicione o DDD na frente. Ex: 21' + limpo
         };
     } else {
         return { 
             valido: false, 
             numero: limpo, 
-            erro: 'Telefone inválido. O número deve ter 10 ou 11 dígitos.',
+            erro: '❌ Telefone inválido. O número deve ter 10 ou 11 dígitos (sem o 55!).',
             dica: 'Para celular: DDD + 9 + número (ex: 21999999999). Para fixo: DDD + número (ex: 2133333333)'
         };
     }
 }
         
         function formatarTelefoneInput(input) {
-            let numeros = input.value.replace(/[^\d]/g, '');
-            if(numeros.startsWith('55') && numeros.length > 10) numeros = numeros.substring(2);
-            const ajudaSpan = document.getElementById('telefoneAjuda');
-            if(numeros.length === 10) ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Telefone fixo válido`;
-            else if(numeros.length === 11) ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Telefone celular válido`;
-            else if(numeros.length > 0) ajudaSpan.innerHTML = `<i class="fas fa-info-circle"></i> Aguardando ${numeros.length}/10-11 dígitos`;
-            else ajudaSpan.innerHTML = `<i class="fas fa-magic"></i> Aceita qualquer formato`;
-        }
+    let numeros = input.value.replace(/[^\d]/g, '');
+    
+    // DETECTA E AVISA SOBRE O CÓDIGO 55
+    if (numeros.startsWith('55')) {
+        const ajudaSpan = document.getElementById('telefoneAjuda');
+        ajudaSpan.innerHTML = `<i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> ❌ NÃO use 55 antes do número! Remova o código do Brasil. Use apenas DDD (ex: 21) + número.`;
+        ajudaSpan.style.color = '#ef4444';
+        return;
+    }
+    
+    if (numeros.startsWith('55') && numeros.length > 10) {
+        numeros = numeros.substring(2);
+    }
+    
+    const ajudaSpan = document.getElementById('telefoneAjuda');
+    ajudaSpan.style.color = '';
+    
+    if (numeros.length === 10) {
+        ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> ✅ Telefone fixo válido (sem 55!)`;
+    } else if (numeros.length === 11) {
+        ajudaSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> ✅ Telefone celular válido (sem 55!)`;
+    } else if (numeros.length > 0 && numeros.length < 10) {
+        ajudaSpan.innerHTML = `<i class="fas fa-info-circle"></i> Aguardando ${numeros.length}/10-11 dígitos. ⚠️ NÃO inclua 55!`;
+    } else if (numeros.length > 11) {
+        ajudaSpan.innerHTML = `<i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Número muito longo. Remova o 55 se tiver colocado!`;
+    } else {
+        ajudaSpan.innerHTML = `<i class="fas fa-info-circle"></i> ⚠️ NÃO USE 55! Digite apenas DDD + número. Ex: 21989047220`;
+    }
+}
 
         function switchTab(tab, btnElement) { 
             currentTab = tab; 
