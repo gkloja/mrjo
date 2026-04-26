@@ -2233,51 +2233,34 @@ async function realizarConsulta() {
                 mostrarErro('❌ Placa inválida! A placa deve ter 7 caracteres.\n\nExemplo: ABC1D23 ou ABC-1234');
                 return; 
             }
-            // CORREÇÃO: Usar versão v2 por padrão para mais dados
-            versao = 'v2'; // Força usar a versão v2 que tem mais informações
+            versao = 'v2';
             break;
-case 'telefone': 
-    let telRaw = document.getElementById('telefone').value.trim();
-    if(!telRaw) { mostrarErro('❌ Digite um telefone para consultar.'); return; }
-    
-    const telefoneValidado = limparTelefone(telRaw);
-    if(!telefoneValidado.valido) {
-        mostrarErro(`❌ ${telefoneValidado.erro}\n\n💡 Dica: ${telefoneValidado.dica}`);
-        return;
-    }
-    valor = telefoneValidado.numero;
-    versao = 'v2';  // <--- ADICIONE ESTA LINHA
-    
-    if(telefoneValidado.tipo === 'fixo') {
-        showToast('📞 Telefone fixo identificado. A consulta pode ter menos resultados.', 'info');
-    }
-    break;
-case 'veiculo': 
-    const veiculoTipo = document.getElementById('veiculoTipo').value;
-    tipo = veiculoTipo; // 'motor' ou 'chassi'
-    valor = document.getElementById('veiculoValor').value.trim().toUpperCase();
-    if(!valor) { 
-        mostrarErro('❌ Digite o número do motor ou chassi para consultar.');
-        return; 
-    }
-    if (veiculoTipo === 'motor' && valor.length < 5) {
-        mostrarErro('❌ Número do motor muito curto. O motor geralmente tem de 5 a 12 caracteres.\n\nExemplo: UD316909');
-        return;
-    }
-    if (veiculoTipo === 'chassi' && valor.length < 8) {
-        mostrarErro('❌ Chassi inválido! O chassi deve ter 17 caracteres.\n\nExemplo: 9BWZZZ30ZPP227569');
-        return;
-    }
-    break;
+        case 'telefone': 
+            let telRaw = document.getElementById('telefone').value.trim();
+            if(!telRaw) { mostrarErro('❌ Digite um telefone para consultar.'); return; }
+            
+            const telefoneValidado = limparTelefone(telRaw);
+            if(!telefoneValidado.valido) {
+                mostrarErro(`❌ ${telefoneValidado.erro}\n\n💡 Dica: ${telefoneValidado.dica}`);
+                return;
+            }
+            valor = telefoneValidado.numero;
+            versao = 'v2';
+            break;
+        case 'veiculo': 
+            const veiculoTipo = document.getElementById('veiculoTipo').value;
+            tipo = veiculoTipo;
+            valor = document.getElementById('veiculoValor').value.trim().toUpperCase();
+            if(!valor) { 
+                mostrarErro('❌ Digite o número do motor ou chassi para consultar.');
+                return; 
+            }
+            break;
         case 'foto': 
             valor = document.getElementById('nomeFoto').value.trim(); 
             if(!valor) { 
                 mostrarErro('❌ Digite o nome completo para consulta biométrica.');
                 return; 
-            }
-            if(valor.length < 5) {
-                mostrarErro('❌ Nome muito curto. Digite o nome completo para melhores resultados.');
-                return;
             }
             break;
         case 'nome':
@@ -2285,10 +2268,6 @@ case 'veiculo':
             if(!valor) { 
                 mostrarErro('❌ Digite um nome para buscar.\n\nExemplo: PEDRO HENRIQUE');
                 return; 
-            }
-            if(valor.length < 5) {
-                mostrarErro('❌ Nome muito curto. Digite o nome completo para melhores resultados.');
-                return;
             }
             tipo = 'nome';
             break;
@@ -2310,22 +2289,33 @@ case 'veiculo':
         if(!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
         
-        // Verifica se encontrou dados
+        // ==========================================
+        // VERIFICAÇÃO CORRIGIDA - A ALTERAÇÃO É AQUI!
+        // ==========================================
         const temDados = data.status === 'true' || data.status === true;
         
-        // CORREÇÃO: Verificação específica para placa v2
         let temResultados = false;
         
         if (tipo === 'placa' && versao === 'v2') {
-            // Para versão v2, verifica se tem veiculo e identificacao
             temResultados = data.resultado && 
                 (data.resultado.veiculo || data.resultado.identificacao);
-        } else {
+        } 
+        else if (tipo === 'telefone') {
+            // CORREÇÃO PRINCIPAL: verifica se é um ARRAY com dados
+            temResultados = data.resultado && 
+                Array.isArray(data.resultado) && 
+                data.resultado.length > 0;
+        }
+        else if (tipo === 'nome') {
+            temResultados = data.resultado && 
+                data.resultado.resultados && 
+                data.resultado.resultados.length > 0;
+        }
+        else {
             temResultados = data.resultado && (
                 (data.resultado.resultados && data.resultado.resultados.length > 0) ||
                 (data.resultado.cpf) ||
                 (data.resultado.placa) ||
-                (data.resultado.telefone) ||
                 (data.resultado.empresa) ||
                 (data.resultado.bases)
             );
