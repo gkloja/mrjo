@@ -2236,21 +2236,22 @@ async function realizarConsulta() {
             // CORREÇÃO: Usar versão v2 por padrão para mais dados
             versao = 'v2'; // Força usar a versão v2 que tem mais informações
             break;
-        case 'telefone': 
-            let telRaw = document.getElementById('telefone').value.trim();
-            if(!telRaw) { mostrarErro('❌ Digite um telefone para consultar.'); return; }
-            
-            const telefoneValidado = limparTelefone(telRaw);
-            if(!telefoneValidado.valido) {
-                mostrarErro(`❌ ${telefoneValidado.erro}\n\n💡 Dica: ${telefoneValidado.dica}`);
-                return;
-            }
-            valor = telefoneValidado.numero;
-            
-            if(telefoneValidado.tipo === 'fixo') {
-                showToast('📞 Telefone fixo identificado. A consulta pode ter menos resultados.', 'info');
-            }
-            break;
+case 'telefone': 
+    let telRaw = document.getElementById('telefone').value.trim();
+    if(!telRaw) { mostrarErro('❌ Digite um telefone para consultar.'); return; }
+    
+    const telefoneValidado = limparTelefone(telRaw);
+    if(!telefoneValidado.valido) {
+        mostrarErro(`❌ ${telefoneValidado.erro}\n\n💡 Dica: ${telefoneValidado.dica}`);
+        return;
+    }
+    valor = telefoneValidado.numero;
+    versao = 'v2';  // <--- ADICIONE ESTA LINHA
+    
+    if(telefoneValidado.tipo === 'fixo') {
+        showToast('📞 Telefone fixo identificado. A consulta pode ter menos resultados.', 'info');
+    }
+    break;
 case 'veiculo': 
     const veiculoTipo = document.getElementById('veiculoTipo').value;
     tipo = veiculoTipo; // 'motor' ou 'chassi'
@@ -3478,9 +3479,10 @@ else if (dados.resultado && (dados.resultado.veiculo || dados.resultado.placa)) 
     html = formatarResultadoPlaca(dados);
 }
     // Telefone
-    else if (dados.resultado && dados.resultado.telefone) {
-        html = formatarResultadoTelefone(dados.resultado);
-    }
+// Telefone V2 (array de resultados)
+else if (dados.resultado && Array.isArray(dados.resultado) && dados.resultado.length > 0) {
+    html = formatarResultadoTelefone(dados.resultado);
+}
     // Qualquer outro dado
     else {
         html = formatarDadosGenericos(dados.resultado || dados);
@@ -3898,11 +3900,17 @@ function formatarResultadoPlacaV1(data) {
     return html;
 }
 
-function formatarResultadoTelefone(data) {
-    // A V2 retorna um array dentro de 'resultado'
-    const resultados = data.resultado || data;
+function formatarResultadoTelefone(resultados) {
+    // Se não é array, tenta extrair
+    if (!Array.isArray(resultados)) {
+        if (resultados && resultados.resultado && Array.isArray(resultados.resultado)) {
+            resultados = resultados.resultado;
+        } else {
+            resultados = [resultados];
+        }
+    }
     
-    if (!Array.isArray(resultados) || resultados.length === 0) {
+    if (resultados.length === 0 || !resultados[0]) {
         return '<div class="info-card">Nenhum resultado encontrado para este telefone</div>';
     }
     
