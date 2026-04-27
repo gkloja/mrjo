@@ -894,12 +894,12 @@ body.dark-mode .gradient-text {
                     <p class="text-xs text-gray-400 mt-0.5">Patrocínios especiais</p>
                 </div>
             </div>
-            <!-- Botão de anúncio compacto -->
-            <a href="#" onclick="abrirDivulgacao(); return false;" class="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 text-purple-600 text-xs font-medium rounded-full border border-purple-200 transition group">
-                <i class="fas fa-chart-line text-[10px] group-hover:scale-110 transition"></i>
-                <span>Destacar grupo</span>
-                <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full text-[10px] font-bold">R$1,99</span>
-            </a>
+<!-- Botão de anúncio melhorado -->
+<button onclick="showHighlightInfo()" class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-sm font-semibold rounded-full shadow-lg transition-all duration-300 group">
+    <i class="fas fa-crown text-yellow-300 group-hover:scale-110 transition"></i>
+    <span>Destacar grupo</span>
+    <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition"></i>
+</button>
         </div>
 
         <!-- Carrossel com scroll horizontal -->
@@ -1236,6 +1236,149 @@ async function carregarGruposDestaque() {
     }
 }
 
+
+// ==================== FUNÇÃO PARA DESTACAR GRUPO ====================
+function showHighlightInfo() {
+    modalContent.innerHTML = `
+        <div class="relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 bg-white/90 dark:bg-gray-800 backdrop-blur rounded-full flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition z-20 shadow-lg">
+                <i class="fas fa-times text-gray-600 dark:text-gray-300"></i>
+            </button>
+            
+            <div class="p-6 dark:bg-gray-900">
+                <!-- Ícone principal -->
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl shadow-lg mb-4 animate-pulse">
+                        <i class="fas fa-crown text-white text-4xl"></i>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-bold gradient-text">🌟 Destacar Grupo</h2>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mt-2">Dê visibilidade máxima para sua comunidade!</p>
+                </div>
+                
+                <!-- Passo 1 - Adicionar Fabi Bot -->
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-2xl p-5 border-2 border-green-300 dark:border-green-700 shadow-lg relative overflow-hidden mb-5">
+                    <div class="absolute -top-3 -right-3">
+                        <span class="bg-green-500 text-white text-xs px-3 py-1 rounded-full shadow-lg">📌 PASSO 1</span>
+                    </div>
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg animate-bounce">
+                            <i class="fab fa-whatsapp text-white text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-green-700 dark:text-green-400 text-lg">Adicione a Fabi Grupos</h3>
+                            <p class="text-sm text-green-600 dark:text-green-400">A robô oficial da Fabi Grupos</p>
+                        </div>
+                    </div>
+                    <div class="bg-white/60 dark:bg-gray-800/60 rounded-xl p-4">
+                        <p class="text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2 mb-3">
+                            <i class="fab fa-whatsapp text-green-500 text-lg"></i>
+                            <span><strong>Contato do Fabi Bot:</strong></span>
+                        </p>
+                        <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg p-2">
+                            <code class="flex-1 text-sm text-gray-700 dark:text-gray-300 font-mono">+55 83 93817-110</code>
+                            <button onclick="copiarNumeroBot()" class="px-3 py-1 bg-purple-500 hover:bg-purple-600 text-white text-xs rounded-lg transition">
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                        <a href="https://wa.me/558393817110?text=Ol%C3%A1%20%F0%9F%A4%96%20Eu%20sou%20a%20Rob%C3%B4%20da%20Fabi%20Grupos%21%0A%0AMuito%20bem%2C%20agora%20%C3%A9%20s%C3%B3%20voc%C3%AA%20salvar%20meu%20contato%20aqui%20e%20me%20adicionar%20no%20seu%20grupo%20do%20WhatsApp.%0A%0A%E2%98%BA%EF%B8%8F%20N%C3%A3o%20esquece%20de%20deixar%20seu%20link%20do%20grupo%20p%C3%BAblico%20para%20qualquer%20pessoa%20pegar.%20Ou%20se%20preferir%20deixar%20privado%2C%20me%20coloca%20como%20Administradora%20que%20eu%20consigo%20ver%20o%20link%20e%20cadastrar%20do%20mesmo%20jeito%21%0A%0APode%20deixar%20que%20eu%20cuido%20do%20resto%20%F0%9F%9A%80%20Assim%20que%20eu%20entrar%20no%20seu%20grupo%2C%20vou%20cadastrar%20ele%20automaticamente%20na%20Fabi%20Grupos%20e%20come%C3%A7ar%20a%20divulgar%20para%20todo%20mundo%21%0A%0AJuntos%20vamos%20fazer%20seu%20grupo%20crescer%20%F0%9F%92%9C" 
+                           target="_blank" 
+                           class="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-xl transition-all duration-300 mt-3 shadow-md w-full">
+                            <i class="fab fa-whatsapp text-xl"></i>
+                            Adicionar Fabi Grupos agora
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Passo 2 - Usar comando -->
+                <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-2xl p-5 border-2 border-purple-300 dark:border-purple-700 shadow-lg relative overflow-hidden mb-5">
+                    <div class="absolute -top-3 -right-3">
+                        <span class="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-3 py-1 rounded-full shadow-lg">⚡ PASSO 2</span>
+                    </div>
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-terminal text-white text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-purple-700 dark:text-purple-400 text-lg">Use o comando</h3>
+                            <p class="text-sm text-purple-600 dark:text-purple-400">No grupo que você quer destacar</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 rounded-xl p-4 shadow-inner">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs text-gray-400">COMANDO DISPONÍVEL</span>
+                            <i class="fas fa-robot text-purple-400 text-sm"></i>
+                        </div>
+                        <div class="flex items-center gap-2 bg-gray-800 rounded-lg p-3">
+                            <code class="flex-1 text-center text-lg text-green-400 font-mono font-bold">/divulgar</code>
+                            <button onclick="copiarComando()" class="px-3 py-1 bg-purple-500 hover:bg-purple-600 text-white text-xs rounded-lg transition">
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-3 text-center">
+                            Digite <strong class="text-green-400">/divulgar</strong> no grupo onde você adicionou a Fabi Grupos
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Benefícios -->
+                <div class="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/30 dark:to-orange-950/30 rounded-2xl p-4 border border-yellow-200 dark:border-yellow-800">
+                    <h4 class="font-bold text-yellow-700 dark:text-yellow-400 text-sm mb-3 flex items-center gap-2">
+                        <i class="fas fa-star"></i> O que você ganha ao destacar?
+                    </h4>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <i class="fas fa-chart-line text-purple-500"></i>
+                            <span>Topo do site</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <i class="fas fa-fire text-orange-500"></i>
+                            <span>Selo "Destaque"</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <i class="fas fa-eye text-blue-500"></i>
+                            <span>+10x visualizações</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <i class="fas fa-clock text-green-500"></i>
+                            <span>Duração: 24h</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botão de suporte -->
+                <div class="mt-6 text-center">
+                    <a href="https://wa.me/558393817110?text=Ol%C3%A1%20%F0%9F%A4%96%20Eu%20sou%20a%20Rob%C3%B4%20da%20Fabi%20Grupos%21%0A%0AMuito%20bem%2C%20agora%20%C3%A9%20s%C3%B3%20voc%C3%AA%20salvar%20meu%20contato%20aqui%20e%20me%20adicionar%20no%20seu%20grupo%20do%20WhatsApp.%0A%0A%E2%98%BA%EF%B8%8F%20N%C3%A3o%20esquece%20de%20deixar%20seu%20link%20do%20grupo%20p%C3%BAblico%20para%20qualquer%20pessoa%20pegar.%20Ou%20se%20preferir%20deixar%20privado%2C%20me%20coloca%20como%20Administradora%20que%20eu%20consigo%20ver%20o%20link%20e%20cadastrar%20do%20mesmo%20jeito%21%0A%0APode%20deixar%20que%20eu%20cuido%20do%20resto%20%F0%9F%9A%80%20Assim%20que%20eu%20entrar%20no%20seu%20grupo%2C%20vou%20cadastrar%20ele%20automaticamente%20na%20Fabi%20Grupos%20e%20come%C3%A7ar%20a%20divulgar%20para%20todo%20mundo%21%0A%0AJuntos%20vamos%20fazer%20seu%20grupo%20crescer%20%F0%9F%92%9C" 
+                       target="_blank" 
+                       class="inline-flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 text-sm font-medium transition">
+                        <i class="fas fa-headset"></i>
+                        Precisa de ajuda? Fale conosco
+                        <i class="fas fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    `;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+// Função para copiar o número do bot
+function copiarNumeroBot() {
+    navigator.clipboard.writeText("558393817110").then(() => {
+        showToast("✅ Número do Fabi Bot copiado! Adicione no WhatsApp.", "success");
+    }).catch(() => {
+        showToast("❌ Erro ao copiar. Tente manualmente: 83 93817-110", "error");
+    });
+}
+
+// Função para copiar o comando
+function copiarComando() {
+    navigator.clipboard.writeText("/divulgar").then(() => {
+        showToast("✅ Comando /divulgar copiado! Use no grupo com o Fabi Bot.", "success");
+    }).catch(() => {
+        showToast("❌ Erro ao copiar comando.", "error");
+    });
+}
 // ==================== DARK MODE AUTOMÁTICO ====================
 function detectSystemDarkMode() {
     // Verifica se o usuário já escolheu manualmente
