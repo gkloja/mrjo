@@ -37,10 +37,10 @@
     
     <!-- FAVICON E ÍCONES (MANTIDOS DO MARUJO FLIX) -->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="imagens/file_000000007d3871f5816d0e09997b2542~2.png" type="image/x-icon">
-    <link rel="apple-touch-icon" sizes="180x180" href="imagens/file_000000007d3871f5816d0e09997b2542~2.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="imagens/file_000000007d3871f5816d0e09997b2542~2.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="imagens/file_000000007d3871f5816d0e09997b2542~2.png">
+    <link rel="shortcut icon" href="imagens/1777315269352.png" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="imagens/1777315269352.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="imagens/1777315269352.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="imagens/1777315269352.png">
     
     <!-- CANONICAL URL (APONTANDO PARA O FABIGRUPOS) -->
     <link rel="canonical" href="https://marujoflix.onrender.com/fabigrupos">
@@ -64,7 +64,7 @@
     <meta property="og:title" content="Fabi Grupos - Encontre sua tribo ideal no WhatsApp">
     <meta property="og:description" content="+1000 grupos ativos! Amizade, tecnologia, notícias, música, jogos e muito mais. Participe das melhores comunidades WhatsApp.">
     <meta property="og:url" content="https://marujoflix.onrender.com/fabigrupos">
-    <meta property="og:image" content="https://marujoflix.onrender.com/imagens/file_000000007d3871f5816d0e09997b2542~2.png">
+    <meta property="og:image" content="https://marujoflix.onrender.com/imagens/1777315269352.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Fabi Grupos - Comunidades no WhatsApp">
@@ -75,7 +75,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Fabi Grupos - Melhores grupos WhatsApp">
     <meta name="twitter:description" content="Encontre comunidades incríveis no WhatsApp. Amizade, tecnologia, música e mais!">
-    <meta name="twitter:image" content="https://marujoflix.onrender.com/imagens/file_000000007d3871f5816d0e09997b2542~2.png">
+    <meta name="twitter:image" content="https://marujoflix.onrender.com/imagens/1777315269352.png">
     <meta name="twitter:site" content="@marujodigital">
     <meta name="twitter:creator" content="@marujodigital">
     
@@ -103,7 +103,7 @@
         "@type": "Organization",
         "name": "Marujo Digital",
         "url": "https://marujoflix.onrender.com/",
-        "logo": "https://marujoflix.onrender.com/imagens/file_000000007d3871f5816d0e09997b2542~2.png",
+        "logo": "https://marujoflix.onrender.com/imagens/1777315269352.png",
         "sameAs": [
             "https://www.facebook.com/marujodigital",
             "https://twitter.com/marujodigital",
@@ -382,6 +382,159 @@
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
 }
+/* ==================== DARK MODE ==================== */
+:root {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    --border-color: #e2e8f0;
+    --card-bg: #ffffff;
+    --header-bg: rgba(255, 255, 255, 0.95);
+}
+
+body.dark-mode {
+    --bg-primary: #0f0f1a;
+    --bg-secondary: #1a1a2e;
+    --text-primary: #f3f4f6;
+    --text-secondary: #9ca3af;
+    --border-color: #2d2d4a;
+    --card-bg: #1e1e2e;
+    --header-bg: rgba(26, 26, 46, 0.95);
+}
+
+body.dark-mode {
+    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+}
+
+body.dark-mode .bg-white {
+    background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .text-gray-800,
+body.dark-mode .text-gray-700,
+body.dark-mode .text-gray-900 {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .text-gray-500,
+body.dark-mode .text-gray-400,
+body.dark-mode .text-gray-600 {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .bg-white\/95,
+body.dark-mode .bg-white\/90,
+body.dark-mode .bg-white\/80,
+body.dark-mode .bg-white\/60 {
+    background-color: var(--header-bg) !important;
+}
+
+body.dark-mode .border-gray-100,
+body.dark-mode .border-gray-200,
+body.dark-mode .border-purple-100 {
+    border-color: var(--border-color) !important;
+}
+
+body.dark-mode .bg-gray-50,
+body.dark-mode .bg-gray-100 {
+    background-color: #252540 !important;
+}
+
+body.dark-mode .bg-purple-50 {
+    background-color: #2d1b4e !important;
+}
+
+body.dark-mode .bg-red-50 {
+    background-color: #3b1a1a !important;
+}
+
+body.dark-mode .bg-amber-50 {
+    background-color: #3d2b1a !important;
+}
+
+body.dark-mode .category-inactive {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+body.dark-mode .category-inactive:hover {
+    background: #2d2d4a;
+    border-color: #8B5CF6;
+}
+
+body.dark-mode .stat-card {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color);
+}
+
+body.dark-mode .shimmer {
+    background: linear-gradient(90deg, #2d2d4a 0%, #3d3d5a 50%, #2d2d4a 100%);
+    background-size: 1000px 100%;
+}
+
+body.dark-mode .dropdown-menu {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .dropdown-menu .text-gray-700 {
+    color: var(--text-primary);
+}
+
+body.dark-mode .dropdown-menu .hover\:bg-purple-50:hover {
+    background-color: #2d1b4e;
+}
+
+body.dark-mode #searchInput {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+}
+
+body.dark-mode .video-label {
+    background-color: #1a1a2e;
+    color: var(--text-secondary);
+}
+
+body.dark-mode footer {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+/* Correção para o título principal no modo escuro */
+body.dark-mode h1,
+body.dark-mode .text-gray-800,
+body.dark-mode .text-gray-900 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .gradient-text {
+    background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+body.dark-mode p.text-gray-500 {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .text-purple-600 {
+    color: #a78bfa !important;
+}
+/* Forçar cor branca nos títulos principais */
+body.dark-mode h1,
+body.dark-mode h1 span:not(.gradient-text),
+body.dark-mode .leading-tight {
+    color: #ffffff !important;
+}
+
+body.dark-mode .gradient-text {
+    background: linear-gradient(135deg, #c084fc 0%, #f472b6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
     </style>
 </head>
 <body>
@@ -392,8 +545,9 @@
         <div class="flex h-14 sm:h-16 items-center justify-between">
             <a href="#" onclick="resetToHome(); return false;" class="flex items-center gap-2 cursor-pointer group">
                 <div class="relative">
-                    <div class="w-9 h-9 rounded-xl gradient-bg flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
-                        <i class="fas fa-comment-dots text-white text-sm"></i>
+                    <div class="w-9 h-9 rounded-xl gradient-bg flex items-center justify-center shadow-lg transition-transform group-hover:scale-105 overflow-hidden">
+                        <!-- Logo do site (imagem) -->
+                        <img src="imagens/1777315269352.png" alt="Fabi Grupos" class="w-full h-full object-cover rounded-xl">
                     </div>
                     <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
                 </div>
@@ -410,36 +564,51 @@
                 <button onclick="scrollToNews()" class="px-4 py-1.5 rounded-full text-sm font-medium text-gray-600 hover:text-purple-600 transition">🆕 Novidades</button>
             </div>
             
-            <!-- Botão do Menu (Desktop e Mobile) -->
-            <div class="relative">
-                <button id="menuButton" class="gradient-bg text-white w-9 h-9 rounded-xl flex items-center justify-center shadow-md hover:shadow-lg transition-all">
-                    <i class="fas fa-bars text-white"></i>
+            <!-- Área dos botões da direita -->
+            <div class="flex items-center gap-2">
+                <!-- Botão Modo Escuro -->
+                <button id="darkModeBtn" onclick="toggleDarkMode()" class="w-9 h-9 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center shadow-md transition-all">
+                    <i class="fas fa-moon"></i>
                 </button>
                 
-                <!-- Dropdown Menu -->
-                <div id="dropdownMenu" class="dropdown-menu absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
-                    <div class="p-2">
-                        <a href="#" onclick="showAboutModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
-                            <i class="fas fa-info-circle text-purple-500 w-5"></i>
-                            <span class="text-sm font-medium">Sobre a Fabi Grupos</span>
-                        </a>
-                        <a href="#" onclick="showContactModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
-                            <i class="fas fa-envelope text-purple-500 w-5"></i>
-                            <span class="text-sm font-medium">Contato</span>
-                        </a>
-                        <a href="#" onclick="showTermsModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
-                            <i class="fas fa-file-alt text-purple-500 w-5"></i>
-                            <span class="text-sm font-medium">Termos de Uso</span>
-                        </a>
-                        <a href="#" onclick="showPrivacyModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
-                            <i class="fas fa-shield-alt text-purple-500 w-5"></i>
-                            <span class="text-sm font-medium">Privacidade</span>
-                        </a>
-                        <div class="border-t border-gray-100 my-1"></div>
-                        <a href="#" onclick="showAdvertiseModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
-                            <i class="fas fa-chart-line text-purple-500 w-5"></i>
-                            <span class="text-sm font-medium">Anuncie seu grupo</span>
-                        </a>
+                <!-- Botão Enviar Grupo -->
+                <button onclick="showAdvertiseModal()" class="gradient-bg text-white px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                    <i class="fas fa-paper-plane text-xs"></i>
+                    <span class="hidden sm:inline">Enviar grupo</span>
+                    <span class="sm:hidden">Enviar Grupo</span>
+                </button>
+                
+                <!-- Botão do Menu (3 pontos) -->
+                <div class="relative">
+                    <button id="menuButton" class="gradient-bg text-white w-9 h-9 rounded-xl flex items-center justify-center shadow-md hover:shadow-lg transition-all">
+                        <i class="fas fa-bars text-white"></i>
+                    </button>
+                    
+                    <!-- Dropdown Menu -->
+                    <div id="dropdownMenu" class="dropdown-menu absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                        <div class="p-2">
+                            <a href="#" onclick="showAboutModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
+                                <i class="fas fa-info-circle text-purple-500 w-5"></i>
+                                <span class="text-sm font-medium">Sobre a Fabi Grupos</span>
+                            </a>
+                            <a href="#" onclick="showContactModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
+                                <i class="fas fa-envelope text-purple-500 w-5"></i>
+                                <span class="text-sm font-medium">Contato</span>
+                            </a>
+                            <a href="#" onclick="showTermsModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
+                                <i class="fas fa-file-alt text-purple-500 w-5"></i>
+                                <span class="text-sm font-medium">Termos de Uso</span>
+                            </a>
+                            <a href="#" onclick="showPrivacyModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
+                                <i class="fas fa-shield-alt text-purple-500 w-5"></i>
+                                <span class="text-sm font-medium">Privacidade</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-1"></div>
+                            <a href="#" onclick="showAdvertiseModal(); return false;" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition group">
+                                <i class="fas fa-chart-line text-purple-500 w-5"></i>
+                                <span class="text-sm font-medium">Anuncie seu grupo</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -596,57 +765,65 @@
 
 
 
-<!-- SEÇÃO RANKING DIÁRIO - VERSÃO COMPACTA -->
+<!-- SEÇÃO RANKING DIÁRIO - DESIGN RENOVADO -->
 <section class="px-4 sm:px-6 lg:px-8 mt-6">
     <div class="max-w-7xl mx-auto">
-        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-            <!-- Cabeçalho minimalista -->
-            <div class="bg-gradient-to-r from-purple-600 to-pink-600 px-5 py-3 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-chart-line text-white text-sm"></i>
-                    <h2 class="text-white font-bold text-sm">Ranking do Dia</h2>
-                    <span class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full">🔥</span>
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-purple-100 dark:border-purple-900/30">
+            <!-- Cabeçalho aprimorado -->
+            <div class="bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 px-5 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                            <i class="fas fa-trophy text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-white font-bold text-lg">Ranking do Dia</h2>
+                            <p class="text-purple-100 text-xs">Os grupos mais badalados do momento 🔥</p>
+                        </div>
+                    </div>
+                    <button onclick="toggleRanking()" class="text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-2 transition-all duration-300">
+                        <i id="rankIcon" class="fas fa-chevron-down text-sm transition-transform duration-300"></i>
+                    </button>
                 </div>
-                <button onclick="toggleRanking()" class="text-white/80 hover:text-white text-xs flex items-center gap-1 transition">
-                    <span id="rankBtnText">Expandir</span>
-                    <i id="rankIcon" class="fas fa-chevron-down text-[10px] transition-transform"></i>
-                </button>
             </div>
             
             <!-- Conteúdo recolhível -->
             <div id="rankingContent" class="hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
-                    <!-- Top Ativos -->
-                    <div class="p-3">
-                        <div class="flex items-center gap-1.5 mb-2">
-                            <i class="fas fa-fire text-orange-500 text-xs"></i>
-                            <span class="text-xs font-semibold text-gray-700">Mais Ativos</span>
-                            <span class="text-[10px] text-gray-400">últimas 24h</span>
-                        </div>
-                        <div id="topAtivosList" class="space-y-1.5"></div>
-                    </div>
-                    
-                    <!-- Top Ricos -->
-                    <div class="p-3">
-                        <div class="flex items-center gap-1.5 mb-2">
-                            <i class="fas fa-gem text-yellow-500 text-xs"></i>
-                            <span class="text-xs font-semibold text-gray-700">Mais Ricos</span>
-                            <span class="text-[10px] text-gray-400">média golds</span>
-                        </div>
-                        <div id="topRicosList" class="space-y-1.5"></div>
-                    </div>
+                <!-- Tabs de navegação -->
+                <div class="flex border-b border-gray-100 dark:border-gray-800">
+                    <button id="tabAtivos" class="flex-1 py-3 text-sm font-semibold transition-all duration-300 border-b-2 border-purple-500 text-purple-600 dark:text-purple-400">
+                        <i class="fas fa-fire mr-2"></i> Mais Ativos
+                    </button>
+                    <button id="TabRicos" class="flex-1 py-3 text-sm font-semibold transition-all duration-300 border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400">
+                        <i class="fas fa-gem mr-2"></i> Mais Ricos
+                    </button>
                 </div>
                 
-                <!-- Footer minimalista -->
-                <div class="bg-gray-50 px-3 py-2 border-t border-gray-100 text-[10px] text-gray-400 flex justify-between">
-                    <span>📊 Atualizado diariamente</span>
-                    <span>🕐 22h</span>
+                <!-- Painel Ativos -->
+                <div id="painelAtivos" class="p-4">
+                    <div class="space-y-2" id="topAtivosList"></div>
+                </div>
+                
+                <!-- Painel Ricos (inicialmente escondido) -->
+                <div id="painelRicos" class="p-4 hidden">
+                    <div class="space-y-2" id="topRicosList"></div>
+                </div>
+                
+                <!-- Footer informativo -->
+                <div class="bg-gray-50 dark:bg-gray-800/50 px-4 py-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                        <i class="fas fa-chart-line text-purple-500"></i>
+                        <span>Atualizado diariamente às 22h</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                        <i class="fas fa-database"></i>
+                        <span id="totalRankingGrupos">Carregando...</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
         <!-- HERO -->
         <section class="relative overflow-hidden pt-12 sm:pt-16 lg:pt-20 pb-12 px-4">
             <div class="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
@@ -825,25 +1002,25 @@
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="bg-white border-t border-gray-100 mt-12">
-        <div class="max-w-7xl mx-auto px-4 py-10 text-center">
-            <div class="flex justify-center gap-2 mb-6">
-                <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center shadow-md">
-                    <i class="fas fa-comment-dots text-white text-xl"></i>
-                </div>
+<!-- FOOTER -->
+<footer class="bg-white border-t border-gray-100 mt-12">
+    <div class="max-w-7xl mx-auto px-4 py-10 text-center">
+        <div class="flex justify-center gap-2 mb-6">
+            <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center shadow-md overflow-hidden">
+                <img src="imagens/1777315269352.png" alt="Fabi Grupos" class="w-full h-full object-cover rounded-xl">
             </div>
-            <div class="flex flex-wrap justify-center gap-6 mb-6 text-sm text-gray-500">
-                <a href="#" class="hover:text-purple-600 transition">Sobre</a>
-                <a href="#" class="hover:text-purple-600 transition">Termos</a>
-                <a href="#" class="hover:text-purple-600 transition">Privacidade</a>
-                <a href="#" class="hover:text-purple-600 transition">Contato</a>
-                <a href="#" class="hover:text-purple-600 transition">Anuncie</a>
-            </div>
-            <p class="text-sm text-gray-400">© 2026 Fabi Grupos · Conectando pessoas através de comunidades autênticas</p>
-            <p class="text-xs text-gray-300 mt-2">✨ Feito com 💜 para amantes de grupos no WhatsApp</p>
         </div>
-    </footer>
+        <div class="flex flex-wrap justify-center gap-6 mb-6 text-sm text-gray-500">
+            <a href="#" onclick="showAboutModal(); return false;" class="hover:text-purple-600 transition">Sobre</a>
+            <a href="#" onclick="showTermsModal(); return false;" class="hover:text-purple-600 transition">Termos</a>
+            <a href="#" onclick="showPrivacyModal(); return false;" class="hover:text-purple-600 transition">Privacidade</a>
+            <a href="#" onclick="showContactModal(); return false;" class="hover:text-purple-600 transition">Contato</a>
+            <a href="#" onclick="showAdvertiseModal(); return false;" class="hover:text-purple-600 transition">Anuncie</a>
+        </div>
+        <p class="text-sm text-gray-400">© 2026 Fabi Grupos · Conectando pessoas através de comunidades autênticas</p>
+        <p class="text-xs text-gray-300 mt-2">✨ Feito com 💜 para amantes de grupos no WhatsApp</p>
+    </div>
+</footer>
 
     <script>
         // ==================== CONFIGURAÇÃO ====================
@@ -894,7 +1071,7 @@ async function carregarGruposDestaque() {
         const container = document.getElementById('carrosselDestaques');
         if (!container) return;
         
-       /* if (gruposDestaque.length === 0) {
+        if (gruposDestaque.length === 0) {
             container.innerHTML = `
                 <div class="min-w-full text-center py-8">
                     <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 text-center border-2 border-dashed border-purple-200 mx-4">
@@ -909,9 +1086,13 @@ async function carregarGruposDestaque() {
             `;
             return;
         }
-        */
-        // EMBARALHAR A ORDEM (ALEATÓRIO)
-        gruposDestaque = gruposDestaque.sort(() => Math.random() - 0.5);
+        
+        // Embaralhar a ordem (aleatório)
+        for (let i = gruposDestaque.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [gruposDestaque[i], gruposDestaque[j]] = [gruposDestaque[j], gruposDestaque[i]];
+        }
+        
         gruposDestaqueLista = gruposDestaque;
         
         // Buscar dados completos dos grupos
@@ -928,8 +1109,8 @@ async function carregarGruposDestaque() {
             return `${dias}d`;
         }
         
-        // Gerar HTML dos cards
-        container.innerHTML = gruposDestaque.map(grupo => {
+        // Gerar HTML dos cards (AGORA COM MODAL)
+        container.innerHTML = gruposDestaque.map((grupo, index) => {
             const grupoCompleto = allGroupsData.find(g => g.grupoID === grupo.grupoId) || {};
             const imagem = grupoCompleto.imagem || null;
             const descricao = grupoCompleto.descricao || '✨ Grupo incrível esperando por você!';
@@ -938,8 +1119,24 @@ async function carregarGruposDestaque() {
             const tempoRestante = getTempoRestante(grupo.dataFim);
             const isUrgente = tempoRestante.includes('h') && parseInt(tempoRestante) < 6;
             
+            // Criar um objeto grupo temporário para passar para o modal
+            const grupoTemp = {
+                grupoID: grupo.grupoId,
+                nome: grupo.grupoNome,
+                link: grupo.grupoLink,
+                imagem: imagem,
+                descricao: descricao,
+                participantes: participantes,
+                categoria: categoria,
+                mesesAtivo: grupoCompleto.mesesAtivo || '?',
+                dataCriacao: grupoCompleto.dataCriacao || null,
+                administradores: grupoCompleto.administradores || [],
+                emDestaque: true,
+                tipoDestaque: 'patrocinio'
+            };
+            
             return `
-                <div class="min-w-[280px] sm:min-w-[320px] bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group snap-start hover:-translate-y-1" onclick="window.open('${grupo.grupoLink}', '_blank')">
+                <div class="min-w-[280px] sm:min-w-[320px] bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group snap-start hover:-translate-y-1" data-grupo-index="${index}">
                     <div class="relative h-36 rounded-t-2xl overflow-hidden bg-gradient-to-r from-purple-600 to-pink-600">
                         ${imagem ? 
                             `<img src="${imagem}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${grupo.grupoNome}" onerror="this.style.display='none'; this.parentElement.innerHTML+='<i class=\\'fas fa-users text-5xl text-white/30 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2\\'></i>'">` : 
@@ -985,11 +1182,11 @@ async function carregarGruposDestaque() {
                                 </span>
                                 <span class="w-0.5 h-0.5 bg-gray-300 rounded-full"></span>
                                 <span class="flex items-center gap-1 text-[10px] text-gray-400">
-                                    <i class="fas fa-fire text-orange-400"></i>
+                                    <i class="fas fa-chart-line"></i> ${grupoCompleto.mesesAtivo || '?'} meses
                                 </span>
                             </div>
                             <div class="flex items-center gap-1 text-purple-600 text-[10px] font-medium group-hover:translate-x-0.5 transition">
-                                <span>Entrar</span>
+                                <span>Ver detalhes</span>
                                 <i class="fas fa-arrow-right text-[9px]"></i>
                             </div>
                         </div>
@@ -997,6 +1194,35 @@ async function carregarGruposDestaque() {
                 </div>
             `;
         }).join('');
+        
+        // Adicionar evento de clique para cada card do carrossel (ABRIR MODAL)
+        document.querySelectorAll('#carrosselDestaques > div[data-grupo-index]').forEach(el => {
+            const index = parseInt(el.dataset.grupoIndex);
+            const grupo = gruposDestaque[index];
+            
+            // Buscar o grupo completo novamente para o modal
+            const grupoCompleto = allGroupsData.find(g => g.grupoID === grupo.grupoId) || {};
+            
+            // Criar objeto completo para o modal
+            const grupoModal = {
+                grupoID: grupo.grupoId,
+                nome: grupo.grupoNome,
+                link: grupo.grupoLink,
+                imagem: grupoCompleto.imagem || null,
+                descricao: grupoCompleto.descricao || '✨ Grupo incrível esperando por você!',
+                participantes: grupo.participantes || grupoCompleto.participantes || '?',
+                categoria: grupo.categoria || grupoCompleto.categoria || 'Geral',
+                mesesAtivo: grupoCompleto.mesesAtivo || '?',
+                dataCriacao: grupoCompleto.dataCriacao || null,
+                administradores: grupoCompleto.administradores || [],
+                emDestaque: true,
+                tipoDestaque: 'patrocinio'
+            };
+            
+            el.addEventListener('click', () => {
+                openModal(grupoModal);
+            });
+        });
         
         // Inicializar scroll buttons
         inicializarScrollCarrossel();
@@ -1010,6 +1236,92 @@ async function carregarGruposDestaque() {
     }
 }
 
+// ==================== DARK MODE AUTOMÁTICO ====================
+function detectSystemDarkMode() {
+    // Verifica se o usuário já escolheu manualmente
+    const userPreference = localStorage.getItem('darkMode');
+    
+    if (userPreference === null) {
+        // Se nunca escolheu, segue o sistema
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDark) {
+            document.body.classList.add('dark-mode');
+            const darkModeBtn = document.getElementById('darkModeBtn');
+            if (darkModeBtn) {
+                darkModeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        }
+    } else {
+        // Se já escolheu, mantém a preferência
+        if (userPreference === 'true') {
+            document.body.classList.add('dark-mode');
+            const darkModeBtn = document.getElementById('darkModeBtn');
+            if (darkModeBtn) {
+                darkModeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        }
+    }
+}
+
+// Ouvir mudanças no sistema (ex: usuário ativa/desativa modo escuro)
+function watchSystemDarkMode() {
+    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    darkModeQuery.addEventListener('change', (e) => {
+        // Só aplica automático se o usuário NUNCA escolheu manualmente
+        if (localStorage.getItem('darkMode') === null) {
+            if (e.matches) {
+                document.body.classList.add('dark-mode');
+                const darkModeBtn = document.getElementById('darkModeBtn');
+                if (darkModeBtn) darkModeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                document.body.classList.remove('dark-mode');
+                const darkModeBtn = document.getElementById('darkModeBtn');
+                if (darkModeBtn) darkModeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        }
+    });
+}
+
+// ==================== DARK MODE ====================
+function toggleDarkMode() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    // Salva a preferência do usuário (sobrescreve o automático)
+    localStorage.setItem('darkMode', isDark);
+    
+    // Atualizar ícone do botão
+    const darkModeBtn = document.getElementById('darkModeBtn');
+    if (darkModeBtn) {
+        darkModeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    }
+    
+    showToast(isDark ? '🌙 Modo escuro ativado' : '☀️ Modo claro ativado', 'success');
+}
+
+// Carregar preferência do usuário
+function loadDarkModePreference() {
+    const savedMode = localStorage.getItem('darkMode');
+    if (savedMode === 'true') {
+        document.body.classList.add('dark-mode');
+        const darkModeBtn = document.getElementById('darkModeBtn');
+        if (darkModeBtn) {
+            darkModeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+    }
+}
+
+// Verificar preferência do sistema
+function checkSystemPreference() {
+    if (localStorage.getItem('darkMode') === null) {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDark) {
+            document.body.classList.add('dark-mode');
+            const darkModeBtn = document.getElementById('darkModeBtn');
+            if (darkModeBtn) {
+                darkModeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        }
+    }
+}
 // Função para inicializar scroll do carrossel
 function inicializarScrollCarrossel() {
     const container = document.getElementById('carrosselDestaques');
@@ -1115,7 +1427,7 @@ function atualizarTempoRestante() {
             for (let i = 0; i < 50; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.left = Math.radom() * 100 + '%';
                 confetti.style.width = Math.random() * 10 + 5 + 'px';
                 confetti.style.height = Math.random() * 10 + 5 + 'px';
                 confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
@@ -1203,112 +1515,125 @@ function atualizarTempoRestante() {
             }
         }
         
-        // ==================== MODAL ====================
-        function openModal(group) {
-            if (!group) return;
+        // Função para copiar link direto do grupo (sem precisar abrir modal)
+function copyGroupLink(groupId) {
+    const grupo = allGroups.find(g => g.grupoID === groupId);
+    if (grupo && grupo.link) {
+        navigator.clipboard.writeText(grupo.link).then(() => {
+            showToast(`✅ Link do grupo "${grupo.nome?.substring(0, 30)}" copiado! Compartilhe com seus amigos.`, 'success');
+        }).catch(() => {
+            showToast('❌ Erro ao copiar link. Tente novamente.', 'error');
+        });
+    } else {
+        showToast('❌ Link não encontrado.', 'error');
+    }
+}
+// ==================== MODAL (com botão copiar link) ====================
+function openModal(group) {
+    if (!group) return;
+    
+    const hasRules = group.descricao && (group.descricao.includes('🚫') || group.descricao.includes('PROIBIDO') || group.descricao.includes('Regras') || group.descricao.includes('regras'));
+    const adminsList = group.administradores?.slice(0, 5).map(adm => {
+        const number = adm.split('@')[0];
+        const formatted = number.length > 10 ? number.slice(0, 4) + '***' + number.slice(-4) : number;
+        return `<span class="inline-flex items-center gap-1 px-2 py-1 bg-white rounded-lg text-xs text-gray-600 shadow-sm"><i class="fas fa-shield-alt text-purple-400 text-xs"></i> ${formatted}</span>`;
+    }).join('') || '<span class="text-gray-400 text-sm">👑 Sem administradores listados</span>';
+    
+    const isChampion = group.emDestaque === true;
+    const championBadge = isChampion ? `
+        <div class="absolute top-4 left-4 z-20">
+            <div class="flex gap-2">
+                ${group.tipoDestaque === 'maisAtivo' ? `
+                    <span class="px-3 py-1.5 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold rounded-full flex items-center gap-1 shadow-lg animate-pulse">
+                        <i class="fas fa-fire"></i> 🔥 MAIS ATIVO DO DIA
+                    </span>
+                ` : group.tipoDestaque === 'maisRico' ? `
+                    <span class="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-amber-600 text-white text-xs font-bold rounded-full flex items-center gap-1 shadow-lg animate-pulse">
+                        <i class="fas fa-crown crown-icon"></i> 💎 GRUPO MAIS RICO
+                    </span>
+                ` : ''}
+            </div>
+        </div>
+    ` : '';
+    
+    const imageHtml = group.imagem ? 
+        `<div class="relative w-full h-full">
+            <img src="${group.imagem}" class="w-full h-full object-cover object-center" alt="${group.nome}" 
+                  onerror="this.parentElement.innerHTML='<div class=\'w-full h-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center\'><i class=\\'fas fa-users text-6xl text-white\\'></i></div>'">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+        </div>` : 
+        `<div class="w-full h-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+            <i class="fas fa-users text-6xl text-white"></i>
+        </div>`;
+    
+    modalContent.innerHTML = `
+        <div class="relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition z-20 shadow-lg">
+                <i class="fas fa-times text-gray-600"></i>
+            </button>
             
-            const hasRules = group.descricao && (group.descricao.includes('🚫') || group.descricao.includes('PROIBIDO') || group.descricao.includes('Regras') || group.descricao.includes('regras'));
-            const adminsList = group.administradores?.slice(0, 5).map(adm => {
-                const number = adm.split('@')[0];
-                const formatted = number.length > 10 ? number.slice(0, 4) + '***' + number.slice(-4) : number;
-                return `<span class="inline-flex items-center gap-1 px-2 py-1 bg-white rounded-lg text-xs text-gray-600 shadow-sm"><i class="fas fa-shield-alt text-purple-400 text-xs"></i> ${formatted}</span>`;
-            }).join('') || '<span class="text-gray-400 text-sm">👑 Sem administradores listados</span>';
-            
-            const isChampion = group.emDestaque === true;
-            const championBadge = isChampion ? `
-                <div class="absolute top-4 left-4 z-20">
-                    <div class="flex gap-2">
-                        ${group.tipoDestaque === 'maisAtivo' ? `
-                            <span class="px-3 py-1.5 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold rounded-full flex items-center gap-1 shadow-lg animate-pulse">
-                                <i class="fas fa-fire"></i> 🔥 MAIS ATIVO DO DIA
-                            </span>
-                        ` : group.tipoDestaque === 'maisRico' ? `
-                            <span class="px-3 py-1.5 bg-gradient-to-r from-yellow-500 to-amber-600 text-white text-xs font-bold rounded-full flex items-center gap-1 shadow-lg animate-pulse">
-                                <i class="fas fa-crown crown-icon"></i> 💎 GRUPO MAIS RICO
-                            </span>
-                        ` : ''}
-                    </div>
+            <div class="relative w-full h-72 sm:h-80 md:h-96 rounded-t-2xl overflow-hidden">
+                ${imageHtml}
+                ${championBadge}
+                <div class="absolute top-4 left-4 z-10">
+                    <span class="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-purple-700 text-xs font-bold rounded-full flex items-center gap-1 shadow-lg">
+                        <i class="fas ${getCategoryIcon(group.categoria)} text-xs"></i> ${group.categoria || 'Geral'}
+                    </span>
                 </div>
-            ` : '';
+                <div class="absolute bottom-4 right-4 z-10">
+                    <span class="px-3 py-1.5 bg-black/60 backdrop-blur-sm text-white text-xs font-bold rounded-full flex items-center gap-1">
+                        <i class="fas fa-user-friends"></i> ${formatNumber(group.participantes)} membros
+                    </span>
+                </div>
+                <div class="absolute bottom-4 left-4 z-10 max-w-[70%]">
+                    <h2 class="text-white text-xl sm:text-2xl font-bold drop-shadow-lg line-clamp-2">${group.nome || 'Grupo sem nome'}</h2>
+                </div>
+            </div>
             
-            const imageHtml = group.imagem ? 
-                `<div class="relative w-full h-full">
-                    <img src="${group.imagem}" class="w-full h-full object-cover object-center" alt="${group.nome}" 
-                          onerror="this.parentElement.innerHTML='<div class=\'w-full h-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center\'><i class=\\'fas fa-users text-6xl text-white\\'></i></div>'">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-                </div>` : 
-                `<div class="w-full h-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
-                    <i class="fas fa-users text-6xl text-white"></i>
-                </div>`;
-            
-            modalContent.innerHTML = `
-                <div class="relative">
-                    <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition z-20 shadow-lg">
-                        <i class="fas fa-times text-gray-600"></i>
+            <div class="p-5 sm:p-6">
+                <div class="flex flex-wrap items-center gap-3 mb-5 text-sm text-gray-500 border-b border-gray-100 pb-4">
+                    <span class="flex items-center gap-1"><i class="fas fa-chart-line text-purple-500"></i> ${group.mesesAtivo || '?'} meses ativo</span>
+                    ${group.dataCriacao ? `<span class="flex items-center gap-1"><i class="fas fa-calendar-alt text-purple-500"></i> ${new Date(group.dataCriacao).toLocaleDateString('pt-BR')}</span>` : ''}
+                    <span class="flex items-center gap-1"><i class="fas fa-hashtag text-purple-500"></i> ${group.grupoID?.slice(0, 12)}...</span>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-4 mb-4">
+                    <h3 class="font-semibold text-gray-700 mb-2 flex items-center gap-1"><i class="fas fa-info-circle text-purple-500"></i> Sobre o grupo</h3>
+                    <div class="text-gray-600 text-sm leading-relaxed max-h-48 overflow-y-auto pr-2 custom-scroll">${getFullDescription(group.descricao)}</div>
+                </div>
+                
+                ${hasRules ? `
+                <div class="bg-red-50 rounded-xl p-4 mb-4 border border-red-100">
+                    <h3 class="font-semibold text-red-700 mb-2 flex items-center gap-1"><i class="fas fa-gavel text-red-500"></i> Regras do grupo</h3>
+                    <div class="text-red-600 text-xs leading-relaxed max-h-32 overflow-y-auto pr-2">${getFullDescription(group.descricao).substring(0, 600)}${group.descricao?.length > 600 ? '...' : ''}</div>
+                </div>
+                ` : ''}
+                
+                <div class="bg-purple-50 rounded-xl p-4 mb-5">
+                    <h3 class="font-semibold text-purple-700 mb-2 flex items-center gap-1"><i class="fas fa-crown text-purple-500"></i> Administradores</h3>
+                    <div class="flex flex-wrap gap-2">${adminsList}</div>
+                    <p class="text-xs text-gray-400 mt-3 flex items-center gap-1"><i class="fas fa-shield-alt"></i> Nunca compartilhe informações pessoais com estranhos</p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <a href="${group.link}" target="_blank" class="flex-1 btn-wa text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all duration-300 hover:scale-[1.02]">
+                        <i class="fab fa-whatsapp text-xl"></i> Entrar no grupo agora
+                    </a>
+                    <button onclick="copyGroupLink('${group.grupoID}')" class="btn-share text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all duration-300 hover:scale-[1.02]">
+                        <i class="fas fa-copy"></i> Copiar link
                     </button>
-                    
-                    <div class="relative w-full h-72 sm:h-80 md:h-96 rounded-t-2xl overflow-hidden">
-                        ${imageHtml}
-                        ${championBadge}
-                        <div class="absolute top-4 left-4 z-10">
-                            <span class="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-purple-700 text-xs font-bold rounded-full flex items-center gap-1 shadow-lg">
-                                <i class="fas ${getCategoryIcon(group.categoria)} text-xs"></i> ${group.categoria || 'Geral'}
-                            </span>
-                        </div>
-                        <div class="absolute bottom-4 right-4 z-10">
-                            <span class="px-3 py-1.5 bg-black/60 backdrop-blur-sm text-white text-xs font-bold rounded-full flex items-center gap-1">
-                                <i class="fas fa-user-friends"></i> ${formatNumber(group.participantes)} membros
-                            </span>
-                        </div>
-                        <div class="absolute bottom-4 left-4 z-10 max-w-[70%]">
-                            <h2 class="text-white text-xl sm:text-2xl font-bold drop-shadow-lg line-clamp-2">${group.nome || 'Grupo sem nome'}</h2>
-                        </div>
-                    </div>
-                    
-                    <div class="p-5 sm:p-6">
-                        <div class="flex flex-wrap items-center gap-3 mb-5 text-sm text-gray-500 border-b border-gray-100 pb-4">
-                            <span class="flex items-center gap-1"><i class="fas fa-chart-line text-purple-500"></i> ${group.mesesAtivo || '?'} meses ativo</span>
-                            ${group.dataCriacao ? `<span class="flex items-center gap-1"><i class="fas fa-calendar-alt text-purple-500"></i> ${new Date(group.dataCriacao).toLocaleDateString('pt-BR')}</span>` : ''}
-                            <span class="flex items-center gap-1"><i class="fas fa-hashtag text-purple-500"></i> ${group.grupoID?.slice(0, 12)}...</span>
-                        </div>
-                        
-                        <div class="bg-gray-50 rounded-xl p-4 mb-4">
-                            <h3 class="font-semibold text-gray-700 mb-2 flex items-center gap-1"><i class="fas fa-info-circle text-purple-500"></i> Sobre o grupo</h3>
-                            <div class="text-gray-600 text-sm leading-relaxed max-h-48 overflow-y-auto pr-2 custom-scroll">${getFullDescription(group.descricao)}</div>
-                        </div>
-                        
-                        ${hasRules ? `
-                        <div class="bg-red-50 rounded-xl p-4 mb-4 border border-red-100">
-                            <h3 class="font-semibold text-red-700 mb-2 flex items-center gap-1"><i class="fas fa-gavel text-red-500"></i> Regras do grupo</h3>
-                            <div class="text-red-600 text-xs leading-relaxed max-h-32 overflow-y-auto pr-2">${getFullDescription(group.descricao).substring(0, 600)}${group.descricao?.length > 600 ? '...' : ''}</div>
-                        </div>
-                        ` : ''}
-                        
-                        <div class="bg-purple-50 rounded-xl p-4 mb-5">
-                            <h3 class="font-semibold text-purple-700 mb-2 flex items-center gap-1"><i class="fas fa-crown text-purple-500"></i> Administradores</h3>
-                            <div class="flex flex-wrap gap-2">${adminsList}</div>
-                            <p class="text-xs text-gray-400 mt-3 flex items-center gap-1"><i class="fas fa-shield-alt"></i> Nunca compartilhe informações pessoais com estranhos</p>
-                        </div>
-                        
-                        <div class="flex flex-col sm:flex-row gap-3">
-                            <a href="${group.link}" target="_blank" class="flex-1 btn-wa text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all duration-300 hover:scale-[1.02]">
-                                <i class="fab fa-whatsapp text-xl"></i> Entrar no grupo agora
-                            </a>
-                            <button onclick="shareGroup(${JSON.stringify(group).replace(/</g, '\\u003c')})" class="btn-share text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all duration-300 hover:scale-[1.02]">
-                                <i class="fas fa-share-alt"></i> Compartilhar
-                            </button>
-                        </div>
-                    </div>
                 </div>
-            `;
-            
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            
-            const url = new URL(window.location);
-            url.searchParams.set('grupo', group.grupoID);
-            window.history.pushState({}, '', url);
-        }
+            </div>
+        </div>
+    `;
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    const url = new URL(window.location);
+    url.searchParams.set('grupo', group.grupoID);
+    window.history.pushState({}, '', url);
+}
         
         function closeModal() {
             modal.style.display = 'none';
@@ -1702,177 +2027,279 @@ function toggleRanking() {
     }
 }
 
-// Modifique a função carregarRanking para atualizar também os mini contadores
 async function carregarRanking() {
     try {
         const response = await fetch('https://cors.eu.org/br2.bronxyshost.com:4009/ranking.json');
         if (!response.ok) throw new Error('Ranking não disponível');
         const ranking = await response.json();
         
-        // Atualizar data
-        const dataElement = document.getElementById('rankingData');
-        if (dataElement && ranking.data) {
-            dataElement.innerHTML = ranking.data;
-        }
-        
-        // PEGAR O #1 DE CADA RANKING
-        const topAtivo = ranking.top10Ativos?.[0];
-        const topRico = ranking.top10Ricos?.[0];
-        
-        // Mostrar o valor do #1 Ativo (interações)
-        const topAtivoValor = document.getElementById('topAtivoValor');
-        if (topAtivoValor && topAtivo) {
-            const atividades = topAtivo.atividade || 0;
-            topAtivoValor.innerHTML = atividades >= 1000 ? (atividades/1000).toFixed(1) + 'k' : atividades;
-            topAtivoValor.title = `${atividades.toLocaleString()} interações nas últimas 24h`;
-        } else if (topAtivoValor) {
-            topAtivoValor.innerHTML = '--';
-        }
-        
-        // Mostrar o valor do #1 Rico (golds por membro)
-        const topRicoValor = document.getElementById('topRicoValor');
-        if (topRicoValor && topRico) {
-            const golds = topRico.mediaGolds || 0;
-            topRicoValor.innerHTML = golds >= 1000 ? (golds/1000).toFixed(1) + 'k' : golds.toLocaleString();
-            topRicoValor.title = `${golds.toLocaleString()} golds por membro (média)`;
-        } else if (topRicoValor) {
-            topRicoValor.innerHTML = '--';
-        }
-        
-        // Atualizar estatísticas dos footers
-        if (ranking.estatisticas) {
-            const totalAtivosFooter = document.getElementById('totalAtivosFooter');
-            const totalRicosFooter = document.getElementById('totalRicosFooter');
-            
-            if (totalAtivosFooter) totalAtivosFooter.innerHTML = ranking.estatisticas.totalGruposAtivos || 0;
-            if (totalRicosFooter) totalRicosFooter.innerHTML = ranking.estatisticas.totalGruposRicos || 0;
-        }
+        // Buscar dados completos dos grupos
+        const gruposResponse = await fetch(API_URL);
+        const allGroupsData = await gruposResponse.json();
         
         // Função para truncar nomes longos
-        const truncateName = (name, maxLength = 35) => {
+        const truncateName = (name, maxLength = 30) => {
             if (!name) return 'Grupo';
             return name.length > maxLength ? name.substring(0, maxLength) + '...' : name;
         };
         
-        // Função para gerar HTML de um item do ranking
-        const gerarItemHTML = (g, tipo) => {
-            const medalhaIcon = g.posicao === 1 ? '🥇' : g.posicao === 2 ? '🥈' : g.posicao === 3 ? '🥉' : '';
-            const bgColor = g.posicao === 1 ? 'bg-gradient-to-r from-yellow-50 to-transparent' : 
-                           g.posicao === 2 ? 'bg-gradient-to-r from-gray-50 to-transparent' :
-                           g.posicao === 3 ? 'bg-gradient-to-r from-orange-50 to-transparent' : '';
-            
-            const groupLink = g.link ? `https://chat.whatsapp.com/${g.link.split('/').pop()}` : null;
-            
-            if (tipo === 'ativo') {
-                return `
-                    <div class="flex items-center justify-between p-3 rounded-xl hover:shadow-md transition-all duration-200 ${bgColor} border border-gray-50 hover:border-purple-100 ${groupLink ? 'cursor-pointer' : ''}" 
-                         onclick="${groupLink ? `window.open('${groupLink}', '_blank')` : ''}">
-                        <div class="flex items-center gap-3 flex-1 min-w-0">
-                            <div class="w-8 text-center">
-                                ${medalhaIcon ? `<span class="text-xl">${medalhaIcon}</span>` : `<span class="text-sm font-bold text-gray-400">#${g.posicao}</span>`}
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-semibold text-gray-800 text-sm truncate" title="${g.nome.replace(/[^\x20-\x7E\u00C0-\u00FF]/g, '')}">
-                                    ${truncateName(g.nome)}
-                                </p>
-                                <div class="flex items-center gap-2 mt-0.5">
-                                    <span class="text-xs text-gray-400">${g.categoria || 'Geral'}</span>
-                                    <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
-                                    <span class="text-xs text-gray-400"><i class="fas fa-users"></i> ${g.participantes}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-right ml-3">
-                            <span class="text-orange-600 font-bold text-sm">${g.atividade.toLocaleString()}</span>
-                            <span class="text-xs text-gray-400 block">interações</span>
-                        </div>
-                    </div>
-                `;
-            } else {
-                const formatGolds = (value) => {
-                    if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
-                    if (value >= 1000) return (value / 1000).toFixed(1) + 'K';
-                    return value.toLocaleString();
-                };
-                
-                return `
-                    <div class="flex items-center justify-between p-3 rounded-xl hover:shadow-md transition-all duration-200 ${bgColor} border border-gray-50 hover:border-purple-100 ${groupLink ? 'cursor-pointer' : ''}" 
-                         onclick="${groupLink ? `window.open('${groupLink}', '_blank')` : ''}">
-                        <div class="flex items-center gap-3 flex-1 min-w-0">
-                            <div class="w-8 text-center">
-                                ${medalhaIcon ? `<span class="text-xl">${medalhaIcon}</span>` : `<span class="text-sm font-bold text-gray-400">#${g.posicao}</span>`}
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-semibold text-gray-800 text-sm truncate" title="${g.nome.replace(/[^\x20-\x7E\u00C0-\u00FF]/g, '')}">
-                                    ${truncateName(g.nome)}
-                                </p>
-                                <div class="flex items-center gap-2 mt-0.5">
-                                    <span class="text-xs text-gray-400">${g.categoria || 'Geral'}</span>
-                                    <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
-                                    <span class="text-xs text-gray-400"><i class="fas fa-users"></i> ${g.participantes}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-right ml-3">
-                            <span class="text-yellow-600 font-bold text-sm">${formatGolds(g.mediaGolds)}</span>
-                            <span class="text-xs text-gray-400 block">golds/membro</span>
-                        </div>
-                    </div>
-                `;
-            }
+        // Função para gerar medalha
+        const getMedalha = (posicao) => {
+            if (posicao === 1) return '<span class="text-2xl">🥇</span>';
+            if (posicao === 2) return '<span class="text-2xl">🥈</span>';
+            if (posicao === 3) return '<span class="text-2xl">🥉</span>';
+            return `<span class="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs font-bold flex items-center justify-center">${posicao}</span>`;
         };
         
-        // ========== TOP 10 ATIVOS ==========
-        const top3Ativos = ranking.top10Ativos.slice(0, 3);
-        const restanteAtivos = ranking.top10Ativos.slice(3);
+        // Função para encontrar grupo completo pelo nome ou link
+        function encontrarGrupoCompleto(grupoRanking) {
+            // Tenta encontrar pelo nome
+            let grupoCompleto = allGroupsData.find(g => 
+                g.nome === grupoRanking.nome || 
+                g.grupoID === grupoRanking.grupoID
+            );
+            
+            // Se não encontrou, tenta pelo link
+            if (!grupoCompleto && grupoRanking.link) {
+                grupoCompleto = allGroupsData.find(g => 
+                    g.link === grupoRanking.link ||
+                    g.link?.includes(grupoRanking.link?.split('/').pop())
+                );
+            }
+            
+            return grupoCompleto;
+        }
         
-        const top3AtivosHtml = top3Ativos.map(g => gerarItemHTML(g, 'ativo')).join('');
-        const restanteAtivosHtml = restanteAtivos.map(g => gerarItemHTML(g, 'ativo')).join('');
+        // Função para gerar item do ranking (MAIS ATIVOS) - com modal
+        const gerarItemAtivo = (g, index) => {
+            const medalha = getMedalha(g.posicao);
+            const bgClass = g.posicao === 1 ? 'bg-gradient-to-r from-orange-50 to-transparent dark:from-orange-950/30' :
+                           g.posicao === 2 ? 'bg-gradient-to-r from-gray-50 to-transparent dark:from-gray-800/50' :
+                           g.posicao === 3 ? 'bg-gradient-to-r from-amber-50 to-transparent dark:from-amber-950/30' : '';
+            
+            // Buscar grupo completo para o modal
+            const grupoCompleto = encontrarGrupoCompleto(g);
+            
+            return `
+                <div class="flex items-center justify-between p-3 rounded-xl transition-all duration-200 ${bgClass} hover:bg-purple-50 dark:hover:bg-purple-900/20 border border-gray-50 dark:border-gray-800 cursor-pointer" data-ranking-ativo-index="${index}">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <div class="w-10 text-center">
+                            ${medalha}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-gray-800 dark:text-gray-200 text-sm truncate">
+                                ${truncateName(g.nome)}
+                            </p>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-xs text-gray-500 dark:text-gray-400">${g.categoria || 'Geral'}</span>
+                                <span class="w-1 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400"><i class="fas fa-users"></i> ${g.participantes}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right ml-3">
+                        <div class="flex items-center gap-1 text-orange-600 dark:text-orange-400 font-bold text-sm">
+                            <i class="fas fa-fire text-xs"></i>
+                            <span>${g.atividade.toLocaleString()}</span>
+                        </div>
+                        <span class="text-xs text-gray-400 dark:text-gray-500">interações</span>
+                    </div>
+                </div>
+            `;
+        };
         
-        const ativosContainer = `
-            <div id="ativosTop3" class="space-y-2">${top3AtivosHtml}</div>
-            <div id="ativosRestante" class="space-y-2 hidden">${restanteAtivosHtml}</div>
-            ${restanteAtivos.length > 0 ? `
-                <button onclick="toggleAtivos()" id="btnVerMaisAtivos" class="w-full mt-3 py-2 text-purple-600 hover:text-purple-700 text-sm font-medium transition flex items-center justify-center gap-2 border border-purple-200 rounded-lg hover:bg-purple-50">
-                    <i class="fas fa-chevron-down"></i> Ver mais ${restanteAtivos.length} grupos
-                </button>
-            ` : ''}
-        `;
+        // Função para gerar item do ranking (MAIS RICOS) - com modal
+        const formatGolds = (value) => {
+            if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
+            if (value >= 1000) return (value / 1000).toFixed(1) + 'K';
+            return value.toLocaleString();
+        };
         
-        // ========== TOP 10 RICOS ==========
-        const top3Ricos = ranking.top10Ricos.slice(0, 3);
-        const restanteRicos = ranking.top10Ricos.slice(3);
+        const gerarItemRico = (g, index) => {
+            const medalha = getMedalha(g.posicao);
+            const bgClass = g.posicao === 1 ? 'bg-gradient-to-r from-yellow-50 to-transparent dark:from-yellow-950/30' :
+                           g.posicao === 2 ? 'bg-gradient-to-r from-gray-50 to-transparent dark:from-gray-800/50' :
+                           g.posicao === 3 ? 'bg-gradient-to-r from-amber-50 to-transparent dark:from-amber-950/30' : '';
+            
+            // Buscar grupo completo para o modal
+            const grupoCompleto = encontrarGrupoCompleto(g);
+            
+            return `
+                <div class="flex items-center justify-between p-3 rounded-xl transition-all duration-200 ${bgClass} hover:bg-purple-50 dark:hover:bg-purple-900/20 border border-gray-50 dark:border-gray-800 cursor-pointer" data-ranking-rico-index="${index}">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <div class="w-10 text-center">
+                            ${medalha}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-gray-800 dark:text-gray-200 text-sm truncate">
+                                ${truncateName(g.nome)}
+                            </p>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-xs text-gray-500 dark:text-gray-400">${g.categoria || 'Geral'}</span>
+                                <span class="w-1 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400"><i class="fas fa-users"></i> ${g.participantes}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right ml-3">
+                        <div class="flex items-center gap-1 text-yellow-600 dark:text-yellow-400 font-bold text-sm">
+                            <i class="fas fa-crown text-xs"></i>
+                            <span>${formatGolds(g.mediaGolds)}</span>
+                        </div>
+                        <span class="text-xs text-gray-400 dark:text-gray-500">golds/membro</span>
+                    </div>
+                </div>
+            `;
+        };
         
-        const top3RicosHtml = top3Ricos.map(g => gerarItemHTML(g, 'rico')).join('');
-        const restanteRicosHtml = restanteRicos.map(g => gerarItemHTML(g, 'rico')).join('');
-        
-        const ricosContainer = `
-            <div id="ricosTop3" class="space-y-2">${top3RicosHtml}</div>
-            <div id="ricosRestante" class="space-y-2 hidden">${restanteRicosHtml}</div>
-            ${restanteRicos.length > 0 ? `
-                <button onclick="toggleRicos()" id="btnVerMaisRicos" class="w-full mt-3 py-2 text-purple-600 hover:text-purple-700 text-sm font-medium transition flex items-center justify-center gap-2 border border-purple-200 rounded-lg hover:bg-purple-50">
-                    <i class="fas fa-chevron-down"></i> Ver mais ${restanteRicos.length} grupos
-                </button>
-            ` : ''}
-        `;
+        // Gerar lista completa (10 itens)
+        const ativosHtml = ranking.top10Ativos.map((g, idx) => gerarItemAtivo(g, idx)).join('');
+        const ricosHtml = ranking.top10Ricos.map((g, idx) => gerarItemRico(g, idx)).join('');
         
         const topAtivosDiv = document.getElementById('topAtivosList');
         const topRicosDiv = document.getElementById('topRicosList');
         
-        if (topAtivosDiv) topAtivosDiv.innerHTML = ativosContainer;
-        if (topRicosDiv) topRicosDiv.innerHTML = ricosContainer;
+        if (topAtivosDiv) topAtivosDiv.innerHTML = ativosHtml;
+        if (topRicosDiv) topRicosDiv.innerHTML = ricosHtml;
+        
+        // Adicionar eventos de clique para os itens do ranking (ABRIR MODAL)
+        setTimeout(() => {
+            // Itens do ranking de ativos
+            document.querySelectorAll('[data-ranking-ativo-index]').forEach((el, idx) => {
+                const grupoRanking = ranking.top10Ativos[idx];
+                const grupoCompleto = encontrarGrupoCompleto(grupoRanking);
+                
+                if (grupoCompleto) {
+                    // Criar objeto completo para o modal
+                    const grupoModal = {
+                        grupoID: grupoCompleto.grupoID,
+                        nome: grupoCompleto.nome || grupoRanking.nome,
+                        link: grupoCompleto.link || grupoRanking.link,
+                        imagem: grupoCompleto.imagem || null,
+                        descricao: grupoCompleto.descricao || '✨ Grupo incrível esperando por você!',
+                        participantes: grupoCompleto.participantes || grupoRanking.participantes || '?',
+                        categoria: grupoCompleto.categoria || grupoRanking.categoria || 'Geral',
+                        mesesAtivo: grupoCompleto.mesesAtivo || '?',
+                        dataCriacao: grupoCompleto.dataCriacao || null,
+                        administradores: grupoCompleto.administradores || [],
+                    };
+                    
+                    el.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openModal(grupoModal);
+                    });
+                } else {
+                    // Se não encontrou o grupo completo, criar com dados do ranking
+                    const grupoModal = {
+                        grupoID: grupoRanking.grupoID || `rank_${idx}`,
+                        nome: grupoRanking.nome,
+                        link: grupoRanking.link,
+                        imagem: null,
+                        descricao: `🏆 Grupo em destaque no ranking!\n📊 ${grupoRanking.atividade?.toLocaleString() || 'Muitas'} interações nas últimas 24h.`,
+                        participantes: grupoRanking.participantes || '?',
+                        categoria: grupoRanking.categoria || 'Geral',
+                        mesesAtivo: '?',
+                        dataCriacao: null,
+                        administradores: [],
+                    };
+                    
+                    el.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openModal(grupoModal);
+                    });
+                }
+            });
+            
+            // Itens do ranking de ricos
+            document.querySelectorAll('[data-ranking-rico-index]').forEach((el, idx) => {
+                const grupoRanking = ranking.top10Ricos[idx];
+                const grupoCompleto = encontrarGrupoCompleto(grupoRanking);
+                
+                if (grupoCompleto) {
+                    const grupoModal = {
+                        grupoID: grupoCompleto.grupoID,
+                        nome: grupoCompleto.nome || grupoRanking.nome,
+                        link: grupoCompleto.link || grupoRanking.link,
+                        imagem: grupoCompleto.imagem || null,
+                        descricao: grupoCompleto.descricao || '✨ Grupo incrível esperando por você!',
+                        participantes: grupoCompleto.participantes || grupoRanking.participantes || '?',
+                        categoria: grupoCompleto.categoria || grupoRanking.categoria || 'Geral',
+                        mesesAtivo: grupoCompleto.mesesAtivo || '?',
+                        dataCriacao: grupoCompleto.dataCriacao || null,
+                        administradores: grupoCompleto.administradores || [],
+                    };
+                    
+                    el.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openModal(grupoModal);
+                    });
+                } else {
+                    const grupoModal = {
+                        grupoID: grupoRanking.grupoID || `rank_rico_${idx}`,
+                        nome: grupoRanking.nome,
+                        link: grupoRanking.link,
+                        imagem: null,
+                        descricao: `💰 Grupo premium!\n💎 Média de ${formatGolds(grupoRanking.mediaGolds)} golds por membro.`,
+                        participantes: grupoRanking.participantes || '?',
+                        categoria: grupoRanking.categoria || 'Geral',
+                        mesesAtivo: '?',
+                        dataCriacao: null,
+                        administradores: [],
+                    };
+                    
+                    el.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openModal(grupoModal);
+                    });
+                }
+            });
+        }, 100);
+        
+        // Atualizar contador
+        const totalGrupos = ranking.estatisticas?.totalGruposAtivos || ranking.top10Ativos.length;
+        const totalSpan = document.getElementById('totalRankingGrupos');
+        if (totalSpan) totalSpan.innerHTML = `${totalGrupos} grupos monitorados`;
+        
+        // Configurar abas
+        const tabAtivos = document.getElementById('tabAtivos');
+        const tabRicos = document.getElementById('TabRicos');
+        const painelAtivos = document.getElementById('painelAtivos');
+        const painelRicos = document.getElementById('painelRicos');
+        
+        if (tabAtivos && tabRicos) {
+            // Remover eventos antigos
+            const newTabAtivos = tabAtivos.cloneNode(true);
+            const newTabRicos = tabRicos.cloneNode(true);
+            tabAtivos.parentNode.replaceChild(newTabAtivos, tabAtivos);
+            tabRicos.parentNode.replaceChild(newTabRicos, tabRicos);
+            
+            newTabAtivos.addEventListener('click', () => {
+                newTabAtivos.classList.add('border-purple-500', 'text-purple-600', 'dark:text-purple-400');
+                newTabAtivos.classList.remove('border-transparent', 'text-gray-500');
+                newTabRicos.classList.remove('border-purple-500', 'text-purple-600', 'dark:text-purple-400');
+                newTabRicos.classList.add('border-transparent', 'text-gray-500');
+                painelAtivos.classList.remove('hidden');
+                painelRicos.classList.add('hidden');
+            });
+            
+            newTabRicos.addEventListener('click', () => {
+                newTabRicos.classList.add('border-purple-500', 'text-purple-600', 'dark:text-purple-400');
+                newTabRicos.classList.remove('border-transparent', 'text-gray-500');
+                newTabAtivos.classList.remove('border-purple-500', 'text-purple-600', 'dark:text-purple-400');
+                newTabAtivos.classList.add('border-transparent', 'text-gray-500');
+                painelRicos.classList.remove('hidden');
+                painelAtivos.classList.add('hidden');
+            });
+        }
         
         console.log('✅ Ranking carregado com sucesso!');
-        
-        // Re-sincroniza os destaques
-        await sincronizarCampeoesComRanking();
         
     } catch (error) {
         console.error('Erro ao carregar ranking:', error);
         const topAtivosDiv = document.getElementById('topAtivosList');
         const topRicosDiv = document.getElementById('topRicosList');
-        if (topAtivosDiv) topAtivosDiv.innerHTML = '<p class="text-gray-500 text-center py-4">⏳ Ranking será atualizado às 22h</p>';
-        if (topRicosDiv) topRicosDiv.innerHTML = '<p class="text-gray-500 text-center py-4">⏳ Ranking será atualizado às 22h</p>';
+        if (topAtivosDiv) topAtivosDiv.innerHTML = '<p class="text-gray-500 text-center py-8">⏳ Ranking será atualizado às 22h</p>';
+        if (topRicosDiv) topRicosDiv.innerHTML = '<p class="text-gray-500 text-center py-8">⏳ Ranking será atualizado às 22h</p>';
     }
 }
 function toggleVideo() {
@@ -2053,28 +2480,28 @@ function showPrivacyModal() {
 function showAdvertiseModal() {
     modalContent.innerHTML = `
         <div class="relative">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition z-20 shadow-lg">
-                <i class="fas fa-times text-gray-600"></i>
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 bg-white/90 dark:bg-gray-800 backdrop-blur rounded-full flex items-center justify-center hover:bg-white dark:hover:bg-gray-700 transition z-20 shadow-lg">
+                <i class="fas fa-times text-gray-600 dark:text-gray-300"></i>
             </button>
             
-            <div class="p-6">
+            <div class="p-6 dark:bg-gray-900">
                 <div class="text-center mb-6">
                     <div class="inline-flex items-center justify-center w-16 h-16 gradient-bg rounded-2xl shadow-lg mb-3">
                         <i class="fas fa-chart-line text-white text-3xl"></i>
                     </div>
                     <h2 class="text-2xl sm:text-3xl font-bold gradient-text">🚀 Divulgue seu Grupo</h2>
-                    <p class="text-gray-500 text-sm mt-1">Escolha a melhor forma de impulsionar sua comunidade</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Escolha a melhor forma de impulsionar sua comunidade</p>
                 </div>
                 
                 <!-- ========== VÍDEO TUTORIAL ========== -->
-                <div class="mb-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100">
+                <div class="mb-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50 rounded-2xl p-4 border border-purple-100 dark:border-purple-800">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center shadow-md">
                             <i class="fab fa-youtube text-white text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-gray-800">📺 Tutorial completo</h3>
-                            <p class="text-xs text-gray-500">Aprenda como divulgar seu grupo em menos de 2 minutos</p>
+                            <h3 class="font-bold text-gray-800 dark:text-gray-200">📺 Tutorial completo</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Aprenda como divulgar seu grupo em menos de 2 minutos</p>
                         </div>
                     </div>
                     <div class="relative rounded-xl overflow-hidden shadow-lg">
@@ -2089,13 +2516,13 @@ function showAdvertiseModal() {
                             </iframe>
                         </div>
                     </div>
-                    <p class="text-xs text-center text-gray-500 mt-2">
+                    <p class="text-xs text-center text-gray-500 dark:text-gray-400 mt-2">
                         <i class="fas fa-play-circle text-purple-500"></i> Assista e siga o passo a passo
                     </p>
                 </div>
                 
                 <!-- ========== MÉTODO GRATUITO ========== -->
-                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-5 border-2 border-green-300 shadow-lg relative overflow-hidden mb-6">
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-2xl p-5 border-2 border-green-300 dark:border-green-700 shadow-lg relative overflow-hidden mb-6">
                     <div class="absolute -top-3 -right-3">
                         <span class="bg-green-500 text-white text-xs px-3 py-1 rounded-full shadow-lg animate-pulse">⭐ GRATUITO</span>
                     </div>
@@ -2104,36 +2531,36 @@ function showAdvertiseModal() {
                             <i class="fab fa-whatsapp text-white text-3xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-green-700 text-xl">Método Automático</h3>
-                            <p class="text-sm text-green-600">Cadastro 100% gratuito • Sem complicação</p>
+                            <h3 class="font-bold text-green-700 dark:text-green-400 text-xl">Método Automático</h3>
+                            <p class="text-sm text-green-600 dark:text-green-400">Cadastro 100% gratuito • Sem complicação</p>
                         </div>
                     </div>
                     
                     <div class="space-y-3">
-                        <p class="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                            <i class="fas fa-list-check text-green-600"></i> Passo a passo:
+                        <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                            <i class="fas fa-list-check text-green-600 dark:text-green-400"></i> Passo a passo:
                         </p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div class="flex items-start gap-2 bg-white/60 rounded-xl p-2">
+                            <div class="flex items-start gap-2 bg-white/60 dark:bg-gray-800/60 rounded-xl p-2">
                                 <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">1</span>
-                                <span class="text-xs">Clique no botão verde abaixo</span>
+                                <span class="text-xs text-gray-700 dark:text-gray-300">Clique no botão verde abaixo</span>
                             </div>
-                            <div class="flex items-start gap-2 bg-white/60 rounded-xl p-2">
+                            <div class="flex items-start gap-2 bg-white/60 dark:bg-gray-800/60 rounded-xl p-2">
                                 <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">2</span>
-                                <span class="text-xs">Salve o contato do robô 🤖</span>
+                                <span class="text-xs text-gray-700 dark:text-gray-300">Salve o contato do robô 🤖</span>
                             </div>
-                            <div class="flex items-start gap-2 bg-white/60 rounded-xl p-2">
+                            <div class="flex items-start gap-2 bg-white/60 dark:bg-gray-800/60 rounded-xl p-2">
                                 <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">3</span>
-                                <span class="text-xs">Adicione o robô no seu grupo</span>
+                                <span class="text-xs text-gray-700 dark:text-gray-300">Adicione o robô no seu grupo</span>
                             </div>
-                            <div class="flex items-start gap-2 bg-white/60 rounded-xl p-2">
+                            <div class="flex items-start gap-2 bg-white/60 dark:bg-gray-800/60 rounded-xl p-2">
                                 <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">4</span>
-                                <span class="text-xs">Aguarde o cadastro automático</span>
+                                <span class="text-xs text-gray-700 dark:text-gray-300">Aguarde o cadastro automático</span>
                             </div>
                         </div>
                         
-                        <div class="bg-amber-50 rounded-xl p-3 mt-2">
-                            <p class="text-xs text-amber-800 flex items-start gap-2">
+                        <div class="bg-amber-50 dark:bg-amber-950/30 rounded-xl p-3 mt-2">
+                            <p class="text-xs text-amber-800 dark:text-amber-400 flex items-start gap-2">
                                 <i class="fas fa-lightbulb text-amber-500 mt-0.5"></i>
                                 <span><strong>Dica importante:</strong> Deixe o link do grupo público ou adicione o robô como administrador se for privado.</span>
                             </p>
@@ -2149,7 +2576,7 @@ function showAdvertiseModal() {
                 </div>
                 
                 <!-- ========== MÉTODO PREMIUM ========== -->
-                <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-5 border-2 border-purple-300 shadow-lg relative overflow-hidden">
+                <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-2xl p-5 border-2 border-purple-300 dark:border-purple-700 shadow-lg relative overflow-hidden">
                     <div class="absolute -top-3 -right-3">
                         <span class="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-3 py-1 rounded-full shadow-lg animate-pulse">🏆 PREMIUM</span>
                     </div>
@@ -2158,33 +2585,33 @@ function showAdvertiseModal() {
                             <i class="fas fa-crown text-white text-3xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-purple-700 text-xl">Destaque Especial</h3>
-                            <p class="text-sm text-purple-600">Máxima visibilidade + Proteção avançada</p>
+                            <h3 class="font-bold text-purple-700 dark:text-purple-400 text-xl">Destaque Especial</h3>
+                            <p class="text-sm text-purple-600 dark:text-purple-400">Máxima visibilidade + Proteção avançada</p>
                         </div>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-2 mb-4">
-                        <div class="bg-white/60 rounded-xl p-2 text-center">
+                        <div class="bg-white/60 dark:bg-gray-800/60 rounded-xl p-2 text-center">
                             <i class="fas fa-chart-line text-purple-500 text-lg"></i>
-                            <p class="text-xs font-semibold mt-1">Topo do site</p>
+                            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300 mt-1">Topo do site</p>
                         </div>
-                        <div class="bg-white/60 rounded-xl p-2 text-center">
+                        <div class="bg-white/60 dark:bg-gray-800/60 rounded-xl p-2 text-center">
                             <i class="fas fa-fire text-orange-500 text-lg"></i>
-                            <p class="text-xs font-semibold mt-1">Selo animado</p>
+                            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300 mt-1">Selo animado</p>
                         </div>
-                        <div class="bg-white/60 rounded-xl p-2 text-center">
+                        <div class="bg-white/60 dark:bg-gray-800/60 rounded-xl p-2 text-center">
                             <i class="fas fa-shield-alt text-green-500 text-lg"></i>
-                            <p class="text-xs font-semibold mt-1">Anti-spam</p>
+                            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300 mt-1">Anti-spam</p>
                         </div>
-                        <div class="bg-white/60 rounded-xl p-2 text-center">
+                        <div class="bg-white/60 dark:bg-gray-800/60 rounded-xl p-2 text-center">
                             <i class="fas fa-robot text-blue-500 text-lg"></i>
-                            <p class="text-xs font-semibold mt-1">Moderação 24h</p>
+                            <p class="text-xs font-semibold text-gray-700 dark:text-gray-300 mt-1">Moderação 24h</p>
                         </div>
                     </div>
                     
-                    <div class="bg-white rounded-xl p-3 text-center mb-4">
-                        <p class="text-sm font-semibold text-purple-700">🔥 A partir de <span class="text-3xl font-bold">R$ 30,00</span>/mês</p>
-                        <p class="text-xs text-gray-500">Investimento com retorno garantido</p>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-3 text-center mb-4">
+                        <p class="text-sm font-semibold text-purple-700 dark:text-purple-400">🔥 A partir de <span class="text-3xl font-bold">R$ 30,00</span>/mês</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Investimento com retorno garantido</p>
                     </div>
                     
                     <a href="https://Fabibot.vercel.app" 
@@ -2197,10 +2624,10 @@ function showAdvertiseModal() {
                 
                 <!-- ========== RODAPÉ INFORMATIVO ========== -->
                 <div class="mt-6 text-center">
-                    <p class="text-xs text-gray-400">
-                        📢 Mais de <strong class="text-purple-600">500 grupos</strong> já foram cadastrados através do nosso robô
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                        📢 Mais de <strong class="text-purple-600 dark:text-purple-400">500 grupos</strong> já foram cadastrados através do nosso robô
                     </p>
-                    <p class="text-xs text-gray-400 mt-1">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         Dúvidas? Fale conosco pelo WhatsApp ou no canal oficial
                     </p>
                 </div>
@@ -2249,14 +2676,21 @@ function abrirDivulgacao() {
 // Sincronizar com ranking ANTES de identificar campeões
 await sincronizarCampeoesComRanking();
 updateStats();
+// Dentro do document.addEventListener('DOMContentLoaded', function() { ... })
+// Adicione estas linhas no início:
+
+    detectSystemDarkMode();  // Verifica sistema ao carregar
+    watchSystemDarkMode();  
 identificarGruposCampeoes();
 setInterval(atualizarTempoRestante, 60000);
 // Dentro do DOMContentLoaded, após carregar os grupos:
 // Dentro de loadGroups(), após carregar os grupos:
 await carregarGruposDestaque();
+// Recarregar os destaques em ordem aleatória a cada 30 minutos
                 if (!allGroups.length) throw new Error('Nenhum grupo com link encontrado');
                 
                 renderCategories();
+                // Dentro de loadGroups(), depois de renderCategories()
                 renderGroups();
                 
                 const urlParams = new URLSearchParams(window.location.search);
