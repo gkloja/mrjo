@@ -526,7 +526,67 @@
     justify-content: center;
     gap: 8px;
 }
+/* Cards de Destaque Premium */
+.destaque-card-premium {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
 
+.destaque-card-premium:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.2);
+}
+
+.destaque-card-premium::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(217, 70, 239, 0.05) 100%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.destaque-card-premium:hover::after {
+    opacity: 1;
+}
+
+.destaque-badge-premium {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+}
+
+.countdown-premium {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    font-family: 'Courier New', monospace;
+}
+
+/* Efeito de brilho no hover da imagem */
+.destaque-img-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.destaque-img-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+    z-index: 1;
+}
+
+.destaque-card-premium:hover .destaque-img-wrapper::before {
+    left: 100%;
+}
 </style>
 
 
@@ -536,124 +596,52 @@
 
 
 
-<!-- SEÇÃO RANKING DIÁRIO - VERSÃO COM BOTÃO VER RANKING -->
-<section class="px-4 sm:px-6 lg:px-8 mt-8">
+<!-- SEÇÃO RANKING DIÁRIO - VERSÃO COMPACTA -->
+<section class="px-4 sm:px-6 lg:px-8 mt-6">
     <div class="max-w-7xl mx-auto">
-        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-            <!-- Cabeçalho com botão VER RANKING -->
-            <div class="gradient-bg px-6 py-4 relative overflow-hidden">
-                <div class="absolute top-0 right-0 opacity-10">
-                    <i class="fas fa-chart-line text-7xl"></i>
+        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+            <!-- Cabeçalho minimalista -->
+            <div class="bg-gradient-to-r from-purple-600 to-pink-600 px-5 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-chart-line text-white text-sm"></i>
+                    <h2 class="text-white font-bold text-sm">Ranking do Dia</h2>
+                    <span class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full">🔥</span>
                 </div>
-                <div class="relative z-10">
-                    <div class="flex items-center justify-between flex-wrap gap-3">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-trophy text-white text-2xl"></i>
-                                <h2 class="text-xl sm:text-2xl font-bold text-white">Ranking do Dia</h2>
-                                <span class="text-xs bg-white/20 px-2 py-1 rounded-full">🔥 AO VIVO</span>
-                            </div>
-                            <p class="text-purple-100 text-xs sm:text-sm mt-1 flex items-center gap-2">
-                                <i class="fas fa-calendar-alt"></i>
-                                <span id="rankingData">Carregando data...</span>
-                            </p>
-                        </div>
-                        
-                        <!-- BOTÃO VER RANKING -->
-                        <button onclick="toggleRanking()" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-bold px-5 py-2.5 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg group">
-                            <i class="fas fa-chart-simple text-white group-hover:scale-110 transition"></i>
-                            <span>Ver ranking</span>
-                            <i id="rankingIcon" class="fas fa-chevron-down text-white text-sm transition-transform duration-300 ml-1"></i>
-                        </button>
-                    </div>
-                    
-<!-- Mini estatísticas com valores reais -->
-<div class="flex gap-3 mt-3 flex-wrap">
-    <div class="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1">
-        <i class="fas fa-fire text-orange-300 text-xs"></i>
-        <span class="text-white text-xs">🔥 #1 Ativo: <strong id="topAtivoValor" class="text-orange-300">---</strong></span>
-    </div>
-    <div class="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1">
-        <i class="fas fa-gem text-yellow-300 text-xs"></i>
-        <span class="text-white text-xs">💰 #1 Rico: <strong id="topRicoValor" class="text-yellow-300">---</strong></span>
-    </div>
-</div>
-                </div>
+                <button onclick="toggleRanking()" class="text-white/80 hover:text-white text-xs flex items-center gap-1 transition">
+                    <span id="rankBtnText">Expandir</span>
+                    <i id="rankIcon" class="fas fa-chevron-down text-[10px] transition-transform"></i>
+                </button>
             </div>
             
-            <!-- Conteúdo do Ranking (recolhido por padrão) -->
+            <!-- Conteúdo recolhível -->
             <div id="rankingContent" class="hidden">
-                <!-- Grid de Rankings -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
-                    <!-- TOP 10 MAIS ATIVOS -->
-                    <div class="p-5">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                <i class="fas fa-fire text-orange-500 text-xl"></i>
-                                Mais Ativos do Dia
-                                <span class="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full">🔥</span>
-                            </h3>
-                            <span class="text-xs text-gray-400">últimas 24h</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                    <!-- Top Ativos -->
+                    <div class="p-3">
+                        <div class="flex items-center gap-1.5 mb-2">
+                            <i class="fas fa-fire text-orange-500 text-xs"></i>
+                            <span class="text-xs font-semibold text-gray-700">Mais Ativos</span>
+                            <span class="text-[10px] text-gray-400">últimas 24h</span>
                         </div>
-                        
-                        <div id="topAtivosList" class="space-y-2">
-                            <!-- Skeleton Loading -->
-                            <div class="animate-pulse space-y-2">
-                                <div class="h-14 bg-gray-100 rounded-lg"></div>
-                                <div class="h-14 bg-gray-100 rounded-lg"></div>
-                                <div class="h-14 bg-gray-100 rounded-lg"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4 text-center">
-                            <a href="#" onclick="scrollToGroups(); return false;" class="text-purple-500 text-sm hover:text-purple-700 transition flex items-center justify-center gap-1">
-                                Ver todos os grupos <i class="fas fa-arrow-right text-xs"></i>
-                            </a>
-                        </div>
+                        <div id="topAtivosList" class="space-y-1.5"></div>
                     </div>
                     
-                    <!-- TOP 10 MAIS RICOS -->
-                    <div class="p-5">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                <i class="fas fa-gem text-yellow-500 text-xl"></i>
-                                Mais Ricos do Dia
-                                <span class="text-xs bg-yellow-100 text-yellow-600 px-2 py-0.5 rounded-full">💰</span>
-                            </h3>
-                            <span class="text-xs text-gray-400">média por membro</span>
+                    <!-- Top Ricos -->
+                    <div class="p-3">
+                        <div class="flex items-center gap-1.5 mb-2">
+                            <i class="fas fa-gem text-yellow-500 text-xs"></i>
+                            <span class="text-xs font-semibold text-gray-700">Mais Ricos</span>
+                            <span class="text-[10px] text-gray-400">média golds</span>
                         </div>
-                        
-                        <div id="topRicosList" class="space-y-2">
-                            <!-- Skeleton Loading -->
-                            <div class="animate-pulse space-y-2">
-                                <div class="h-14 bg-gray-100 rounded-lg"></div>
-                                <div class="h-14 bg-gray-100 rounded-lg"></div>
-                                <div class="h-14 bg-gray-100 rounded-lg"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4 text-center">
-                            <a href="#" onclick="scrollToGroups(); return false;" class="text-purple-500 text-sm hover:text-purple-700 transition flex items-center justify-center gap-1">
-                                Explorar comunidades <i class="fas fa-arrow-right text-xs"></i>
-                            </a>
-                        </div>
+                        <div id="topRicosList" class="space-y-1.5"></div>
                     </div>
                 </div>
                 
-<!-- Footer do Ranking -->
-<div class="bg-gray-50 px-5 py-3 border-t border-gray-100 flex flex-wrap justify-between items-center gap-2 text-xs text-gray-500">
-    <div class="flex items-center gap-3 flex-wrap">
-        <span><i class="fas fa-chart-line text-purple-500"></i> 📊 Ranking atualizado diariamente</span>
-        <span class="w-1 h-1 bg-gray-300 rounded-full hidden sm:block"></span>
-        <span class="flex items-center gap-1"><i class="fas fa-fire text-orange-500"></i> <strong id="totalAtivosFooter">0</strong> grupos ativos</span>
-        <span class="w-1 h-1 bg-gray-300 rounded-full hidden sm:block"></span>
-        <span class="flex items-center gap-1"><i class="fas fa-coins text-yellow-500"></i> <strong id="totalRicosFooter">0</strong> grupos com golds</span>
-    </div>
-    <div>
-        <i class="fas fa-sync-alt text-gray-400 text-xs"></i>
-        <span>Atualizado diariamente às 21h</span>
-    </div>
-</div>
+                <!-- Footer minimalista -->
+                <div class="bg-gray-50 px-3 py-2 border-t border-gray-100 text-[10px] text-gray-400 flex justify-between">
+                    <span>📊 Atualizado diariamente</span>
+                    <span>🕐 22h</span>
+                </div>
             </div>
         </div>
     </div>
@@ -710,18 +698,77 @@
                 </div>
             </div>
         </section>
+<!-- ==================== GRUPOS EM DESTAQUE - CARROSSEL MODERNO ==================== -->
+<section class="px-4 sm:px-6 lg:px-8 mt-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Cabeçalho -->
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg rotate-6">
+                        <i class="fas fa-crown text-white text-lg"></i>
+                    </div>
+                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800">
+                        <span class="gradient-text">Grupos em Destaque</span>
+                    </h2>
+                    <p class="text-xs text-gray-400 mt-0.5">Patrocínios especiais</p>
+                </div>
+            </div>
+            <!-- Botão de anúncio compacto -->
+            <a href="#" onclick="abrirDivulgacao(); return false;" class="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 text-purple-600 text-xs font-medium rounded-full border border-purple-200 transition group">
+                <i class="fas fa-chart-line text-[10px] group-hover:scale-110 transition"></i>
+                <span>Destacar grupo</span>
+                <span class="bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full text-[10px] font-bold">R$1,99</span>
+            </a>
+        </div>
 
+        <!-- Carrossel com scroll horizontal -->
+        <div class="relative">
+            <!-- Botão esquerdo (desktop) -->
+            <button id="scrollEsquerdo" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg border border-gray-200 hidden md:flex items-center justify-center hover:bg-purple-50 hover:border-purple-300 transition-all duration-300">
+                <i class="fas fa-chevron-left text-purple-600 text-sm"></i>
+            </button>
+            
+            <!-- Container com scroll horizontal -->
+            <div id="carrosselDestaques" class="flex overflow-x-auto gap-5 pb-4 scrollbar-hide snap-x snap-mandatory" style="scroll-behavior: smooth;">
+                <!-- Loading skeletons -->
+                <div class="min-w-[280px] sm:min-w-[320px] bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse snap-start">
+                    <div class="h-40 bg-gray-200"></div>
+                    <div class="p-4">
+                        <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div class="h-4 bg-gray-200 rounded w-1/2 mb-3"></div>
+                        <div class="flex gap-2">
+                            <div class="h-8 bg-gray-200 rounded w-20"></div>
+                            <div class="h-8 bg-gray-200 rounded w-20"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Botão direito (desktop) -->
+            <button id="scrollDireito" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg border border-gray-200 hidden md:flex items-center justify-center hover:bg-purple-50 hover:border-purple-300 transition-all duration-300">
+                <i class="fas fa-chevron-right text-purple-600 text-sm"></i>
+            </button>
+            
+            <!-- Indicador de scroll para mobile -->
+            <div class="flex justify-center gap-1 mt-3 md:hidden">
+                <div class="w-1.5 h-1.5 rounded-full bg-gray-300" id="scrollIndicator"></div>
+            </div>
+        </div>
+        
+        <!-- Texto de ajuda para scroll -->
+        <p class="text-center text-[10px] text-gray-400 mt-3 md:hidden">
+            <i class="fas fa-arrows-alt-h"></i> Arraste para o lado para ver mais
+        </p>
+    </div>
+</section>
         <!-- GRUPOS -->
         <section class="px-4 sm:px-6 lg:px-8 py-10 sm:py-12 lg:py-16">
             <div class="max-w-7xl mx-auto">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-                    <div>
-                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center gap-2">
-                            <i class="fas fa-gem text-purple-500"></i>
-                            <span id="sectionTitle">Grupos em destaque</span>
-                        </h2>
-                        <p class="text-gray-400 text-sm mt-1">🔍 Clique em qualquer grupo para ver todos os detalhes</p>
-                    </div>
                     <div class="flex items-center gap-3">
                         <span id="resultCount" class="text-sm text-gray-500 bg-white px-3 py-1.5 rounded-full shadow-sm">0 grupos</span>
                         <button id="clearFilters" class="text-sm text-purple-600 hover:text-purple-700 font-medium hidden transition">Limpar filtros ✨</button>
@@ -737,6 +784,13 @@
         </section>
                 <!-- STATS CARDS -->
         <section class="px-4 sm:px-6 lg:px-8 -mt-4">
+                              <div>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center gap-2">
+                            <i class="fas fa-gem text-purple-500"></i>
+                        </h2>
+
+                    </div>
+                                      <span id="sectionTitle">Grupos em destaque</span>
             <div class="max-w-7xl mx-auto">
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div class="stat-card bg-white/80 backdrop-blur-sm rounded-xl p-3 text-center shadow-sm border border-purple-100">
@@ -825,7 +879,217 @@
         // Variáveis para grupos campeões
         let grupoMaisAtivo = null;
         let grupoMaisRico = null;
+// ==================== GRUPOS EM DESTAQUE (GRID PREMIUM) ====================
+// ==================== GRUPOS EM DESTAQUE - CARROSSEL ====================
+let gruposDestaqueLista = [];
+
+async function carregarGruposDestaque() {
+    try {
+        const response = await fetch('https://cors.eu.org/br2.bronxyshost.com:4009/controleRanking.json');
+        if (!response.ok) throw new Error('Erro ao carregar destaques');
         
+        const data = await response.json();
+        let gruposDestaque = (data.gruposDestaque || []).filter(g => g.status === 'ativo');
+        
+        const container = document.getElementById('carrosselDestaques');
+        if (!container) return;
+        
+       /* if (gruposDestaque.length === 0) {
+            container.innerHTML = `
+                <div class="min-w-full text-center py-8">
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 text-center border-2 border-dashed border-purple-200 mx-4">
+                        <i class="fas fa-crown text-4xl text-purple-300 mb-2"></i>
+                        <p class="text-gray-500 font-medium">Nenhum grupo em destaque no momento</p>
+                        <p class="text-xs text-gray-400 mt-1">Seja o primeiro a patrocinar!</p>
+                        <button onclick="abrirDivulgacao()" class="mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700 transition">
+                            Quero divulgar meu grupo
+                        </button>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+        */
+        // EMBARALHAR A ORDEM (ALEATÓRIO)
+        gruposDestaque = gruposDestaque.sort(() => Math.random() - 0.5);
+        gruposDestaqueLista = gruposDestaque;
+        
+        // Buscar dados completos dos grupos
+        const gruposResponse = await fetch(API_URL);
+        const allGroupsData = await gruposResponse.json();
+        
+        function getTempoRestante(dataFim) {
+            const fim = new Date(dataFim);
+            const agora = new Date();
+            const diffHoras = Math.floor((fim - agora) / (1000 * 60 * 60));
+            if (diffHoras <= 0) return '0h';
+            if (diffHoras < 24) return `${diffHoras}h`;
+            const dias = Math.floor(diffHoras / 24);
+            return `${dias}d`;
+        }
+        
+        // Gerar HTML dos cards
+        container.innerHTML = gruposDestaque.map(grupo => {
+            const grupoCompleto = allGroupsData.find(g => g.grupoID === grupo.grupoId) || {};
+            const imagem = grupoCompleto.imagem || null;
+            const descricao = grupoCompleto.descricao || '✨ Grupo incrível esperando por você!';
+            const participantes = grupo.participantes || grupoCompleto.participantes || '?';
+            const categoria = grupo.categoria || grupoCompleto.categoria || 'Geral';
+            const tempoRestante = getTempoRestante(grupo.dataFim);
+            const isUrgente = tempoRestante.includes('h') && parseInt(tempoRestante) < 6;
+            
+            return `
+                <div class="min-w-[280px] sm:min-w-[320px] bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group snap-start hover:-translate-y-1" onclick="window.open('${grupo.grupoLink}', '_blank')">
+                    <div class="relative h-36 rounded-t-2xl overflow-hidden bg-gradient-to-r from-purple-600 to-pink-600">
+                        ${imagem ? 
+                            `<img src="${imagem}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${grupo.grupoNome}" onerror="this.style.display='none'; this.parentElement.innerHTML+='<i class=\\'fas fa-users text-5xl text-white/30 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2\\'></i>'">` : 
+                            `<div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-users text-5xl text-white/30"></i>
+                            </div>`
+                        }
+                        
+                        <!-- Badge destaque -->
+                        <div class="absolute top-2 left-2">
+                            <div class="destaque-badge-premium px-2 py-0.5 rounded-lg flex items-center gap-1 shadow-lg">
+                                <i class="fas fa-crown text-yellow-900 text-[10px]"></i>
+                                <span class="text-yellow-900 font-bold text-[9px] uppercase">Destaque</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Timer -->
+                        <div class="absolute bottom-2 right-2">
+                            <div class="countdown-premium px-2 py-0.5 rounded-lg text-center ${isUrgente ? 'animate-pulse' : ''}">
+                                <span class="text-white text-[10px] font-bold">⏳ ${tempoRestante}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Categoria -->
+                        <div class="absolute bottom-2 left-2">
+                            <span class="px-2 py-0.5 bg-black/50 backdrop-blur-sm rounded-lg text-white text-[10px] flex items-center gap-1">
+                                <i class="fas fa-tag text-purple-300 text-[8px]"></i> ${categoria}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3">
+                        <h3 class="font-bold text-gray-800 text-sm line-clamp-1 group-hover:text-purple-600 transition">
+                            ${(grupo.grupoNome || 'Grupo Premium').substring(0, 40)}
+                        </h3>
+                        <p class="text-gray-500 text-[11px] line-clamp-2 my-2">
+                            ${descricao.substring(0, 80)}${descricao.length > 80 ? '...' : ''}
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="flex items-center gap-1 text-[10px] text-gray-400">
+                                    <i class="fas fa-users text-purple-400"></i> ${formatNumber(participantes)}
+                                </span>
+                                <span class="w-0.5 h-0.5 bg-gray-300 rounded-full"></span>
+                                <span class="flex items-center gap-1 text-[10px] text-gray-400">
+                                    <i class="fas fa-fire text-orange-400"></i>
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-1 text-purple-600 text-[10px] font-medium group-hover:translate-x-0.5 transition">
+                                <span>Entrar</span>
+                                <i class="fas fa-arrow-right text-[9px]"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        // Inicializar scroll buttons
+        inicializarScrollCarrossel();
+        
+    } catch (error) {
+        console.error('Erro ao carregar destaques:', error);
+        const container = document.getElementById('carrosselDestaques');
+        if (container) {
+            container.innerHTML = `<div class="min-w-full text-center py-8 text-gray-400 text-sm">⚠️ ${error.message}</div>`;
+        }
+    }
+}
+
+// Função para inicializar scroll do carrossel
+function inicializarScrollCarrossel() {
+    const container = document.getElementById('carrosselDestaques');
+    const btnEsquerdo = document.getElementById('scrollEsquerdo');
+    const btnDireito = document.getElementById('scrollDireito');
+    
+    if (!container) return;
+    
+    // Função para mostrar/esconder botões baseado no scroll
+    const toggleButtons = () => {
+        if (!btnEsquerdo || !btnDireito) return;
+        const scrollLeft = container.scrollLeft;
+        const maxScroll = container.scrollWidth - container.clientWidth;
+        
+        btnEsquerdo.classList.toggle('opacity-50', scrollLeft <= 10);
+        btnDireito.classList.toggle('opacity-50', scrollLeft >= maxScroll - 10);
+    };
+    
+    // Scroll com botões
+    if (btnEsquerdo) {
+        btnEsquerdo.onclick = () => {
+            container.scrollBy({ left: -300, behavior: 'smooth' });
+        };
+    }
+    if (btnDireito) {
+        btnDireito.onclick = () => {
+            container.scrollBy({ left: 300, behavior: 'smooth' });
+        };
+    }
+    
+    container.addEventListener('scroll', toggleButtons);
+    setTimeout(toggleButtons, 100);
+    
+    // Indicador de scroll para mobile
+    const updateIndicator = () => {
+        const scrollPercent = container.scrollLeft / (container.scrollWidth - container.clientWidth);
+        const indicator = document.getElementById('scrollIndicator');
+        if (indicator) {
+            indicator.style.width = `${Math.max(10, scrollPercent * 40)}px`;
+        }
+    };
+    container.addEventListener('scroll', updateIndicator);
+}
+function resetarTimer() {
+    if (intervaloCarrossel) {
+        clearInterval(intervaloCarrossel);
+        if (destaquesAtivos.length > 1) {
+            intervaloCarrossel = setInterval(() => {
+                proximoSlide();
+            }, 5000);
+        }
+    }
+}
+
+// Atualizar contadores a cada minuto
+function atualizarTempoRestante() {
+    if (destaquesAtivos.length === 0) return;
+    
+    destaquesAtivos.forEach((grupo, idx) => {
+        const fim = new Date(grupo.dataFim);
+        const agora = new Date();
+        const diffHoras = Math.floor((fim - agora) / (1000 * 60 * 60));
+        
+        if (diffHoras <= 0) {
+            // Se expirou, recarregar o carrossel
+            carregarCarrosselDestaques();
+        } else {
+            const horas = Math.floor(diffHoras);
+            const minutos = Math.floor((diffHoras % 1) * 60);
+            const tempoStr = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
+            
+            // Atualizar o timer do slide correspondente
+            const timers = document.querySelectorAll('.countdown-timer');
+            if (timers[idx]) timers[idx].textContent = tempoStr;
+        }
+    });
+}
+
+// Iniciar atualização a cada minuto
+
         // ==================== FUNÇÕES AUXILIARES ====================
         function formatNumber(num) {
             if (!num) return '0';
@@ -1607,8 +1871,8 @@ async function carregarRanking() {
         console.error('Erro ao carregar ranking:', error);
         const topAtivosDiv = document.getElementById('topAtivosList');
         const topRicosDiv = document.getElementById('topRicosList');
-        if (topAtivosDiv) topAtivosDiv.innerHTML = '<p class="text-gray-500 text-center py-4">⏳ Ranking será atualizado às 21h</p>';
-        if (topRicosDiv) topRicosDiv.innerHTML = '<p class="text-gray-500 text-center py-4">⏳ Ranking será atualizado às 21h</p>';
+        if (topAtivosDiv) topAtivosDiv.innerHTML = '<p class="text-gray-500 text-center py-4">⏳ Ranking será atualizado às 22h</p>';
+        if (topRicosDiv) topRicosDiv.innerHTML = '<p class="text-gray-500 text-center py-4">⏳ Ranking será atualizado às 22h</p>';
     }
 }
 function toggleVideo() {
@@ -1965,6 +2229,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function abrirDivulgacao() {
+    window.open('https://wa.me/5521989047220?text=Olá! Gostaria de divulgar meu grupo no Fabi Grupos por R$ 1,99', '_blank');
+    showToast('📢 Redirecionando para o WhatsApp!', 'success');
+}
         
         async function loadGroups() {
             try {
@@ -1981,6 +2250,10 @@ document.addEventListener('DOMContentLoaded', function() {
 await sincronizarCampeoesComRanking();
 updateStats();
 identificarGruposCampeoes();
+setInterval(atualizarTempoRestante, 60000);
+// Dentro do DOMContentLoaded, após carregar os grupos:
+// Dentro de loadGroups(), após carregar os grupos:
+await carregarGruposDestaque();
                 if (!allGroups.length) throw new Error('Nenhum grupo com link encontrado');
                 
                 renderCategories();
