@@ -5,33 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="google-adsense-account" content="ca-pub-2351298778216089">
 
-    <!-- TÍTULO DINÂMICO (muda conforme o site carregado) -->
+    <!-- TÍTULO DINÂMICO -->
     <title id="pageTitle">Web Proxy | Marujo Digital</title>
 
     <!-- META DESCRIPTION -->
-    <meta name="description" content="Web Proxy Universal do Marujo Digital - Visualize qualquer site através do nosso proxy. Acesse G1, Globo, YouTube e mais com segurança.">
+    <meta name="description" content="Web Proxy Universal do Marujo Digital - Visualize qualquer site através do nosso proxy.">
 
     <!-- KEYWORDS -->
-    <meta name="keywords" content="Marujo Digital, Web Proxy, Proxy Viewer, Bizu do Marujo, Proxy Universal, G1, Globo, Visualizador de Sites">
+    <meta name="keywords" content="Marujo Digital, Web Proxy, Proxy Viewer, Bizu do Marujo, Proxy Universal">
 
-    <!-- Autor e Indexação -->
     <meta name="author" content="D4LEK">
     <meta name="copyright" content="Marujo Digital">
     <meta name="robots" content="index, follow">
 
-    <!-- Google Search Console -->
     <meta name="google-site-verification" content="eh9BCLJr92NDb-7zafO6D2vBAlByD_udqDkUbOoVjWs">
-
-    <!-- CANONICAL -->
     <link rel="canonical" href="https://marujodigital.onrender.com/proxy">
-
-    <!-- FAVICONS -->
     <link rel="icon" href="imagens/logo.png" type="image/png">
-
-    <!-- CORES DO TEMA -->
     <meta name="theme-color" content="#003366">
 
-    <!-- OPEN GRAPH -->
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="Marujo Digital">
@@ -59,20 +50,19 @@
             background: #f0f2f5;
         }
 
-        /* Header estilizado */
+        /* Barra superior simplificada - SEM INPUT */
         .top-bar {
             background: linear-gradient(135deg, #003366 0%, #001a33 100%);
             color: white;
-            padding: 12px 20px;
+            padding: 8px 20px;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
             display: flex;
-            gap: 12px;
+            justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
@@ -80,9 +70,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            background: rgba(255,255,255,0.1);
-            padding: 5px 12px;
-            border-radius: 25px;
         }
 
         .logo-area i {
@@ -91,59 +78,37 @@
 
         .logo-area span {
             font-weight: bold;
-            font-size: 14px;
-        }
-
-        .url-input {
-            flex: 1;
-            padding: 10px 15px;
-            font-size: 14px;
-            border: none;
-            border-radius: 25px;
-            outline: none;
-            min-width: 200px;
+            font-size: 16px;
         }
 
         .top-bar button {
-            padding: 10px 20px;
+            padding: 8px 20px;
             cursor: pointer;
             border: none;
             border-radius: 25px;
             font-weight: bold;
             transition: all 0.3s ease;
-        }
-
-        .btn-carregar {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-carregar:hover {
-            background: #218838;
-            transform: scale(1.02);
-        }
-
-        .btn-original {
             background: #ffc107;
             color: #333;
         }
 
-        .btn-original:hover {
+        .top-bar button:hover {
             background: #e0a800;
+            transform: scale(1.02);
         }
 
         /* Container de anúncio superior */
         .ad-top {
             position: fixed;
-            top: 70px;
+            top: 55px;
             left: 0;
             right: 0;
             background: white;
             text-align: center;
-            padding: 10px;
+            padding: 8px;
             z-index: 999;
             border-bottom: 1px solid #ddd;
-            font-size: 12px;
+            font-size: 11px;
             color: #666;
         }
 
@@ -151,21 +116,34 @@
             content: "📢 PUBLICIDADE";
             display: block;
             font-size: 10px;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
-        /* Iframe principal */
+        /* Iframe principal - ocupa tudo */
         iframe {
             position: fixed;
-            top: 130px;
+            top: 110px;
             left: 0;
             width: 100%;
-            height: calc(100% - 130px);
+            height: calc(100% - 110px);
             border: none;
             background: white;
         }
 
-        /* Anúncio lateral direito (opcional) */
+        /* Rodapé com anúncio APENAS - sem texto */
+        .footer-ad {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            text-align: center;
+            padding: 5px;
+            z-index: 999;
+            border-top: 1px solid #ddd;
+        }
+
+        /* Anúncio lateral direito */
         .ad-sidebar {
             position: fixed;
             right: 10px;
@@ -180,7 +158,7 @@
             padding: 10px;
             font-size: 11px;
             color: #666;
-            display: none; /* Escondido por padrão em mobile */
+            display: none;
         }
 
         .ad-sidebar::before {
@@ -191,22 +169,6 @@
             color: #999;
         }
 
-        /* Rodapé com anúncio */
-        .footer-ad {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            text-align: center;
-            padding: 8px;
-            z-index: 999;
-            border-top: 1px solid #ddd;
-            font-size: 11px;
-            color: #666;
-        }
-
-        /* Responsivo */
         @media (min-width: 1200px) {
             .ad-sidebar {
                 display: block;
@@ -219,21 +181,21 @@
 
         @media (max-width: 768px) {
             .top-bar {
-                padding: 10px;
+                padding: 8px 15px;
             }
             .logo-area span {
-                display: none;
+                font-size: 14px;
             }
             .top-bar button {
-                padding: 8px 12px;
+                padding: 6px 15px;
                 font-size: 12px;
             }
             iframe {
-                top: 110px;
-                height: calc(100% - 160px);
+                top: 100px;
+                height: calc(100% - 150px);
             }
             .ad-top {
-                top: 65px;
+                top: 50px;
             }
         }
 
@@ -267,6 +229,17 @@
     </style>
 </head>
 <body>
+    <!-- Barra superior - SEM INPUT, apenas logo e botão -->
+    <div class="top-bar">
+        <div class="logo-area">
+            <i class="fas fa-anchor"></i>
+            <span>Marujo Digital</span>
+        </div>
+        <button onclick="abrirOriginal()">
+            <i class="fas fa-external-link-alt"></i> Abrir Original
+        </button>
+    </div>
+
     <!-- Anúncio topo -->
     <div class="ad-top">
         <ins class="adsbygoogle"
@@ -292,6 +265,16 @@
     <!-- Iframe do proxy -->
     <iframe id="proxyFrame" src="about:blank"></iframe>
 
+    <!-- Rodapé com anúncio - SEM TEXTO "Proxy seguro" -->
+    <div class="footer-ad">
+        <ins class="adsbygoogle"
+             style="display:inline-block;width:320px;height:50px"
+             data-ad-client="ca-pub-2351298778216089"
+             data-ad-slot="5555555555"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 
     <!-- Loader -->
     <div class="loader" id="loader">
@@ -299,8 +282,13 @@
     </div>
 
     <script>
+        // URL fixa que você quer carregar (pode mudar aqui)
+        const DEFAULT_URL = 'https://g1.globo.com/';
+        
         // Serviço proxy
         const PROXY_SERVICE = 'https://cors.eu.org/';
+        
+        let currentUrl = DEFAULT_URL;
         
         // Função para extrair nome do site da URL
         function getSiteName(url) {
@@ -314,7 +302,6 @@
                 hostname = hostname.replace('.org', '');
                 hostname = hostname.replace('.net', '');
                 
-                // Nomes específicos para sites famosos
                 const sitesMap = {
                     'g1.globo': 'G1 - Globo',
                     'globo': 'Globo',
@@ -338,35 +325,21 @@
                     }
                 }
                 
-                // Capitaliza o nome
                 return hostname.split('.')[0].charAt(0).toUpperCase() + hostname.split('.')[0].slice(1);
             } catch(e) {
                 return "Web Proxy";
             }
         }
         
-        // Atualizar título da página
+        // Atualizar título
         function updatePageTitle(url) {
             const siteName = getSiteName(url);
             const titleElement = document.getElementById('pageTitle');
             if (titleElement) {
                 titleElement.textContent = `${siteName} - Marujo Digital Proxy`;
             }
-            // Atualizar também o favicon dinamicamente (opcional)
-            if (url && url.startsWith('http')) {
-                try {
-                    const domain = new URL(url).hostname;
-                    const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-                    const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-                    link.type = 'image/x-icon';
-                    link.rel = 'shortcut icon';
-                    link.href = faviconUrl;
-                    document.head.appendChild(link);
-                } catch(e) {}
-            }
         }
         
-        // Mostrar/Esconder loader
         function showLoader(show) {
             const loader = document.getElementById('loader');
             if (show) {
@@ -376,21 +349,12 @@
             }
         }
         
-        // Função principal carregar
-        function carregar() {
-            let url = document.getElementById('urlInput').value;
+        function carregarUrl(url) {
             if (!url) return;
             
-            if (!url.startsWith('http')) {
-                url = 'https://' + url;
-            }
-            
             showLoader(true);
-            
-            // Atualiza título baseado na URL
             updatePageTitle(url);
             
-            // Carrega via proxy
             const proxyUrl = PROXY_SERVICE + encodeURIComponent(url);
             const iframe = document.getElementById('proxyFrame');
             
@@ -400,23 +364,18 @@
             
             iframe.onerror = function() {
                 showLoader(false);
-                alert('Erro ao carregar o site. Tente novamente.');
+                console.log('Erro ao carregar');
             };
             
             iframe.src = proxyUrl;
-            
-            // Salva no histórico
-            const newUrl = new URL(window.location);
-            newUrl.searchParams.set('url', url);
-            window.history.pushState({}, '', newUrl);
+            currentUrl = url;
         }
         
         function abrirOriginal() {
-            const url = document.getElementById('urlInput').value;
-            if (url) window.open(url, '_blank');
+            if (currentUrl) window.open(currentUrl, '_blank');
         }
         
-        // Extrair URL do caminho (formato ?https://...)
+        // Extrair URL do path (formato ?https://...)
         function extrairUrlDoPath() {
             let urlCompleta = window.location.href;
             let questionMarkIndex = urlCompleta.indexOf('?');
@@ -434,51 +393,23 @@
             return null;
         }
         
-        // Carregar da query string
-        function carregarDaQueryString() {
-            const params = new URLSearchParams(window.location.search);
-            let urlParam = params.get('url');
-            if (urlParam) {
-                document.getElementById('urlInput').value = urlParam;
-                carregar();
-                return true;
-            }
-            return false;
-        }
-        
-        // Carregar do path direto
-        function carregarDoPath() {
-            let urlDireta = extrairUrlDoPath();
-            if (urlDireta) {
-                document.getElementById('urlInput').value = urlDireta;
-                carregar();
-                return true;
-            }
-            return false;
-        }
-        
         // Inicialização
         function inicializar() {
-            if (!carregarDoPath()) {
-                carregarDaQueryString();
+            let urlParaCarregar = extrairUrlDoPath();
+            
+            if (!urlParaCarregar) {
+                const params = new URLSearchParams(window.location.search);
+                urlParaCarregar = params.get('url');
             }
             
-            // Tenta atualizar título com a URL atual
-            const urlInput = document.getElementById('urlInput').value;
-            if (urlInput) {
-                updatePageTitle(urlInput);
+            if (!urlParaCarregar) {
+                urlParaCarregar = DEFAULT_URL;
             }
+            
+            carregarUrl(urlParaCarregar);
         }
         
-        // Executar ao carregar
         inicializar();
-        
-        // Suporte para tecla Enter no input
-        document.getElementById('urlInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                carregar();
-            }
-        });
     </script>
 </body>
 </html>
