@@ -5,15 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="google-adsense-account" content="ca-pub-2351298778216089">
 
-    <!-- TÍTULO DINÂMICO -->
-    <title id="pageTitle">Web Proxy | Marujo Digital</title>
+    <!-- META TAGS DINÂMICAS (serão sobrescritas pelo JavaScript) -->
+    <title id="pageTitle">Notícias 24 Horas</title>
+    <meta id="metaDescription" name="description" content="Veja notícias recentes e importantes!!">
+    <meta id="metaOgTitle" property="og:title" content="Marujo Digital Proxy">
+    <meta id="metaOgDescription" property="og:description" content="Acesse qualquer site através do proxy do Marujo Digital.">
+    <meta id="metaOgUrl" property="og:url" content="https://marujodigital.onrender.com/proxy">
+    <meta id="metaOgImage" property="og:image" content="https://marujodigital.onrender.com/imagens/logo.png">
+    <meta id="metaTwitterTitle" name="twitter:title" content="Marujo Digital Proxy">
+    <meta id="metaTwitterDescription" name="twitter:description" content="Acesse qualquer site através do proxy do Marujo Digital.">
 
-    <!-- META DESCRIPTION -->
-    <meta name="description" content="Web Proxy Universal do Marujo Digital - Visualize qualquer site através do nosso proxy.">
-
-    <!-- KEYWORDS -->
     <meta name="keywords" content="Marujo Digital, Web Proxy, Proxy Viewer, Bizu do Marujo, Proxy Universal">
-
     <meta name="author" content="D4LEK">
     <meta name="copyright" content="Marujo Digital">
     <meta name="robots" content="index, follow">
@@ -23,140 +25,129 @@
     <link rel="icon" href="imagens/logo.png" type="image/png">
     <meta name="theme-color" content="#003366">
 
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="pt_BR">
-    <meta property="og:site_name" content="Marujo Digital">
-    <meta property="og:title" content="Web Proxy | Marujo Digital">
-    <meta property="og:description" content="Visualize qualquer site através do nosso proxy gratuito">
-    <meta property="og:url" content="https://marujodigital.onrender.com/proxy">
-    <meta property="og:image" content="https://marujodigital.onrender.com/imagens/logo.png">
-
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089"
      crossorigin="anonymous"></script>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        /* Iframe ocupa a tela TODA - igual site real */
-        iframe {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: white;
-            z-index: 1;
-        }
-
-        /* Loader centralizado */
-        .loader {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            display: none;
-        }
-
-        .loader.show {
-            display: block;
-        }
-
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 6px solid #f3f3f3;
-            border-top: 6px solid #003366;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; padding: 0; overflow: hidden; }
+        iframe { position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none; background: white; z-index: 1; }
+        .loader { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; display: none; }
+        .loader.show { display: block; }
+        .spinner { width: 60px; height: 60px; border: 6px solid #f3f3f3; border-top: 6px solid #003366; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <!-- Iframe do proxy - tela cheia -->
     <iframe id="proxyFrame" src="about:blank"></iframe>
-
-    <!-- Loader -->
-    <div class="loader" id="loader">
-        <div class="spinner"></div>
-    </div>
+    <div class="loader" id="loader"><div class="spinner"></div></div>
 
     <script>
-        // URL padrão (G1)
         const DEFAULT_URL = 'https://g1.globo.com/';
-        
-        // Serviço proxy
         const PROXY_SERVICE = 'https://cors.eu.org/';
-        
         let currentUrl = DEFAULT_URL;
         
-        // Função para extrair nome do site da URL
-        function getSiteName(url) {
+        // ===== MAPA DE SITES PARA TÍTULOS BONITOS =====
+        const sitesMap = {
+            'g1.globo': { nome: 'G1', fullName: 'G1 - Globo Notícias', categoria: 'Notícias', emoji: '📰' },
+            'globo.com': { nome: 'Globo', fullName: 'Globo.com', categoria: 'Portal', emoji: '🌐' },
+            'uol.com.br': { nome: 'UOL', fullName: 'UOL - Universo Online', categoria: 'Notícias', emoji: '📰' },
+            'terra.com.br': { nome: 'Terra', fullName: 'Terra - Notícias', categoria: 'Notícias', emoji: '📰' },
+            'youtube.com': { nome: 'YouTube', fullName: 'YouTube - Vídeos', categoria: 'Vídeos', emoji: '📹' },
+            'twitter.com': { nome: 'Twitter', fullName: 'Twitter/X', categoria: 'Social', emoji: '🐦' },
+            'x.com': { nome: 'X', fullName: 'X (Twitter)', categoria: 'Social', emoji: '🐦' },
+            'facebook.com': { nome: 'Facebook', fullName: 'Facebook', categoria: 'Social', emoji: '👥' },
+            'instagram.com': { nome: 'Instagram', fullName: 'Instagram', categoria: 'Social', emoji: '📸' },
+            'wikipedia.org': { nome: 'Wikipedia', fullName: 'Wikipedia - Enciclopédia', categoria: 'Referência', emoji: '📚' },
+            'github.com': { nome: 'GitHub', fullName: 'GitHub - Desenvolvimento', categoria: 'Tech', emoji: '💻' },
+            'netflix.com': { nome: 'Netflix', fullName: 'Netflix - Streaming', categoria: 'Streaming', emoji: '🎬' },
+            'spotify.com': { nome: 'Spotify', fullName: 'Spotify - Música', categoria: 'Música', emoji: '🎵' },
+            'amazon.com': { nome: 'Amazon', fullName: 'Amazon - Compras', categoria: 'Compras', emoji: '🛒' },
+            'mercadolivre.com.br': { nome: 'Mercado Livre', fullName: 'Mercado Livre', categoria: 'Compras', emoji: '🛍️' }
+        };
+        
+        // ===== EXTRAIR INFORMAÇÕES DO SITE =====
+        function getSiteInfo(url) {
             try {
-                if (!url) return "Web Proxy";
+                if (!url) return { nome: 'Proxy', fullName: 'Marujo Digital Proxy', categoria: 'Ferramenta', emoji: '🔗' };
                 
                 let hostname = new URL(url).hostname;
                 hostname = hostname.replace('www.', '');
-                hostname = hostname.replace('.com.br', '');
-                hostname = hostname.replace('.com', '');
-                hostname = hostname.replace('.org', '');
-                hostname = hostname.replace('.net', '');
                 
-                const sitesMap = {
-                    'g1.globo': 'G1 - Globo',
-                    'globo': 'Globo',
-                    'youtube': 'YouTube',
-                    'twitter': 'Twitter/X',
-                    'facebook': 'Facebook',
-                    'instagram': 'Instagram',
-                    'wikipedia': 'Wikipedia',
-                    'reddit': 'Reddit',
-                    'uol': 'UOL',
-                    'terra': 'Terra',
-                    'estadao': 'Estadão',
-                    'folha': 'Folha de SP',
-                    'cnn': 'CNN Brasil',
-                    'bbc': 'BBC News'
-                };
-                
-                for (let [key, value] of Object.entries(sitesMap)) {
-                    if (hostname.includes(key)) {
-                        return value;
+                for (let [domain, info] of Object.entries(sitesMap)) {
+                    if (hostname.includes(domain)) {
+                        return info;
                     }
                 }
                 
-                return hostname.split('.')[0].charAt(0).toUpperCase() + hostname.split('.')[0].slice(1);
+                let nomeLimpo = hostname.split('.')[0];
+                nomeLimpo = nomeLimpo.charAt(0).toUpperCase() + nomeLimpo.slice(1);
+                
+                return { nome: nomeLimpo, fullName: nomeLimpo, categoria: 'Site', emoji: '🌐' };
             } catch(e) {
-                return "Web Proxy";
+                return { nome: 'Proxy', fullName: 'Marujo Digital Proxy', categoria: 'Ferramenta', emoji: '🔗' };
             }
         }
         
-        // Atualizar título
-        function updatePageTitle(url) {
-            const siteName = getSiteName(url);
-            const titleElement = document.getElementById('pageTitle');
-            if (titleElement) {
-                titleElement.textContent = `${siteName} - Marujo Digital`;
+        // ===== ATUALIZAR META TAGS PARA PREVIEW NO WHATSAPP =====
+        function updateMetaTags(url) {
+            const siteInfo = getSiteInfo(url);
+            const proxyUrl = `https://marujodigital.onrender.com/proxy?${encodeURIComponent(url)}`;
+            
+            // Título da página
+            document.title = `${siteInfo.emoji} ${siteInfo.fullName} | Marujo Proxy`;
+            
+            // Meta Description
+            const metaDesc = document.getElementById('metaDescription');
+            if (metaDesc) {
+                metaDesc.setAttribute('content', `📱 Visualize ${siteInfo.fullName} de forma rápida e segura através do proxy do Marujo Digital. Acesse agora!`);
             }
             
-            // Favicon dinâmico
+            // Open Graph Title
+            const ogTitle = document.getElementById('metaOgTitle');
+            if (ogTitle) {
+                ogTitle.setAttribute('content', `${siteInfo.emoji} ${siteInfo.fullName} - Marujo Proxy`);
+            }
+            
+            // Open Graph Description
+            const ogDesc = document.getElementById('metaOgDescription');
+            if (ogDesc) {
+                ogDesc.setAttribute('content', `📰 Acesse ${siteInfo.fullName} diretamente pelo nosso proxy. Navegue com segurança e privacidade!`);
+            }
+            
+            // Open Graph URL
+            const ogUrl = document.getElementById('metaOgUrl');
+            if (ogUrl) {
+                ogUrl.setAttribute('content', proxyUrl);
+            }
+            
+            // Twitter Card
+            const twitterTitle = document.getElementById('metaTwitterTitle');
+            if (twitterTitle) {
+                twitterTitle.setAttribute('content', `${siteInfo.emoji} ${siteInfo.fullName} - Marujo Proxy`);
+            }
+            
+            const twitterDesc = document.getElementById('metaTwitterDescription');
+            if (twitterDesc) {
+                twitterDesc.setAttribute('content', `📱 Acesse ${siteInfo.fullName} no seu navegador através do proxy do Marujo Digital!`);
+            }
+            
+            // Imagem dinâmica (tenta pegar favicon do site)
+            try {
+                const domain = new URL(url).hostname;
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+                const ogImage = document.getElementById('metaOgImage');
+                if (ogImage) {
+                    ogImage.setAttribute('content', faviconUrl);
+                }
+            } catch(e) {}
+            
+            console.log(`📌 Meta tags atualizadas para: ${siteInfo.fullName}`);
+        }
+        
+        // ===== ATUALIZAR FAVICON =====
+        function updateFavicon(url) {
             if (url && url.startsWith('http')) {
                 try {
                     const domain = new URL(url).hostname;
@@ -174,41 +165,42 @@
         
         function showLoader(show) {
             const loader = document.getElementById('loader');
-            if (show) {
-                loader.classList.add('show');
-            } else {
-                loader.classList.remove('show');
-            }
+            if (show) loader.classList.add('show');
+            else loader.classList.remove('show');
         }
         
         function carregarUrl(url) {
             if (!url) return;
             
             showLoader(true);
-            updatePageTitle(url);
+            updateMetaTags(url);
+            updateFavicon(url);
             
             const proxyUrl = PROXY_SERVICE + encodeURIComponent(url);
             const iframe = document.getElementById('proxyFrame');
             
+            const timeoutId = setTimeout(() => {
+                showLoader(false);
+            }, 10000);
+            
             iframe.onload = function() {
+                clearTimeout(timeoutId);
                 showLoader(false);
             };
             
             iframe.onerror = function() {
+                clearTimeout(timeoutId);
                 showLoader(false);
-                console.log('Erro ao carregar');
             };
             
             iframe.src = proxyUrl;
             currentUrl = url;
             
-            // Atualiza histórico sem recarregar
             const newUrl = new URL(window.location);
             newUrl.searchParams.set('url', url);
             window.history.pushState({url: url}, '', newUrl);
         }
         
-        // Extrair URL do path (formato ?https://...)
         function extrairUrlDoPath() {
             let urlCompleta = window.location.href;
             let questionMarkIndex = urlCompleta.indexOf('?');
@@ -219,6 +211,10 @@
                     urlExtraida = decodeURIComponent(urlExtraida);
                 } catch(e) {}
                 
+                if (urlExtraida.includes('&url=')) {
+                    urlExtraida = urlExtraida.split('&url=')[0];
+                }
+                
                 if (urlExtraida && (urlExtraida.startsWith('http://') || urlExtraida.startsWith('https://'))) {
                     return urlExtraida;
                 }
@@ -226,7 +222,6 @@
             return null;
         }
         
-        // Inicialização
         function inicializar() {
             let urlParaCarregar = extrairUrlDoPath();
             
@@ -239,16 +234,19 @@
                 urlParaCarregar = DEFAULT_URL;
             }
             
+            // Atualiza meta tags ANTES de carregar (para o preview do WhatsApp)
+            updateMetaTags(urlParaCarregar);
+            updateFavicon(urlParaCarregar);
+            
             carregarUrl(urlParaCarregar);
         }
         
         inicializar();
         
-        // Detectar mudanças no histórico (botão voltar/avançar)
         window.addEventListener('popstate', function(event) {
             const params = new URLSearchParams(window.location.search);
             let url = params.get('url');
-            if (url) {
+            if (url && url !== currentUrl) {
                 carregarUrl(url);
             }
         });
