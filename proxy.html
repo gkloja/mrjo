@@ -27,8 +27,8 @@
         }
 
         body {
-            background: #1a1a2e;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
+            background: #0f172a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
         }
 
         /* BARRA SUPERIOR */
@@ -37,11 +37,10 @@
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(15, 23, 42, 0.98);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
             z-index: 1000;
-            padding: 8px 16px;
+            padding: 10px 16px;
         }
 
         .bar-container {
@@ -62,21 +61,20 @@
         }
 
         .logo-img {
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 16px;
         }
 
         .logo-text {
-            font-weight: 600;
-            font-size: 15px;
+            font-weight: 700;
+            font-size: 16px;
             color: #f1f5f9;
-            letter-spacing: -0.3px;
         }
 
         .logo-text span {
@@ -85,24 +83,24 @@
 
         .url-wrapper {
             flex: 1;
-            min-width: 240px;
+            min-width: 260px;
             display: flex;
             align-items: center;
-            background: #0f172a;
+            background: #1e293b;
             border: 1px solid #334155;
-            border-radius: 40px;
-            transition: all 0.2s ease;
+            border-radius: 48px;
+            transition: all 0.2s;
         }
 
         .url-wrapper:focus-within {
-            border-color: #818cf8;
-            box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.2);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }
 
         .url-icon {
-            padding-left: 14px;
+            padding-left: 16px;
             color: #64748b;
-            font-size: 13px;
+            font-size: 14px;
         }
 
         .url-input {
@@ -113,7 +111,6 @@
             font-size: 14px;
             color: #e2e8f0;
             outline: none;
-            font-family: monospace;
         }
 
         .url-input::placeholder {
@@ -123,11 +120,11 @@
         .go-btn {
             background: #3b82f6;
             border: none;
-            padding: 6px 18px;
-            margin: 3px;
+            padding: 6px 20px;
+            margin: 4px;
             border-radius: 40px;
             color: white;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 13px;
             cursor: pointer;
             transition: background 0.2s;
@@ -138,99 +135,77 @@
         }
 
         .fullscreen-btn {
-            background: transparent;
+            background: #1e293b;
             border: 1px solid #334155;
-            padding: 7px 12px;
+            padding: 7px 14px;
             border-radius: 32px;
             color: #cbd5e1;
             font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
-            flex-shrink: 0;
         }
 
         .fullscreen-btn:hover {
-            background: #1e293b;
-            border-color: #475569;
+            background: #334155;
         }
 
         .status {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            color: #64748b;
-            background: #0f172a;
-            padding: 5px 12px;
-            border-radius: 20px;
-            flex-shrink: 0;
+            gap: 8px;
+            font-size: 12px;
+            color: #94a3b8;
+            background: #1e293b;
+            padding: 5px 14px;
+            border-radius: 32px;
         }
 
         .status-dot {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             background: #22c55e;
             border-radius: 50%;
             animation: pulse 1.5s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+        .status-dot.loading {
+            background: #eab308;
+            animation: pulse 0.5s infinite;
         }
 
-        /* ÁREA DE ANÚNCIOS - MÚLTIPLAS POSIÇÕES */
-        .ads-area {
+        .status-dot.error {
+            background: #ef4444;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        /* ANÚNCIO SUPERIOR */
+        .ads-top {
             position: fixed;
+            top: 60px;
             left: 0;
             right: 0;
-            z-index: 999;
-            text-align: center;
             background: white;
-            transition: all 0.3s;
-        }
-
-        .ads-top {
-            top: 56px;
+            text-align: center;
+            padding: 12px;
             border-bottom: 1px solid #e2e8f0;
-            padding: 8px;
-            display: none;
-        }
-
-        .ads-bottom {
-            bottom: 0;
-            border-top: 1px solid #e2e8f0;
-            padding: 8px;
-            display: none;
-        }
-
-        /* Sidebar de anúncio (esquerda) - estilo LinkedIn */
-        .ads-sidebar {
-            position: fixed;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 160px;
-            background: white;
-            border-radius: 0 12px 12px 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            z-index: 998;
-            text-align: center;
-            padding: 12px 8px;
-            display: none;
-            border: 1px solid #e2e8f0;
-            border-left: none;
+            z-index: 999;
+            display: block;
+            min-height: 110px;
         }
 
         /* CONTAINER DO IFRAME */
         .site-container {
             position: fixed;
-            top: 56px;
+            top: 170px;
             left: 0;
             right: 0;
             bottom: 0;
             background: white;
-            transition: all 0.3s;
         }
 
         iframe {
@@ -240,39 +215,58 @@
             background: white;
         }
 
-        /* MOSTRAR ANÚNCIOS EM DESKTOP */
-        @media (min-width: 768px) {
-            .ads-top { display: block; }
-            .site-container { top: 146px; }
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .ads-top { top: 56px; min-height: auto; padding: 8px; }
+            .site-container { top: 150px; }
+            .proxy-bar { padding: 8px 12px; }
+            .url-input { font-size: 12px; }
+            .go-btn { padding: 5px 14px; font-size: 11px; }
+            .status { display: none; }
         }
 
-        @media (min-width: 1024px) {
-            .ads-sidebar { display: block; }
-            .site-container { left: 170px; right: 0; }
+        /* MENSAGEM DE STATUS DO PROXY */
+        .proxy-message {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-family: monospace;
+            z-index: 1001;
+            border: 1px solid #334155;
+            pointer-events: none;
         }
 
-        @media (min-width: 1280px) {
-            .ads-bottom { display: block; }
-            .site-container { bottom: 100px; }
+        .proxy-message.error {
+            background: #7f1d1d;
+            color: #fca5a5;
+            border-color: #ef4444;
         }
 
-        /* MOBILE - SEM ANÚNCIOS (limpo) */
-        @media (max-width: 767px) {
-            .site-container { top: 56px; bottom: 0; left: 0; right: 0; }
+        .proxy-message.success {
+            background: #064e3b;
+            color: #6ee7b7;
+            border-color: #10b981;
         }
 
-        /* LOADER */
+        /* LOADER MELHORADO */
         .loader-overlay {
             position: fixed;
-            top: 56px;
+            top: 170px;
             left: 0;
             right: 0;
             bottom: 0;
             background: rgba(255, 255, 255, 0.95);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 1001;
+            gap: 16px;
+            z-index: 1002;
             opacity: 0;
             visibility: hidden;
             transition: all 0.2s;
@@ -284,9 +278,9 @@
         }
 
         .loader-spinner {
-            width: 32px;
-            height: 32px;
-            border: 2px solid #e2e8f0;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
             border-top-color: #3b82f6;
             border-radius: 50%;
             animation: spin 0.6s linear infinite;
@@ -296,33 +290,19 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Indicador de anúncio */
+        .loader-text {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .loader-overlay { top: 150px; }
+        }
+
         .ad-label {
-            font-size: 9px;
+            font-size: 10px;
             color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-        }
-
-        /* Fallback visual enquanto anúncio não carrega */
-        .ad-placeholder {
-            min-height: 90px;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-        }
-
-        @media (max-width: 767px) {
-            .proxy-bar { padding: 8px 12px; }
-            .bar-container { gap: 8px; }
-            .logo-text { font-size: 13px; }
-            .status { display: none; }
-            .fullscreen-btn { padding: 5px 10px; font-size: 11px; }
-            .url-input { font-size: 12px; padding: 8px 8px; }
-            .go-btn { padding: 4px 12px; font-size: 12px; }
+            margin-bottom: 6px;
         }
     </style>
 </head>
@@ -338,24 +318,24 @@
         
         <div class="url-wrapper">
             <span class="url-icon">🔒</span>
-            <input type="text" id="urlInput" class="url-input" placeholder="https:// ou digite um site...">
+            <input type="text" id="urlInput" class="url-input" placeholder="ex: g1.globo.com ou https://...">
             <button id="goBtn" class="go-btn">Ir</button>
         </div>
         
         <button class="fullscreen-btn" onclick="toggleFullscreen()">
-            ⌘ Tela cheia
+            🖥️ Tela cheia
         </button>
         
         <div class="status">
-            <span class="status-dot"></span>
+            <div class="status-dot" id="statusDot"></div>
             <span id="statusText">Pronto</span>
         </div>
     </div>
 </div>
 
-<!-- ==================== ANÚNCIO SUPERIOR ==================== -->
-<div class="ads-area ads-top">
-    <div class="ad-label">✨ PUBLICIDADE</div>
+<!-- ANÚNCIO -->
+<div class="ads-top">
+    <div class="ad-label">PUBLICIDADE</div>
     <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-2351298778216089"
@@ -367,95 +347,87 @@
     </script>
 </div>
 
-<!-- ==================== ANÚNCIO LATERAL (ESQUERDA) ==================== -->
-<div class="ads-sidebar">
-    <div class="ad-label">📢 ANÚNCIO</div>
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-2351298778216089"
-         data-ad-slot="4868424735"
-         data-ad-format="rectangle"
-         data-full-width-responsive="true"></ins>
-    <script>
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense sidebar:', e); }
-    </script>
-</div>
-
-<!-- ==================== ANÚNCIO INFERIOR ==================== -->
-<div class="ads-area ads-bottom">
-    <div class="ad-label">✨ PUBLICIDADE</div>
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-2351298778216089"
-         data-ad-slot="4868424735"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense bottom:', e); }
-    </script>
-</div>
-
 <!-- CONTAINER DO SITE -->
 <div class="site-container">
     <iframe id="proxyFrame" src="about:blank" title="Marujo Proxy"></iframe>
 </div>
 
+<!-- MENSAGEM DE STATUS DO PROXY -->
+<div id="proxyMessage" class="proxy-message">
+    🔄 Conectando ao proxy...
+</div>
+
 <!-- LOADER -->
 <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-spinner"></div>
+    <div class="loader-text" id="loaderText">Carregando site...</div>
 </div>
 
 <script>
-    // CONFIGURAÇÃO
+    // ==================== CONFIGURAÇÃO ====================
     const PROXY_SERVICE = 'https://cors.eu.org/';
     const DEFAULT_URL = 'https://g1.globo.com/';
     
-    let currentUrl = DEFAULT_URL;
-    let loadTimeout = null;
+    // PROXY ALTERNATIVO (caso o principal falhe)
+    const PROXY_BACKUP = 'https://corsproxy.io/';
     
-    // ELEMENTOS
+    let currentUrl = DEFAULT_URL;
+    let currentProxy = PROXY_SERVICE;
+    let loadTimeout = null;
+    let tentativasProxy = 0;
+    
+    // Elementos
     const iframe = document.getElementById('proxyFrame');
     const urlInput = document.getElementById('urlInput');
     const goBtn = document.getElementById('goBtn');
     const statusText = document.getElementById('statusText');
+    const statusDot = document.getElementById('statusDot');
     const loaderOverlay = document.getElementById('loaderOverlay');
+    const loaderText = document.getElementById('loaderText');
+    const proxyMessage = document.getElementById('proxyMessage');
     
-    // FUNÇÃO PARA CARREGAR ANÚNCIOS MANUALMENTE
-    function carregarAnuncios() {
-        console.log('🔄 Tentando carregar anúncios...');
-        try {
-            // Forçar recarregamento do AdSense
-            if (typeof adsbygoogle !== 'undefined') {
-                for (let i = 0; i < 3; i++) {
-                    try {
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    } catch(e) {}
-                }
-                console.log('✅ Anúncios solicitados');
-            } else {
-                console.log('⚠️ AdSense não disponível ainda');
-            }
-        } catch(e) {
-            console.log('❌ Erro no AdSense:', e);
+    // ==================== FUNÇÕES DE STATUS ====================
+    function setStatus(status, message) {
+        statusText.textContent = message;
+        statusDot.className = 'status-dot';
+        if (status === 'loading') {
+            statusDot.classList.add('loading');
+        } else if (status === 'error') {
+            statusDot.classList.add('error');
         }
     }
     
-    // CARREGAR A CADA 10 SEGUNDOS (forçando)
-    setInterval(carregarAnuncios, 10000);
+    function setProxyMessage(message, type = 'info') {
+        proxyMessage.textContent = message;
+        proxyMessage.className = 'proxy-message';
+        if (type === 'error') proxyMessage.classList.add('error');
+        if (type === 'success') proxyMessage.classList.add('success');
+        
+        // Esconder após 3 segundos se for sucesso
+        if (type === 'success') {
+            setTimeout(() => {
+                if (proxyMessage.classList.contains('success')) {
+                    proxyMessage.style.opacity = '0.5';
+                }
+            }, 3000);
+        }
+    }
     
-    function showLoader(show) {
+    function showLoader(show, text = 'Carregando site...') {
         if (show) {
+            loaderText.textContent = text;
             loaderOverlay.classList.add('active');
-            statusText.textContent = 'Carregando...';
+            setStatus('loading', 'Carregando...');
             if (loadTimeout) clearTimeout(loadTimeout);
             loadTimeout = setTimeout(() => {
                 if (loaderOverlay.classList.contains('active')) {
-                    statusText.textContent = 'Demorando...';
+                    loaderText.textContent = 'Demorando mais que o normal...';
+                    setProxyMessage('⏳ O proxy pode estar lento, aguarde...', 'error');
                 }
             }, 8000);
         } else {
             loaderOverlay.classList.remove('active');
-            statusText.textContent = 'Conectado';
+            setStatus('idle', 'Conectado');
             if (loadTimeout) {
                 clearTimeout(loadTimeout);
                 loadTimeout = null;
@@ -463,24 +435,26 @@
         }
     }
     
-    function formatDomain(url) {
+    // ==================== TESTAR PROXY ====================
+    async function testarProxy(proxyUrl) {
         try {
-            let hostname = new URL(url).hostname;
-            return hostname.replace('www.', '');
+            const testUrl = proxyUrl + encodeURIComponent('https://httpbin.org/status/200');
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
+            const response = await fetch(testUrl, { 
+                mode: 'cors',
+                signal: controller.signal 
+            });
+            clearTimeout(timeoutId);
+            return response.ok;
         } catch(e) {
-            return 'site';
+            return false;
         }
     }
     
-    function updateBarStatus(url) {
-        urlInput.value = url;
-        try {
-            const domain = formatDomain(url);
-            statusText.textContent = domain;
-        } catch(e) {}
-    }
-    
-    function carregarUrl(url) {
+    // ==================== CARREGAR URL ====================
+    async function carregarUrl(url) {
         if (!url) return;
         
         let finalUrl = url.trim();
@@ -488,31 +462,75 @@
             finalUrl = 'https://' + finalUrl;
         }
         
-        showLoader(true);
+        showLoader(true, `Conectando ao proxy...`);
+        setProxyMessage(`🌐 Conectando a ${finalUrl}...`);
         currentUrl = finalUrl;
-        updateBarStatus(finalUrl);
+        urlInput.value = finalUrl;
         
-        const proxyUrl = PROXY_SERVICE + encodeURIComponent(finalUrl);
+        // Tentar encontrar proxy funcional
+        let proxyFuncional = PROXY_SERVICE;
+        let proxyTestado = false;
+        
+        // Só testar a cada 5 tentativas
+        if (tentativasProxy % 5 === 0 && tentativasProxy > 0) {
+            setProxyMessage(`🔍 Testando proxy...`, 'info');
+            proxyTestado = true;
+            const principalOk = await testarProxy(PROXY_SERVICE);
+            if (!principalOk) {
+                const backupOk = await testarProxy(PROXY_BACKUP);
+                if (backupOk) {
+                    proxyFuncional = PROXY_BACKUP;
+                    setProxyMessage(`✅ Usando proxy alternativo`, 'success');
+                } else {
+                    setProxyMessage(`⚠️ Proxys lentos, tentando mesmo assim...`, 'error');
+                }
+            } else {
+                setProxyMessage(`✅ Proxy principal OK`, 'success');
+            }
+        }
+        
+        const proxyUrl = proxyFuncional + encodeURIComponent(finalUrl);
         
         const loadHandler = () => {
             showLoader(false);
+            setProxyMessage(`✅ Conectado a ${finalUrl.split('/')[2]}`, 'success');
+            tentativasProxy = 0;
             iframe.removeEventListener('load', loadHandler);
             iframe.removeEventListener('error', errorHandler);
-            // Recarregar anúncios após o iframe carregar
-            setTimeout(carregarAnuncios, 500);
+            setTimeout(() => {
+                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+            }, 500);
         };
         
         const errorHandler = () => {
             showLoader(false);
-            statusText.textContent = 'Erro';
+            setStatus('error', 'Erro');
+            setProxyMessage(`❌ Falha ao conectar. Tentando novamente...`, 'error');
+            tentativasProxy++;
+            
+            // Tentar novamente com backup
+            if (tentativasProxy < 3) {
+                setTimeout(() => {
+                    setProxyMessage(`🔄 Tentativa ${tentativasProxy + 1} de 3...`, 'info');
+                    carregarUrl(finalUrl);
+                }, 2000);
+            } else {
+                setProxyMessage(`❌ Não foi possível conectar a ${finalUrl}. Verifique o link.`, 'error');
+                tentativasProxy = 0;
+            }
+            
             iframe.removeEventListener('load', loadHandler);
             iframe.removeEventListener('error', errorHandler);
         };
         
+        iframe.removeEventListener('load', loadHandler);
+        iframe.removeEventListener('error', errorHandler);
         iframe.addEventListener('load', loadHandler);
         iframe.addEventListener('error', errorHandler);
+        
         iframe.src = proxyUrl;
         
+        // Atualizar URL
         const newUrl = new URL(window.location);
         newUrl.searchParams.set('url', finalUrl);
         window.history.pushState({ url: finalUrl }, '', newUrl);
@@ -525,7 +543,7 @@
     function toggleFullscreen() {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch(err => {
-                console.log('Erro ao entrar em tela cheia:', err);
+                console.log('Erro fullscreen:', err);
             });
         } else {
             document.exitFullscreen();
@@ -538,23 +556,10 @@
         if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
             return url;
         }
-        
-        try {
-            const href = window.location.href;
-            const questionIndex = href.indexOf('?');
-            if (questionIndex !== -1) {
-                let extracted = href.substring(questionIndex + 1);
-                extracted = decodeURIComponent(extracted);
-                if (extracted.startsWith('http://') || extracted.startsWith('https://')) {
-                    return extracted;
-                }
-            }
-        } catch(e) {}
-        
         return null;
     }
     
-    // EVENTOS
+    // ==================== EVENTOS ====================
     goBtn.addEventListener('click', () => {
         const url = urlInput.value.trim();
         if (url) carregarUrl(url);
@@ -568,7 +573,7 @@
         }
     });
     
-    // INICIALIZAR
+    // ==================== INICIALIZAR ====================
     function init() {
         let startUrl = getUrlFromParams();
         if (!startUrl) startUrl = DEFAULT_URL;
@@ -576,10 +581,16 @@
         urlInput.value = startUrl;
         carregarUrl(startUrl);
         
-        // Tentar carregar anúncios várias vezes
-        setTimeout(carregarAnuncios, 500);
-        setTimeout(carregarAnuncios, 2000);
-        setTimeout(carregarAnuncios, 5000);
+        // Tentar anúncios várias vezes
+        setTimeout(() => {
+            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        }, 500);
+        setTimeout(() => {
+            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        }, 2000);
+        setTimeout(() => {
+            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        }, 5000);
     }
     
     window.addEventListener('popstate', (event) => {
@@ -592,11 +603,6 @@
     
     init();
 </script>
-
-<!-- DISCLAIMER -->
-<div style="position: fixed; bottom: 4px; right: 8px; font-size: 9px; color: #94a3b8; background: rgba(0,0,0,0.6); padding: 2px 8px; border-radius: 12px; z-index: 1002; backdrop-filter: blur(4px); pointer-events: none;">
-    Marujo Proxy 🔒 | Navegação anônima
-</div>
 
 </body>
 </html>
