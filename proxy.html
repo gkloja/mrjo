@@ -31,7 +31,7 @@
             background: #f5f5f5;
         }
 
-        /* BARRA SUPERIOR - ULTRA SIMPLES */
+        /* ==================== BARRA SUPERIOR ==================== */
         .proxy-header {
             position: fixed;
             top: 0;
@@ -108,9 +108,11 @@
             font-size: 13px;
         }
 
-        /* ==================== ANÚNCIOS ==================== */
-        
-        /* POSIÇÃO 1: TOPO (acima do site) - Desktop e Mobile */
+        .fullscreen-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* ==================== ANÚNCIO SUPERIOR ==================== */
         .ad-top {
             position: fixed;
             top: 60px;
@@ -118,89 +120,65 @@
             right: 0;
             background: #ffffff;
             text-align: center;
-            padding: 8px;
+            padding: 8px 16px;
             border-bottom: 1px solid #e2e8f0;
             z-index: 999;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        /* POSIÇÃO 2: LATERAL ESQUERDA (apenas desktop grande) */
-        .ad-sidebar-left {
-            position: fixed;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 160px;
-            background: white;
-            border-radius: 12px;
-            padding: 12px 8px;
-            text-align: center;
-            z-index: 998;
-            display: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border: 1px solid #e2e8f0;
-        }
-
-        /* POSIÇÃO 3: LATERAL DIREITA (apenas desktop grande) */
-        .ad-sidebar-right {
-            position: fixed;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 160px;
-            background: white;
-            border-radius: 12px;
-            padding: 12px 8px;
-            text-align: center;
-            z-index: 998;
-            display: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border: 1px solid #e2e8f0;
-        }
-
-        /* POSIÇÃO 4: RODAPÉ (mobile e desktop) */
-        .ad-bottom {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            text-align: center;
-            padding: 6px;
-            border-top: 1px solid #e2e8f0;
-            z-index: 999;
-            box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
         }
 
         .ad-label {
             font-size: 9px;
             color: #94a3b8;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             margin-bottom: 4px;
         }
 
-        /* ==================== POSICIONAMENTO RESPONSIVO ==================== */
+        /* ==================== ANÚNCIO INFERIOR ==================== */
+        .ad-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            text-align: center;
+            padding: 6px 16px;
+            border-top: 1px solid #e2e8f0;
+            z-index: 999;
+            box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
+        }
+
+        /* ==================== IFRAME ==================== */
+        .iframe-container {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* ==================== RESPONSIVO ==================== */
         
-        /* Desktop grande (1200px+) - mostra anúncios laterais */
-        @media (min-width: 1300px) {
-            .ad-sidebar-left, .ad-sidebar-right {
-                display: block;
+        /* Desktop - mostra anúncio superior E rodapé */
+        @media (min-width: 768px) {
+            .ad-top {
+                top: 60px;
             }
             .iframe-container {
-                left: 190px;
-                right: 190px;
+                top: 140px;
+                bottom: 0;
             }
         }
 
-        /* Desktop médio (768px a 1299px) - sem laterais */
-        @media (min-width: 768px) and (max-width: 1299px) {
-            .iframe-container {
-                left: 0;
-                right: 0;
-            }
-        }
-
-        /* Mobile (até 767px) - esconde laterais, mostra rodapé */
+        /* Mobile - barra menor, anúncios ajustados */
         @media (max-width: 767px) {
             .proxy-header {
                 padding: 8px 12px;
@@ -225,45 +203,21 @@
             }
             .ad-top {
                 top: 52px;
+                padding: 6px 12px;
             }
             .iframe-container {
-                top: 140px;
+                top: 130px;
                 bottom: 80px;
             }
         }
 
-        /* Desktop com anúncio topo */
-        @media (min-width: 768px) {
-            .ad-top {
-                top: 60px;
-            }
-            .iframe-container {
-                top: 140px;
-                bottom: 0;
-            }
-        }
-
-        /* ==================== IFRAME ==================== */
-        .iframe-container {
-            position: fixed;
-            background: white;
-            transition: all 0.2s;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: white;
-        }
-
-        /* LOADER SIMPLES */
+        /* LOADER */
         .loader {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             color: white;
             padding: 12px 24px;
             border-radius: 40px;
@@ -272,6 +226,7 @@
             display: none;
             align-items: center;
             gap: 10px;
+            backdrop-filter: blur(4px);
         }
 
         .loader.show {
@@ -290,6 +245,32 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* Mensagem de erro */
+        .error-message {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #dc2626;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 12px;
+            z-index: 1003;
+            display: none;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 767px) {
+            .error-message {
+                bottom: 90px;
+                font-size: 11px;
+                white-space: normal;
+                max-width: 90%;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -303,19 +284,17 @@
         </div>
         
         <div class="url-wrapper">
-            <input type="text" id="urlInput" placeholder="Digite o site (ex: google.com ou https://...)" value="https://g1.globo.com/">
+            <input type="text" id="urlInput" placeholder="ex: g1.globo.com ou https://..." value="https://g1.globo.com/">
             <button id="goBtn">IR</button>
         </div>
         
         <button class="fullscreen-btn" onclick="toggleFullscreen()">
-            🖥️ <span>Modo tela cheia</span>
+            🖥️ <span>Tela cheia</span>
         </button>
     </div>
 </div>
 
-<!-- ==================== ANÚNCIOS ==================== -->
-
-<!-- ANÚNCIO 1: TOPO (visível em todos os dispositivos) -->
+<!-- ==================== ANÚNCIO SUPERIOR (HORIZONTAL) ==================== -->
 <div class="ad-top">
     <div class="ad-label">PUBLICIDADE</div>
     <ins class="adsbygoogle"
@@ -325,39 +304,11 @@
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
     <script>
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense top:', e); }
     </script>
 </div>
 
-<!-- ANÚNCIO 2: LATERAL ESQUERDA (apenas desktop grande) -->
-<div class="ad-sidebar-left">
-    <div class="ad-label">PUBLICIDADE</div>
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-2351298778216089"
-         data-ad-slot="4868424735"
-         data-ad-format="vertical"
-         data-full-width-responsive="true"></ins>
-    <script>
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-    </script>
-</div>
-
-<!-- ANÚNCIO 3: LATERAL DIREITA (apenas desktop grande) -->
-<div class="ad-sidebar-right">
-    <div class="ad-label">PUBLICIDADE</div>
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-2351298778216089"
-         data-ad-slot="4868424735"
-         data-ad-format="vertical"
-         data-full-width-responsive="true"></ins>
-    <script>
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-    </script>
-</div>
-
-<!-- ANÚNCIO 4: RODAPÉ (mobile e desktop) -->
+<!-- ==================== ANÚNCIO INFERIOR (HORIZONTAL) ==================== -->
 <div class="ad-bottom">
     <div class="ad-label">PUBLICIDADE</div>
     <ins class="adsbygoogle"
@@ -367,7 +318,7 @@
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
     <script>
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense bottom:', e); }
     </script>
 </div>
 
@@ -379,8 +330,11 @@
 <!-- LOADER -->
 <div class="loader" id="loader">
     <div class="spinner"></div>
-    <span>Carregando site...</span>
+    <span id="loaderText">Carregando site...</span>
 </div>
+
+<!-- MENSAGEM DE ERRO -->
+<div id="errorMsg" class="error-message"></div>
 
 <script>
     // ==================== CONFIGURAÇÃO ====================
@@ -389,22 +343,27 @@
     
     let currentUrl = DEFAULT_URL;
     let loadTimeout = null;
+    let tentativas = 0;
     
     const iframe = document.getElementById('proxyFrame');
     const urlInput = document.getElementById('urlInput');
     const goBtn = document.getElementById('goBtn');
     const loader = document.getElementById('loader');
+    const loaderText = document.getElementById('loaderText');
+    const errorMsg = document.getElementById('errorMsg');
     
     // ==================== FUNÇÕES ====================
-    function showLoader(show) {
+    function showLoader(show, text = 'Carregando site...') {
         if (show) {
+            loaderText.textContent = text;
             loader.classList.add('show');
             if (loadTimeout) clearTimeout(loadTimeout);
             loadTimeout = setTimeout(() => {
                 if (loader.classList.contains('show')) {
                     showLoader(false);
+                    showError('O site demorou para responder. Verifique o link e tente novamente.');
                 }
-            }, 10000);
+            }, 12000);
         } else {
             loader.classList.remove('show');
             if (loadTimeout) {
@@ -414,34 +373,76 @@
         }
     }
     
+    function showError(message) {
+        errorMsg.textContent = message;
+        errorMsg.style.display = 'block';
+        setTimeout(() => {
+            errorMsg.style.display = 'none';
+        }, 4000);
+    }
+    
+    function formatDisplayUrl(url) {
+        try {
+            let hostname = new URL(url).hostname;
+            return hostname.replace('www.', '');
+        } catch(e) {
+            return url.substring(0, 40);
+        }
+    }
+    
     function carregarUrl(url) {
         if (!url) return;
         
         let finalUrl = url.trim();
         
-        // Adicionar https:// se não tiver
+        // Adicionar https:// se não tiver protocolo
         if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
             finalUrl = 'https://' + finalUrl;
         }
         
-        showLoader(true);
+        showLoader(true, `Conectando a ${formatDisplayUrl(finalUrl)}...`);
         currentUrl = finalUrl;
         urlInput.value = finalUrl;
         
         const proxyUrl = PROXY_SERVICE + encodeURIComponent(finalUrl);
         
-        iframe.onload = function() {
+        // Handler de sucesso
+        const onLoad = () => {
             showLoader(false);
+            tentativas = 0;
+            iframe.removeEventListener('load', onLoad);
+            iframe.removeEventListener('error', onError);
+            
+            // Recarregar anúncios
+            setTimeout(() => {
+                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+            }, 500);
         };
         
-        iframe.onerror = function() {
+        // Handler de erro
+        const onError = () => {
+            tentativas++;
             showLoader(false);
-            console.error('Erro ao carregar:', finalUrl);
+            showError(`Erro ao carregar ${formatDisplayUrl(finalUrl)}. ${tentativas < 3 ? 'Tentando novamente...' : 'Verifique o link.'}`);
+            
+            if (tentativas < 3) {
+                setTimeout(() => {
+                    carregarUrl(finalUrl);
+                }, 2000);
+            }
+            
+            iframe.removeEventListener('load', onLoad);
+            iframe.removeEventListener('error', onError);
         };
+        
+        iframe.removeEventListener('load', onLoad);
+        iframe.removeEventListener('error', onError);
+        iframe.addEventListener('load', onLoad);
+        iframe.addEventListener('error', onError);
         
         iframe.src = proxyUrl;
         
-        // Atualizar URL
+        // Atualizar URL da página
         const newUrl = new URL(window.location);
         newUrl.searchParams.set('url', finalUrl);
         window.history.pushState({ url: finalUrl }, '', newUrl);
@@ -484,7 +485,7 @@
         }
     });
     
-    // ==================== INICIAR ====================
+    // ==================== INICIALIZAR ====================
     function init() {
         let startUrl = getUrlFromParams();
         if (!startUrl) startUrl = DEFAULT_URL;
@@ -495,7 +496,7 @@
         // Recarregar anúncios periodicamente
         setInterval(() => {
             try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-        }, 20000);
+        }, 25000);
     }
     
     window.addEventListener('popstate', () => {
