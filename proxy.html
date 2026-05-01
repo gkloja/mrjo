@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="google-adsense-account" content="ca-pub-2351298778216089">
 
-    <title>Marujo Proxy | Navegação Segura</title>
-    <meta name="description" content="Acesse qualquer site de forma rápida, segura e anônima. Proxy gratuito e sem complicações.">
-    <meta name="keywords" content="web proxy, navegador anônimo, proxy gratuito">
+    <title>Marujo Proxy | Navegue com Liberdade</title>
+    <meta name="description" content="Acesse qualquer site de forma rápida, segura e anônima. Proxy gratuito, compatível com mobile e desktop.">
+    <meta name="keywords" content="web proxy, navegador anônimo, proxy gratuito, marujo digital">
     <meta name="author" content="Marujo Digital">
     <meta name="robots" content="index, follow">
     
     <meta name="google-site-verification" content="eh9BCLJr92NDb-7zafO6D2vBAlByD_udqDkUbOoVjWs">
     <link rel="canonical" href="https://marujodigital.onrender.com/proxy">
     <link rel="icon" href="imagens/logo.png" type="image/png">
-    <meta name="theme-color" content="#111827">
+    <meta name="theme-color" content="#003366">
 
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089" crossorigin="anonymous"></script>
@@ -27,23 +27,24 @@
         }
 
         body {
-            background: #0f172a;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
         }
 
-        /* BARRA SUPERIOR */
-        .proxy-bar {
+        /* ===== BARRA SUPERIOR ===== */
+        .nav-bar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background: #0f172a;
-            border-bottom: 1px solid #334155;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
             z-index: 1000;
-            padding: 10px 16px;
+            padding: 8px 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        .bar-container {
+        .nav-container {
             max-width: 1400px;
             margin: 0 auto;
             display: flex;
@@ -58,106 +59,116 @@
             gap: 8px;
             cursor: pointer;
             flex-shrink: 0;
+            text-decoration: none;
         }
 
-        .logo-img {
+        .logo-icon {
             width: 32px;
             height: 32px;
+            background: linear-gradient(135deg, #003366, #1a4d8c);
             border-radius: 8px;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 16px;
+            color: white;
         }
 
         .logo-text {
             font-weight: 700;
             font-size: 16px;
-            color: #f1f5f9;
+            color: #1e293b;
         }
 
         .logo-text span {
-            color: #818cf8;
+            color: #2563eb;
         }
 
-        .url-wrapper {
+        .url-bar {
             flex: 1;
-            min-width: 260px;
+            min-width: 200px;
             display: flex;
             align-items: center;
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 48px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 32px;
             transition: all 0.2s;
         }
 
-        .url-wrapper:focus-within {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        .url-bar:focus-within {
+            background: white;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
         }
 
         .url-icon {
-            padding-left: 16px;
+            padding-left: 14px;
             color: #64748b;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .url-input {
             flex: 1;
             background: transparent;
             border: none;
-            padding: 10px 12px;
+            padding: 9px 10px;
             font-size: 14px;
-            color: #e2e8f0;
+            color: #1e293b;
             outline: none;
         }
 
         .url-input::placeholder {
-            color: #475569;
+            color: #94a3b8;
         }
 
         .go-btn {
-            background: #3b82f6;
-            border: none;
-            padding: 6px 20px;
-            margin: 4px;
-            border-radius: 40px;
-            color: white;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .go-btn:hover {
             background: #2563eb;
-        }
-
-        .fullscreen-btn {
-            background: #1e293b;
-            border: 1px solid #334155;
-            padding: 7px 14px;
-            border-radius: 32px;
-            color: #cbd5e1;
-            font-size: 12px;
+            border: none;
+            padding: 5px 18px;
+            margin: 4px;
+            border-radius: 28px;
+            color: white;
+            font-weight: 500;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .fullscreen-btn:hover {
-            background: #334155;
+        .go-btn:hover {
+            background: #1d4ed8;
         }
 
-        .status {
+        .action-btn {
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            padding: 6px 14px;
+            border-radius: 28px;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .action-btn:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-size: 12px;
-            color: #94a3b8;
-            background: #1e293b;
-            padding: 5px 14px;
-            border-radius: 32px;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 20px;
+            flex-shrink: 0;
         }
 
         .status-dot {
@@ -165,43 +176,57 @@
             height: 8px;
             background: #22c55e;
             border-radius: 50%;
-            animation: pulse 1.5s infinite;
         }
 
         .status-dot.loading {
             background: #eab308;
-            animation: pulse 0.5s infinite;
-        }
-
-        .status-dot.error {
-            background: #ef4444;
-            animation: none;
+            animation: pulse 0.8s infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
 
-        /* ANÚNCIO SUPERIOR */
-        .ads-top {
+        /* ===== ANÚNCIO SUPERIOR (DESKTOP E MOBILE) ===== */
+        .ad-top {
             position: fixed;
             top: 60px;
             left: 0;
             right: 0;
             background: white;
             text-align: center;
-            padding: 12px;
+            padding: 8px;
             border-bottom: 1px solid #e2e8f0;
             z-index: 999;
-            display: block;
-            min-height: 110px;
         }
 
-        /* CONTAINER DO IFRAME */
-        .site-container {
+        /* ===== ANÚNCIO INFERIOR (MOBILE) ===== */
+        .ad-bottom {
             position: fixed;
-            top: 170px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            text-align: center;
+            padding: 6px;
+            border-top: 1px solid #e2e8f0;
+            z-index: 999;
+            display: none;
+        }
+
+        .ad-label {
+            font-size: 9px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+
+        /* ===== CONTAINER DO IFRAME ===== */
+        .iframe-container {
+            position: fixed;
+            top: 60px;
             left: 0;
             right: 0;
             bottom: 0;
@@ -215,126 +240,161 @@
             background: white;
         }
 
-        /* MOBILE */
-        @media (max-width: 768px) {
-            .ads-top { top: 56px; min-height: auto; padding: 8px; }
-            .site-container { top: 150px; }
-            .proxy-bar { padding: 8px 12px; }
-            .url-input { font-size: 12px; }
-            .go-btn { padding: 5px 14px; font-size: 11px; }
-            .status { display: none; }
+        /* Ajustes responsivos */
+        @media (min-width: 768px) {
+            .ad-top {
+                top: 60px;
+            }
+            .iframe-container {
+                top: 150px;
+                bottom: 0;
+            }
+            .ad-bottom {
+                display: none;
+            }
         }
 
-        /* MENSAGEM DE STATUS DO PROXY */
-        .proxy-message {
+        @media (max-width: 767px) {
+            .nav-bar {
+                padding: 6px 12px;
+            }
+            .logo-text {
+                display: none;
+            }
+            .url-input {
+                font-size: 12px;
+                padding: 7px 8px;
+            }
+            .go-btn {
+                padding: 4px 12px;
+                font-size: 11px;
+            }
+            .action-btn {
+                padding: 4px 10px;
+                font-size: 11px;
+            }
+            .action-btn span {
+                display: none;
+            }
+            .status-badge {
+                display: none;
+            }
+            .ad-top {
+                top: 52px;
+                padding: 6px;
+            }
+            .ad-bottom {
+                display: block;
+            }
+            .iframe-container {
+                top: 130px;
+                bottom: 80px;
+            }
+        }
+
+        /* Loader discreto */
+        .proxy-loader {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: #1e293b;
-            color: #94a3b8;
-            padding: 8px 16px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.95);
+            padding: 12px 24px;
             border-radius: 40px;
-            font-size: 11px;
-            font-family: monospace;
-            z-index: 1001;
-            border: 1px solid #334155;
-            pointer-events: none;
-        }
-
-        .proxy-message.error {
-            background: #7f1d1d;
-            color: #fca5a5;
-            border-color: #ef4444;
-        }
-
-        .proxy-message.success {
-            background: #064e3b;
-            color: #6ee7b7;
-            border-color: #10b981;
-        }
-
-        /* LOADER MELHORADO */
-        .loader-overlay {
-            position: fixed;
-            top: 170px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 16px;
+            gap: 12px;
             z-index: 1002;
+            font-size: 14px;
+            color: #475569;
             opacity: 0;
             visibility: hidden;
             transition: all 0.2s;
+            pointer-events: none;
         }
 
-        .loader-overlay.active {
+        .proxy-loader.active {
             opacity: 1;
             visibility: visible;
         }
 
-        .loader-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #e2e8f0;
-            border-top-color: #3b82f6;
+        .loader-spinner-small {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #e2e8f0;
+            border-top-color: #2563eb;
             border-radius: 50%;
-            animation: spin 0.6s linear infinite;
+            animation: spin 0.5s linear infinite;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        .loader-text {
-            color: #64748b;
-            font-size: 14px;
+        /* Toast de erro */
+        .error-toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 12px;
+            z-index: 1003;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+            white-space: nowrap;
         }
 
-        @media (max-width: 768px) {
-            .loader-overlay { top: 150px; }
+        .error-toast.show {
+            opacity: 1;
+            visibility: visible;
         }
 
-        .ad-label {
-            font-size: 10px;
-            color: #94a3b8;
-            margin-bottom: 6px;
+        @media (max-width: 767px) {
+            .error-toast {
+                bottom: 90px;
+                font-size: 11px;
+                white-space: normal;
+                max-width: 90%;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
 
 <!-- BARRA SUPERIOR -->
-<div class="proxy-bar">
-    <div class="bar-container">
+<div class="nav-bar">
+    <div class="nav-container">
         <div class="logo" onclick="resetToHome()">
-            <div class="logo-img">🌊</div>
+            <div class="logo-icon">🌊</div>
             <span class="logo-text">Marujo<span>Proxy</span></span>
         </div>
         
-        <div class="url-wrapper">
+        <div class="url-bar">
             <span class="url-icon">🔒</span>
-            <input type="text" id="urlInput" class="url-input" placeholder="ex: g1.globo.com ou https://...">
+            <input type="text" id="urlInput" class="url-input" placeholder="Digite um site...">
             <button id="goBtn" class="go-btn">Ir</button>
         </div>
         
-        <button class="fullscreen-btn" onclick="toggleFullscreen()">
-            🖥️ Tela cheia
+        <button class="action-btn" onclick="toggleFullscreen()">
+            🖥️ <span>Tela cheia</span>
         </button>
         
-        <div class="status">
+        <div class="status-badge">
             <div class="status-dot" id="statusDot"></div>
             <span id="statusText">Pronto</span>
         </div>
     </div>
 </div>
 
-<!-- ANÚNCIO -->
-<div class="ads-top">
+<!-- ANÚNCIO SUPERIOR (aparece em todos) -->
+<div class="ad-top">
     <div class="ad-label">PUBLICIDADE</div>
     <ins class="adsbygoogle"
          style="display:block"
@@ -343,38 +403,47 @@
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
     <script>
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense:', e); }
+        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense top:', e); }
+    </script>
+</div>
+
+<!-- ANÚNCIO INFERIOR (aparece apenas no mobile) -->
+<div class="ad-bottom">
+    <div class="ad-label">PUBLICIDADE</div>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-2351298778216089"
+         data-ad-slot="4868424735"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense bottom:', e); }
     </script>
 </div>
 
 <!-- CONTAINER DO SITE -->
-<div class="site-container">
+<div class="iframe-container">
     <iframe id="proxyFrame" src="about:blank" title="Marujo Proxy"></iframe>
 </div>
 
-<!-- MENSAGEM DE STATUS DO PROXY -->
-<div id="proxyMessage" class="proxy-message">
-    🔄 Conectando ao proxy...
+<!-- LOADER DISCRETO -->
+<div id="proxyLoader" class="proxy-loader">
+    <div class="loader-spinner-small"></div>
+    <span id="loaderText">Carregando...</span>
 </div>
 
-<!-- LOADER -->
-<div id="loaderOverlay" class="loader-overlay">
-    <div class="loader-spinner"></div>
-    <div class="loader-text" id="loaderText">Carregando site...</div>
-</div>
+<!-- TOAST DE ERRO -->
+<div id="errorToast" class="error-toast"></div>
 
 <script>
     // ==================== CONFIGURAÇÃO ====================
     const PROXY_SERVICE = 'https://cors.eu.org/';
     const DEFAULT_URL = 'https://g1.globo.com/';
     
-    // PROXY ALTERNATIVO (caso o principal falhe)
-    const PROXY_BACKUP = 'https://corsproxy.io/';
-    
     let currentUrl = DEFAULT_URL;
-    let currentProxy = PROXY_SERVICE;
-    let loadTimeout = null;
-    let tentativasProxy = 0;
+    let isLoading = false;
+    let loadStartTime = 0;
+    let frameLoadTimeout = null;
     
     // Elementos
     const iframe = document.getElementById('proxyFrame');
@@ -382,79 +451,71 @@
     const goBtn = document.getElementById('goBtn');
     const statusText = document.getElementById('statusText');
     const statusDot = document.getElementById('statusDot');
-    const loaderOverlay = document.getElementById('loaderOverlay');
-    const loaderText = document.getElementById('loaderText');
-    const proxyMessage = document.getElementById('proxyMessage');
+    const loaderDiv = document.getElementById('proxyLoader');
+    const loaderTextSpan = document.getElementById('loaderText');
+    const errorToast = document.getElementById('errorToast');
     
-    // ==================== FUNÇÕES DE STATUS ====================
-    function setStatus(status, message) {
-        statusText.textContent = message;
-        statusDot.className = 'status-dot';
-        if (status === 'loading') {
-            statusDot.classList.add('loading');
-        } else if (status === 'error') {
-            statusDot.classList.add('error');
-        }
-    }
-    
-    function setProxyMessage(message, type = 'info') {
-        proxyMessage.textContent = message;
-        proxyMessage.className = 'proxy-message';
-        if (type === 'error') proxyMessage.classList.add('error');
-        if (type === 'success') proxyMessage.classList.add('success');
-        
-        // Esconder após 3 segundos se for sucesso
-        if (type === 'success') {
-            setTimeout(() => {
-                if (proxyMessage.classList.contains('success')) {
-                    proxyMessage.style.opacity = '0.5';
-                }
-            }, 3000);
-        }
-    }
-    
-    function showLoader(show, text = 'Carregando site...') {
+    // ==================== FUNÇÕES ====================
+    function showLoader(show, text = 'Carregando...') {
         if (show) {
-            loaderText.textContent = text;
-            loaderOverlay.classList.add('active');
-            setStatus('loading', 'Carregando...');
-            if (loadTimeout) clearTimeout(loadTimeout);
-            loadTimeout = setTimeout(() => {
-                if (loaderOverlay.classList.contains('active')) {
-                    loaderText.textContent = 'Demorando mais que o normal...';
-                    setProxyMessage('⏳ O proxy pode estar lento, aguarde...', 'error');
+            isLoading = true;
+            loadStartTime = Date.now();
+            loaderTextSpan.textContent = text;
+            loaderDiv.classList.add('active');
+            statusDot.classList.add('loading');
+            statusText.textContent = 'Carregando...';
+            
+            // Timeout para não ficar infinito
+            if (frameLoadTimeout) clearTimeout(frameLoadTimeout);
+            frameLoadTimeout = setTimeout(() => {
+                if (isLoading) {
+                    showLoader(false);
+                    showError('O site está demorando para responder. Verifique o link.');
+                    statusText.textContent = 'Timeout';
+                    statusDot.classList.remove('loading');
+                    statusDot.style.background = '#ef4444';
+                    setTimeout(() => {
+                        statusDot.style.background = '#22c55e';
+                    }, 3000);
                 }
-            }, 8000);
+            }, 15000);
         } else {
-            loaderOverlay.classList.remove('active');
-            setStatus('idle', 'Conectado');
-            if (loadTimeout) {
-                clearTimeout(loadTimeout);
-                loadTimeout = null;
+            isLoading = false;
+            loaderDiv.classList.remove('active');
+            statusDot.classList.remove('loading');
+            statusText.textContent = 'Conectado';
+            if (frameLoadTimeout) {
+                clearTimeout(frameLoadTimeout);
+                frameLoadTimeout = null;
             }
         }
     }
     
-    // ==================== TESTAR PROXY ====================
-    async function testarProxy(proxyUrl) {
+    function showError(message) {
+        errorToast.textContent = message;
+        errorToast.classList.add('show');
+        setTimeout(() => {
+            errorToast.classList.remove('show');
+        }, 4000);
+    }
+    
+    function formatDomain(url) {
         try {
-            const testUrl = proxyUrl + encodeURIComponent('https://httpbin.org/status/200');
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
-            
-            const response = await fetch(testUrl, { 
-                mode: 'cors',
-                signal: controller.signal 
-            });
-            clearTimeout(timeoutId);
-            return response.ok;
+            let hostname = new URL(url).hostname;
+            return hostname.replace('www.', '');
         } catch(e) {
-            return false;
+            return 'site';
         }
     }
     
-    // ==================== CARREGAR URL ====================
-    async function carregarUrl(url) {
+    function updateBarStatus(url) {
+        urlInput.value = url;
+        try {
+            statusText.textContent = formatDomain(url);
+        } catch(e) {}
+    }
+    
+    function carregarUrl(url) {
         if (!url) return;
         
         let finalUrl = url.trim();
@@ -462,75 +523,69 @@
             finalUrl = 'https://' + finalUrl;
         }
         
-        showLoader(true, `Conectando ao proxy...`);
-        setProxyMessage(`🌐 Conectando a ${finalUrl}...`);
-        currentUrl = finalUrl;
-        urlInput.value = finalUrl;
-        
-        // Tentar encontrar proxy funcional
-        let proxyFuncional = PROXY_SERVICE;
-        let proxyTestado = false;
-        
-        // Só testar a cada 5 tentativas
-        if (tentativasProxy % 5 === 0 && tentativasProxy > 0) {
-            setProxyMessage(`🔍 Testando proxy...`, 'info');
-            proxyTestado = true;
-            const principalOk = await testarProxy(PROXY_SERVICE);
-            if (!principalOk) {
-                const backupOk = await testarProxy(PROXY_BACKUP);
-                if (backupOk) {
-                    proxyFuncional = PROXY_BACKUP;
-                    setProxyMessage(`✅ Usando proxy alternativo`, 'success');
-                } else {
-                    setProxyMessage(`⚠️ Proxys lentos, tentando mesmo assim...`, 'error');
-                }
-            } else {
-                setProxyMessage(`✅ Proxy principal OK`, 'success');
-            }
+        if (currentUrl === finalUrl && iframe.src !== 'about:blank') {
+            return;
         }
         
-        const proxyUrl = proxyFuncional + encodeURIComponent(finalUrl);
+        showLoader(true, `Conectando a ${formatDomain(finalUrl)}...`);
+        currentUrl = finalUrl;
+        updateBarStatus(finalUrl);
         
-        const loadHandler = () => {
-            showLoader(false);
-            setProxyMessage(`✅ Conectado a ${finalUrl.split('/')[2]}`, 'success');
-            tentativasProxy = 0;
-            iframe.removeEventListener('load', loadHandler);
-            iframe.removeEventListener('error', errorHandler);
+        const proxyUrl = PROXY_SERVICE + encodeURIComponent(finalUrl);
+        
+        // Handler quando o iframe carrega
+        const onLoad = () => {
+            // Verificar se realmente carregou (não é about:blank)
+            try {
+                const iframeUrl = iframe.contentWindow?.location?.href;
+                if (iframeUrl && iframeUrl !== 'about:blank') {
+                    showLoader(false);
+                    statusText.textContent = formatDomain(finalUrl);
+                } else {
+                    // Se for about:blank, esperar mais um pouco
+                    setTimeout(() => {
+                        if (isLoading) {
+                            showLoader(false);
+                            statusText.textContent = formatDomain(finalUrl);
+                        }
+                    }, 500);
+                }
+            } catch(e) {
+                // Cross-origin, mas provavelmente carregou
+                showLoader(false);
+                statusText.textContent = formatDomain(finalUrl);
+            }
+            
+            iframe.removeEventListener('load', onLoad);
+            iframe.removeEventListener('error', onError);
+            
+            // Recarregar anúncios após carregar o site
             setTimeout(() => {
                 try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
             }, 500);
         };
         
-        const errorHandler = () => {
+        const onError = () => {
             showLoader(false);
-            setStatus('error', 'Erro');
-            setProxyMessage(`❌ Falha ao conectar. Tentando novamente...`, 'error');
-            tentativasProxy++;
-            
-            // Tentar novamente com backup
-            if (tentativasProxy < 3) {
-                setTimeout(() => {
-                    setProxyMessage(`🔄 Tentativa ${tentativasProxy + 1} de 3...`, 'info');
-                    carregarUrl(finalUrl);
-                }, 2000);
-            } else {
-                setProxyMessage(`❌ Não foi possível conectar a ${finalUrl}. Verifique o link.`, 'error');
-                tentativasProxy = 0;
-            }
-            
-            iframe.removeEventListener('load', loadHandler);
-            iframe.removeEventListener('error', errorHandler);
+            showError(`Não foi possível carregar ${formatDomain(finalUrl)}. Verifique o link.`);
+            statusText.textContent = 'Erro';
+            statusDot.style.background = '#ef4444';
+            setTimeout(() => {
+                statusDot.style.background = '#22c55e';
+                statusText.textContent = 'Pronto';
+            }, 3000);
+            iframe.removeEventListener('load', onLoad);
+            iframe.removeEventListener('error', onError);
         };
         
-        iframe.removeEventListener('load', loadHandler);
-        iframe.removeEventListener('error', errorHandler);
-        iframe.addEventListener('load', loadHandler);
-        iframe.addEventListener('error', errorHandler);
+        iframe.removeEventListener('load', onLoad);
+        iframe.removeEventListener('error', onError);
+        iframe.addEventListener('load', onLoad);
+        iframe.addEventListener('error', onError);
         
         iframe.src = proxyUrl;
         
-        // Atualizar URL
+        // Salvar no histórico
         const newUrl = new URL(window.location);
         newUrl.searchParams.set('url', finalUrl);
         window.history.pushState({ url: finalUrl }, '', newUrl);
@@ -573,6 +628,35 @@
         }
     });
     
+    // Detectar quando o iframe muda de URL internamente (navegação dentro do site)
+    let lastCheckedUrl = currentUrl;
+    setInterval(() => {
+        if (!isLoading && iframe.contentWindow) {
+            try {
+                const iframeUrl = iframe.contentWindow.location.href;
+                if (iframeUrl && iframeUrl !== 'about:blank' && iframeUrl !== lastCheckedUrl) {
+                    const decodedUrl = iframeUrl.split(PROXY_SERVICE)[1];
+                    if (decodedUrl) {
+                        const finalUrl = decodeURIComponent(decodedUrl);
+                        if (finalUrl !== currentUrl) {
+                            currentUrl = finalUrl;
+                            urlInput.value = finalUrl;
+                            statusText.textContent = formatDomain(finalUrl);
+                            lastCheckedUrl = iframeUrl;
+                            
+                            // Atualizar URL da página
+                            const newUrl = new URL(window.location);
+                            newUrl.searchParams.set('url', finalUrl);
+                            window.history.pushState({ url: finalUrl }, '', newUrl);
+                        }
+                    }
+                }
+            } catch(e) {
+                // Cross-origin, ignorar
+            }
+        }
+    }, 1000);
+    
     // ==================== INICIALIZAR ====================
     function init() {
         let startUrl = getUrlFromParams();
@@ -581,16 +665,10 @@
         urlInput.value = startUrl;
         carregarUrl(startUrl);
         
-        // Tentar anúncios várias vezes
-        setTimeout(() => {
+        // Recarregar anúncios periodicamente
+        setInterval(() => {
             try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-        }, 500);
-        setTimeout(() => {
-            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-        }, 2000);
-        setTimeout(() => {
-            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-        }, 5000);
+        }, 30000);
     }
     
     window.addEventListener('popstate', (event) => {
