@@ -441,7 +441,14 @@
 
 <!-- IFRAME -->
 <div class="iframe-container" id="iframeContainer">
-    <iframe id="proxyFrame" src="about:blank" title="Marujo Proxy"></iframe>
+<iframe 
+    id="proxyFrame" 
+    src="about:blank" 
+    title="Marujo Proxy"
+    allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+    allowfullscreen
+    referrerpolicy="no-referrer"
+></iframe>
 </div>
 
 <!-- BOTÃO FLUTUANTE - TELA CHEIA SEM ANÚNCIOS -->
@@ -562,33 +569,57 @@
         }
     });
     
-    // ==================== FUNÇÕES ====================
-    function carregarUrl(url) {
-        if (!url) return;
-        
-        let finalUrl = url.trim();
-        
+function carregarUrl(url) {
+    if (!url) return;
+    
+    let finalUrl = url.trim();
+    
+    // 🔥 CORREÇÃO: Preserva o domínio para URLs do Bronxys
+    if (finalUrl.includes('br2.bronxyshost.com') || finalUrl.includes('/player/') || finalUrl.includes('/streampro')) {
+        // Se a URL começou sem http, adiciona o domínio
         if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-            finalUrl = 'https://' + finalUrl;
+            finalUrl = 'http://br2.bronxyshost.com:4009' + finalUrl;
         }
-        
-        currentUrl = finalUrl;
-        urlInput.value = finalUrl;
-        
-        const proxyUrl = PROXY_SERVICE + encodeURIComponent(finalUrl);
-        
-        iframe.src = proxyUrl;
-        
-        // Atualizar URL da página
-        const newUrl = new URL(window.location);
-        newUrl.searchParams.set('url', finalUrl);
-        window.history.pushState({ url: finalUrl }, '', newUrl);
-        
-        // Recarregar anúncios após trocar de página
-        setTimeout(() => {
-            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-        }, 500);
     }
+    
+    if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+        finalUrl = 'https://' + finalUrl;
+    }
+    
+    currentUrl = finalUrl;
+    urlInput.value = finalUrl;
+    
+    // 🔥 DETECTA se é vídeo (player do Bronxys)
+    const isVideoPlayer = finalUrl.includes('br2.bronxyshost.com') && 
+                         (finalUrl.includes('/player/') || finalUrl.includes('/streampro'));
+    
+    let proxyUrl;
+    if (isVideoPlayer) {
+        // Para vídeos, NÃO usa cors.eu.org - carrega DIRETO
+        proxyUrl = finalUrl;
+        console.log('🎬 Vídeo detectado, carregando direto:', proxyUrl);
+        
+        // Adiciona atributos especiais para o iframe
+        iframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture');
+        iframe.setAttribute('allowfullscreen', 'true');
+    } else {
+        // Para sites normais, usa o proxy
+        proxyUrl = PROXY_SERVICE + encodeURIComponent(finalUrl);
+        iframe.removeAttribute('allow');
+    }
+    
+    iframe.src = proxyUrl;
+    
+    // Atualizar URL da página
+    const newUrl = new URL(window.location);
+    newUrl.searchParams.set('url', finalUrl);
+    window.history.pushState({ url: finalUrl }, '', newUrl);
+    
+    // Recarregar anúncios após trocar de página
+    setTimeout(() => {
+        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+    }, 500);
+}
     
     function resetToHome() {
         carregarUrl(DEFAULT_URL);
@@ -640,6 +671,32 @@
     
     init();
 </script>
-
+<script>
+// 🔥 FORÇAR PLAY EM VÍDEOS NO PROXY
+(function() {
+    setTimeout(function() {
+        const iframe = document.getElementById('proxyFrame');
+        if (!iframe) return;
+        
+        // Tenta dar play várias vezes
+        function forcarPlay() {
+            try {
+                iframe.contentWindow.postMessage({ command: 'play' }, '*');
+                iframe.contentWindow.postMessage({ command: 'togglePlay' }, '*');
+                console.log('🎬 Comando play enviado');
+            } catch(e) {}
+        }
+        
+        forcarPlay();
+        setTimeout(forcarPlay, 1000);
+        setTimeout(forcarPlay, 3000);
+        
+        // Simula clique na tela
+        iframe.addEventListener('load', function() {
+            setTimeout(forcarPlay, 500);
+        });
+    }, 500);
+})();
+</script>
 </body>
 </html>
