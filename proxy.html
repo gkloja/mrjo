@@ -31,6 +31,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
         }
 
+        /* BARRA SUPERIOR */
         .proxy-bar {
             position: fixed;
             top: 0;
@@ -56,9 +57,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            text-decoration: none;
-            flex-shrink: 0;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
         .logo-img {
@@ -118,7 +118,6 @@
 
         .url-input::placeholder {
             color: #475569;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
         .go-btn {
@@ -180,7 +179,50 @@
             50% { opacity: 0.4; }
         }
 
-        /* Container do iframe */
+        /* ÁREA DE ANÚNCIOS - MÚLTIPLAS POSIÇÕES */
+        .ads-area {
+            position: fixed;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            text-align: center;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .ads-top {
+            top: 56px;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 8px;
+            display: none;
+        }
+
+        .ads-bottom {
+            bottom: 0;
+            border-top: 1px solid #e2e8f0;
+            padding: 8px;
+            display: none;
+        }
+
+        /* Sidebar de anúncio (esquerda) - estilo LinkedIn */
+        .ads-sidebar {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 160px;
+            background: white;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 998;
+            text-align: center;
+            padding: 12px 8px;
+            display: none;
+            border: 1px solid #e2e8f0;
+            border-left: none;
+        }
+
+        /* CONTAINER DO IFRAME */
         .site-container {
             position: fixed;
             top: 56px;
@@ -188,6 +230,7 @@
             right: 0;
             bottom: 0;
             background: white;
+            transition: all 0.3s;
         }
 
         iframe {
@@ -197,37 +240,28 @@
             background: white;
         }
 
-        /* Banner de anúncio - posicionado na parte superior (não atrapalha) */
-        .ad-banner {
-            position: fixed;
-            top: 56px;
-            left: 0;
-            right: 0;
-            background: white;
-            text-align: center;
-            padding: 8px;
-            border-bottom: 1px solid #e2e8f0;
-            z-index: 999;
-            display: none;
-        }
-
-        /* Mostrar anúncio apenas em desktop (não atrapalha mobile) */
+        /* MOSTRAR ANÚNCIOS EM DESKTOP */
         @media (min-width: 768px) {
-            .ad-banner {
-                display: block;
-            }
-            .site-container {
-                top: 146px; /* Espaço para o anúncio + barra */
-            }
+            .ads-top { display: block; }
+            .site-container { top: 146px; }
         }
 
-        /* Em mobile, iframe ocupa 100% sem anúncio */
+        @media (min-width: 1024px) {
+            .ads-sidebar { display: block; }
+            .site-container { left: 170px; right: 0; }
+        }
+
+        @media (min-width: 1280px) {
+            .ads-bottom { display: block; }
+            .site-container { bottom: 100px; }
+        }
+
+        /* MOBILE - SEM ANÚNCIOS (limpo) */
         @media (max-width: 767px) {
-            .site-container {
-                top: 56px;
-            }
+            .site-container { top: 56px; bottom: 0; left: 0; right: 0; }
         }
 
+        /* LOADER */
         .loader-overlay {
             position: fixed;
             top: 56px;
@@ -262,7 +296,26 @@
             to { transform: rotate(360deg); }
         }
 
-        @media (max-width: 640px) {
+        /* Indicador de anúncio */
+        .ad-label {
+            font-size: 9px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        /* Fallback visual enquanto anúncio não carrega */
+        .ad-placeholder {
+            min-height: 90px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 767px) {
             .proxy-bar { padding: 8px 12px; }
             .bar-container { gap: 8px; }
             .logo-text { font-size: 13px; }
@@ -300,9 +353,9 @@
     </div>
 </div>
 
-<!-- SEU ANÚNCIO DO ADSENSE - INTEGRADO CORRETAMENTE -->
-<div class="ad-banner">
-    <!-- Horizontal -->
+<!-- ==================== ANÚNCIO SUPERIOR ==================== -->
+<div class="ads-area ads-top">
+    <div class="ad-label">✨ PUBLICIDADE</div>
     <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-2351298778216089"
@@ -310,11 +363,39 @@
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
     <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
+        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense:', e); }
     </script>
 </div>
 
-<!-- CONTAINER DO SITE (IFRAME) -->
+<!-- ==================== ANÚNCIO LATERAL (ESQUERDA) ==================== -->
+<div class="ads-sidebar">
+    <div class="ad-label">📢 ANÚNCIO</div>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-2351298778216089"
+         data-ad-slot="4868424735"
+         data-ad-format="rectangle"
+         data-full-width-responsive="true"></ins>
+    <script>
+        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense sidebar:', e); }
+    </script>
+</div>
+
+<!-- ==================== ANÚNCIO INFERIOR ==================== -->
+<div class="ads-area ads-bottom">
+    <div class="ad-label">✨ PUBLICIDADE</div>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-2351298778216089"
+         data-ad-slot="4868424735"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense bottom:', e); }
+    </script>
+</div>
+
+<!-- CONTAINER DO SITE -->
 <div class="site-container">
     <iframe id="proxyFrame" src="about:blank" title="Marujo Proxy"></iframe>
 </div>
@@ -325,17 +406,42 @@
 </div>
 
 <script>
+    // CONFIGURAÇÃO
     const PROXY_SERVICE = 'https://cors.eu.org/';
     const DEFAULT_URL = 'https://g1.globo.com/';
     
     let currentUrl = DEFAULT_URL;
     let loadTimeout = null;
     
+    // ELEMENTOS
     const iframe = document.getElementById('proxyFrame');
     const urlInput = document.getElementById('urlInput');
     const goBtn = document.getElementById('goBtn');
     const statusText = document.getElementById('statusText');
     const loaderOverlay = document.getElementById('loaderOverlay');
+    
+    // FUNÇÃO PARA CARREGAR ANÚNCIOS MANUALMENTE
+    function carregarAnuncios() {
+        console.log('🔄 Tentando carregar anúncios...');
+        try {
+            // Forçar recarregamento do AdSense
+            if (typeof adsbygoogle !== 'undefined') {
+                for (let i = 0; i < 3; i++) {
+                    try {
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    } catch(e) {}
+                }
+                console.log('✅ Anúncios solicitados');
+            } else {
+                console.log('⚠️ AdSense não disponível ainda');
+            }
+        } catch(e) {
+            console.log('❌ Erro no AdSense:', e);
+        }
+    }
+    
+    // CARREGAR A CADA 10 SEGUNDOS (forçando)
+    setInterval(carregarAnuncios, 10000);
     
     function showLoader(show) {
         if (show) {
@@ -392,6 +498,8 @@
             showLoader(false);
             iframe.removeEventListener('load', loadHandler);
             iframe.removeEventListener('error', errorHandler);
+            // Recarregar anúncios após o iframe carregar
+            setTimeout(carregarAnuncios, 500);
         };
         
         const errorHandler = () => {
@@ -446,6 +554,7 @@
         return null;
     }
     
+    // EVENTOS
     goBtn.addEventListener('click', () => {
         const url = urlInput.value.trim();
         if (url) carregarUrl(url);
@@ -459,12 +568,18 @@
         }
     });
     
+    // INICIALIZAR
     function init() {
         let startUrl = getUrlFromParams();
         if (!startUrl) startUrl = DEFAULT_URL;
         
         urlInput.value = startUrl;
         carregarUrl(startUrl);
+        
+        // Tentar carregar anúncios várias vezes
+        setTimeout(carregarAnuncios, 500);
+        setTimeout(carregarAnuncios, 2000);
+        setTimeout(carregarAnuncios, 5000);
     }
     
     window.addEventListener('popstate', (event) => {
@@ -478,9 +593,9 @@
     init();
 </script>
 
-<!-- DISCLAIMER SUTIL -->
+<!-- DISCLAIMER -->
 <div style="position: fixed; bottom: 4px; right: 8px; font-size: 9px; color: #94a3b8; background: rgba(0,0,0,0.6); padding: 2px 8px; border-radius: 12px; z-index: 1002; backdrop-filter: blur(4px); pointer-events: none;">
-    Marujo Proxy 🔒 | Navegação anônima e segura
+    Marujo Proxy 🔒 | Navegação anônima
 </div>
 
 </body>
