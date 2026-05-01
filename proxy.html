@@ -28,26 +28,28 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: #ffffff;
+            background: #f1f5f9;
         }
 
-        /* BARRA SUPERIOR */
-        .top-bar {
+        /* ==================== BARRA SUPERIOR ==================== */
+        .nav-bar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background: #1e293b;
-            padding: 8px 16px;
+            background: #0f172a;
+            padding: 8px 20px;
             z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .bar-content {
+        .nav-container {
             max-width: 1400px;
             margin: 0 auto;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
         .logo {
@@ -56,8 +58,9 @@
             gap: 8px;
             cursor: pointer;
             color: white;
-            font-weight: bold;
-            font-size: 16px;
+            font-weight: 600;
+            font-size: 18px;
+            white-space: nowrap;
         }
 
         .logo img {
@@ -68,253 +71,243 @@
 
         .url-group {
             flex: 1;
+            min-width: 200px;
             display: flex;
-            background: white;
-            border-radius: 30px;
+            background: #1e293b;
+            border-radius: 40px;
             overflow: hidden;
+            border: 1px solid #334155;
         }
 
         .url-group input {
             flex: 1;
-            padding: 8px 16px;
+            padding: 10px 18px;
             border: none;
+            background: transparent;
+            color: white;
             font-size: 14px;
             outline: none;
         }
 
+        .url-group input::placeholder {
+            color: #64748b;
+        }
+
         .url-group button {
-            background: #003366;
+            background: #3b82f6;
             border: none;
-            padding: 8px 20px;
+            padding: 10px 24px;
             color: white;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .url-group button:hover {
+            background: #2563eb;
         }
 
         .fullscreen-btn {
-            background: rgba(255,255,255,0.15);
-            border: none;
-            padding: 6px 14px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 8px 16px;
             border-radius: 30px;
             color: white;
             cursor: pointer;
             font-size: 13px;
+            white-space: nowrap;
         }
 
-        /* ANÚNCIO SUPERIOR (COM BOTÃO FECHAR) */
-        .ad-top {
+        .fullscreen-btn:hover {
+            background: #334155;
+        }
+
+        /* ==================== ANÚNCIO SUPERIOR (FORA DO IFRAME) ==================== */
+        .ad-header {
             position: fixed;
-            top: 52px;
+            top: 60px;
             left: 0;
             right: 0;
             background: white;
+            text-align: center;
+            padding: 12px;
             border-bottom: 1px solid #e2e8f0;
             z-index: 999;
-            padding: 8px;
-            text-align: center;
-            display: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        .ad-top.show {
-            display: block;
-        }
-
-        .ad-close {
-            position: absolute;
-            top: 4px;
-            right: 8px;
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            color: #999;
-            font-weight: bold;
-            padding: 0 6px;
-        }
-
-        .ad-close:hover {
-            color: #333;
-        }
-
-        /* ANÚNCIO INFERIOR (COM BOTÃO FECHAR) */
-        .ad-bottom {
+        /* ==================== ANÚNCIO LATERAL ESQUERDO ==================== */
+        .ad-sidebar {
             position: fixed;
-            bottom: 0;
             left: 0;
-            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 160px;
             background: white;
-            border-top: 1px solid #e2e8f0;
-            z-index: 999;
-            padding: 6px;
+            border-radius: 0 12px 12px 0;
+            padding: 16px 8px;
             text-align: center;
-            display: none;
+            z-index: 998;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            border-left: none;
         }
 
-        .ad-bottom.show {
-            display: block;
-        }
-
-        /* IFRAME */
+        /* ==================== CONTAINER DO IFRAME ==================== */
         .iframe-container {
             position: fixed;
-            top: 52px;
+            top: 140px;
             left: 0;
             right: 0;
             bottom: 0;
             background: white;
+            transition: all 0.3s;
         }
 
         iframe {
             width: 100%;
             height: 100%;
             border: none;
+            background: white;
         }
 
-        /* MOBILE */
-        @media (max-width: 640px) {
-            .top-bar {
-                padding: 6px 10px;
+        /* ==================== RESPONSIVO ==================== */
+        
+        /* Desktop com anúncio lateral */
+        @media (min-width: 1200px) {
+            .ad-sidebar {
+                display: block;
+            }
+            .iframe-container {
+                left: 170px;
+                right: 0;
+            }
+        }
+
+        /* Desktop sem lateral */
+        @media (min-width: 768px) and (max-width: 1199px) {
+            .ad-sidebar {
+                display: none;
+            }
+            .iframe-container {
+                left: 0;
+                right: 0;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 767px) {
+            .nav-bar {
+                padding: 6px 12px;
             }
             .logo span {
                 display: none;
             }
             .url-group input {
-                padding: 6px 12px;
+                padding: 8px 12px;
                 font-size: 12px;
             }
             .url-group button {
-                padding: 6px 14px;
+                padding: 8px 16px;
                 font-size: 12px;
             }
             .fullscreen-btn {
-                padding: 4px 10px;
+                padding: 6px 10px;
                 font-size: 11px;
             }
             .fullscreen-btn span {
                 display: none;
             }
+            .ad-header {
+                top: 52px;
+                padding: 8px;
+            }
             .iframe-container {
-                top: 46px;
+                top: 130px;
             }
-            .ad-top {
-                top: 46px;
+            .ad-sidebar {
+                display: none;
             }
+        }
+
+        .ad-label {
+            font-size: 9px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
         }
     </style>
 </head>
 <body>
 
 <!-- BARRA SUPERIOR -->
-<div class="top-bar">
-    <div class="bar-content">
+<div class="nav-bar">
+    <div class="nav-container">
         <div class="logo" onclick="resetToHome()">
             <img src="imagens/logo.png" alt="Logo">
             <span>Marujo Proxy</span>
         </div>
         
         <div class="url-group">
-            <input type="text" id="urlInput" placeholder="Digite o site..." value="https://g1.globo.com/">
-            <button id="goBtn">Ir</button>
+            <input type="text" id="urlInput" placeholder="Digite ou cole um link..." value="https://g1.globo.com/">
+            <button id="goBtn">Acessar</button>
         </div>
         
         <button class="fullscreen-btn" onclick="toggleFullscreen()">📺 <span>Tela cheia</span></button>
     </div>
 </div>
 
-<!-- ANÚNCIO SUPERIOR (COM X) -->
-<div id="adTop" class="ad-top">
-    <button class="ad-close" onclick="closeAdTop()">×</button>
+<!-- ==================== ANÚNCIO SUPERIOR (HORIZONTAL) ==================== -->
+<div class="ad-header">
+    <div class="ad-label">PUBLICIDADE</div>
     <ins class="adsbygoogle"
-         style="display:inline-block;width:100%;max-width:728px;height:90px"
+         style="display:block"
          data-ad-client="ca-pub-2351298778216089"
          data-ad-slot="4868424735"
-         data-ad-format="horizontal"
+         data-ad-format="auto"
          data-full-width-responsive="true"></ins>
     <script>
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense header:', e); }
     </script>
 </div>
 
-<!-- ANÚNCIO INFERIOR (COM X) -->
-<div id="adBottom" class="ad-bottom">
-    <button class="ad-close" onclick="closeAdBottom()">×</button>
+<!-- ==================== ANÚNCIO LATERAL (VERTICAL) ==================== -->
+<div class="ad-sidebar">
+    <div class="ad-label">PUBLICIDADE</div>
     <ins class="adsbygoogle"
-         style="display:inline-block;width:100%;max-width:728px;height:90px"
+         style="display:block"
          data-ad-client="ca-pub-2351298778216089"
          data-ad-slot="4868424735"
-         data-ad-format="horizontal"
+         data-ad-format="vertical"
          data-full-width-responsive="true"></ins>
     <script>
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense sidebar:', e); }
     </script>
 </div>
 
 <!-- IFRAME -->
-<div class="iframe-container">
-    <iframe id="proxyFrame" src="about:blank"></iframe>
+<div class="iframe-container" id="iframeContainer">
+    <iframe id="proxyFrame" src="about:blank" title="Marujo Proxy"></iframe>
 </div>
 
 <script>
-    // CONFIGURAÇÃO
+    // ==================== CONFIGURAÇÃO ====================
     const PROXY_SERVICE = 'https://cors.eu.org/';
     const DEFAULT_URL = 'https://g1.globo.com/';
     
     let currentUrl = DEFAULT_URL;
-    let adTopVisible = false;
-    let adBottomVisible = false;
     
     const iframe = document.getElementById('proxyFrame');
     const urlInput = document.getElementById('urlInput');
     const goBtn = document.getElementById('goBtn');
-    const adTop = document.getElementById('adTop');
-    const adBottom = document.getElementById('adBottom');
     
-    // FECHAR ANÚNCIOS
-    function closeAdTop() {
-        adTop.classList.remove('show');
-        adTopVisible = false;
-        // Ajustar iframe
-        document.querySelector('.iframe-container').style.top = '52px';
-    }
-    
-    function closeAdBottom() {
-        adBottom.classList.remove('show');
-        adBottomVisible = false;
-        document.querySelector('.iframe-container').style.bottom = '0';
-    }
-    
-    // MOSTRAR ANÚNCIOS (alternados para não atrapalhar)
-    function mostrarAnuncios() {
-        // Mostra anúncio superior a cada 2 acessos
-        let count = parseInt(localStorage.getItem('adCount') || '0');
-        count++;
-        
-        if (count >= 2) {
-            // Mostra anúncio superior
-            adTop.classList.add('show');
-            adTopVisible = true;
-            document.querySelector('.iframe-container').style.top = '150px';
-            count = 0;
-        } else {
-            // Mostra anúncio inferior
-            adBottom.classList.add('show');
-            adBottomVisible = true;
-            document.querySelector('.iframe-container').style.bottom = '100px';
-        }
-        
-        localStorage.setItem('adCount', count);
-        
-        // Recarregar anúncios
-        setTimeout(() => {
-            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-        }, 100);
-    }
-    
-    // CARREGAR URL
+    // ==================== FUNÇÕES ====================
     function carregarUrl(url) {
         if (!url) return;
         
         let finalUrl = url.trim();
+        
         if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
             finalUrl = 'https://' + finalUrl;
         }
@@ -324,34 +317,34 @@
         
         const proxyUrl = PROXY_SERVICE + encodeURIComponent(finalUrl);
         
-        iframe.onload = function() {
-            // Mostra anúncios após carregar
-            setTimeout(mostrarAnuncios, 500);
-        };
-        
         iframe.src = proxyUrl;
         
+        // Atualizar URL da página
         const newUrl = new URL(window.location);
         newUrl.searchParams.set('url', finalUrl);
         window.history.pushState({ url: finalUrl }, '', newUrl);
+        
+        // Recarregar anúncios após trocar de página
+        setTimeout(() => {
+            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        }, 500);
     }
     
-    // RESET
     function resetToHome() {
         carregarUrl(DEFAULT_URL);
     }
     
-    // TELA CHEIA
     function toggleFullscreen() {
-        const container = document.querySelector('.iframe-container');
+        const container = document.getElementById('iframeContainer');
         if (!document.fullscreenElement) {
-            container.requestFullscreen().catch(err => {});
+            container.requestFullscreen().catch(err => {
+                console.log('Erro fullscreen:', err);
+            });
         } else {
             document.exitFullscreen();
         }
     }
     
-    // PEGAR URL DOS PARÂMETROS
     function getUrlFromParams() {
         const params = new URLSearchParams(window.location.search);
         let url = params.get('url');
@@ -361,7 +354,7 @@
         return null;
     }
     
-    // EVENTOS
+    // ==================== EVENTOS ====================
     goBtn.addEventListener('click', () => {
         const url = urlInput.value.trim();
         if (url) carregarUrl(url);
@@ -374,13 +367,18 @@
         }
     });
     
-    // INICIAR
+    // ==================== INICIALIZAR ====================
     function init() {
         let startUrl = getUrlFromParams();
         if (!startUrl) startUrl = DEFAULT_URL;
         
         urlInput.value = startUrl;
         carregarUrl(startUrl);
+        
+        // Recarregar anúncios periodicamente
+        setInterval(() => {
+            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        }, 30000);
     }
     
     window.addEventListener('popstate', () => {
