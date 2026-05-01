@@ -5,21 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="google-adsense-account" content="ca-pub-2351298778216089">
 
-    <!-- META TAGS DINÂMICAS (serão sobrescritas pelo JavaScript) -->
-    <title id="pageTitle">Notícias 24 Horas</title>
-    <meta id="metaDescription" name="description" content="Veja notícias recentes e importantes!!">
-    <meta id="metaOgTitle" property="og:title" content="Marujo Digital Proxy">
-    <meta id="metaOgDescription" property="og:description" content="Acesse qualquer site através do proxy do Marujo Digital.">
-    <meta id="metaOgUrl" property="og:url" content="https://marujodigital.onrender.com/proxy">
-    <meta id="metaOgImage" property="og:image" content="https://marujodigital.onrender.com/imagens/logo.png">
-    <meta id="metaTwitterTitle" name="twitter:title" content="Marujo Digital Proxy">
-    <meta id="metaTwitterDescription" name="twitter:description" content="Acesse qualquer site através do proxy do Marujo Digital.">
-
-    <meta name="keywords" content="Marujo Digital, Web Proxy, Proxy Viewer, Bizu do Marujo, Proxy Universal">
+    <title>Marujo Digital Proxy - Navegue com Segurança</title>
+    <meta name="description" content="Acesse sites de forma segura e anônima através do proxy do Marujo Digital.">
+    <meta name="keywords" content="Marujo Digital, Web Proxy, Proxy Viewer, Proxy Universal">
     <meta name="author" content="D4LEK">
-    <meta name="copyright" content="Marujo Digital">
     <meta name="robots" content="index, follow">
-
+    
     <meta name="google-site-verification" content="eh9BCLJr92NDb-7zafO6D2vBAlByD_udqDkUbOoVjWs">
     <link rel="canonical" href="https://marujodigital.onrender.com/proxy">
     <link rel="icon" href="imagens/logo.png" type="image/png">
@@ -31,225 +22,483 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { margin: 0; padding: 0; overflow: hidden; }
-        iframe { position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none; background: white; z-index: 1; }
-        .loader { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; display: none; }
-        .loader.show { display: block; }
-        .spinner { width: 60px; height: 60px; border: 6px solid #f3f3f3; border-top: 6px solid #003366; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        /* Header com controles */
+        .proxy-header {
+            background: linear-gradient(135deg, #003366 0%, #1a4d8c 100%);
+            color: white;
+            padding: 12px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+        }
+        
+        .url-input {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .url-input input {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .url-input button {
+            background: #25D366;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .url-input button:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Container de anúncios */
+        .ad-container {
+            background: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+        }
+        
+        .ad-label {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        
+        /* Layout principal com 3 colunas */
+        .main-layout {
+            margin-top: 80px;
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Sidebar esquerda (anúncios) */
+        .sidebar-left {
+            width: 160px;
+            display: none;
+        }
+        
+        /* Área central (iframe) */
+        .content-area {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Sidebar direita (anúncios) */
+        .sidebar-right {
+            width: 160px;
+            display: none;
+        }
+        
+        iframe {
+            width: 100%;
+            height: calc(100vh - 100px);
+            border: none;
+            background: white;
+        }
+        
+        /* Anúncio banner inferior */
+        .banner-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            padding: 8px;
+            text-align: center;
+            z-index: 99;
+        }
+        
+        /* Loader */
+        .loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .loader.show {
+            display: block;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #003366;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsivo */
+        @media (min-width: 1200px) {
+            .sidebar-left, .sidebar-right {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-layout {
+                margin-top: 120px;
+            }
+            .header-content {
+                flex-direction: column;
+            }
+            .url-input {
+                width: 100%;
+            }
+        }
+        
+        /* Botão modo tela cheia */
+        .fullscreen-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .fullscreen-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        /* Status bar */
+        .status-bar {
+            background: #e9ecef;
+            padding: 5px 15px;
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #ddd;
+        }
     </style>
 </head>
 <body>
-    <iframe id="proxyFrame" src="about:blank"></iframe>
-    <div class="loader" id="loader"><div class="spinner"></div></div>
 
-    <script>
-        const DEFAULT_URL = 'https://g1.globo.com/';
-        const PROXY_SERVICE = 'https://cors.eu.org/';
-        let currentUrl = DEFAULT_URL;
+<!-- HEADER DO PROXY -->
+<header class="proxy-header">
+    <div class="header-content">
+        <div class="logo">
+            <img src="imagens/logo.png" alt="Marujo Digital">
+            <span>🌊 Marujo Proxy</span>
+        </div>
         
-        // ===== MAPA DE SITES PARA TÍTULOS BONITOS =====
-        const sitesMap = {
-            'g1.globo': { nome: 'G1', fullName: 'G1 - Globo Notícias', categoria: 'Notícias', emoji: '📰' },
-            'globo.com': { nome: 'Globo', fullName: 'Globo.com', categoria: 'Portal', emoji: '🌐' },
-            'uol.com.br': { nome: 'UOL', fullName: 'UOL - Universo Online', categoria: 'Notícias', emoji: '📰' },
-            'terra.com.br': { nome: 'Terra', fullName: 'Terra - Notícias', categoria: 'Notícias', emoji: '📰' },
-            'youtube.com': { nome: 'YouTube', fullName: 'YouTube - Vídeos', categoria: 'Vídeos', emoji: '📹' },
-            'twitter.com': { nome: 'Twitter', fullName: 'Twitter/X', categoria: 'Social', emoji: '🐦' },
-            'x.com': { nome: 'X', fullName: 'X (Twitter)', categoria: 'Social', emoji: '🐦' },
-            'facebook.com': { nome: 'Facebook', fullName: 'Facebook', categoria: 'Social', emoji: '👥' },
-            'instagram.com': { nome: 'Instagram', fullName: 'Instagram', categoria: 'Social', emoji: '📸' },
-            'wikipedia.org': { nome: 'Wikipedia', fullName: 'Wikipedia - Enciclopédia', categoria: 'Referência', emoji: '📚' },
-            'github.com': { nome: 'GitHub', fullName: 'GitHub - Desenvolvimento', categoria: 'Tech', emoji: '💻' },
-            'netflix.com': { nome: 'Netflix', fullName: 'Netflix - Streaming', categoria: 'Streaming', emoji: '🎬' },
-            'spotify.com': { nome: 'Spotify', fullName: 'Spotify - Música', categoria: 'Música', emoji: '🎵' },
-            'amazon.com': { nome: 'Amazon', fullName: 'Amazon - Compras', categoria: 'Compras', emoji: '🛒' },
-            'mercadolivre.com.br': { nome: 'Mercado Livre', fullName: 'Mercado Livre', categoria: 'Compras', emoji: '🛍️' }
+        <div class="url-input">
+            <input type="text" id="urlInput" placeholder="Digite a URL aqui (ex: https://g1.globo.com)">
+            <button id="goBtn">🌐 Ir</button>
+        </div>
+        
+        <button class="fullscreen-btn" onclick="toggleFullscreen()">
+            🖥️ Tela cheia
+        </button>
+    </div>
+</header>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+    <span>🔒 Navegação anônima</span>
+    <span id="currentSite">📡 Pronto para navegar</span>
+    <span>⚡ Proxy ativo</span>
+</div>
+
+<!-- LAYOUT PRINCIPAL -->
+<div class="main-layout">
+    <!-- SIDEBAR ESQUERDA (ANÚNCIOS VERTICAIS) -->
+    <aside class="sidebar-left">
+        <div class="ad-container">
+            <div class="ad-label">Publicidade</div>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-2351298778216089"
+                 data-ad-slot="SEU_SLOT_VERTICAL"
+                 data-ad-format="vertical"
+                 data-full-width-responsive="true"></ins>
+        </div>
+    </aside>
+    
+    <!-- ÁREA DO CONTEÚDO (IFRAME) -->
+    <main class="content-area">
+        <iframe id="proxyFrame" src="about:blank" title="Marujo Digital Proxy"></iframe>
+    </main>
+    
+    <!-- SIDEBAR DIREITA (ANÚNCIOS VERTICAIS) -->
+    <aside class="sidebar-right">
+        <div class="ad-container">
+            <div class="ad-label">Publicidade</div>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-2351298778216089"
+                 data-ad-slot="SEU_SLOT_VERTICAL"
+                 data-ad-format="vertical"
+                 data-full-width-responsive="true"></ins>
+        </div>
+    </aside>
+</div>
+
+<!-- BANNER INFERIOR (ANÚNCIO FIXO) -->
+<div class="banner-bottom">
+    <div class="ad-label">Publicidade</div>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:728px;height:90px"
+         data-ad-client="ca-pub-2351298778216089"
+         data-ad-slot="SEU_SLOT_BANNER"
+         data-ad-format="horizontal"
+         data-full-width-responsive="true"></ins>
+</div>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+    <div class="spinner"></div>
+</div>
+
+<script>
+    const PROXY_SERVICE = 'https://cors.eu.org/';
+    const DEFAULT_URL = 'https://g1.globo.com/';
+    let currentUrl = DEFAULT_URL;
+    
+    // Elementos
+    const iframe = document.getElementById('proxyFrame');
+    const urlInput = document.getElementById('urlInput');
+    const goBtn = document.getElementById('goBtn');
+    const currentSiteSpan = document.getElementById('currentSite');
+    const loader = document.getElementById('loader');
+    
+    // Mostrar/esconder loader
+    function showLoader(show) {
+        if (show) loader.classList.add('show');
+        else loader.classList.remove('show');
+    }
+    
+    // Extrair domínio para exibição
+    function getDomainName(url) {
+        try {
+            const hostname = new URL(url).hostname;
+            return hostname.replace('www.', '');
+        } catch(e) {
+            return 'site';
+        }
+    }
+    
+    // Carregar URL no iframe
+    function carregarUrl(url) {
+        if (!url) return;
+        
+        // Se não tiver protocolo, adiciona https://
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+        }
+        
+        showLoader(true);
+        currentUrl = url;
+        
+        // Atualizar input e status
+        urlInput.value = url;
+        currentSiteSpan.innerHTML = `🌐 Carregando ${getDomainName(url)}...`;
+        
+        const proxyUrl = PROXY_SERVICE + encodeURIComponent(url);
+        
+        // Timeout para loader
+        const timeoutId = setTimeout(() => {
+            showLoader(false);
+            currentSiteSpan.innerHTML = `⚠️ Demorou muito para carregar ${getDomainName(url)}`;
+        }, 15000);
+        
+        iframe.onload = function() {
+            clearTimeout(timeoutId);
+            showLoader(false);
+            currentSiteSpan.innerHTML = `✅ Navegando em ${getDomainName(url)}`;
         };
         
-        // ===== EXTRAIR INFORMAÇÕES DO SITE =====
-        function getSiteInfo(url) {
-            try {
-                if (!url) return { nome: 'Proxy', fullName: 'Marujo Digital Proxy', categoria: 'Ferramenta', emoji: '🔗' };
-                
-                let hostname = new URL(url).hostname;
-                hostname = hostname.replace('www.', '');
-                
-                for (let [domain, info] of Object.entries(sitesMap)) {
-                    if (hostname.includes(domain)) {
-                        return info;
-                    }
+        iframe.onerror = function() {
+            clearTimeout(timeoutId);
+            showLoader(false);
+            currentSiteSpan.innerHTML = `❌ Erro ao carregar ${getDomainName(url)}`;
+        };
+        
+        iframe.src = proxyUrl;
+        
+        // Salvar no histórico
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set('url', url);
+        window.history.pushState({url: url}, '', newUrl);
+    }
+    
+    // Alternar tela cheia
+    function toggleFullscreen() {
+        const elem = document.documentElement;
+        if (!document.fullscreenElement) {
+            elem.requestFullscreen().catch(err => {
+                console.log(`Erro: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+    
+    // Extrair URL da query string
+    function extrairUrlDaURL() {
+        const params = new URLSearchParams(window.location.search);
+        let url = params.get('url');
+        
+        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+            return url;
+        }
+        
+        // Tentar decode
+        try {
+            const href = window.location.href;
+            const questionIndex = href.indexOf('?');
+            if (questionIndex !== -1) {
+                let extracted = href.substring(questionIndex + 1);
+                extracted = decodeURIComponent(extracted);
+                if (extracted.startsWith('http://') || extracted.startsWith('https://')) {
+                    return extracted;
                 }
-                
-                let nomeLimpo = hostname.split('.')[0];
-                nomeLimpo = nomeLimpo.charAt(0).toUpperCase() + nomeLimpo.slice(1);
-                
-                return { nome: nomeLimpo, fullName: nomeLimpo, categoria: 'Site', emoji: '🌐' };
+            }
+        } catch(e) {}
+        
+        return null;
+    }
+    
+    // Eventos
+    goBtn.addEventListener('click', () => {
+        const url = urlInput.value.trim();
+        if (url) carregarUrl(url);
+        else carregarUrl(DEFAULT_URL);
+    });
+    
+    urlInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const url = urlInput.value.trim();
+            if (url) carregarUrl(url);
+        }
+    });
+    
+    // Carregar anúncios após DOM
+    function carregarAnuncios() {
+        if (typeof adsbygoogle !== 'undefined') {
+            try {
+                (adsbygoogle = window.adsbygoogle || []).push({});
             } catch(e) {
-                return { nome: 'Proxy', fullName: 'Marujo Digital Proxy', categoria: 'Ferramenta', emoji: '🔗' };
+                console.log('AdSense:', e.message);
             }
         }
+    }
+    
+    // Inicializar
+    function inicializar() {
+        let urlParaCarregar = extrairUrlDaURL();
         
-        // ===== ATUALIZAR META TAGS PARA PREVIEW NO WHATSAPP =====
-        function updateMetaTags(url) {
-            const siteInfo = getSiteInfo(url);
-            const proxyUrl = `https://marujodigital.onrender.com/proxy?${encodeURIComponent(url)}`;
-            
-            // Título da página
-            document.title = `${siteInfo.emoji} ${siteInfo.fullName} | Marujo Proxy`;
-            
-            // Meta Description
-            const metaDesc = document.getElementById('metaDescription');
-            if (metaDesc) {
-                metaDesc.setAttribute('content', `📱 Visualize ${siteInfo.fullName} de forma rápida e segura através do proxy do Marujo Digital. Acesse agora!`);
-            }
-            
-            // Open Graph Title
-            const ogTitle = document.getElementById('metaOgTitle');
-            if (ogTitle) {
-                ogTitle.setAttribute('content', `${siteInfo.emoji} ${siteInfo.fullName} - Marujo Proxy`);
-            }
-            
-            // Open Graph Description
-            const ogDesc = document.getElementById('metaOgDescription');
-            if (ogDesc) {
-                ogDesc.setAttribute('content', `📰 Acesse ${siteInfo.fullName} diretamente pelo nosso proxy. Navegue com segurança e privacidade!`);
-            }
-            
-            // Open Graph URL
-            const ogUrl = document.getElementById('metaOgUrl');
-            if (ogUrl) {
-                ogUrl.setAttribute('content', proxyUrl);
-            }
-            
-            // Twitter Card
-            const twitterTitle = document.getElementById('metaTwitterTitle');
-            if (twitterTitle) {
-                twitterTitle.setAttribute('content', `${siteInfo.emoji} ${siteInfo.fullName} - Marujo Proxy`);
-            }
-            
-            const twitterDesc = document.getElementById('metaTwitterDescription');
-            if (twitterDesc) {
-                twitterDesc.setAttribute('content', `📱 Acesse ${siteInfo.fullName} no seu navegador através do proxy do Marujo Digital!`);
-            }
-            
-            // Imagem dinâmica (tenta pegar favicon do site)
-            try {
-                const domain = new URL(url).hostname;
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-                const ogImage = document.getElementById('metaOgImage');
-                if (ogImage) {
-                    ogImage.setAttribute('content', faviconUrl);
-                }
-            } catch(e) {}
-            
-            console.log(`📌 Meta tags atualizadas para: ${siteInfo.fullName}`);
+        if (!urlParaCarregar) {
+            urlParaCarregar = DEFAULT_URL;
         }
         
-        // ===== ATUALIZAR FAVICON =====
-        function updateFavicon(url) {
-            if (url && url.startsWith('http')) {
-                try {
-                    const domain = new URL(url).hostname;
-                    const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-                    let link = document.querySelector("link[rel='shortcut icon']");
-                    if (!link) {
-                        link = document.createElement('link');
-                        link.rel = 'shortcut icon';
-                        document.head.appendChild(link);
-                    }
-                    link.href = faviconUrl;
-                } catch(e) {}
-            }
-        }
+        urlInput.value = urlParaCarregar;
+        carregarUrl(urlParaCarregar);
         
-        function showLoader(show) {
-            const loader = document.getElementById('loader');
-            if (show) loader.classList.add('show');
-            else loader.classList.remove('show');
-        }
+        // Carregar anúncios após 1 segundo
+        setTimeout(carregarAnuncios, 1000);
         
-        function carregarUrl(url) {
-            if (!url) return;
-            
-            showLoader(true);
-            updateMetaTags(url);
-            updateFavicon(url);
-            
-            const proxyUrl = PROXY_SERVICE + encodeURIComponent(url);
-            const iframe = document.getElementById('proxyFrame');
-            
-            const timeoutId = setTimeout(() => {
-                showLoader(false);
-            }, 10000);
-            
-            iframe.onload = function() {
-                clearTimeout(timeoutId);
-                showLoader(false);
-            };
-            
-            iframe.onerror = function() {
-                clearTimeout(timeoutId);
-                showLoader(false);
-            };
-            
-            iframe.src = proxyUrl;
-            currentUrl = url;
-            
-            const newUrl = new URL(window.location);
-            newUrl.searchParams.set('url', url);
-            window.history.pushState({url: url}, '', newUrl);
-        }
-        
-        function extrairUrlDoPath() {
-            let urlCompleta = window.location.href;
-            let questionMarkIndex = urlCompleta.indexOf('?');
-            
-            if (questionMarkIndex !== -1) {
-                let urlExtraida = urlCompleta.substring(questionMarkIndex + 1);
-                try {
-                    urlExtraida = decodeURIComponent(urlExtraida);
-                } catch(e) {}
-                
-                if (urlExtraida.includes('&url=')) {
-                    urlExtraida = urlExtraida.split('&url=')[0];
-                }
-                
-                if (urlExtraida && (urlExtraida.startsWith('http://') || urlExtraida.startsWith('https://'))) {
-                    return urlExtraida;
-                }
-            }
-            return null;
-        }
-        
-        function inicializar() {
-            let urlParaCarregar = extrairUrlDoPath();
-            
-            if (!urlParaCarregar) {
-                const params = new URLSearchParams(window.location.search);
-                urlParaCarregar = params.get('url');
-            }
-            
-            if (!urlParaCarregar) {
-                urlParaCarregar = DEFAULT_URL;
-            }
-            
-            // Atualiza meta tags ANTES de carregar (para o preview do WhatsApp)
-            updateMetaTags(urlParaCarregar);
-            updateFavicon(urlParaCarregar);
-            
-            carregarUrl(urlParaCarregar);
-        }
-        
-        inicializar();
-        
-        window.addEventListener('popstate', function(event) {
-            const params = new URLSearchParams(window.location.search);
-            let url = params.get('url');
-            if (url && url !== currentUrl) {
-                carregarUrl(url);
-            }
+        // Recarregar anúncios quando iframe mudar
+        iframe.addEventListener('load', () => {
+            setTimeout(carregarAnuncios, 500);
         });
-    </script>
+    }
+    
+    // Navegação do histórico
+    window.addEventListener('popstate', function(event) {
+        const params = new URLSearchParams(window.location.search);
+        let url = params.get('url');
+        if (url && url !== currentUrl) {
+            carregarUrl(url);
+        }
+    });
+    
+    inicializar();
+</script>
+
+<!-- Script para recarregar anúncios em resize -->
+<script>
+    window.addEventListener('resize', function() {
+        setTimeout(() => {
+            if (typeof adsbygoogle !== 'undefined') {
+                try {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                } catch(e) {}
+            }
+        }, 300);
+    });
+</script>
+
+<!-- DISCLAIMER (IMPORTANTE PARA O ADSENSE) -->
+<div style="text-align: center; padding: 10px; font-size: 11px; color: #999; background: #f5f5f5; margin-top: 5px;">
+    ⚠️ Marujo Digital Proxy - Serviço para acessar sites de forma segura. Não armazenamos dados pessoais. 
+    Respeitamos os direitos autorais e termos de uso dos sites acessados.
+</div>
+
 </body>
 </html>
