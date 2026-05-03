@@ -55,9 +55,12 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://pagead2.googlesyndication.com">
     
-    <!-- FONTS E ICONES -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+<noscript>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</noscript>
     
     <!-- OPEN GRAPH (FACEBOOK, LINKEDIN, ETC) -->
     <meta property="og:type" content="website">
@@ -126,19 +129,18 @@
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
-      notifyButton: {
-        enable: false
-      }
+  // Em vez de inicializar direto, faça isso:
+setTimeout(() => {
+  if (window.OneSignalDeferred) {
+    window.OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
+        notifyButton: { enable: false }
+      });
+      if (typeof LibSignal !== "undefined") LibSignal.register();
     });
-
-    // 🔥 REGISTRA O TOKEN CORRETAMENTE
-    if (typeof LibSignal !== "undefined") {
-      LibSignal.register();
-    }
-  });
+  }
+}, 3000); // Atraso de 3 segundos para dar prioridade ao conteúdo principal
 </script>
     
     <!-- GOOGLE ADSENSE (JÁ EXISTENTE) -->
@@ -3919,7 +3921,7 @@ function atualizarSidebarProgresso() {
         // ==========================================
     // ⚓ MOTOR SOCIAL (TAVERNA, AMIGOS E DMS)
     // ==========================================
-    const API_BASE = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+    const API_BASE = 'http://br2.bronxyshost.com:4009';
     let marujoEmFoco = null; 
     let amigoPrivadoAtual = null; 
     let timerChatPrivado = null; 
@@ -4351,7 +4353,7 @@ msgList.innerHTML += `
 
         // O link da sua API
     // O link da sua API
-    const API_COMENTARIOS = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+    const API_COMENTARIOS = 'http://br2.bronxyshost.com:4009';
   
 
             function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
@@ -4402,7 +4404,7 @@ msgList.innerHTML += `
         };
 
         // Usa o mesmo link da API que você já tem
-        const linkApi = 'https://cors.eu.org/http://br2.bronxyshost.com:4009';
+        const linkApi = 'http://br2.bronxyshost.com:4009';
 
         try {
             const resposta = await fetch(`${linkApi}/adicionar_amigo`, {
@@ -5098,7 +5100,7 @@ save: async function() { // <--- Torna a função assíncrona
             history: this.history
         };
 
-        const linkApi = 'https://cors.eu.org/http://br2.bronxyshost.com:4009';
+        const linkApi = 'http://br2.bronxyshost.com:4009';
         try {
             await fetch(`${linkApi}/salvar_progresso`, {
                 method: 'POST',
@@ -5128,7 +5130,7 @@ save: async function() { // <--- Torna a função assíncrona
 async function verificarStatus(transactionId) {
     try {
         // 1. MONTA A URL COM O ID DA TRANSAÇÃO
-        const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+        const linkApi = 'http://br2.bronxyshost.com:4009';
         const url = `${linkApi}/api/doacoes/verificar/${transactionId}`;
         
         console.log(`📡 Chamando: ${url}`);
@@ -5279,7 +5281,7 @@ function updateLoadingScreen() {
 }
 async function carregarDataAtualizacao() {
     try {
-        const response = await fetch('https://cors.eu.org/br2.bronxyshost.com:4009/atualsite_metadata.json');
+        const response = await fetch('http://br2.bronxyshost.com:4009/atualsite_metadata.json');
         const data = await response.json();
         document.getElementById('dataAtualizacao').textContent = data.ultima_atualizacao;
     } catch (error) {
@@ -5488,8 +5490,8 @@ function verificarAmbienteNavegacao() {
 
         const IPTVSystem = {
         config: { 
-            apiUrl: 'https://cors.eu.org/br2.bronxyshost.com:4009/lista.json', 
-            statsUrl: 'https://cors.eu.org/br2.bronxyshost.com:4009/user_data.json', 
+            apiUrl: 'http://br2.bronxyshost.com:4009/lista.json', 
+            statsUrl: 'http://br2.bronxyshost.com:4009/user_data.json', 
             itemsPerPage: 36 
         },
         todosItens: [], filtrados: [], generosUnicos: [], 
@@ -6523,7 +6525,7 @@ window.compartilharFilmeAtivo = async function() {
         }
         
         // Adiciona proxy CORS à URL da logo
-        const logoComCors = `https://cors.eu.org/${logoUrl.replace(/^https?:\/\//, '')}`;
+        const logoComCors = `${logoUrl.replace(/^https?:\/\//, '')}`;
         const linkApi = 'https://fabibot.vercel.app';
         
         // Gera uma nota de avaliação realista (entre 7.0 e 9.5)
@@ -6721,7 +6723,7 @@ async function gerarPix() {
     btn.disabled = true;
     
     try {
-        const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+        const linkApi = 'http://br2.bronxyshost.com:4009';
         const response = await fetch(`${linkApi}/api/doacoes/gerar-pix`, {
             method: 'POST',
             mode: 'cors',
@@ -6825,7 +6827,7 @@ function iniciarVerificacaoPix(transactionId, dataExpiracao) {
             }
             
             // Faz a verificação no servidor
-            const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+            const linkApi = 'http://br2.bronxyshost.com:4009';
             const response = await fetch(`${linkApi}/api/doacoes/verificar/${transactionId}`);
             const data = await response.json();
             
@@ -6936,7 +6938,7 @@ window.addEventListener('load', () => {
                     iniciarVerificacaoPix(savedTransactionId, savedExpiracao);
                     
                     // Tenta buscar o QR Code novamente
-                    const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+                    const linkApi = 'http://br2.bronxyshost.com:4009';
                     fetch(`${linkApi}/api/doacoes/recuperar/${savedTransactionId}`)
                         .then(res => res.json())
                         .then(data => {
@@ -6963,7 +6965,7 @@ function verificarPagamentoAgora() {
     const statusElement = document.getElementById('pixStatus');
     statusElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
     
-    const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+    const linkApi = 'http://br2.bronxyshost.com:4009';
     fetch(`${linkApi}/api/doacoes/verificar/${transactionIdAtual}`)
         .then(res => res.json())
         .then(data => {
@@ -7033,7 +7035,7 @@ function atualizarContadorEspectadores() {
     lastHeartbeat = agora;
     
     // Faz a requisição para o backend
-const linkApi = 'https://cors.eu.org/br2.bronxyshost.com:4009';
+const linkApi = 'http://br2.bronxyshost.com:4009';
     fetch(`${linkApi}/api/viewers/${RADAR_CHANNEL_ID}`)
         .then(resposta => {
             if (!resposta.ok) {
@@ -7098,20 +7100,23 @@ document.addEventListener('click', () => {
     atualizarContadorEspectadores();
 }, { passive: true });
 
-    // Deixamos apenas UM evento DOMContentLoaded para iniciar tudo
-    document.addEventListener('DOMContentLoaded', () => {
-        // Agora userProgress e getRankTitle já existem
-            setTimeout(iniciarHeartbeat, 2000);
-        const tipEl = document.getElementById('loadingTip');
-        if (tipEl) {
-            const patenteAtual = getRankTitle(userProgress.level);
-            tipEl.innerHTML = `<span>Bem-vindo a bordo, ${patenteAtual}! ...</span>`;
+// Substitua o bloco DOMContentLoaded por isso:
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. MOSTRA O SITE IMEDIATAMENTE
+    carregarDataAtualizacao();
+    verificarAmbienteNavegacao(); 
+    IPTVSystem.init(); // Isso já exibe os filmes
+    
+    // 2. ATRASA AS FUNÇÕES PESADAS (RANKING/CHAT) em 5 segundos
+    setTimeout(() => {
+        iniciarHeartbeat(); // Radar de online
+        iniciarChatGlobalSilencioso(); // Inicia o chat (se existir)
+        if (window.auth) {
+            // Só carrega ranking se o usuário clicar no botão
+            console.log('Sistema de ranking em espera.');
         }
-        carregarDataAtualizacao()
-        verificarAmbienteNavegacao(); 
-        
-        IPTVSystem.init(); // O sistema agora inicia apenas UMA vez de forma limpa
-    });
+    }, 5000); // 5 segundos depois de abrir o site
+});
 // Força a renderização da interface mesmo sem usuário logado
 if (typeof atualizarTodaAInterface === 'function') {
     atualizarTodaAInterface(null);
@@ -7186,7 +7191,7 @@ async function registrarUsuarioNoOneSignal(user) {
       // Se logou, busca os dados salvos no seu servidor
       ToastSystem.show("Sincronizando com o Navio Principal...", "info");
 
-      const linkApi = 'https://cors.eu.org/http://br2.bronxyshost.com:4009';
+      const linkApi = 'http://br2.bronxyshost.com:4009';
       try {
         const resposta = await fetch(`${linkApi}/ler_progresso/${user.uid}`, { method: 'GET', mode: 'cors' });
         if (resposta.ok) {
