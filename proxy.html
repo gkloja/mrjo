@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -486,78 +487,6 @@
             font-size: 9px;
             text-align: center;
         }
-        /* Indicador de carregamento */
-.loading-overlay {
-    position: fixed;
-    top: 130px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    transition: all 0.3s;
-}
-
-.loading-overlay.hidden {
-    display: none;
-}
-
-.loading-content {
-    text-align: center;
-    background: rgba(15,23,42,0.9);
-    padding: 30px 40px;
-    border-radius: 20px;
-    border: 2px solid #3b82f6;
-    box-shadow: 0 0 30px rgba(59,130,246,0.3);
-}
-
-.spinner {
-    width: 60px;
-    height: 60px;
-    border: 4px solid rgba(59,130,246,0.2);
-    border-top: 4px solid #3b82f6;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 15px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.loading-content p {
-    color: white;
-    font-size: 16px;
-    margin-top: 10px;
-}
-
-.loading-content .loading-text {
-    color: #3b82f6;
-    font-weight: bold;
-    font-size: 14px;
-    margin-top: 5px;
-}
-
-.loading-dots {
-    display: inline-block;
-}
-
-.loading-dots::after {
-    content: '...';
-    animation: dots 1.5s steps(4, end) infinite;
-}
-
-@keyframes dots {
-    0%, 20% { content: ''; }
-    40% { content: '.'; }
-    60% { content: '..'; }
-    80%, 100% { content: '...'; }
-}
     </style>
 </head>
 <body>
@@ -942,73 +871,47 @@
     
     // ==================== CARREGAR URL ====================
     function carregarUrl(url) {
-    if (!url) return;
-    
-    // MOSTRA O CARREGAMENTO
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    loadingOverlay.classList.remove('hidden');
-    
-    let finalUrl = url.trim();
-    
-    if (finalUrl.includes('br2.bronxyshost.com') || finalUrl.includes('/player/') || finalUrl.includes('/streampro')) {
-        if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-            finalUrl = 'http://br2.bronxyshost.com:4009' + finalUrl;
+        if (!url) return;
+        
+        let finalUrl = url.trim();
+        
+        if (finalUrl.includes('br2.bronxyshost.com') || finalUrl.includes('/player/') || finalUrl.includes('/streampro')) {
+            if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+                finalUrl = 'http://br2.bronxyshost.com:4009' + finalUrl;
+            }
         }
-    }
-    
-    if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-        finalUrl = 'https://' + finalUrl;
-    }
-    
-    currentUrl = finalUrl;
-    urlInput.value = finalUrl;
-    
-    const isVideoPlayer = finalUrl.includes('br2.bronxyshost.com') && 
-                         (finalUrl.includes('/player/') || finalUrl.includes('/streampro'));
-    
-    let proxyUrl;
-    if (isVideoPlayer) {
-        proxyUrl = finalUrl;
-        console.log('🎬 Vídeo detectado, carregando direto:', proxyUrl);
-        iframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture');
-        iframe.setAttribute('allowfullscreen', 'true');
-    } else {
-        proxyUrl = PROXY_SERVICE + encodeURIComponent(finalUrl);
-        iframe.removeAttribute('allow');
-    }
-    
-    // Remove o carregamento quando o iframe terminar de carregar
-    iframe.onload = function() {
+        
+        if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+            finalUrl = 'https://' + finalUrl;
+        }
+        
+        currentUrl = finalUrl;
+        urlInput.value = finalUrl;
+        
+        const isVideoPlayer = finalUrl.includes('br2.bronxyshost.com') && 
+                             (finalUrl.includes('/player/') || finalUrl.includes('/streampro'));
+        
+        let proxyUrl;
+        if (isVideoPlayer) {
+            proxyUrl = finalUrl;
+            console.log('🎬 Vídeo detectado, carregando direto:', proxyUrl);
+            iframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture');
+            iframe.setAttribute('allowfullscreen', 'true');
+        } else {
+            proxyUrl = PROXY_SERVICE + encodeURIComponent(finalUrl);
+            iframe.removeAttribute('allow');
+        }
+        
+        iframe.src = proxyUrl;
+        
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set('url', finalUrl);
+        window.history.pushState({ url: finalUrl }, '', newUrl);
+        
         setTimeout(() => {
-            loadingOverlay.classList.add('hidden');
-            forcarPlay(); // Força o play quando carregar
+            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
         }, 500);
-    };
-    
-    // Timeout de segurança (se demorar mais que 10 segundos, esconde)
-    setTimeout(() => {
-        loadingOverlay.classList.add('hidden');
-    }, 10000);
-    
-    iframe.src = proxyUrl;
-    
-    const newUrl = new URL(window.location);
-    newUrl.searchParams.set('url', finalUrl);
-    window.history.pushState({ url: finalUrl }, '', newUrl);
-    
-    setTimeout(() => {
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-    }, 500);
-}
-
-// Função auxiliar para forçar o play (adicione no final do script)
-function forcarPlay() {
-    try {
-        iframe.contentWindow.postMessage({ command: 'play' }, '*');
-        iframe.contentWindow.postMessage({ command: 'togglePlay' }, '*');
-        console.log('🎬 Comando play enviado');
-    } catch(e) {}
-}
+    }
     
     function resetToHome() {
         carregarUrl(DEFAULT_URL);
@@ -1092,13 +995,5 @@ function forcarPlay() {
     }, 500);
 })();
 </script>
-<!-- OVERLAY DE CARREGAMENTO -->
-<div id="loadingOverlay" class="loading-overlay hidden">
-    <div class="loading-content">
-        <div class="spinner"></div>
-        <p>Carregando<span class="loading-dots"></span></p>
-        <div class="loading-text">Aguarde, estamos preparando tudo</div>
-    </div>
-</div>
 </body>
 </html>
