@@ -1376,7 +1376,7 @@
         // ==========================================
         // CONFIGURAÇÃO
         // ==========================================
-        const API_BASE = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009'
+        const API_BASE = 'https://orange-hill-2e61.gbscabral15.workers.dev/http://br2.bronxyshost.com:4009'
         const CREDITS_KEY = 'marujo_credits';
         const CONSULTAS_KEY = 'marujo_consultas';
         const USER_SESSION_KEY = 'marujo_user_session'; // Chave para salvar a sessão completa
@@ -1388,7 +1388,7 @@
         // ==========================================
         // SERVIDOR API PARA CRÉDITOS
         // ==========================================
-        const SERVER_API = 'https://cors.eu.org/br2.bronxyshost.com:4009'
+        const SERVER_API = 'https://orange-hill-2e61.gbscabral15.workers.dev/http://br2.bronxyshost.com:4009'
         
         
         // ==========================================
@@ -1752,7 +1752,7 @@ function comprarCreditos(creditos, valor) {
         
         async function salvarCreditosNoServidor(userId, creditos) {
             try {
-                const response = await fetch(`https://cors.eu.org/br2.bronxyshost.com:4009/api/salvar-creditos`, {
+                const response = await fetch(`https://orange-hill-2e61.gbscabral15.workers.dev/http://br2.bronxyshost.com:4009/api/salvar-creditos`, {
                     method: 'POST',
                     mode: 'cors',
                 headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -2168,7 +2168,7 @@ menu.innerHTML = `
             btn.disabled = true;
             
             try {
-                const response = await fetch(`https://cors.eu.org/br2.bronxyshost.com:4009/api/ativar-codigo`, {
+                const response = await fetch(`https://orange-hill-2e61.gbscabral15.workers.dev/http://br2.bronxyshost.com:4009/api/ativar-codigo`, {
                     method: 'POST',
                     headers: { 'Accept': 'application/json' },
                     body: JSON.stringify({ codigo: codigo, userId: currentUser.uid })
@@ -3142,7 +3142,7 @@ async function configurarUsuarioLogado(user) {
         
         // 1. Primeiro, tenta registrar no backend (mas não deixa travar)
         try {
-            const registerResponse = await fetch(`https://cors.eu.org/br2.bronxyshost.com:4009/api/registrar-usuario`, {
+            const registerResponse = await fetch(`https://orange-hill-2e61.gbscabral15.workers.dev/http://br2.bronxyshost.com:4009/api/registrar-usuario`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
