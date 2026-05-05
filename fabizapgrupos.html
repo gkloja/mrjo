@@ -1102,7 +1102,7 @@ body.dark-mode .gradient-text {
 
     <script>
         // ==================== CONFIGURAÇÃO ====================
-        const API_URL = 'https://cors.eu.org/br2.bronxyshost.com:4009/grupos.json';
+        const API_URL = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/grupos.json';
         let allGroups = [];
         let currentCategory = 'Todos';
         let currentSearch = '';
@@ -1139,7 +1139,7 @@ let gruposDestaqueLista = [];
 
 async function carregarGruposDestaque() {
     try {
-        const response = await fetch('https://cors.eu.org/br2.bronxyshost.com:4009/controleRanking.json');
+        const response = await fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/controleRanking.json');
         if (!response.ok) throw new Error('Erro ao carregar destaques');
         
         const data = await response.json();
@@ -2191,7 +2191,7 @@ function identificarGruposCampeoes() {
 // Função para sincronizar os grupos campeões com o ranking
 async function sincronizarCampeoesComRanking() {
     try {
-        const response = await fetch('https://cors.eu.org/br2.bronxyshost.com:4009/ranking.json');
+        const response = await fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/ranking.json');
         if (!response.ok) throw new Error('Ranking não disponível');
         const ranking = await response.json();
         
@@ -2287,7 +2287,7 @@ function toggleRanking() {
 
 async function carregarRanking() {
     try {
-        const response = await fetch('https://cors.eu.org/br2.bronxyshost.com:4009/ranking.json');
+        const response = await fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/ranking.json');
         if (!response.ok) throw new Error('Ranking não disponível');
         const ranking = await response.json();
         
