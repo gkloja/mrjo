@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="google-adsense-account" content="ca-pub-2351298778216089">
+    <title>Fabi Consultas | Consulta de Dados Grátis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-deep: #020813;
+            --bg-dark: #061428;
+            --aqua-light: #5eead4;
+            --aqua-primary: #14b8a6;
+            --aqua-dark: #0f766e;
+            --gold-primary: #eab308;
+            --gold-light: #fef08a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(10, 20, 35, 0.6);
+            --glass-border: rgba(45, 212, 191, 0.2);
+            --gradient-aqua: linear-gradient(135deg, var(--aqua-light), var(--aqua-primary));
+            --gradient-gold: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+            --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.5);
+            --glow-aqua: 0 0 20px rgba(20, 184, 166, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(20, 184, 166, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(234, 179, 8, 0.03) 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--aqua-dark); border-radius: 10px; }
+
+        h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
+        .text-gradient { background: var(--gradient-aqua); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* HEADER */
+        .header {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 0.8rem 5%;
+            background: rgba(2, 8, 19, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; }
+        .logo-icon {
+            width: 40px; height: 40px;
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid var(--aqua-primary);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: var(--aqua-light);
+            box-shadow: var(--glow-aqua);
+        }
+        .logo-text h1 { font-size: 1.3rem; color: var(--text-main); }
+        .logo-text span { font-size: 0.6rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; }
+
+        /* ANÚNCIO SUPERIOR */
+        .ad-header {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.5);
+            text-align: center;
+            padding: 8px;
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 999;
+            backdrop-filter: blur(10px);
+        }
+        .ad-header.hidden { display: none; }
+        .ad-close {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 8px;
+            background: #334155;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            color: white;
+            z-index: 1001;
+        }
+
+        /* ANÚNCIO LATERAL */
+        .ad-sidebar {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 160px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            z-index: 998;
+            padding: 12px 8px;
+            border-radius: 0 12px 12px 0;
+            border: 1px solid var(--glass-border);
+            border-left: none;
+        }
+        .ad-sidebar.hidden { display: none; }
+        .sidebar-close {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #334155;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ANÚNCIO RODAPÉ */
+        .footer-ads {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            padding: 8px;
+            z-index: 997;
+            border-top: 1px solid var(--glass-border);
+        }
+        .footer-ads.hidden { display: none; }
+        .footer-close {
+            position: absolute;
+            top: -12px;
+            right: 8px;
+            background: #334155;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ad-label {
+            font-size: 9px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        /* CONTAINER PRINCIPAL */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 6rem 5% 4rem;
+        }
+        
+        .dashboard-layout {
+            display: flex;
+            gap: 2rem;
+            align-items: stretch;
+        }
+        
+        .hero-section { flex: 0.8; }
+        .panel-section { flex: 1.5; }
+
+        @media (max-width: 992px) {
+            .dashboard-layout { flex-direction: column; }
+            .hero-section { text-align: center; }
+            .ad-sidebar { display: none; }
+            .container { padding-left: 15px; padding-right: 15px; }
+        }
+
+        .badge {
+            display: inline-flex;
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid var(--aqua-primary);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            color: var(--aqua-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-section h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
+        .hero-section p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
+
+        .stats-grid {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: var(--glass-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1rem;
+            min-width: 120px;
+            flex: 1;
+        }
+        .stat-value { font-size: 1.3rem; font-weight: 700; font-family: 'Playfair Display', serif; }
+        .stat-label { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.2rem; }
+        .stat-icon { color: var(--aqua-light); margin-bottom: 0.3rem; }
+
+        /* PAINEL DE CONSULTA */
+        .app-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-card);
+        }
+
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 600px) {
+            .selection-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .type-btn {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 0.8rem 0.3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-muted);
+        }
+        .type-btn i { font-size: 1.1rem; }
+        .type-btn span { font-size: 0.7rem; font-weight: 600; }
+        .type-btn:hover { background: rgba(20, 184, 166, 0.1); color: var(--text-main); }
+        .type-btn.active {
+            background: var(--gradient-aqua);
+            color: var(--bg-deep);
+            border-color: transparent;
+        }
+        .type-btn.active i { color: var(--bg-deep); }
+
+        .consulta-group { display: none; animation: fadeIn 0.3s ease; }
+        .consulta-group.active { display: block; }
+
+        .form-label {
+            font-size: 0.75rem;
+            color: var(--aqua-light);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .input-wrapper {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .input-row {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+        }
+        .input-row i {
+            color: var(--text-muted);
+            margin-right: 0.8rem;
+            width: 20px;
+        }
+        input, select {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
+            outline: none;
+        }
+        input::placeholder { color: rgba(148, 163, 184, 0.4); }
+
+        .chips-container {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .chip {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.65rem;
+            cursor: pointer;
+        }
+        .chip:hover { background: rgba(20,184,166,0.1); color: var(--aqua-light); }
+
+        .btn-executar {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gradient-aqua);
+            color: var(--bg-deep);
+            border: none;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .btn-executar:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(20,184,166,0.3); }
+
+        /* TERMINAL DE RESULTADOS - ESTILO MARUJO */
+        .results-container {
+            background: #090e17;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-top: 1.5rem;
+            display: none;
+            box-shadow: var(--shadow-card);
+        }
+        .results-container.active { display: block; animation: slideUp 0.5s ease; }
+        
+        .terminal-header {
+            background: #0f172a;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mac-dots { display: flex; gap: 6px; }
+        .mac-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .mac-dot.red { background: #ff5f56; }
+        .mac-dot.yellow { background: #ffbd2e; }
+        .mac-dot.green { background: #27c93f; cursor: pointer; }
+        
+        .terminal-title {
+            color: #64748b;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+        }
+        .terminal-actions button {
+            background: transparent;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            cursor: pointer;
+        }
+        .terminal-body {
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        /* ESTILOS DOS RESULTADOS */
+        .resultado-item {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .resultado-nome {
+            color: var(--gold-light);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .resultado-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+        }
+        .resultado-info span { color: var(--aqua-light); }
+        
+        .resultado-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 0.6rem;
+            margin-top: 0.5rem;
+        }
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--aqua-light);
+            margin: 0.8rem 0 0.5rem 0;
+            padding-bottom: 0.2rem;
+            border-bottom: 1px solid rgba(20,184,166,0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .info-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            padding: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .info-card i {
+            font-size: 0.9rem;
+            color: var(--aqua-light);
+            width: 20px;
+        }
+        .info-card strong { color: var(--aqua-light); font-weight: 600; font-size: 0.7rem; }
+        .info-card span { font-size: 0.75rem; word-break: break-all; }
+
+        /* LOADER */
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(2,8,19,0.9);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .loader-overlay.active { opacity: 1; pointer-events: all; }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(20,184,166,0.2);
+            border-top-color: var(--aqua-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* MODAL ANÚNCIO */
+        .ad-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        .ad-modal.show { opacity: 1; visibility: visible; }
+        .ad-modal-content {
+            background: var(--bg-dark);
+            border: 1px solid var(--gold-primary);
+            border-radius: 24px;
+            padding: 1.5rem;
+            max-width: 350px;
+            width: 90%;
+            text-align: center;
+        }
+        .ad-modal-close {
+            background: var(--gradient-aqua);
+            border: none;
+            padding: 0.8rem;
+            border-radius: 50px;
+            color: var(--bg-deep);
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+        }
+        .toast {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border-left: 3px solid var(--aqua-primary);
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        /* BOTÃO FLUTUANTE */
+        .fullscreen-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1001;
+            color: var(--aqua-light);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .fullscreen-mode .ad-header,
+        .fullscreen-mode .ad-sidebar,
+        .fullscreen-mode .footer-ads,
+        .fullscreen-mode .header {
+            display: none !important;
+        }
+        .fullscreen-mode .container {
+            padding-top: 1rem;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        /* BLOQUEIO DE ADBLOCK - OVERLAY */
+.adblock-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.98);
+    backdrop-filter: blur(15px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.adblock-overlay.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.adblock-content {
+    background: linear-gradient(135deg, #1a1a3a, #0f0f2a);
+    border: 2px solid #ff4444;
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 50px rgba(255, 68, 68, 0.3);
+    animation: shake 0.5s ease;
+}
+
+.adblock-content i {
+    font-size: 64px;
+    color: #ff4444;
+    margin-bottom: 20px;
+}
+
+.adblock-content h2 {
+    color: #ff4444;
+    margin-bottom: 15px;
+}
+
+.adblock-content p {
+    color: #ccc;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.adblock-content .btn-retry {
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 50px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 10px;
+    transition: all 0.3s;
+}
+
+.adblock-content .btn-retry:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.adblock-warning-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #ff4444;
+    color: white;
+    text-align: center;
+    padding: 8px;
+    font-size: 12px;
+    z-index: 10000;
+    display: none;
+}
+
+.adblock-warning-bar.show {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from { top: -50px; }
+    to { top: 0; }
+}
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <a href="#" class="logo" onclick="location.reload()">
+        <div class="logo-icon"><i class="fas fa-search"></i></div>
+        <div class="logo-text"><h1>Fabi</h1><span>Consultas</span></div>
+    </a>
+    <div class="badge" style="margin:0"><i class="fas fa-check-circle"></i> 100% Grátis</div>
+</header>
+
+<!-- ANÚNCIO SUPERIOR -->
+<div id="adHeader" class="ad-header">
+    <button class="ad-close" onclick="fecharAnuncioTopo()">×</button>
+    <div class="ad-label">PUBLICIDADE</div>
+    <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-2351298778216089" data-ad-slot="4868424735" data-ad-format="horizontal"></ins>
+    <script>try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}</script>
+</div>
+
+<!-- ANÚNCIO LATERAL -->
+<div id="adSidebar" class="ad-sidebar">
+    <button class="sidebar-close" onclick="fecharAnuncioLateral()">×</button>
+    <div class="ad-label">PUBLICIDADE</div>
+    <ins class="adsbygoogle" style="display:inline-block;width:160px;height:600px" data-ad-client="ca-pub-2351298778216089" data-ad-slot="4868424735" data-ad-format="vertical"></ins>
+    <script>try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}</script>
+</div>
+
+<!-- ANÚNCIO RODAPÉ -->
+<div id="footerAds" class="footer-ads">
+    <button class="footer-close" onclick="fecharAnuncioRodape()">×</button>
+    <div class="ad-label">PUBLICIDADE</div>
+    <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="ca-pub-2351298778216089" data-ad-slot="5555555555"></ins>
+    <script>try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}</script>
+</div>
+
+<main class="container">
+    <div class="dashboard-layout">
+        <div class="hero-section">
+            <div class="badge"><i class="fas fa-satellite-dish"></i> Status: Online</div>
+            <h1>A verdade <span class="text-gradient">revelada</span> em segundos.</h1>
+            <p>Escolha o tipo de consulta ao lado e obtenha dados em tempo real. Grátis e sem cadastro!</p>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-database"></i></div><div class="stat-value">19+</div><div class="stat-label">Bases</div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-bolt"></i></div><div class="stat-value" id="statTempo">0.4s</div><div class="stat-label">Latência</div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-chart-line"></i></div><div class="stat-value" id="statsConsultas">0</div><div class="stat-label">Consultas</div></div>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <div class="app-panel">
+                <div class="selection-grid">
+                    <button class="type-btn active" onclick="switchTab('cpf', this)"><i class="fas fa-id-card"></i><span>CPF</span></button>
+                    <button class="type-btn" onclick="switchTab('cnpj', this)"><i class="fas fa-building"></i><span>CNPJ</span></button>
+                    <button class="type-btn" onclick="switchTab('placa', this)"><i class="fas fa-car"></i><span>Placa</span></button>
+                    <button class="type-btn" onclick="switchTab('telefone', this)"><i class="fas fa-phone-alt"></i><span>Telefone</span></button>
+                    <button class="type-btn" onclick="switchTab('nome', this)"><i class="fas fa-user-friends"></i><span>Nome</span></button>
+                    <button class="type-btn" onclick="switchTab('cep', this)"><i class="fas fa-map-pin"></i><span>CEP</span></button>
+                </div>
+
+                <!-- CPF -->
+                <div id="cpfGroup" class="consulta-group active">
+                    <div class="form-label">CPF</div>
+                    <div class="input-wrapper">
+                        <div class="input-row"><i class="fas fa-fingerprint"></i><input type="text" id="cpf" placeholder="123.456.789-00" maxlength="14"></div>
+                    </div>
+                    <div class="chips-container">
+                        <span class="chip" onclick="preencherDemo('cpf','88222144634')">Demo 1</span>
+                        <span class="chip" onclick="preencherDemo('cpf','12537664795')">Demo 2</span>
+                    </div>
+                </div>
+
+                <!-- CNPJ -->
+                <div id="cnpjGroup" class="consulta-group">
+                    <div class="form-label">CNPJ</div>
+                    <div class="input-wrapper"><div class="input-row"><i class="fas fa-building"></i><input type="text" id="cnpj" placeholder="00.000.000/0000-00" maxlength="18"></div></div>
+                    <div class="chips-container"><span class="chip" onclick="preencherDemo('cnpj','00910509000171')">Thomson Reuters</span></div>
+                </div>
+
+                <!-- PLACA -->
+                <div id="placaGroup" class="consulta-group">
+                    <div class="form-label">PLACA</div>
+                    <div class="input-wrapper"><div class="input-row"><i class="fas fa-car-side"></i><input type="text" id="placa" placeholder="ABC1D23" maxlength="8" style="text-transform:uppercase"></div></div>
+                    <div class="chips-container"><span class="chip" onclick="preencherDemo('placa','ABC1D23')">ABC1D23</span></div>
+                </div>
+
+                <!-- TELEFONE -->
+                <div id="telefoneGroup" class="consulta-group">
+                    <div class="form-label">TELEFONE</div>
+                    <div class="input-wrapper"><div class="input-row"><i class="fas fa-phone"></i><input type="text" id="telefone" placeholder="21999999999"></div></div>
+                    <div class="chips-container"><span class="chip" onclick="preencherDemo('telefone','21989047220')">Celular</span></div>
+                </div>
+
+                <!-- NOME -->
+                <div id="nomeGroup" class="consulta-group">
+                    <div class="form-label">NOME COMPLETO</div>
+                    <div class="input-wrapper"><div class="input-row"><i class="fas fa-user"></i><input type="text" id="nome" placeholder="NOME COMPLETO" style="text-transform:uppercase"></div></div>
+                    <div class="chips-container"><span class="chip" onclick="preencherDemo('nome','PEDRO HENRIQUE')">Demo</span></div>
+                </div>
+
+                <!-- CEP -->
+                <div id="cepGroup" class="consulta-group">
+                    <div class="form-label">CEP</div>
+                    <div class="input-wrapper"><div class="input-row"><i class="fas fa-map-marker-alt"></i><input type="text" id="cep" placeholder="01001000" maxlength="9"></div></div>
+                    <div class="chips-container"><span class="chip" onclick="preencherDemo('cep','01001000')">SP - Centro</span></div>
+                </div>
+
+                <button class="btn-executar" onclick="realizarConsulta()"><i class="fas fa-search"></i> Executar Consulta</button>
+
+                <!-- TERMINAL DE RESULTADOS -->
+                <div id="resultadoTerminal" class="results-container">
+                    <div class="terminal-header">
+                        <div class="mac-dots"><div class="mac-dot red"></div><div class="mac-dot yellow"></div><div class="mac-dot green" onclick="limparResultados()" title="Limpar"></div></div>
+                        <div class="terminal-title">~/fabi/output.json</div>
+                        <div class="terminal-actions"><button onclick="copiarJSON()"><i class="far fa-copy"></i></button></div>
+                    </div>
+                    <div class="terminal-body" id="resultadoBody"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="loaderOverlay" class="loader-overlay"><div class="spinner"></div><p style="margin-top:1rem; color:var(--aqua-light);">CONSULTANDO BASES...</p></div>
+
+<!-- MODAL ANÚNCIO PÓS-CONSULTA -->
+<div id="adModal" class="ad-modal">
+    <div class="ad-modal-content">
+        <i class="fas fa-gift" style="font-size: 2rem; color: var(--gold-primary); margin-bottom: 1rem;"></i>
+        <h3>Oferta Especial!</h3>
+        <p>Clique abaixo e aproveite</p>
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2351298778216089" data-ad-slot="8888888888" data-ad-format="rectangle"></ins>
+        <script>try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}</script>
+        <button class="ad-modal-close" onclick="fecharModalAnuncio()">Continuar</button>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<button class="fullscreen-btn" onclick="toggleFullscreen()"><i class="fas fa-expand"></i></button>
+
+<script>
+    // ==================== CONFIGURAÇÃO ====================
+    const API_BASE = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009';
+    let currentTab = 'cpf';
+    let dadosAtuais = null;
+    let consultasCount = parseInt(localStorage.getItem('fabi_consultas') || 0);
+    document.getElementById('statsConsultas').textContent = consultasCount;
+    
+    // ==========================================
+// DETECÇÃO DE ADBLOCK (MÚLTIPLOS MÉTODOS)
+// ==========================================
+
+// Função principal de detecção
+function detectarAdBlock() {
+    return new Promise((resolve) => {
+        // Método 1: Testar se anúncio foi carregado
+        const testAd = document.createElement('div');
+        testAd.className = 'adsbygoogle';
+        testAd.style.display = 'block';
+        testAd.style.position = 'absolute';
+        testAd.style.top = '-1000px';
+        testAd.style.left = '-1000px';
+        document.body.appendChild(testAd);
+        
+        // Método 2: Verificar se elemento de anúncio foi bloqueado
+        setTimeout(() => {
+            const isBlocked = testAd.offsetHeight === 0 && 
+                             testAd.offsetWidth === 0 &&
+                             window.getComputedStyle(testAd).display !== 'block';
+            
+            document.body.removeChild(testAd);
+            
+            // Método 3: Testar requisição a arquivo de anúncio
+            const baitUrl = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+            fetch(baitUrl, { method: 'HEAD', mode: 'no-cors' })
+                .catch(() => {
+                    // Se falhou, pode ser bloqueado
+                });
+            
+            // Método 4: Verificar variável global do AdSense
+            const hasAdSense = typeof window.adsbygoogle !== 'undefined';
+            
+            // Método 5: Verificar tamanho de elementos de anúncio
+            const adElements = document.querySelectorAll('.adsbygoogle');
+            let adsHidden = 0;
+            adElements.forEach(ad => {
+                const rect = ad.getBoundingClientRect();
+                if (rect.width === 0 && rect.height === 0) adsHidden++;
+            });
+            
+            // Se mais de 2 anúncios estiverem ocultos, provavelmente tem AdBlock
+            const adBlockDetected = isBlocked || adsHidden > 2 || !hasAdSense;
+            
+            resolve(adBlockDetected);
+        }, 100);
+    });
+}
+
+// Mostrar alerta de AdBlock
+function mostrarAvisoAdBlock() {
+    const overlay = document.getElementById('adblockOverlay');
+    if (overlay) {
+        overlay.classList.add('active');
+    }
+    
+    // Esconde os anúncios reais
+    document.getElementById('adHeader')?.classList.add('hidden');
+    document.getElementById('adSidebar')?.classList.add('hidden');
+    document.getElementById('footerAds')?.classList.add('hidden');
+    
+    // Mostra barra de aviso no topo
+    const warningBar = document.getElementById('adblockWarningBar');
+    if (warningBar) warningBar.classList.add('show');
+}
+
+// Verificar periodicamente se AdBlock foi desativado
+let adBlockCheckInterval = null;
+
+function iniciarVerificacaoAdBlock() {
+    if (adBlockCheckInterval) clearInterval(adBlockCheckInterval);
+    
+    adBlockCheckInterval = setInterval(async () => {
+        const temAdBlock = await detectarAdBlock();
+        if (!temAdBlock) {
+            // AdBlock foi desativado! Recarrega para mostrar anúncios
+            console.log('✅ AdBlock desativado, recarregando...');
+            clearInterval(adBlockCheckInterval);
+            location.reload();
+        }
+    }, 3000); // Verifica a cada 3 segundos
+}
+
+// Executar detecção ao carregar a página
+(async function() {
+    // Pequeno delay para garantir que AdBlock já agiu
+    setTimeout(async () => {
+        const temAdBlock = await detectarAdBlock();
+        
+        if (temAdBlock) {
+            console.warn('🚫 BLOQUEADOR DE ANÚNCIOS DETECTADO!');
+            mostrarAvisoAdBlock();
+            iniciarVerificacaoAdBlock();
+            
+            // Opcional: Desabilitar consultas se tiver AdBlock
+            // const consultaBtn = document.getElementById('btnExecutar');
+            // if (consultaBtn) consultaBtn.disabled = true;
+        } else {
+            console.log('✅ Nenhum bloqueador detectado. Anúncio liberado!');
+        }
+    }, 1500);
+})();
+
+// Método adicional: Detectar por nome de classe de elementos bloqueados
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach((node) => {
+            if (node.nodeName === 'INS' || 
+                (node.className && node.className.includes('adsbygoogle'))) {
+                console.warn('🚫 Elemento de anúncio foi removido - AdBlock ativo!');
+                mostrarAvisoAdBlock();
+            }
+        });
+    });
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
+    // ==================== FUNÇÕES ====================
+    function showToast(msg, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i> ${msg}`;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
+    }
+
+    function preencherDemo(id, val) {
+        document.getElementById(id).value = val;
+        showToast(`✅ Demo: ${val}`);
+    }
+
+    function switchTab(tab, btnElement) {
+        currentTab = tab;
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        btnElement.classList.add('active');
+        document.querySelectorAll('.consulta-group').forEach(g => g.classList.remove('active'));
+        document.getElementById(`${tab}Group`).classList.add('active');
+        limparResultados();
+    }
+
+    function limparString(str) { return str.replace(/[^\d]/g, ''); }
+    function limparResultados() { dadosAtuais = null; document.getElementById('resultadoTerminal').classList.remove('active'); }
+    function copiarJSON() { if(!dadosAtuais) return; navigator.clipboard.writeText(JSON.stringify(dadosAtuais, null, 2)); showToast('Copiado!'); }
+    function showLoader(show) { document.getElementById('loaderOverlay').classList.toggle('active', show); }
+
+    // FECHAR ANÚNCIOS
+    function fecharAnuncioTopo() { document.getElementById('adHeader').classList.add('hidden'); }
+    function fecharAnuncioLateral() { document.getElementById('adSidebar').classList.add('hidden'); }
+    function fecharAnuncioRodape() { document.getElementById('footerAds').classList.add('hidden'); }
+    
+    function mostrarModalAnuncio() {
+        const modal = document.getElementById('adModal');
+        modal.classList.add('show');
+        setTimeout(() => fecharModalAnuncio(), 5000);
+    }
+    function fecharModalAnuncio() { document.getElementById('adModal').classList.remove('show'); }
+
+    function toggleFullscreen() {
+        document.body.classList.toggle('fullscreen-mode');
+    }
+
+    // ==================== REALIZAR CONSULTA ====================
+    async function realizarConsulta() {
+        let tipo = currentTab, valor = '';
+
+        switch(currentTab) {
+            case 'cpf':
+                valor = limparString(document.getElementById('cpf').value);
+                if (!valor || valor.length !== 11) { showToast('❌ CPF inválido!', 'error'); return; }
+                break;
+            case 'cnpj':
+                valor = limparString(document.getElementById('cnpj').value);
+                if (!valor || valor.length !== 14) { showToast('❌ CNPJ inválido!', 'error'); return; }
+                break;
+            case 'placa':
+                valor = document.getElementById('placa').value.toUpperCase().trim();
+                if (!valor || valor.length < 7) { showToast('❌ Placa inválida!', 'error'); return; }
+                break;
+            case 'telefone':
+                valor = limparString(document.getElementById('telefone').value);
+                if (!valor || (valor.length !== 10 && valor.length !== 11)) { showToast('❌ Telefone inválido!', 'error'); return; }
+                break;
+            case 'nome':
+                valor = document.getElementById('nome').value.toUpperCase().trim();
+                if (!valor || valor.length < 3) { showToast('❌ Nome inválido!', 'error'); return; }
+                break;
+            case 'cep':
+                valor = limparString(document.getElementById('cep').value);
+                if (!valor || valor.length !== 8) { showToast('❌ CEP inválido!', 'error'); return; }
+                break;
+        }
+
+        showLoader(true);
+
+        try {
+            let url = `${API_BASE}/api/consultar?tipo=${tipo}&valor=${encodeURIComponent(valor)}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            consultasCount++;
+            localStorage.setItem('fabi_consultas', consultasCount);
+            document.getElementById('statsConsultas').textContent = consultasCount;
+
+            if (data.status === 'true' || data.status === true) {
+                dadosAtuais = data;
+                mostrarSucesso(data);
+                showToast('✅ Consulta realizada!');
+                
+                // Mostra modal de anúncio após consulta
+                setTimeout(() => mostrarModalAnuncio(), 500);
+            } else {
+                mostrarErro('🔍 Nenhum dado encontrado para esta consulta.');
+                showToast('🔍 Nada encontrado', 'error');
+            }
+        } catch (error) {
+            mostrarErro('⚠️ Erro na conexão com o servidor. Tente novamente.');
+            showToast('⚠️ Erro na consulta!', 'error');
+        } finally {
+            showLoader(false);
+        }
+    }
+
+    // ==================== EXIBIR RESULTADOS ESTILO MARUJO ====================
+    function mostrarSucesso(dados) {
+        const container = document.getElementById('resultadoTerminal');
+        const body = document.getElementById('resultadoBody');
+        container.classList.add('active');
+        
+        const resultado = dados.resultado || dados;
+        let html = '';
+
+        // Busca por Nome
+        if (resultado.resultados && Array.isArray(resultado.resultados)) {
+            html += `<div style="margin-bottom: 0.8rem; padding: 0.4rem; background: rgba(20,184,166,0.1); border-radius: 8px;">
+                        <i class="fas fa-info-circle"></i> Resultados encontrados:
+                     </div>`;
+            resultado.resultados.forEach(pessoa => {
+                html += `<div class="resultado-item">
+                            <div class="resultado-nome"><i class="fas fa-user"></i> ${pessoa.nome || 'N/A'}</div>
+                            <div class="resultado-info">
+                                <div><span>📄 CPF:</span> ${pessoa.cpf || 'N/A'}</div>
+                                <div><span>⚥ Sexo:</span> ${pessoa.sexo || 'N/A'}</div>
+                                <div><span>🎂 Nascimento:</span> ${pessoa.nascimento || 'N/A'}</div>
+                            </div>
+                        </div>`;
+            });
+        }
+        // CPF
+        else if (resultado.cpf) {
+            html = formatarResultadoCPF(resultado);
+        }
+        // CNPJ
+        else if (resultado.empresa) {
+            html = formatarResultadoCNPJ(resultado);
+        }
+        // Placa
+        else if (resultado.veiculo || resultado.placa) {
+            html = formatarResultadoPlaca(resultado);
+        }
+        // Telefone (array)
+        else if (Array.isArray(resultado) && resultado.length > 0) {
+            html = formatarResultadoTelefone(resultado);
+        }
+        // CEP
+        else if (resultado.logradouro || resultado.cep) {
+            html = formatarResultadoCEP(resultado);
+        }
+        // Genérico
+        else {
+            html = formatarDadosGenericos(resultado);
+        }
+
+        body.innerHTML = html;
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function formatarResultadoCPF(data) {
+        return `
+            <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;">
+                    <div style="background: var(--aqua-primary); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-id-card" style="font-size: 1.2rem; color: var(--bg-deep);"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.1rem; font-weight: bold;">${data.nome || 'N/A'}</div>
+                        <div style="font-size: 0.7rem; color: var(--aqua-light);">CPF: ${data.cpf || 'N/A'}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="resultado-grid">
+                ${data.nascimento ? `<div class="info-card"><i class="fas fa-birthday-cake"></i> <strong>🎂 Nascimento:</strong> <span>${data.nascimento}</span></div>` : ''}
+                ${data.idade ? `<div class="info-card"><i class="fas fa-chart-line"></i> <strong>📊 Idade:</strong> <span>${data.idade} anos</span></div>` : ''}
+                ${data.sexo ? `<div class="info-card"><i class="fas ${data.sexo === 'F' ? 'fa-venus' : 'fa-mars'}"></i> <strong>⚥ Sexo:</strong> <span>${data.sexo === 'F' ? 'Feminino' : 'Masculino'}</span></div>` : ''}
+                ${data.mae ? `<div class="info-card"><i class="fas fa-female"></i> <strong>👩 Mãe:</strong> <span>${data.mae}</span></div>` : ''}
+                ${data.pai ? `<div class="info-card"><i class="fas fa-male"></i> <strong>👨 Pai:</strong> <span>${data.pai}</span></div>` : ''}
+                ${data.estado_receita ? `<div class="info-card"><i class="fas fa-check-circle"></i> <strong>✅ Situação:</strong> <span>${data.estado_receita}</span></div>` : ''}
+                ${data.score_estimado ? `<div class="info-card"><i class="fas fa-chart-simple"></i> <strong>📈 Score:</strong> <span>${data.score_estimado}</span></div>` : ''}
+            </div>
+            ${data.enderecos && data.enderecos.length ? `<div class="section-title"><i class="fas fa-map-pin"></i> 📍 ENDEREÇOS</div>
+            <div class="resultado-grid">${data.enderecos.map(end => `<div class="info-card"><i class="fas fa-home"></i> <span>${end.rua || ''}, ${end.numero || ''} - ${end.bairro || ''}, ${end.cidade || ''} ${end.uf || ''}</span></div>`).join('')}</div>` : ''}
+        `;
+    }
+
+    function formatarResultadoCNPJ(data) {
+        const empresa = data.empresa || data;
+        return `
+            <div style="background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(234,179,8,0.05)); border-radius: 16px; padding: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                    <div style="background: var(--gold-primary); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-building" style="font-size: 1.2rem; color: var(--bg-deep);"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 1rem; font-weight: bold;">${empresa.razao_social || 'N/A'}</div>
+                        <div style="font-size: 0.7rem; color: var(--gold-light);">CNPJ: ${empresa.cnpj || 'N/A'}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="resultado-grid">
+                ${empresa.nome_fantasia ? `<div class="info-card"><i class="fas fa-tag"></i> <strong>🏷️ Fantasia:</strong> <span>${empresa.nome_fantasia}</span></div>` : ''}
+                ${empresa.fundacao ? `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>📅 Fundação:</strong> <span>${empresa.fundacao}</span></div>` : ''}
+                ${empresa.capital_social ? `<div class="info-card"><i class="fas fa-dollar-sign"></i> <strong>💰 Capital:</strong> <span>R$ ${empresa.capital_social}</span></div>` : ''}
+                ${data.socios && data.socios.length ? `<div class="section-title"><i class="fas fa-users"></i> 👥 SÓCIOS</div>
+                ${data.socios.slice(0,3).map(s => `<div class="info-card"><i class="fas fa-user-tie"></i> <strong>${s.nome || 'N/A'}</strong> <span>${s.cargo || ''}</span></div>`).join('')}` : ''}
+            </div>
+        `;
+    }
+
+    function formatarResultadoPlaca(data) {
+        const v = data.veiculo || data;
+        return `
+            <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                    <div style="background: var(--aqua-primary); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-car" style="font-size: 1.2rem; color: var(--bg-deep);"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 1rem; font-weight: bold;">${v.marca_modelo || v.modelo || 'Veículo'}</div>
+                        <div style="font-size: 0.7rem; color: var(--aqua-light);">Placa: ${data.placa || v.placa || 'N/A'}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="resultado-grid">
+                ${v.cor ? `<div class="info-card"><i class="fas fa-palette"></i> <strong>🎨 Cor:</strong> <span>${v.cor}</span></div>` : ''}
+                ${v.ano_fabricacao ? `<div class="info-card"><i class="fas fa-calendar-alt"></i> <strong>🏭 Ano:</strong> <span>${v.ano_fabricacao}/${v.ano_modelo || ''}</span></div>` : ''}
+                ${v.combustivel ? `<div class="info-card"><i class="fas fa-gas-pump"></i> <strong>⛽ Combustível:</strong> <span>${v.combustivel}</span></div>` : ''}
+                ${v.chassi ? `<div class="info-card"><i class="fas fa-barcode"></i> <strong>🔢 Chassi:</strong> <span>${v.chassi}</span></div>` : ''}
+                ${data.proprietario ? `<div class="info-card"><i class="fas fa-user"></i> <strong>👤 Proprietário:</strong> <span>${data.proprietario.nome || data.proprietario}</span></div>` : ''}
+            </div>
+        `;
+    }
+
+    function formatarResultadoTelefone(resultados) {
+        if (!resultados.length) return '<div class="info-card">Nenhum resultado</div>';
+        return `
+            <div style="background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(20,184,166,0.05)); border-radius: 16px; padding: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                    <div style="background: var(--aqua-primary); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-phone-alt" style="font-size: 1.2rem; color: var(--bg-deep);"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 1rem; font-weight: bold;">${resultados[0]?.telefone || 'Telefone'}</div>
+                        <div style="font-size: 0.7rem; color: var(--aqua-light);">${resultados.length} fonte(s)</div>
+                    </div>
+                </div>
+            </div>
+            ${resultados.map(item => `
+                <div style="margin-bottom: 0.8rem; border-left: 2px solid var(--gold-primary); padding-left: 0.8rem;">
+                    <div class="section-title" style="margin-bottom: 0.3rem;"><i class="fas fa-database"></i> 📁 ${item.origem || 'Fonte'}</div>
+                    <div class="resultado-grid">
+                        <div class="info-card"><i class="fas fa-user"></i> <strong>Nome:</strong> <span>${item.nome || 'N/A'}</span></div>
+                        <div class="info-card"><i class="fas fa-id-card"></i> <strong>CPF:</strong> <span>${item.cpf_cnpj || 'N/A'}</span></div>
+                    </div>
+                </div>
+            `).join('')}
+        `;
+    }
+
+    function formatarResultadoCEP(data) {
+        return `
+            <div class="resultado-grid">
+                <div class="info-card"><i class="fas fa-road"></i> <strong>Logradouro:</strong> <span>${data.logradouro || data.street || 'N/A'}</span></div>
+                <div class="info-card"><i class="fas fa-building"></i> <strong>Bairro:</strong> <span>${data.bairro || data.neighborhood || 'N/A'}</span></div>
+                <div class="info-card"><i class="fas fa-city"></i> <strong>Cidade:</strong> <span>${data.cidade || data.city || 'N/A'}</span></div>
+                <div class="info-card"><i class="fas fa-map"></i> <strong>UF:</strong> <span>${data.uf || data.state || 'N/A'}</span></div>
+                <div class="info-card"><i class="fas fa-mail-bulk"></i> <strong>CEP:</strong> <span>${data.cep || 'N/A'}</span></div>
+            </div>
+        `;
+    }
+
+    function formatarDadosGenericos(data) {
+        let html = '<div class="resultado-grid">';
+        for (let [key, val] of Object.entries(data)) {
+            if (val && typeof val !== 'object') {
+                html += `<div class="info-card"><i class="fas fa-info-circle"></i> <strong>${key.toUpperCase()}:</strong> <span>${val}</span></div>`;
+            }
+        }
+        html += '</div>';
+        return html;
+    }
+
+    function mostrarErro(msg) {
+        const container = document.getElementById('resultadoTerminal');
+        const body = document.getElementById('resultadoBody');
+        container.classList.add('active');
+        body.innerHTML = `<div style="background: rgba(239,68,68,0.1); border-left: 3px solid #ef4444; padding: 1rem; border-radius: 8px;">
+                            <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i>
+                            <strong style="color: #ef4444;"> ${msg}</strong>
+                          </div>`;
+    }
+
+    // Formatação inputs
+    document.getElementById('cpf')?.addEventListener('input', function(e) {
+        let v = e.target.value.replace(/\D/g, '');
+        if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+        else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+        else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+        e.target.value = v;
+    });
+
+    document.getElementById('cnpj')?.addEventListener('input', function(e) {
+        let v = e.target.value.replace(/\D/g, '');
+        if (v.length > 12) v = v.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{1,2})/, '$1.$2.$3/$4-$5');
+        else if (v.length > 7) v = v.replace(/(\d{2})(\d{3})(\d{3})(\d{1,4})/, '$1.$2.$3/$4');
+        else if (v.length > 5) v = v.replace(/(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
+        else if (v.length > 2) v = v.replace(/(\d{2})(\d{1,3})/, '$1.$2');
+        e.target.value = v;
+    });
+
+    document.getElementById('cep')?.addEventListener('input', function(e) {
+        let v = e.target.value.replace(/\D/g, '');
+        if (v.length > 5) v = v.replace(/(\d{5})(\d{1,3})/, '$1-$2');
+        e.target.value = v;
+    });
+
+    // Random latência
+    setInterval(() => {
+        let el = document.getElementById('statTempo');
+        if (el) el.textContent = `${(Math.random() * 0.3 + 0.2).toFixed(1)}s`;
+    }, 3000);
+
+    // Inicializar anúncios
+    setTimeout(() => {
+        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+        showToast('⚡ Fabi Consultas - Consulte grátis!');
+    }, 1000);
+</script>
+<!-- OVERLAY DE DETECÇÃO DE ADBLOCK -->
+<div id="adblockOverlay" class="adblock-overlay">
+    <div class="adblock-content">
+        <i class="fas fa-shield-alt"></i>
+        <h2>⚠️ BLOQUEADOR DE ANÚNCIOS DETECTADO!</h2>
+        <p>O Fabi Consultas é totalmente gratuito e sobrevive graças aos anúncios.</p>
+        <p style="color: #ff8888; font-size: 14px;">Por favor, desative seu AdBlock/uBlock Origin e recarregue a página para continuar usando o serviço.</p>
+        <button class="btn-retry" onclick="location.reload()">
+            <i class="fas fa-sync-alt"></i> JÁ DESATIVEI, RECARREGAR
+        </button>
+        <button class="btn-retry" style="background: #333;" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')">
+            <i class="fas fa-question-circle"></i> COMO DESATIVAR?
+        </button>
+    </div>
+</div>
+
+<div id="adblockWarningBar" class="adblock-warning-bar">
+    <i class="fas fa-exclamation-triangle"></i> Detectamos que você está usando bloqueador de anúncios. Por favor, desative para continuar usando o serviço gratuito.
+</div>
+</body>
+</html>
