@@ -23,6 +23,8 @@
             --danger-bg: rgba(218, 54, 51, 0.1);
             --danger-text: #ff7b72;
             --term-bg: #010409;
+            --warn-bg: rgba(210, 153, 34, 0.15);
+            --warn-border: #d29922;
         }
 
         * {
@@ -44,10 +46,14 @@
             line-height: 1.6;
         }
 
-        /* Animações */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
         .hero {
@@ -88,7 +94,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
             display: flex;
@@ -109,11 +115,12 @@
             animation: fadeUp 0.6s ease-out forwards;
         }
 
-        /* Atraso em cascata para os cards aparecerem um após o outro */
         .card:nth-child(1) { animation-delay: 0.1s; }
-        .card:nth-child(2) { animation-delay: 0.2s; }
-        .card:nth-child(3) { animation-delay: 0.3s; }
-        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(2) { animation-delay: 0.15s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+        .card:nth-child(4) { animation-delay: 0.25s; }
+        .card:nth-child(5) { animation-delay: 0.3s; }
+        .card:nth-child(6) { animation-delay: 0.35s; }
 
         .card:hover {
             border-color: #484f58;
@@ -121,10 +128,14 @@
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
         }
 
-        /* Card de Destaque (Passo Importante) */
         .card.highlight {
             border: 1px solid rgba(88, 166, 255, 0.3);
             background: linear-gradient(180deg, rgba(88,166,255,0.05) 0%, rgba(22,27,34,0.6) 100%);
+        }
+
+        .card.warning-card {
+            border: 1px solid var(--warn-border);
+            background: linear-gradient(180deg, var(--warn-bg) 0%, rgba(22,27,34,0.6) 100%);
         }
 
         .badge {
@@ -143,6 +154,7 @@
 
         .badge.warning { background: var(--danger-bg); color: var(--danger-text); }
         .badge.success { background: rgba(46, 160, 67, 0.15); color: var(--primary-hover); }
+        .badge.critical { background: var(--warn-bg); color: var(--warn-border); }
 
         h2 {
             font-size: 1.6rem;
@@ -157,7 +169,6 @@
             font-size: 1.05rem;
         }
 
-        /* Estilo para comando de linha única (Setup Storage) */
         .single-command {
             display: flex;
             align-items: center;
@@ -199,7 +210,6 @@
             color: #fff;
         }
 
-        /* Terminal Window */
         .terminal-window {
             margin-top: 10px;
             background: var(--term-bg);
@@ -235,7 +245,6 @@
         pre::-webkit-scrollbar { height: 8px; }
         pre::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
 
-        /* Botões Principais */
         .btn-main {
             display: flex;
             justify-content: center;
@@ -261,6 +270,52 @@
             background: var(--primary-hover);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(46, 160, 67, 0.4);
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            box-shadow: 0 4px 14px rgba(37, 211, 102, 0.2);
+        }
+
+        .btn-whatsapp:hover {
+            background: #20b859;
+        }
+
+        .switch-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .switch-btn {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .switch-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .switch-btn:first-child.active {
+            background: #25D366;
+            border-color: #25D366;
+        }
+
+        .switch-btn:last-child.active {
+            background: #128C7E;
+            border-color: #128C7E;
         }
 
         .steps-list {
@@ -294,6 +349,17 @@
             text-shadow: 0 0 10px rgba(88, 166, 255, 0.4);
         }
 
+        .pkg-name {
+            display: inline-block;
+            background: var(--term-bg);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #79c0ff;
+            border: 1px solid var(--border-color);
+        }
+
         .footer {
             text-align: center;
             color: var(--text-muted);
@@ -304,6 +370,7 @@
         @media (max-width: 600px) {
             .hero h1 { font-size: 2.2rem; }
             .card { padding: 25px 20px; }
+            .switch-buttons { flex-direction: column; }
         }
     </style>
 </head>
@@ -319,6 +386,31 @@
 
 <main class="container">
 
+    <!-- ALERTA IMPORTANTE SOBRE WHATSAPP BUSINESS -->
+    <div class="card warning-card">
+        <div class="badge critical">⚠️ ATENÇÃO - EXTREMAMENTE IMPORTANTE</div>
+        <h2>📱 Qual versão do WhatsApp você usa?</h2>
+        <p class="info" style="font-weight: 500; margin-bottom: 16px;">
+            O <strong>caminho da pasta muda completamente</strong> dependendo da sua versão!
+        </p>
+        
+        <div class="switch-buttons">
+            <div class="switch-btn active" id="btn-normal" onclick="mudarVersao('normal')">
+                💚 WhatsApp Normal<br>
+                <span style="font-size: 0.75rem;">com.whatsapp</span>
+            </div>
+            <div class="switch-btn" id="btn-business" onclick="mudarVersao('business')">
+                🟢 WhatsApp Business<br>
+                <span style="font-size: 0.75rem;">com.whatsapp.w4b</span>
+            </div>
+        </div>
+
+        <div id="aviso-versao" style="background: rgba(210, 153, 34, 0.2); border-left: 4px solid #d29922; padding: 12px 16px; border-radius: 8px; margin-top: 10px;">
+            <strong>🔑 Para WhatsApp NORMAL:</strong><br>
+            O código do aplicativo é <code class="pkg-name">com.whatsapp</code>
+        </div>
+    </div>
+
     <!-- PASSO 1 -->
     <div class="card">
         <div class="badge success">📥 PASSO 1</div>
@@ -332,7 +424,7 @@
         </a>
     </div>
 
-    <!-- PASSO 2 (NOVO CARD DESTACADO) -->
+    <!-- PASSO 2 -->
     <div class="card highlight">
         <div class="badge">🔑 PASSO 2</div>
         <h2>Permitir Acesso aos Arquivos</h2>
@@ -353,13 +445,18 @@
         </p>
     </div>
 
-    <!-- PASSO 3 -->
+    <!-- PASSO 3 - SCRIPT COM SELETOR DE VERSÃO -->
     <div class="card">
         <div class="badge success">🚀 PASSO 3</div>
         <h2>Executar o Script</h2>
         <p class="info">
-            Agora é só colar o código abaixo. Ele fará todo o trabalho de localizar, apagar o original e injetar seu áudio instantaneamente.
+            Agora é só colar o código <strong>correto para sua versão</strong> do WhatsApp. 
+            O script abaixo já está ajustado para:
         </p>
+        
+        <div id="indicador-versao" style="background: #161b22; padding: 8px 16px; border-radius: 8px; margin-bottom: 16px; font-family: monospace;">
+            📍 <strong>Versão selecionada:</strong> <span id="versao-atual" style="color: #3fb950;">WhatsApp Normal (com.whatsapp)</span>
+        </div>
 
         <div class="terminal-window">
             <div class="terminal-header">
@@ -398,10 +495,33 @@ echo -e "📌 Arquivo final:\n   $NOME\n"
 echo "🚀 Processo concluído."</pre>
         </div>
 
-        <button class="btn-main" onclick="copiarTexto('codigo-script', this)">
+        <button class="btn-main" id="btn-copiar-script" onclick="copiarScriptAtual()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            <span>Copiar Script Completo</span>
+            <span>Copiar Script para WhatsApp Normal</span>
         </button>
+
+        <p class="info" style="margin-top: 16px; font-size: 0.85rem; text-align: center;">
+            💡 <strong>Dica:</strong> Salve o áudio que você quer usar com o nome <code class="pkg-name">fabi.bot</code> dentro da pasta <strong>Download</strong>
+        </p>
+    </div>
+
+    <!-- DICA EXTRA PARA BUSINESS -->
+    <div class="card">
+        <div class="badge warning">🔧 DICA IMPORTANTE</div>
+        <h2>Como descobrir seu Package Name</h2>
+        <p class="info">
+            Se você não tem certeza se seu WhatsApp é Business ou não, use este comando no Termux:
+        </p>
+        <div class="single-command">
+            <span class="prompt">$</span>
+            <code id="cmd-pm">pm list packages | grep whatsapp</code>
+            <button class="btn-icon" onclick="copiarTexto('cmd-pm', this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+        </div>
+        <p class="info" style="margin-bottom: 0;">
+            O resultado será algo como <code>package:com.whatsapp</code> (normal) ou <code>package:com.whatsapp.w4b</code> (Business).
+        </p>
     </div>
 
     <!-- AVISO IOS -->
@@ -425,32 +545,139 @@ echo "🚀 Processo concluído."</pre>
 </footer>
 
 <script>
-    // Função universal para copiar texto de qualquer elemento e dar feedback visual no botão clicado
+    let versaoAtual = 'normal'; // 'normal' ou 'business'
+
+    // Scripts para cada versão
+    const scripts = {
+        normal: `#!/data/data/com.termux/files/usr/bin/bash
+
+clear
+BASE="/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Voice Notes"
+
+echo -e "\\e[32m╔══════════════════════════════╗\\e[0m"
+echo -e "\\e[32m║      🎙️ FABI VOICE SWAP      ║\\e[0m"
+echo -e "\\e[32m╚══════════════════════════════╝\\e[0m\\n"
+
+echo "🔎 Procurando último áudio..."
+
+PASTA=$(ls "$BASE" | sort | tail -n 1)
+ARQUIVO=$(ls "$BASE/$PASTA"/*.opus | sort | tail -n 1)
+NOME=$(basename "$ARQUIVO")
+
+echo -e "\\n📂 Pasta encontrada:\\n   \\e[36m$PASTA\\e[0m"
+echo -e "\\n🎧 Último voice detectado:\\n   \\e[36m$NOME\\e[0m"
+
+echo -e "\\n♻️ Substituindo áudio..."
+rm "$ARQUIVO"
+cp "/storage/emulated/0/Download/fabi.bot" "$ARQUIVO"
+
+echo -e "\\n✅ \\e[32mÁudio substituído com sucesso!\\e[0m\\n"
+echo -e "📌 Arquivo final:\\n   $NOME\\n"
+echo "🚀 Processo concluído."`,
+
+        business: `#!/data/data/com.termux/files/usr/bin/bash
+
+clear
+BASE="/storage/emulated/0/Android/media/com.whatsapp.w4b/WhatsApp Business/Media/WhatsApp Business Voice Notes"
+
+echo -e "\\e[32m╔══════════════════════════════╗\\e[0m"
+echo -e "\\e[32m║      🎙️ FABI VOICE SWAP      ║\\e[0m"
+echo -e "\\e[32m║    (WhatsApp Business)       ║\\e[0m"
+echo -e "\\e[32m╚══════════════════════════════╝\\e[0m\\n"
+
+echo "🔎 Procurando último áudio..."
+
+PASTA=$(ls "$BASE" | sort | tail -n 1)
+ARQUIVO=$(ls "$BASE/$PASTA"/*.opus | sort | tail -n 1)
+NOME=$(basename "$ARQUIVO")
+
+echo -e "\\n📂 Pasta encontrada:\\n   \\e[36m$PASTA\\e[0m"
+echo -e "\\n🎧 Último voice detectado:\\n   \\e[36m$NOME\\e[0m"
+
+echo -e "\\n♻️ Substituindo áudio..."
+rm "$ARQUIVO"
+cp "/storage/emulated/0/Download/fabi.bot" "$ARQUIVO"
+
+echo -e "\\n✅ \\e[32mÁudio substituído com sucesso!\\e[0m\\n"
+echo -e "📌 Arquivo final:\\n   $NOME\\n"
+echo "🚀 Processo concluído."`
+    };
+
+    function mudarVersao(versao) {
+        versaoAtual = versao;
+        
+        // Atualizar botões de seleção
+        const btnNormal = document.getElementById('btn-normal');
+        const btnBusiness = document.getElementById('btn-business');
+        
+        if (versao === 'normal') {
+            btnNormal.classList.add('active');
+            btnBusiness.classList.remove('active');
+            document.getElementById('versao-atual').innerHTML = 'WhatsApp Normal (com.whatsapp)';
+            document.getElementById('aviso-versao').innerHTML = `
+                <strong>🔑 Para WhatsApp NORMAL:</strong><br>
+                O código do aplicativo é <code class="pkg-name">com.whatsapp</code><br>
+                Caminho: <code style="font-size: 0.8rem;">/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Voice Notes</code>
+            `;
+        } else {
+            btnBusiness.classList.add('active');
+            btnNormal.classList.remove('active');
+            document.getElementById('versao-atual').innerHTML = 'WhatsApp Business (com.whatsapp.w4b)';
+            document.getElementById('aviso-versao').innerHTML = `
+                <strong>🔑 Para WhatsApp BUSINESS:</strong><br>
+                O código do aplicativo é <code class="pkg-name">com.whatsapp.w4b</code><br>
+                Caminho: <code style="font-size: 0.8rem;">/Android/media/com.whatsapp.w4b/WhatsApp Business/Media/WhatsApp Business Voice Notes</code>
+            `;
+        }
+        
+        // Atualizar o script no terminal
+        const preElement = document.getElementById('codigo-script');
+        preElement.innerText = scripts[versao];
+        
+        // Atualizar o texto do botão de copiar
+        const btnCopiar = document.getElementById('btn-copiar-script');
+        const spanBtn = btnCopiar.querySelector('span');
+        if (versao === 'normal') {
+            spanBtn.innerText = 'Copiar Script para WhatsApp Normal';
+        } else {
+            spanBtn.innerText = 'Copiar Script para WhatsApp Business';
+        }
+    }
+
+    function copiarScriptAtual() {
+        const texto = scripts[versaoAtual];
+        
+        navigator.clipboard.writeText(texto).then(() => {
+            const btn = document.getElementById('btn-copiar-script');
+            const conteudoOriginal = btn.innerHTML;
+            const span = btn.querySelector('span');
+            const textoOriginal = span.innerText;
+            
+            span.innerText = "✅ Copiado com Sucesso!";
+            btn.style.background = "#238636";
+            
+            setTimeout(() => {
+                span.innerText = textoOriginal;
+                btn.style.background = "";
+            }, 2500);
+        }).catch(err => {
+            alert("Erro ao copiar. Selecione manualmente.");
+        });
+    }
+
     function copiarTexto(elementoId, botaoElemento) {
         const texto = document.getElementById(elementoId).innerText;
         
         navigator.clipboard.writeText(texto).then(() => {
-            // Salva o conteúdo original do botão para restaurar depois
             const conteudoOriginal = botaoElemento.innerHTML;
-            const bgOriginal = botaoElemento.style.background;
-
-            // Se for o botão principal com texto
-            if(botaoElemento.querySelector('span')) {
-                botaoElemento.querySelector('span').innerText = "Copiado com Sucesso!";
-                botaoElemento.style.background = "#238636"; // Verde mais escuro
-            } else {
-                // Se for o botão de ícone pequeno
-                botaoElemento.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-            }
-
-            // Reseta o botão após 2.5 segundos
+            
+            botaoElemento.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+            
             setTimeout(() => {
                 botaoElemento.innerHTML = conteudoOriginal;
-                botaoElemento.style.background = bgOriginal;
-            }, 2500);
-
+            }, 2000);
         }).catch(err => {
-            alert("Erro ao copiar o código. Por favor, selecione e copie manualmente.");
+            alert("Erro ao copiar.");
         });
     }
 </script>
