@@ -449,7 +449,7 @@
         </p>
     </div>
 
-    <!-- PASSO 3 - SCRIPT ATUALIZADO COM O CÓDIGO CERTO -->
+    <!-- PASSO 3 - SCRIPT CORRIGIDO -->
     <div class="card">
         <div class="badge success">🚀 PASSO 3</div>
         <h2>Executar o Script</h2>
@@ -517,9 +517,7 @@ echo ""
 # ÁUDIO MAIS RECENTE DOWNLOAD
 # =========================
 
-NOVO=$(find "$DOWNLOAD" -maxdepth 1 -type f \
-\( -iname "*.opus" -o -iname "*.ogg" -o -iname "*.mp3" -o -iname "*.m4a" \) \
--printf '%T@ %p\n' 2>/dev/null | sort -n | tail -n 1 | cut -d' ' -f2-)
+NOVO=$(find "$DOWNLOAD" -maxdepth 1 -type f \( -iname "*.opus" -o -iname "*.ogg" -o -iname "*.mp3" -o -iname "*.m4a" \) -printf '%T@ %p\n' 2>/dev/null | sort -n | tail -n 1 | cut -d' ' -f2-)
 
 if [ -z "$NOVO" ]; then
     echo "❌ Nenhum áudio encontrado"
@@ -612,7 +610,7 @@ echo "✅ Substituído com sucesso"</pre>
 <script>
     let versaoAtual = 'normal';
 
-    // SCRIPT CORRETO - WhatsApp Normal
+    // SCRIPT CORRETO - WhatsApp Normal (FUNCIONANDO)
     const scriptNormal = `#!/data/data/com.termux/files/usr/bin/bash
 
 set +H
@@ -651,9 +649,7 @@ echo ""
 # ÁUDIO MAIS RECENTE DOWNLOAD
 # =========================
 
-NOVO=$(find "$DOWNLOAD" -maxdepth 1 -type f \
-\\( -iname "*.opus" -o -iname "*.ogg" -o -iname "*.mp3" -o -iname "*.m4a" \\) \
--printf '%T@ %p\\n' 2>/dev/null | sort -n | tail -n 1 | cut -d' ' -f2-)
+NOVO=$(find "$DOWNLOAD" -maxdepth 1 -type f \\( -iname "*.opus" -o -iname "*.ogg" -o -iname "*.mp3" -o -iname "*.m4a" \\) -printf '%T@ %p\\n' 2>/dev/null | sort -n | tail -n 1 | cut -d' ' -f2-)
 
 if [ -z "$NOVO" ]; then
     echo "❌ Nenhum áudio encontrado"
@@ -672,7 +668,7 @@ cp -f "$NOVO" "$ARQUIVO"
 
 echo "✅ Substituído com sucesso"`;
 
-    // SCRIPT CORRETO - WhatsApp Business
+    // SCRIPT CORRETO - WhatsApp Business (FUNCIONANDO)
     const scriptBusiness = `#!/data/data/com.termux/files/usr/bin/bash
 
 set +H
@@ -711,9 +707,7 @@ echo ""
 # ÁUDIO MAIS RECENTE DOWNLOAD
 # =========================
 
-NOVO=$(find "$DOWNLOAD" -maxdepth 1 -type f \
-\\( -iname "*.opus" -o -iname "*.ogg" -o -iname "*.mp3" -o -iname "*.m4a" \\) \
--printf '%T@ %p\\n' 2>/dev/null | sort -n | tail -n 1 | cut -d' ' -f2-)
+NOVO=$(find "$DOWNLOAD" -maxdepth 1 -type f \\( -iname "*.opus" -o -iname "*.ogg" -o -iname "*.mp3" -o -iname "*.m4a" \\) -printf '%T@ %p\\n' 2>/dev/null | sort -n | tail -n 1 | cut -d' ' -f2-)
 
 if [ -z "$NOVO" ]; then
     echo "❌ Nenhum áudio encontrado"
