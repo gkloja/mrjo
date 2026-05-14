@@ -481,59 +481,61 @@
 <pre id="codigo-script">#!/data/data/com.termux/files/usr/bin/bash
 
 set +H
-
 clear
 
 BASE="/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Voice Notes"
-
 DOWNLOAD="/storage/emulated/0/Download"
 
-echo -e "\e[32m╔══════════════════════════════╗\e[0m"
-echo -e "\e[32m║      🎙️ FABI VOICE SWAP      ║\e[0m"
-echo -e "\e[32m╚══════════════════════════════╝\e[0m"
-
+echo "🎙️ FABI VOICE SWAP"
 echo ""
 
-echo "🔎 Procurando último voice..."
+# =========================
+# ÚLTIMA PASTA (ASCENDENTE)
+# =========================
 
-PASTA=$(ls "$BASE" | sort | tail -n 1)
+PASTA=$(ls "$BASE" | sort -V | tail -n 1)
 
-ARQUIVO=$(ls "$BASE/$PASTA"/*.opus | sort | tail -n 1)
+# =========================
+# ÚLTIMO .OPUS
+# =========================
+
+ARQUIVO=$(ls "$BASE/$PASTA"/*.opus 2>/dev/null | sort -V | tail -n 1)
+
+if [ -z "$ARQUIVO" ]; then
+    echo "❌ Nenhum voice encontrado"
+    exit 1
+fi
 
 NOME=$(basename "$ARQUIVO")
 
+echo "🎧 Voice:"
+echo "$NOME"
 echo ""
-echo -e "🎧 Último voice detectado:"
-echo -e "   \e[36m$NOME\e[0m"
 
+# =========================
+# ÁUDIO MAIS RECENTE DOWNLOAD
+# =========================
+
+NOVO=$(find "$DOWNLOAD" -maxdepth 1 -type f \
+\( -iname "*.opus" -o -iname "*.ogg" -o -iname "*.mp3" -o -iname "*.m4a" \) \
+-printf '%T@ %p\n' 2>/dev/null | sort -n | tail -n 1 | cut -d' ' -f2-)
+
+if [ -z "$NOVO" ]; then
+    echo "❌ Nenhum áudio encontrado"
+    exit 1
+fi
+
+echo "🎵 Novo áudio:"
+echo "$(basename "$NOVO")"
 echo ""
-echo "📥 Procurando áudio mais recente do Download..."
 
-NOVO=$(find "$DOWNLOAD" -maxdepth 1 -type f \( -iname "*.opus" -o -iname "*.ogg" -o -iname "*.mp3" -o -iname "*.m4a" \) -printf '%T@ %p\n' | sort -n | tail -n 1 | cut -d' ' -f2-)
+# =========================
+# SUBSTITUI RÁPIDO
+# =========================
 
-NOVONOME=$(basename "$NOVO")
+cp -f "$NOVO" "$ARQUIVO"
 
-echo ""
-echo -e "🎵 Áudio encontrado:"
-echo -e "   \e[35m$NOVONOME\e[0m"
-
-echo ""
-echo "♻️ Substituindo áudio..."
-
-rm "$ARQUIVO"
-
-cp "$NOVO" "$ARQUIVO"
-
-echo ""
-echo -e "✅ \e[32mÁudio substituído com sucesso!\e[0m"
-
-echo ""
-echo "📌 Voice atualizado:"
-echo "   $NOME"
-
-echo ""
-echo "🚀 Processo concluído."
-echo ""</pre>
+echo "✅ Substituído com sucesso"</pre>
         </div>
 
         <button class="btn-main" id="btn-copiar-script" onclick="copiarScriptAtual()">
