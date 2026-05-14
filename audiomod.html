@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FABI Voice Swap</title>
+
+    <!-- Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: rgba(22, 27, 34, 0.6);
+            --border-color: #30363d;
+            --primary: #2ea043;
+            --primary-hover: #3fb950;
+            --accent: #58a6ff;
+            --text-main: #e6edf3;
+            --text-muted: #8b949e;
+            --danger-bg: rgba(218, 54, 51, 0.1);
+            --danger-text: #ff7b72;
+            --term-bg: #010409;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(rgba(88, 166, 255, 0.04) 1px, transparent 1px),
+                radial-gradient(rgba(88, 166, 255, 0.04) 1px, transparent 1px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animações */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            padding: 80px 20px 50px;
+            text-align: center;
+            position: relative;
+            animation: fadeUp 0.8s ease-out;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(88, 166, 255, 0.15), transparent 70%);
+            z-index: -1;
+            filter: blur(40px);
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -1.5px;
+            background: linear-gradient(135deg, #fff, #8b949e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: auto;
+            font-size: 1.15rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 35px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeUp 0.6s ease-out forwards;
+        }
+
+        /* Atraso em cascata para os cards aparecerem um após o outro */
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+
+        .card:hover {
+            border-color: #484f58;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Card de Destaque (Passo Importante) */
+        .card.highlight {
+            border: 1px solid rgba(88, 166, 255, 0.3);
+            background: linear-gradient(180deg, rgba(88,166,255,0.05) 0%, rgba(22,27,34,0.6) 100%);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            background: rgba(88, 166, 255, 0.1);
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.warning { background: var(--danger-bg); color: var(--danger-text); }
+        .badge.success { background: rgba(46, 160, 67, 0.15); color: var(--primary-hover); }
+
+        h2 {
+            font-size: 1.6rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .info {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        /* Estilo para comando de linha única (Setup Storage) */
+        .single-command {
+            display: flex;
+            align-items: center;
+            background: var(--term-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 8px 8px 8px 20px;
+            margin-bottom: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            color: #79c0ff;
+        }
+
+        .single-command span.prompt {
+            color: var(--primary-hover);
+            margin-right: 12px;
+            user-select: none;
+        }
+
+        .single-command code {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        .btn-icon {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-icon:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        /* Terminal Window */
+        .terminal-window {
+            margin-top: 10px;
+            background: var(--term-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #161b22;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .terminal-dots { display: flex; gap: 8px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot.red { background-color: #ff5f56; }
+        .dot.yellow { background-color: #ffbd2e; }
+        .dot.green { background-color: #27c93f; }
+
+        pre {
+            padding: 20px;
+            overflow-x: auto;
+            color: #c9d1d9;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        pre::-webkit-scrollbar { height: 8px; }
+        pre::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+
+        /* Botões Principais */
+        .btn-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            text-decoration: none;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+            background: var(--primary);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(46, 160, 67, 0.2);
+        }
+
+        .btn-main:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 160, 67, 0.4);
+        }
+
+        .steps-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .steps-list li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .steps-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            color: var(--primary-hover);
+            font-weight: bold;
+        }
+
+        .steps-list.cross li::before {
+            content: '✕';
+            color: var(--danger-text);
+        }
+
+        .glow {
+            color: var(--accent);
+            text-shadow: 0 0 10px rgba(88, 166, 255, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 50px 20px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2.2rem; }
+            .card { padding: 25px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<section class="hero">
+    <h1>FABI Voice Swap</h1>
+    <p>
+        Substitua automaticamente o último áudio do WhatsApp Voice Notes usando 
+        <span class="glow">Termux + Android</span>.
+    </p>
+</section>
+
+<main class="container">
+
+    <!-- PASSO 1 -->
+    <div class="card">
+        <div class="badge success">📥 PASSO 1</div>
+        <h2>Instale o Termux</h2>
+        <p class="info">
+            O Termux é o terminal que fará a mágica acontecer. Baixe a versão oficial e atualizada pelo F-Droid.
+        </p>
+        <a class="btn-main" href="https://f-droid.org/repo/com.termux_1022.apk" target="_blank">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Baixar Termux APK
+        </a>
+    </div>
+
+    <!-- PASSO 2 (NOVO CARD DESTACADO) -->
+    <div class="card highlight">
+        <div class="badge">🔑 PASSO 2</div>
+        <h2>Permitir Acesso aos Arquivos</h2>
+        <p class="info">
+            Para que o script consiga encontrar a pasta do WhatsApp, o Termux precisa de permissão. Cole o comando abaixo e dê "Enter":
+        </p>
+
+        <div class="single-command">
+            <span class="prompt">$</span>
+            <code id="cmd-storage">termux-setup-storage</code>
+            <button class="btn-icon" onclick="copiarTexto('cmd-storage', this)" title="Copiar comando">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+        </div>
+
+        <p class="info" style="margin-bottom: 0; font-size: 0.95rem; color: #79c0ff;">
+            ⚠️ <strong>Atenção:</strong> Um pop-up aparecerá na tela do celular. Clique em <strong>"Permitir"</strong>.
+        </p>
+    </div>
+
+    <!-- PASSO 3 -->
+    <div class="card">
+        <div class="badge success">🚀 PASSO 3</div>
+        <h2>Executar o Script</h2>
+        <p class="info">
+            Agora é só colar o código abaixo. Ele fará todo o trabalho de localizar, apagar o original e injetar seu áudio instantaneamente.
+        </p>
+
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-dots">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <div style="color: var(--text-muted); font-size: 0.85rem;">fabi-swap.sh</div>
+                <div style="width: 44px;"></div>
+            </div>
+<pre id="codigo-script">#!/data/data/com.termux/files/usr/bin/bash
+
+clear
+BASE="/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Voice Notes"
+
+echo -e "\e[32m╔══════════════════════════════╗\e[0m"
+echo -e "\e[32m║      🎙️ FABI VOICE SWAP      ║\e[0m"
+echo -e "\e[32m╚══════════════════════════════╝\e[0m\n"
+
+echo "🔎 Procurando último áudio..."
+
+PASTA=$(ls "$BASE" | sort | tail -n 1)
+ARQUIVO=$(ls "$BASE/$PASTA"/*.opus | sort | tail -n 1)
+NOME=$(basename "$ARQUIVO")
+
+echo -e "\n📂 Pasta encontrada:\n   \e[36m$PASTA\e[0m"
+echo -e "\n🎧 Último voice detectado:\n   \e[36m$NOME\e[0m"
+
+echo -e "\n♻️ Substituindo áudio..."
+rm "$ARQUIVO"
+cp "/storage/emulated/0/Download/fabi.bot" "$ARQUIVO"
+
+echo -e "\n✅ \e[32mÁudio substituído com sucesso!\e[0m\n"
+echo -e "📌 Arquivo final:\n   $NOME\n"
+echo "🚀 Processo concluído."</pre>
+        </div>
+
+        <button class="btn-main" onclick="copiarTexto('codigo-script', this)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Copiar Script Completo</span>
+        </button>
+    </div>
+
+    <!-- AVISO IOS -->
+    <div class="card">
+        <div class="badge warning">🍎 INCOMPATÍVEL</div>
+        <h2>Atenção Usuários de iPhone</h2>
+        <p class="info">
+            O iOS possui um sistema fechado (Sandbox) que bloqueia totalmente o acesso a pastas de outros aplicativos. Por isso:
+        </p>
+        <ul class="steps-list cross">
+            <li>Não funciona com iOS normal</li>
+            <li>Não existe Termux para iPhone</li>
+            <li>Impossível acessar a pasta Voice Notes sem Jailbreak</li>
+        </ul>
+    </div>
+
+</main>
+
+<footer class="footer">
+    <p>FABI Voice Swap • Construído para Android 🚀</p>
+</footer>
+
+<script>
+    // Função universal para copiar texto de qualquer elemento e dar feedback visual no botão clicado
+    function copiarTexto(elementoId, botaoElemento) {
+        const texto = document.getElementById(elementoId).innerText;
+        
+        navigator.clipboard.writeText(texto).then(() => {
+            // Salva o conteúdo original do botão para restaurar depois
+            const conteudoOriginal = botaoElemento.innerHTML;
+            const bgOriginal = botaoElemento.style.background;
+
+            // Se for o botão principal com texto
+            if(botaoElemento.querySelector('span')) {
+                botaoElemento.querySelector('span').innerText = "Copiado com Sucesso!";
+                botaoElemento.style.background = "#238636"; // Verde mais escuro
+            } else {
+                // Se for o botão de ícone pequeno
+                botaoElemento.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+            }
+
+            // Reseta o botão após 2.5 segundos
+            setTimeout(() => {
+                botaoElemento.innerHTML = conteudoOriginal;
+                botaoElemento.style.background = bgOriginal;
+            }, 2500);
+
+        }).catch(err => {
+            alert("Erro ao copiar o código. Por favor, selecione e copie manualmente.");
+        });
+    }
+</script>
+
+</body>
+</html>
