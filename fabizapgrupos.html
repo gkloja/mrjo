@@ -2674,6 +2674,83 @@ body.light-mode .poll-option-text {
 body.light-mode .poll-total {
     color: #6b7280 !important;
 }
+/* ========== ESTILOS PARA IMAGEM DO GRUPO NA DIVULGAÇÃO ========== */
+
+/* Container da imagem do grupo */
+.divulgacao-imagem {
+    margin: -20px -20px 0 -20px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px 20px 0 0;
+    max-height: 200px;
+}
+
+.divulgacao-imagem img {
+    width: 100%;
+    height: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.divulgacao-container:hover .divulgacao-imagem img {
+    transform: scale(1.05);
+}
+
+/* Overlay gradiente na imagem */
+.divulgacao-imagem-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+    border-radius: 0 0 20px 20px;
+}
+
+/* Badge sobre a imagem */
+.divulgacao-imagem-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 2;
+}
+
+.divulgacao-imagem-badge i {
+    color: #25D366;
+}
+
+/* Avatar do grupo (caso não tenha imagem) */
+.divulgacao-avatar {
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    padding: 30px;
+    text-align: center;
+    margin: -20px -20px 0 -20px;
+    border-radius: 20px 20px 0 0;
+}
+
+.divulgacao-avatar i {
+    font-size: 48px;
+    color: white;
+    opacity: 0.8;
+}
+
+.divulgacao-avatar h3 {
+    color: white;
+    margin-top: 12px;
+    font-size: 16px;
+    font-weight: 600;
+}
 </style>
 </head>
 <body>
@@ -6374,11 +6451,13 @@ const response = await fetch(`${API_URL}/cliente06/posts/${postId}/excluir`, {
         Swal.fire('Erro', 'Erro de conexão', 'error');
     }
 }
-    function renderPost(post) {
+function renderPost(post) {
     const isLiked = currentUser ? usuarioJaCurtiu(post.id) : false;
     const podeInteragir = currentUser !== null;
     const comentariosCount = post.comments?.length || 0;
-    const isAuthor = currentUser && post.author?.id === currentUser.id;
+    
+    // 🔥 PEGAR A IMAGEM DO POST (se for divulgação de grupo)
+    const imagemGrupo = post.media && post.mediaType === 'image' ? post.media : null;
     
     return `
         <div class="post-card" data-post-id="${post.id}">
@@ -6398,26 +6477,27 @@ const response = await fetch(`${API_URL}/cliente06/posts/${postId}/excluir`, {
                 </button>
             </div>
             
-            <div class="post-text">${tornarLinksClicaveis(post.text || '')}</div>
+            <!-- 🔥 PASSAR A IMAGEM DO GRUPO PARA A FUNÇÃO -->
+            <div class="post-text">${tornarLinksClicaveis(post.text || '', imagemGrupo)}</div>
             
-            ${post.media ? `<div class="post-media">${renderMedia(post.media, post.mediaType)}</div>` : ''}
+            ${!imagemGrupo && post.media ? `<div class="post-media">${renderMedia(post.media, post.mediaType)}</div>` : ''}
             ${post.poll ? renderPoll(post.poll, post.id) : ''}
             
+            <div class="post-actions-row">
+                <button class="post-action-icon ${isLiked ? 'liked' : ''}" onclick="${podeInteragir ? `likePost(${post.id})` : `mostrarLoginPrompt()`}" title="Curtir">
+                    <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
+                    <span class="action-count">${post.likes?.length || 0}</span>
+                </button>
+                <button class="post-action-icon" onclick="${podeInteragir ? `abrirComentarios(${post.id})` : `mostrarLoginPrompt()`}" title="Comentar">
+                    <i class="far fa-comment"></i>
+                    <span class="action-count">${post.comments?.length || 0}</span>
+                </button>
+                <button class="post-action-icon" onclick="compartilharPost(${post.id})" title="Compartilhar">
+                    <i class="far fa-paper-plane"></i>
+                    <span class="action-count">${post.shares || 0}</span>
+                </button>
+            </div>
             
-        <div class="post-actions-row">
-    <button class="post-action-icon ${isLiked ? 'liked' : ''}" onclick="${podeInteragir ? `likePost(${post.id})` : `mostrarLoginPrompt()`}" title="Curtir">
-        <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
-        <span class="action-count">${post.likes?.length || 0}</span>
-    </button>
-    <button class="post-action-icon" onclick="${podeInteragir ? `abrirComentarios(${post.id})` : `mostrarLoginPrompt()`}" title="Comentar">
-        <i class="far fa-comment"></i>
-        <span class="action-count">${post.comments?.length || 0}</span>
-    </button>
-    <button class="post-action-icon" onclick="compartilharPost(${post.id})" title="Compartilhar">
-        <i class="far fa-paper-plane"></i>
-        <span class="action-count">${post.shares || 0}</span>
-    </button>
-</div>
             ${comentariosCount > 0 ? `
                 <div class="post-comments-preview">
                     ${(post.comments || []).slice(-2).map(c => `
@@ -9392,7 +9472,7 @@ function mudarSecao(section) {
 }
     // ==================== UTILITÁRIOS ====================
     // Função para tornar links clicáveis
-function tornarLinksClicaveis(texto) {
+function tornarLinksClicaveis(texto, imagemUrl = null) {
     if (!texto) return '';
     
     // ========== 1. REMOVER TAGS HTML LITERAIS ==========
@@ -9406,49 +9486,73 @@ function tornarLinksClicaveis(texto) {
         .replace(/&amp;/g, '&');
     
     // ========== 2. EXTRAIR DADOS DO POST DE DIVULGAÇÃO ==========
-    // Extrair categoria (ex: │ 💪 Saúde/Bem-estar │)
     const categoriaMatch = processado.match(/│\s*(.+?)\s*│/);
     const categoria = categoriaMatch ? categoriaMatch[1].trim() : null;
     
-    // Extrair nome do grupo (ex: 📱 *Test*)
     const nomeMatch = processado.match(/📱\s*\*?(.+?)(?:\*|\n|$)/);
     const nome = nomeMatch ? nomeMatch[1].trim() : null;
     
-    // Extrair descrição (ex: ✨ Xjdjjdjhddu)
     const descMatch = processado.match(/✨\s*(.+?)(?:\n|$)/);
     const descricao = descMatch ? descMatch[1].trim() : null;
     
-    // Extrair localização (ex: 🌎 Nacional ou 📍 Ceará)
     const localMatch = processado.match(/(?:📍|🌎)\s*(.+?)(?:\n|$)/);
     let localizacao = localMatch ? localMatch[1].trim() : null;
     const isNacional = localizacao ? localizacao.includes('Nacional') : false;
     
-    // Extrair link do WhatsApp
     const linkMatch = processado.match(/chat\.whatsapp\.com\/[^\s<]+/);
     const link = linkMatch ? `https://${linkMatch[0]}` : null;
     
-    // ========== 3. SE FOR UM POST DE DIVULGAÇÃO, MONTAR LAYOUT PROFISSIONAL ==========
+    // ========== 3. SE FOR UM POST DE DIVULGAÇÃO ==========
     if (categoria && nome) {
-        let html = `
-            <div class="divulgacao-container" style="background: var(--card); border-radius: 20px; padding: 20px; margin: 12px 0; border: 1px solid var(--border); transition: all 0.3s ease;">
-                <!-- Categoria -->
-                <div class="divulgacao-categoria" style="background: linear-gradient(135deg, #25D36615, #128C7E15); border-radius: 50px; padding: 8px 16px; text-align: center; margin-bottom: 16px; border: 1px solid #25D36630;">
-                    <span style="font-size: 14px; font-weight: 600; background: linear-gradient(135deg, #25D366, #128C7E); -webkit-background-clip: text; background-clip: text; color: transparent;">${escapeHtml(categoria)}</span>
+        let html = `<div class="divulgacao-container" style="background: var(--card); border-radius: 20px; margin: 12px 0; border: 1px solid var(--border); transition: all 0.3s ease; overflow: hidden;">`;
+        
+        // ========== IMAGEM DO GRUPO (USA A IMAGEM DO POST) ==========
+        if (imagemUrl) {
+            html += `
+                <div class="divulgacao-imagem" style="margin: 0; position: relative; overflow: hidden; max-height: 200px;">
+                    <img src="${imagemUrl}" alt="${escapeHtml(nome)}" loading="lazy" 
+                         style="width: 100%; height: 100%; max-height: 200px; object-fit: cover; transition: transform 0.5s ease;"
+                         onerror="this.parentElement.innerHTML='<div class=\'divulgacao-avatar\' style=\'background: linear-gradient(135deg, #25D366, #128C7E); padding: 30px; text-align: center;\'><i class=\'fab fa-whatsapp\' style=\'font-size: 48px; color: white; opacity: 0.8;\'></i><h3 style=\'color: white; margin-top: 12px; font-size: 16px;\'>${escapeHtml(nome)}</h3></div>'">
+                    <div class="divulgacao-imagem-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);"></div>
+                    <div class="divulgacao-imagem-badge" style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 30px; font-size: 11px; font-weight: 600; color: white; display: flex; align-items: center; gap: 6px;">
+                        <i class="fab fa-whatsapp" style="color: #25D366;"></i>
+                        <span>Grupo Verificado</span>
+                    </div>
                 </div>
-                
-                <!-- Nome do grupo -->
-                <div class="divulgacao-titulo" style="display: flex; align-items: center; gap: 12px; background: #25D36610; padding: 12px 16px; border-radius: 16px; margin: 16px 0; border-left: 4px solid #25D366;">
-                    <i class="fab fa-whatsapp" style="font-size: 24px; color: #25D366;"></i>
-                    <h3 style="font-size: 18px; font-weight: 700; margin: 0; color: var(--text-color);">${escapeHtml(nome)}</h3>
+            `;
+        } else {
+            html += `
+                <div class="divulgacao-avatar" style="background: linear-gradient(135deg, #25D366, #128C7E); padding: 30px; text-align: center;">
+                    <i class="fab fa-whatsapp" style="font-size: 48px; color: white; opacity: 0.8;"></i>
+                    <h3 style="color: white; margin-top: 12px; font-size: 16px; font-weight: 600;">${escapeHtml(nome)}</h3>
                 </div>
+            `;
+        }
+        
+        // ========== CONTEÚDO DO POST ==========
+        html += `<div style="padding: 20px;">`;
+        
+        // Categoria
+        html += `
+            <div style="background: linear-gradient(135deg, #25D36615, #128C7E15); border-radius: 50px; padding: 6px 14px; text-align: center; margin-bottom: 16px; border: 1px solid #25D36630; display: inline-block; width: auto;">
+                <span style="font-size: 12px; font-weight: 600; background: linear-gradient(135deg, #25D366, #128C7E); -webkit-background-clip: text; background-clip: text; color: transparent;">${escapeHtml(categoria)}</span>
+            </div>
         `;
         
-        // Descrição (se tiver)
-        if (descricao) {
+        // Nome do grupo
+        html += `
+            <div style="display: flex; align-items: center; gap: 12px; background: #25D36610; padding: 10px 14px; border-radius: 14px; margin: 12px 0; border-left: 4px solid #25D366;">
+                <i class="fab fa-whatsapp" style="font-size: 22px; color: #25D366;"></i>
+                <h3 style="font-size: 16px; font-weight: 700; margin: 0; color: var(--text-color);">${escapeHtml(nome)}</h3>
+            </div>
+        `;
+        
+        // Descrição
+        if (descricao && descricao !== 'Venha fazer parte dessa comunidade incrível!') {
             html += `
-                <div class="divulgacao-descricao" style="display: flex; align-items: flex-start; gap: 10px; background: #8B5CF610; padding: 12px 16px; border-radius: 16px; margin: 12px 0;">
-                    <span style="font-size: 20px;">✨</span>
-                    <p style="margin: 0; color: var(--text2); font-style: italic; line-height: 1.5;">${escapeHtml(descricao)}</p>
+                <div style="display: flex; align-items: flex-start; gap: 8px; background: #8B5CF610; padding: 10px 14px; border-radius: 14px; margin: 10px 0;">
+                    <span style="font-size: 18px;">✨</span>
+                    <p style="margin: 0; color: var(--text2); font-style: italic; line-height: 1.5; font-size: 13px;">${escapeHtml(descricao)}</p>
                 </div>
             `;
         }
@@ -9456,9 +9560,8 @@ function tornarLinksClicaveis(texto) {
         // Localização
         if (localizacao) {
             html += `
-                <div style="margin: 8px 0;">
-                    <span class="divulgacao-badge ${isNacional ? 'divulgacao-badge-nacional' : 'divulgacao-badge-estado'}" 
-                          style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 30px; font-size: 12px; font-weight: 500; ${isNacional ? 'background: #fef3c7; color: #92400e;' : 'background: #dbeafe; color: #1e40af;'}">
+                <div style="margin: 10px 0;">
+                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 30px; font-size: 11px; font-weight: 500; ${isNacional ? 'background: #fef3c7; color: #92400e;' : 'background: #dbeafe; color: #1e40af;'}">
                         <i class="fas ${isNacional ? 'fa-globe' : 'fa-map-marker-alt'}" style="font-size: 10px;"></i>
                         ${escapeHtml(localizacao)}
                     </span>
@@ -9468,7 +9571,7 @@ function tornarLinksClicaveis(texto) {
         
         // Status
         html += `
-            <div class="divulgacao-status" style="display: flex; align-items: center; gap: 8px; margin: 12px 0; color: #10b981; font-size: 13px; font-weight: 500;">
+            <div style="display: flex; align-items: center; gap: 6px; margin: 10px 0; color: #10b981; font-size: 12px; font-weight: 500;">
                 <i class="fas fa-users"></i>
                 <span>Aguardando você!</span>
             </div>
@@ -9477,15 +9580,14 @@ function tornarLinksClicaveis(texto) {
         // Botão WhatsApp
         if (link) {
             html += `
-                <div style="display: flex; justify-content: center; margin: 16px 0;">
+                <div style="display: flex; justify-content: center; margin: 16px 0 0 0;">
                     <a href="${link}" target="_blank" rel="noopener noreferrer" 
-                       class="btn-whatsapp-grupo"
-                       style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, #25D366, #128C7E); color: white; padding: 12px 28px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); border: none; cursor: pointer;"
+                       style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #25D366, #128C7E); color: white; padding: 10px 24px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 13px; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); width: 100%;"
                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(37,211,102,0.4)';"
                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(37,211,102,0.3)';">
-                        <i class="fab fa-whatsapp" style="font-size: 18px;"></i>
+                        <i class="fab fa-whatsapp" style="font-size: 16px;"></i>
                         Entrar no grupo agora
-                        <i class="fas fa-arrow-right" style="font-size: 12px;"></i>
+                        <i class="fas fa-arrow-right" style="font-size: 11px;"></i>
                     </a>
                 </div>
             `;
@@ -9493,49 +9595,30 @@ function tornarLinksClicaveis(texto) {
         
         // Rodapé
         html += `
-            <div class="divulgacao-footer" style="margin-top: 20px; padding-top: 12px; border-top: 1px dashed var(--border); text-align: center; font-size: 11px; color: var(--text2); display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <div style="margin-top: 16px; padding-top: 10px; border-top: 1px dashed var(--border); text-align: center; font-size: 10px; color: var(--text2); display: flex; align-items: center; justify-content: center; gap: 6px;">
                 <i class="fab fa-whatsapp" style="color: #25D366;"></i>
                 <span>Divulgado no FabiZap Grupos</span>
             </div>
-        </div>`;
-        
-        // Processar links de imagem/vídeo dentro do HTML
-        const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/gi;
-        html = html.replace(youtubeRegex, (match, videoId) => {
-            return `<div style="margin: 15px 0; border-radius: 12px; overflow: hidden;">
-                        <div style="position: relative; padding-bottom: 56.25%; height: 0;">
-                            <iframe src="https://www.youtube.com/embed/${videoId}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                    </div>`;
-        });
-        
-        const imgRegex = /(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|bmp)(?:\?[^\s]*)?)/gi;
-        html = html.replace(imgRegex, (match) => {
-            return `<img src="${match}" style="max-width: 100%; max-height: 300px; border-radius: 12px; margin: 10px 0; object-fit: cover;" loading="lazy">`;
-        });
+        </div></div>`;
         
         return html;
     }
     
-    // ========== 4. SE NÃO FOR POST DE DIVULGAÇÃO, FORMATAR NORMALMENTE ==========
-    
-    // Negrito e itálico
+    // ========== 4. SE NÃO FOR POST DE DIVULGAÇÃO ==========
     processado = processado.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     processado = processado.replace(/\*(.*?)\*/g, '<em>$1</em>');
     
-    // Links
     const urlRegex = /(https?:\/\/[^\s<]+)(?![^<]*>)/g;
     processado = processado.replace(urlRegex, (url) => {
         let cleanUrl = url.replace(/[.,;:!?)]$/, '');
         if (cleanUrl.includes('chat.whatsapp.com')) {
-            return `<a href="${cleanUrl}" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #25D366, #128C7E); color: white; padding: 8px 20px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 13px; margin: 8px 0; transition: all 0.2s;">📱 Entrar no grupo</a>`;
+            return `<a href="${cleanUrl}" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #25D366, #128C7E); color: white; padding: 8px 20px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 13px; margin: 8px 0;">📱 Entrar no grupo</a>`;
         }
         return `<a href="${cleanUrl}" target="_blank" style="color: #2563eb; text-decoration: underline;">${cleanUrl}</a>`;
     });
     
-    // YouTube
-    const youtubeRegex2 = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/gi;
-    processado = processado.replace(youtubeRegex2, (match, videoId) => {
+    const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/gi;
+    processado = processado.replace(youtubeRegex, (match, videoId) => {
         return `<div style="margin: 15px 0; border-radius: 12px; overflow: hidden;">
                     <div style="position: relative; padding-bottom: 56.25%; height: 0;">
                         <iframe src="https://www.youtube.com/embed/${videoId}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" frameborder="0" allowfullscreen></iframe>
@@ -9543,13 +9626,11 @@ function tornarLinksClicaveis(texto) {
                 </div>`;
     });
     
-    // Imagens
-    const imgRegex2 = /(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|bmp)(?:\?[^\s]*)?)/gi;
-    processado = processado.replace(imgRegex2, (match) => {
+    const imgRegex = /(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|bmp)(?:\?[^\s]*)?)/gi;
+    processado = processado.replace(imgRegex, (match) => {
         return `<img src="${match}" style="max-width: 100%; max-height: 300px; border-radius: 12px; margin: 10px 0; object-fit: cover;" loading="lazy">`;
     });
     
-    // Quebras de linha
     processado = processado.replace(/\n/g, '<br>');
     
     return processado;
