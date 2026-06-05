@@ -2374,6 +2374,306 @@ body.light-mode .destaque-card:hover {
     border-color: #2563eb !important;
     background: #fafafa !important;
 }
+/* ========== ESTILOS PARA POSTS DE DIVULGAÇÃO ========== */
+
+/* Container principal do post de divulgação */
+.divulgacao-container {
+    background: linear-gradient(135deg, var(--card), var(--card));
+    border-radius: 20px;
+    padding: 20px;
+    margin: 12px 0;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.divulgacao-container:hover {
+    border-color: #25D366;
+    transform: translateY(-2px);
+}
+
+/* Badge de categoria */
+.divulgacao-categoria {
+    background: linear-gradient(135deg, #25D36615, #128C7E15);
+    border-radius: 50px;
+    padding: 8px 16px;
+    text-align: center;
+    margin-bottom: 16px;
+    border: 1px solid #25D36630;
+}
+
+.divulgacao-categoria span {
+    font-size: 14px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Título do grupo */
+.divulgacao-titulo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #25D36610;
+    padding: 12px 16px;
+    border-radius: 16px;
+    margin: 16px 0;
+    border-left: 4px solid #25D366;
+}
+
+.divulgacao-titulo i {
+    font-size: 24px;
+    color: #25D366;
+}
+
+.divulgacao-titulo h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-color);
+}
+
+/* Descrição */
+.divulgacao-descricao {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #8B5CF610;
+    padding: 12px 16px;
+    border-radius: 16px;
+    margin: 12px 0;
+}
+
+.divulgacao-descricao span:first-child {
+    font-size: 20px;
+}
+
+.divulgacao-descricao p {
+    margin: 0;
+    color: var(--text2);
+    font-style: italic;
+    line-height: 1.5;
+}
+
+/* Badges de localização */
+.divulgacao-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 8px 8px 8px 0;
+}
+
+.divulgacao-badge-nacional {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.divulgacao-badge-estado {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* Status de membros */
+.divulgacao-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0;
+    color: #10b981;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Botão WhatsApp */
+.btn-whatsapp-grupo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: white;
+    padding: 12px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    width: 100%;
+    max-width: 280px;
+    margin: 16px auto;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-whatsapp-grupo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+
+.btn-whatsapp-grupo i {
+    font-size: 18px;
+}
+
+/* Rodapé */
+.divulgacao-footer {
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+    text-align: center;
+    font-size: 11px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.divulgacao-footer i {
+    color: #25D366;
+}
+/* ========== CORREÇÃO MODO CLARO PARA POSTS DE DIVULGAÇÃO ========== */
+
+/* Container principal */
+body.light-mode .divulgacao-container {
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+}
+
+body.light-mode .divulgacao-container:hover {
+    border-color: #25D366 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+/* Categoria */
+body.light-mode .divulgacao-categoria {
+    background: #f0fdf4 !important;
+    border: 1px solid #dcfce7 !important;
+}
+
+body.light-mode .divulgacao-categoria span {
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Título do grupo */
+body.light-mode .divulgacao-titulo {
+    background: #f0fdf4 !important;
+    border-left-color: #25D366 !important;
+}
+
+body.light-mode .divulgacao-titulo h3 {
+    color: #1f2937 !important;
+}
+
+/* Descrição */
+body.light-mode .divulgacao-descricao {
+    background: #faf5ff !important;
+}
+
+body.light-mode .divulgacao-descricao p {
+    color: #6b21a5 !important;
+}
+
+/* Badge Nacional */
+body.light-mode .divulgacao-badge-nacional {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+}
+
+/* Badge Estado */
+body.light-mode .divulgacao-badge-estado {
+    background: #dbeafe !important;
+    color: #1e40af !important;
+}
+
+/* Status */
+body.light-mode .divulgacao-status {
+    color: #059669 !important;
+}
+
+/* Rodapé */
+body.light-mode .divulgacao-footer {
+    border-top-color: #e5e7eb !important;
+    color: #6b7280 !important;
+}
+
+/* Botão WhatsApp */
+body.light-mode .btn-whatsapp-grupo {
+    background: linear-gradient(135deg, #25D366, #128C7E) !important;
+    color: white !important;
+}
+
+/* ========== CORREÇÃO PARA POSTS NORMAIS NO MODO CLARO ========== */
+
+body.light-mode .post-card {
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+}
+
+body.light-mode .post-card:hover {
+    background: #fafafa !important;
+    border-color: #25D366 !important;
+}
+
+body.light-mode .post-text {
+    color: #374151 !important;
+}
+
+body.light-mode .post-author {
+    color: #111827 !important;
+}
+
+body.light-mode .post-time {
+    color: #6b7280 !important;
+}
+
+body.light-mode .post-action-icon {
+    color: #6b7280 !important;
+}
+
+body.light-mode .post-action-icon:hover {
+    background: #f3f4f6 !important;
+}
+
+body.light-mode .post-action-icon.liked {
+    color: #ef4444 !important;
+}
+
+/* Comentários no modo claro */
+body.light-mode .post-comment-author {
+    color: #111827 !important;
+}
+
+body.light-mode .post-comment-text {
+    color: #4b5563 !important;
+}
+
+body.light-mode .post-comment-time {
+    color: #9ca3af !important;
+}
+
+/* Enquetes no modo claro */
+body.light-mode .poll-option {
+    background: #f9fafb !important;
+    border-color: #e5e7eb !important;
+}
+
+body.light-mode .poll-option-text {
+    color: #111827 !important;
+}
+
+body.light-mode .poll-total {
+    color: #6b7280 !important;
+}
 </style>
 </head>
 <body>
@@ -3035,6 +3335,10 @@ function abrirFormularioDivulgarGrupo() {
         return;
     }
     
+    // Variável para armazenar a imagem
+    let imagemSelecionada = null;
+    let imagemPreview = null;
+    
     Swal.fire({
         title: '<div style="font-size: 26px; font-weight: 800;">📢 Divulgar Grupo</div>',
         html: `
@@ -3050,6 +3354,27 @@ function abrirFormularioDivulgarGrupo() {
                         </div>
                     </div>
                     <p style="font-size: 13px; color: var(--text2);">Seu grupo será visto por milhares de pessoas!</p>
+                </div>
+                
+                <!-- ⭐ NOVO: UPLOAD DE IMAGEM DO GRUPO -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-weight: 600;">
+                        <i class="fas fa-image" style="color: #8B5CF6;"></i> Imagem do grupo (opcional)
+                    </label>
+                    <div id="uploadImageArea" style="border: 2px dashed var(--border); border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; background: var(--card);"
+                         onclick="document.getElementById('grupoImagemInput').click()">
+                        <input type="file" id="grupoImagemInput" style="display: none;" accept="image/*" onchange="previewGrupoImagem(event)">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 32px; color: var(--primary); margin-bottom: 8px; display: block;"></i>
+                        <p style="font-weight: 500; font-size: 13px; margin-bottom: 4px;">Clique para adicionar uma imagem</p>
+                        <p style="font-size: 11px; color: var(--text2);">PNG, JPG ou GIF • Máx 2MB</p>
+                    </div>
+                    <div id="imagePreviewContainer" style="display: none; margin-top: 12px; position: relative;">
+                        <img id="imagePreview" src="" style="width: 100%; max-height: 150px; object-fit: cover; border-radius: 12px; border: 1px solid var(--border);">
+                        <button type="button" id="removeImageBtn" onclick="removerImagemGrupo()" 
+                                style="position: absolute; top: -8px; right: -8px; width: 28px; height: 28px; background: #ef4444; color: white; border: none; border-radius: 50%; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
                 </div>
                 
                 <!-- Campo Nome -->
@@ -3113,7 +3438,7 @@ function abrirFormularioDivulgarGrupo() {
                     </select>
                 </div>
                 
-                <!-- ⚠️ AVISO DE APROVAÇÃO - DESTAQUE! -->
+                <!-- ⚠️ AVISO DE APROVAÇÃO -->
                 <div style="background: linear-gradient(135deg, #fef3c7, #fffbeb); border-radius: 16px; padding: 16px; margin-top: 8px; border-left: 4px solid #f59e0b;">
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                         <i class="fas fa-clock" style="color: #f59e0b; font-size: 20px;"></i>
@@ -3126,7 +3451,6 @@ function abrirFormularioDivulgarGrupo() {
                         <li>✓ Análise em até <strong>24 horas úteis</strong></li>
                         <li>✓ Você será notificado quando aprovado</li>
                         <li>✓ Após aprovação, aparecerá no feed e na página de grupos</li>
-                        <li>✓ Grupos com spam serão rejeitados</li>
                     </ul>
                 </div>
                 
@@ -3142,8 +3466,40 @@ function abrirFormularioDivulgarGrupo() {
         cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
         confirmButtonColor: '#2563eb',
         cancelButtonColor: '#6b7280',
-        width: '550px',
+        width: '580px',
         padding: '20px',
+        didOpen: () => {
+            // Adicionar eventos de upload
+            const uploadArea = document.getElementById('uploadImageArea');
+            const fileInput = document.getElementById('grupoImagemInput');
+            
+            // Função global para preview
+            window.previewGrupoImagem = function(event) {
+                const file = event.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    if (file.size > 2 * 1024 * 1024) {
+                        Swal.fire('Erro', 'Imagem muito grande! Máximo 2MB', 'error');
+                        return;
+                    }
+                    imagemSelecionada = file;
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('imagePreview').src = e.target.result;
+                        document.getElementById('imagePreviewContainer').style.display = 'block';
+                        document.getElementById('uploadImageArea').style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            
+            // Função global para remover imagem
+            window.removerImagemGrupo = function() {
+                imagemSelecionada = null;
+                document.getElementById('imagePreviewContainer').style.display = 'none';
+                document.getElementById('uploadImageArea').style.display = 'block';
+                document.getElementById('grupoImagemInput').value = '';
+            };
+        },
         preConfirm: () => {
             const nome = document.getElementById('grupoNomeDivulgar')?.value.trim();
             const link = document.getElementById('grupoLinkDivulgar')?.value.trim();
@@ -3168,26 +3524,11 @@ function abrirFormularioDivulgarGrupo() {
                 return false;
             }
             
-            return { nome, link, descricao, categoria, estado };
+            return { nome, link, descricao, categoria, estado, imagem: imagemSelecionada };
         }
     }).then(async (result) => {
         if (result.isConfirmed && result.value) {
-            const { nome, link, descricao, categoria, estado } = result.value;
-            
-            const categoriaIcon = categoriasGrupos.find(c => c.nome === categoria)?.icone || '📌';
-            const estadoFlag = estado ? `📍 <strong>${estado}</strong>` : '🌎 <strong>Nacional</strong>';
-            
-            const postText = `📢 *NOVO GRUPO NO WHATSAPP!*\n\n` +
-                `┌───────────────────┐\n` +
-                `│  ${categoriaIcon}  ${categoria || 'Geral'}  │\n` +
-                `└───────────────────┘\n\n` +
-                `📱 *${nome}*\n\n` +
-                `✨ ${descricao || 'Venha fazer parte dessa comunidade incrível!'}\n\n` +
-                `📍 ${estadoFlag}\n` +
-                `👥 Aguardando você!\n\n` +
-                `🔗 *Link de convite:*\n${link}\n\n` +
-                `───────────────────\n` +
-                `💬 Divulgado no FabiZap Grupos`;
+            const { nome, link, descricao, categoria, estado, imagem } = result.value;
             
             Swal.fire({ 
                 title: '📤 Enviando...', 
@@ -3197,6 +3538,42 @@ function abrirFormularioDivulgarGrupo() {
             });
             
             try {
+                let imagemUrl = null;
+                
+                // Fazer upload da imagem se existir
+                if (imagem) {
+                    const formData = new FormData();
+                    formData.append('arquivo_midia', imagem);
+                    formData.append('user_id', currentUser.id);
+                    formData.append('user_nome', currentUser.nome);
+                    
+                    const uploadResponse = await fetch(`${API_URL}/cliente06/midia-upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const uploadData = await uploadResponse.json();
+                    if (uploadData.sucesso) {
+                        imagemUrl = uploadData.midia.url;
+                    }
+                }
+                
+                const categoriaIcon = categoriasGrupos.find(c => c.nome === categoria)?.icone || '📌';
+                const estadoFlag = estado ? `📍 <strong>${estado}</strong>` : '🌎 <strong>Nacional</strong>';
+                
+                // Montar texto do post (sem a imagem, ela vai separada)
+                let postText = `📢 *NOVO GRUPO NO WHATSAPP!*\n\n` +
+                    `┌───────────────────┐\n` +
+                    `│  ${categoriaIcon}  ${categoria || 'Geral'}  │\n` +
+                    `└───────────────────┘\n\n` +
+                    `📱 *${nome}*\n\n` +
+                    `✨ ${descricao || 'Venha fazer parte dessa comunidade incrível!'}\n\n` +
+                    `📍 ${estadoFlag}\n` +
+                    `👥 Aguardando você!\n\n` +
+                    `🔗 *Link de convite:*\n${link}\n\n` +
+                    `───────────────────\n` +
+                    `💬 Divulgado no FabiZap Grupos`;
+                
                 const response = await fetch(`${API_URL}/cliente06/posts`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -3204,8 +3581,8 @@ function abrirFormularioDivulgarGrupo() {
                         author: { id: currentUser.id, nome: currentUser.nome, avatar: currentUser.avatar },
                         anonymous: false,
                         text: postText,
-                        media: null,
-                        mediaType: null,
+                        media: imagemUrl,
+                        mediaType: imagemUrl ? 'image' : null,
                         poll: null,
                         likes: [],
                         comments: [],
@@ -3218,7 +3595,7 @@ function abrirFormularioDivulgarGrupo() {
                 Swal.close();
                 
                 if (response.ok) {
-                    // Efeito de sucesso
+                    // Efeito de confete
                     for(let i = 0; i < 30; i++) {
                         setTimeout(() => {
                             const conf = document.createElement('div');
@@ -3244,6 +3621,7 @@ function abrirFormularioDivulgarGrupo() {
                                     <i class="fas fa-check-circle" style="font-size: 48px; color: #10b981; margin-bottom: 12px; display: block;"></i>
                                     <p style="font-size: 16px; font-weight: 700;">Recebemos sua divulgação!</p>
                                     <p style="font-size: 13px;">O grupo <strong>${nome}</strong> será analisado pela nossa equipe.</p>
+                                    ${imagemUrl ? `<p style="font-size: 12px; margin-top: 8px;">🖼️ Imagem enviada com sucesso!</p>` : ''}
                                 </div>
                                 
                                 <div style="text-align: left; background: #fef3c7; border-radius: 16px; padding: 16px; margin-bottom: 16px;">
@@ -3257,11 +3635,6 @@ function abrirFormularioDivulgarGrupo() {
                                         <li>🔔 <strong>Notificação:</strong> Você será avisado quando aprovado</li>
                                         <li>📢 <strong>Publicação:</strong> Aparecerá no feed e na página de grupos</li>
                                     </ul>
-                                </div>
-                                
-                                <div style="background: #e0e7ff; border-radius: 16px; padding: 12px; text-align: center;">
-                                    <i class="fas fa-trophy" style="color: #f59e0b;"></i>
-                                    <span style="font-size: 12px;">Quer aparecer no topo? <a href="#" onclick="showHighlightInfo(); Swal.close();" style="color: #2563eb; font-weight: 600;">Destacar grupo</a></span>
                                 </div>
                             </div>
                         `,
@@ -9022,65 +9395,164 @@ function mudarSecao(section) {
 function tornarLinksClicaveis(texto) {
     if (!texto) return '';
     
-    // Primeiro escapa o HTML para segurança
-    let textoEscapado = escapeHtml(texto);
+    // ========== 1. REMOVER TAGS HTML LITERAIS ==========
+    let processado = texto
+        .replace(/&lt;strong&gt;/gi, '')
+        .replace(/&lt;\/strong&gt;/gi, '')
+        .replace(/<strong>/gi, '')
+        .replace(/<\/strong>/gi, '')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&');
     
-    // Converte links do YouTube em players embed com proporção 16:9
-    const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)(?:[^\s<]*)?/gi;
-    textoEscapado = textoEscapado.replace(youtubeRegex, (match, videoId) => {
-        return `
-            <div class="post-media" style="margin: 15px 0; border-radius: 12px; overflow: hidden;">
-                <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-                    <iframe 
-                        src="https://www.youtube.com/embed/${videoId}" 
-                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 12px;"
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                    </iframe>
+    // ========== 2. EXTRAIR DADOS DO POST DE DIVULGAÇÃO ==========
+    // Extrair categoria (ex: │ 💪 Saúde/Bem-estar │)
+    const categoriaMatch = processado.match(/│\s*(.+?)\s*│/);
+    const categoria = categoriaMatch ? categoriaMatch[1].trim() : null;
+    
+    // Extrair nome do grupo (ex: 📱 *Test*)
+    const nomeMatch = processado.match(/📱\s*\*?(.+?)(?:\*|\n|$)/);
+    const nome = nomeMatch ? nomeMatch[1].trim() : null;
+    
+    // Extrair descrição (ex: ✨ Xjdjjdjhddu)
+    const descMatch = processado.match(/✨\s*(.+?)(?:\n|$)/);
+    const descricao = descMatch ? descMatch[1].trim() : null;
+    
+    // Extrair localização (ex: 🌎 Nacional ou 📍 Ceará)
+    const localMatch = processado.match(/(?:📍|🌎)\s*(.+?)(?:\n|$)/);
+    let localizacao = localMatch ? localMatch[1].trim() : null;
+    const isNacional = localizacao ? localizacao.includes('Nacional') : false;
+    
+    // Extrair link do WhatsApp
+    const linkMatch = processado.match(/chat\.whatsapp\.com\/[^\s<]+/);
+    const link = linkMatch ? `https://${linkMatch[0]}` : null;
+    
+    // ========== 3. SE FOR UM POST DE DIVULGAÇÃO, MONTAR LAYOUT PROFISSIONAL ==========
+    if (categoria && nome) {
+        let html = `
+            <div class="divulgacao-container" style="background: var(--card); border-radius: 20px; padding: 20px; margin: 12px 0; border: 1px solid var(--border); transition: all 0.3s ease;">
+                <!-- Categoria -->
+                <div class="divulgacao-categoria" style="background: linear-gradient(135deg, #25D36615, #128C7E15); border-radius: 50px; padding: 8px 16px; text-align: center; margin-bottom: 16px; border: 1px solid #25D36630;">
+                    <span style="font-size: 14px; font-weight: 600; background: linear-gradient(135deg, #25D366, #128C7E); -webkit-background-clip: text; background-clip: text; color: transparent;">${escapeHtml(categoria)}</span>
                 </div>
-            </div>`;
-    });
+                
+                <!-- Nome do grupo -->
+                <div class="divulgacao-titulo" style="display: flex; align-items: center; gap: 12px; background: #25D36610; padding: 12px 16px; border-radius: 16px; margin: 16px 0; border-left: 4px solid #25D366;">
+                    <i class="fab fa-whatsapp" style="font-size: 24px; color: #25D366;"></i>
+                    <h3 style="font-size: 18px; font-weight: 700; margin: 0; color: var(--text-color);">${escapeHtml(nome)}</h3>
+                </div>
+        `;
+        
+        // Descrição (se tiver)
+        if (descricao) {
+            html += `
+                <div class="divulgacao-descricao" style="display: flex; align-items: flex-start; gap: 10px; background: #8B5CF610; padding: 12px 16px; border-radius: 16px; margin: 12px 0;">
+                    <span style="font-size: 20px;">✨</span>
+                    <p style="margin: 0; color: var(--text2); font-style: italic; line-height: 1.5;">${escapeHtml(descricao)}</p>
+                </div>
+            `;
+        }
+        
+        // Localização
+        if (localizacao) {
+            html += `
+                <div style="margin: 8px 0;">
+                    <span class="divulgacao-badge ${isNacional ? 'divulgacao-badge-nacional' : 'divulgacao-badge-estado'}" 
+                          style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 30px; font-size: 12px; font-weight: 500; ${isNacional ? 'background: #fef3c7; color: #92400e;' : 'background: #dbeafe; color: #1e40af;'}">
+                        <i class="fas ${isNacional ? 'fa-globe' : 'fa-map-marker-alt'}" style="font-size: 10px;"></i>
+                        ${escapeHtml(localizacao)}
+                    </span>
+                </div>
+            `;
+        }
+        
+        // Status
+        html += `
+            <div class="divulgacao-status" style="display: flex; align-items: center; gap: 8px; margin: 12px 0; color: #10b981; font-size: 13px; font-weight: 500;">
+                <i class="fas fa-users"></i>
+                <span>Aguardando você!</span>
+            </div>
+        `;
+        
+        // Botão WhatsApp
+        if (link) {
+            html += `
+                <div style="display: flex; justify-content: center; margin: 16px 0;">
+                    <a href="${link}" target="_blank" rel="noopener noreferrer" 
+                       class="btn-whatsapp-grupo"
+                       style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, #25D366, #128C7E); color: white; padding: 12px 28px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); border: none; cursor: pointer;"
+                       onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(37,211,102,0.4)';"
+                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(37,211,102,0.3)';">
+                        <i class="fab fa-whatsapp" style="font-size: 18px;"></i>
+                        Entrar no grupo agora
+                        <i class="fas fa-arrow-right" style="font-size: 12px;"></i>
+                    </a>
+                </div>
+            `;
+        }
+        
+        // Rodapé
+        html += `
+            <div class="divulgacao-footer" style="margin-top: 20px; padding-top: 12px; border-top: 1px dashed var(--border); text-align: center; font-size: 11px; color: var(--text2); display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <i class="fab fa-whatsapp" style="color: #25D366;"></i>
+                <span>Divulgado no FabiZap Grupos</span>
+            </div>
+        </div>`;
+        
+        // Processar links de imagem/vídeo dentro do HTML
+        const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/gi;
+        html = html.replace(youtubeRegex, (match, videoId) => {
+            return `<div style="margin: 15px 0; border-radius: 12px; overflow: hidden;">
+                        <div style="position: relative; padding-bottom: 56.25%; height: 0;">
+                            <iframe src="https://www.youtube.com/embed/${videoId}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </div>`;
+        });
+        
+        const imgRegex = /(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|bmp)(?:\?[^\s]*)?)/gi;
+        html = html.replace(imgRegex, (match) => {
+            return `<img src="${match}" style="max-width: 100%; max-height: 300px; border-radius: 12px; margin: 10px 0; object-fit: cover;" loading="lazy">`;
+        });
+        
+        return html;
+    }
     
-    // Converte links de imagens em tags <img> com fallback
-    textoEscapado = textoEscapado.replace(/(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|bmp)(?:\?[^\s]*)?)/gi, (match) => {
-        return `
-            <div class="post-media" style="margin: 10px 0;">
-                <img src="${match}" 
-                     alt="Imagem" 
-                     style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 12px; display: block; background: rgba(0,0,0,0.05);" 
-                     loading="lazy"
-                     onerror="this.style.display='none'; this.parentElement.innerHTML='<a href=\'${match}\' target=\'_blank\' style=\'color: #2563eb; text-decoration: underline;\'><i class=\'fas fa-image\'></i> Ver imagem</a>';">
-            </div>`;
-    });
+    // ========== 4. SE NÃO FOR POST DE DIVULGAÇÃO, FORMATAR NORMALMENTE ==========
     
-    // Converte links de vídeos (mp4, webm, etc.) em players nativos
-    textoEscapado = textoEscapado.replace(/(https?:\/\/[^\s]+\.(?:mp4|webm|ogg|mov)(?:\?[^\s]*)?)/gi, (match) => {
-        return `
-            <div class="post-media" style="margin: 10px 0;">
-                <video controls style="width: 100%; max-height: 400px; border-radius: 12px; background: #000; display: block;"
-                       onerror="this.style.display='none'; this.parentElement.innerHTML='<a href=\'${match}\' target=\'_blank\' style=\'color: #2563eb; text-decoration: underline;\'><i class=\'fas fa-video\'></i> Ver vídeo</a>';">
-                    <source src="${match}" type="video/mp4">
-                    Seu navegador não suporta vídeos.
-                </video>
-            </div>`;
-    });
+    // Negrito e itálico
+    processado = processado.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    processado = processado.replace(/\*(.*?)\*/g, '<em>$1</em>');
     
-    // Converte outras URLs em links clicáveis
-    const urlRegex = /(https?:\/\/[^\s<]+)/g;
-    textoEscapado = textoEscapado.replace(urlRegex, (url) => {
+    // Links
+    const urlRegex = /(https?:\/\/[^\s<]+)(?![^<]*>)/g;
+    processado = processado.replace(urlRegex, (url) => {
         let cleanUrl = url.replace(/[.,;:!?)]$/, '');
-        return `
-            <a href="${cleanUrl}" 
-               target="_blank" 
-               rel="noopener noreferrer" 
-               style="color: #2563eb; text-decoration: underline; word-break: break-all; font-weight: 600;" 
-               onclick="event.stopPropagation();">
-                <i class="fas fa-external-link-alt" style="font-size: 10px; margin-right: 4px;"></i>${cleanUrl}
-            </a>`;
+        if (cleanUrl.includes('chat.whatsapp.com')) {
+            return `<a href="${cleanUrl}" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #25D366, #128C7E); color: white; padding: 8px 20px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 13px; margin: 8px 0; transition: all 0.2s;">📱 Entrar no grupo</a>`;
+        }
+        return `<a href="${cleanUrl}" target="_blank" style="color: #2563eb; text-decoration: underline;">${cleanUrl}</a>`;
     });
     
-    return textoEscapado;
+    // YouTube
+    const youtubeRegex2 = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/gi;
+    processado = processado.replace(youtubeRegex2, (match, videoId) => {
+        return `<div style="margin: 15px 0; border-radius: 12px; overflow: hidden;">
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0;">
+                        <iframe src="https://www.youtube.com/embed/${videoId}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>`;
+    });
+    
+    // Imagens
+    const imgRegex2 = /(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|bmp)(?:\?[^\s]*)?)/gi;
+    processado = processado.replace(imgRegex2, (match) => {
+        return `<img src="${match}" style="max-width: 100%; max-height: 300px; border-radius: 12px; margin: 10px 0; object-fit: cover;" loading="lazy">`;
+    });
+    
+    // Quebras de linha
+    processado = processado.replace(/\n/g, '<br>');
+    
+    return processado;
 }
     function escapeHtml(str) {
     if (!str) return '';
