@@ -2777,6 +2777,779 @@ body.light-mode .poll-total {
         height: auto;
     }
 }
+/* ========== NOVOS ESTILOS PARA A PÁGINA DE GRUPOS ========== */
+
+/* Cards de grupos redesenhados */
+.grupo-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.grupo-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.2);
+}
+
+/* Header do card */
+.grupo-card-header {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    position: relative;
+}
+
+.grupo-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.grupo-avatar i {
+    font-size: 28px;
+    color: white;
+}
+
+.grupo-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.grupo-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.grupo-nome {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-color);
+}
+
+.grupo-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.grupo-categoria {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    background: rgba(37, 99, 235, 0.1);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--primary);
+}
+
+.grupo-verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #10b981;
+}
+
+/* Badges */
+.grupo-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    z-index: 2;
+}
+
+.grupo-badge.destaque {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+}
+
+.grupo-badge.novo {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+/* Descrição */
+.grupo-descricao {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text2);
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Stats */
+.grupo-stats {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.grupo-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text2);
+}
+
+.grupo-stat i {
+    width: 14px;
+    font-size: 12px;
+}
+
+.status-muito-ativo i { color: #ef4444; }
+.status-ativo i { color: #f59e0b; }
+.status-calmo i { color: #10b981; }
+
+/* Footer do card */
+.grupo-footer {
+    margin-top: auto;
+}
+
+.grupo-btn-entrar {
+    width: 100%;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    border: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.grupo-btn-entrar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
+/* ========== MODAL DE GRUPO MELHORADO ========== */
+.grupo-modal-container {
+    background: var(--bg);
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.modal-destaque-badge {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    text-align: center;
+    padding: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #000;
+}
+
+.modal-destaque-badge.new {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.grupo-modal-header {
+    display: flex;
+    gap: 16px;
+    padding: 20px 20px 0 20px;
+}
+
+.grupo-modal-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.grupo-modal-avatar i {
+    font-size: 36px;
+    color: white;
+}
+
+.grupo-modal-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.grupo-modal-info h2 {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: var(--text-color);
+}
+
+.grupo-modal-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.grupo-modal-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 16px 20px;
+    margin: 16px 20px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 20px;
+}
+
+.modal-stat {
+    text-align: center;
+}
+
+.modal-stat-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 4px;
+}
+
+.modal-stat-label {
+    font-size: 11px;
+    color: var(--text2);
+    font-weight: 500;
+}
+
+.grupo-modal-descricao,
+.grupo-modal-regras {
+    padding: 0 20px;
+    margin-bottom: 20px;
+}
+
+.grupo-modal-descricao h4,
+.grupo-modal-regras h4 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-color);
+}
+
+.grupo-modal-descricao p,
+.grupo-modal-regras p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text2);
+}
+
+.grupo-modal-actions {
+    display: flex;
+    gap: 12px;
+    padding: 0 20px 20px 20px;
+}
+
+.modal-btn-whatsapp {
+    flex: 2;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    text-align: center;
+    padding: 12px;
+    border-radius: 40px;
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.modal-btn-whatsapp:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
+.modal-btn-copy {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 40px;
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.modal-btn-copy:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.grupo-modal-footer {
+    text-align: center;
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* Ajustes para modo claro */
+body.light-mode .grupo-modal-stats {
+    background: #F5F5F5;
+}
+
+body.light-mode .modal-btn-copy {
+    background: #F5F5F5;
+}
+
+body.light-mode .grupo-modal-container {
+    background: #FFFFFF;
+}
+/* ========== MODAL DOS GRUPOS (ESTILO PREMIUM) ========== */
+
+.grupo-modal-popup-estiloso {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.grupo-modal-moderno {
+    background: var(--card);
+    border-radius: 28px;
+    overflow: hidden;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Header do modal */
+.modal-header-grupo {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 28px 20px 20px;
+    text-align: center;
+    position: relative;
+}
+
+body.light-mode .modal-header-grupo {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.modal-avatar-grupo {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 12px;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-avatar-grupo i {
+    font-size: 40px;
+    color: white;
+}
+
+.modal-avatar-grupo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal-nome-grupo {
+    font-size: 20px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 6px;
+}
+
+.modal-categoria-grupo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 5px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 500;
+    color: white;
+}
+
+.verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(16, 185, 129, 0.2);
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    color: #10b981;
+}
+
+/* Grid de estatísticas */
+.modal-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 20px;
+    background: transparent;
+}
+
+.modal-stat-card {
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    padding: 12px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+body.light-mode .modal-stat-card {
+    background: #F5F5F5;
+}
+
+.modal-stat-card:hover {
+    transform: translateY(-2px);
+    background: rgba(37, 99, 235, 0.1);
+}
+
+.modal-stat-card i {
+    font-size: 24px;
+    color: var(--primary);
+}
+
+.modal-stat-card .stat-number {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.modal-stat-card .stat-label {
+    font-size: 10px;
+    color: var(--text2);
+}
+
+.modal-stat-card.status-muito-ativo i { color: #ef4444; }
+.modal-stat-card.status-ativo i { color: #f59e0b; }
+.modal-stat-card.status-calmo i { color: #10b981; }
+
+/* Descrição */
+.modal-descricao-grupo {
+    padding: 0 20px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-descricao-grupo h4 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-color);
+}
+
+.modal-descricao-grupo h4 i {
+    color: var(--primary);
+}
+
+.modal-descricao-grupo p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text2);
+}
+
+/* Botões de ação */
+.modal-acoes-grupo {
+    display: flex;
+    gap: 12px;
+    padding: 20px;
+}
+
+.btn-whatsapp-modal {
+    flex: 2;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    border: none;
+    padding: 12px 16px;
+    border-radius: 40px;
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn-whatsapp-modal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+
+.btn-copiar-modal {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    border-radius: 40px;
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+body.light-mode .btn-copiar-modal {
+    background: #F5F5F5;
+}
+
+.btn-copiar-modal:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+/* Footer */
+.modal-footer-grupo {
+    text-align: center;
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* Responsivo */
+@media (max-width: 500px) {
+    .modal-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .modal-acoes-grupo {
+        flex-direction: column;
+    }
+    
+    .btn-whatsapp-modal, .btn-copiar-modal {
+        width: 100%;
+    }
+}
+/* Animações extras */
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Melhoria nos inputs e selects ao focus */
+#gruposSearchInput:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.filter-select:focus,
+.sort-btn:focus {
+    outline: none;
+}
+
+/* Hover effects nos botões de ordenação */
+.sort-btn:hover {
+    transform: translateY(-2px);
+}
+
+.sort-btn:active {
+    transform: translateY(0);
+}
+/* ========== CORREÇÕES MODO CLARO PARA O MODAL DE GRUPOS ========== */
+
+/* Fundo do modal no modo claro */
+body.light-mode .grupo-modal-popup-estiloso {
+    background: transparent !important;
+}
+
+body.light-mode .grupo-modal-moderno {
+    background: #FFFFFF !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Header do modal no modo claro */
+body.light-mode .modal-header-grupo {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+body.light-mode .modal-nome-grupo {
+    color: white !important;
+}
+
+body.light-mode .modal-categoria-grupo {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+/* Badge verificado no modo claro */
+body.light-mode .verified-badge {
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: #059669 !important;
+}
+
+/* Cards de estatísticas no modo claro */
+body.light-mode .modal-stat-card {
+    background: #F3F4F6 !important;
+}
+
+body.light-mode .modal-stat-card:hover {
+    background: #E5E7EB !important;
+}
+
+body.light-mode .modal-stat-card i {
+    color: #4f46e5 !important;
+}
+
+body.light-mode .modal-stat-card .stat-number {
+    color: #111827 !important;
+}
+
+body.light-mode .modal-stat-card .stat-label {
+    color: #6b7280 !important;
+}
+
+/* Status colors no modo claro */
+body.light-mode .modal-stat-card.status-muito-ativo i { color: #dc2626 !important; }
+body.light-mode .modal-stat-card.status-ativo i { color: #d97706 !important; }
+body.light-mode .modal-stat-card.status-calmo i { color: #059669 !important; }
+
+/* Descrição no modo claro */
+body.light-mode .modal-descricao-grupo {
+    border-bottom-color: #E5E7EB !important;
+}
+
+body.light-mode .modal-descricao-grupo h4 {
+    color: #111827 !important;
+}
+
+body.light-mode .modal-descricao-grupo h4 i {
+    color: #4f46e5 !important;
+}
+
+body.light-mode .modal-descricao-grupo p {
+    color: #4b5563 !important;
+}
+
+/* Botões no modo claro */
+body.light-mode .btn-whatsapp-modal {
+    background: linear-gradient(135deg, #25D366, #128C7E) !important;
+    color: white !important;
+}
+
+body.light-mode .btn-whatsapp-modal:hover {
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4) !important;
+}
+
+body.light-mode .btn-copiar-modal {
+    background: #F3F4F6 !important;
+    border: 1px solid #E5E7EB !important;
+    color: #374151 !important;
+}
+
+body.light-mode .btn-copiar-modal:hover {
+    background: #4f46e5 !important;
+    border-color: #4f46e5 !important;
+    color: white !important;
+}
+
+/* Footer no modo claro */
+body.light-mode .modal-footer-grupo {
+    border-top-color: #E5E7EB !important;
+    color: #6b7280 !important;
+}
+
+/* Botão cancelar do SweetAlert no modo claro */
+body.light-mode .swal2-cancel {
+    background: #9ca3af !important;
+    color: white !important;
+}
+
+body.light-mode .swal2-cancel:hover {
+    background: #6b7280 !important;
+}
 </style>
 </head>
 <body>
@@ -3233,61 +4006,97 @@ body.light-mode .poll-total {
 <div id="categoriasContainer" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
     <!-- As categorias serão inseridas aqui via JavaScript -->
 </div>
-        <!-- Barra de busca e filtros -->
-        <div class="comunidades-filters" style="margin-bottom: 24px;">
-            <div class="search-wrapper" style="position: relative; flex: 1;">
-                <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text2);"></i>
-                <input type="text" id="gruposSearchInput" placeholder="Buscar grupos por nome, categoria ou local..." 
-                       style="width: 100%; padding: 14px 16px 14px 45px; border-radius: 50px; border: 1px solid var(--border); background: var(--card); color: inherit; outline: none;">
-            </div>
-            <div class="filters-right" style="display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap;">
-                <select id="estadoFilter" class="filter-select" style="padding: 10px 16px; border-radius: 30px; border: 1px solid var(--border); background: var(--card);">
-                    <option value="">Todos os estados</option>
-                    <option value="CE">Ceará</option>
-                    <option value="BA">Bahia</option>
-                    <option value="PE">Pernambuco</option>
-                    <option value="MA">Maranhão</option>
-                    <option value="PB">Paraíba</option>
-                    <option value="PI">Piauí</option>
-                    <option value="RN">Rio Grande do Norte</option>
-                    <option value="SE">Sergipe</option>
-                    <option value="AL">Alagoas</option>
-                </select>
-                <div class="sort-buttons" style="display: flex; gap: 8px;">
-                    <button class="sort-btn active" data-sort="destaque" style="padding: 8px 16px; border-radius: 30px; background: var(--primary); color: white; border: none; cursor: pointer;">🔥 Destaque</button>
-                    <button class="sort-btn" data-sort="membros" style="padding: 8px 16px; border-radius: 30px; background: var(--card); border: 1px solid var(--border); cursor: pointer;">👥 Mais membros</button>
-                    <button class="sort-btn" data-sort="novos" style="padding: 8px 16px; border-radius: 30px; background: var(--card); border: 1px solid var(--border); cursor: pointer;">🆕 Recentes</button>
-                </div>
-            </div>
+<!-- Barra de busca e filtros - VERSÃO MELHORADA -->
+<div class="comunidades-filters" style="margin-bottom: 24px;">
+    <!-- Busca com ícone animado -->
+    <div class="search-wrapper" style="position: relative; flex: 1; margin-bottom: 16px;">
+        <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text2); font-size: 14px;"></i>
+        <input type="text" id="gruposSearchInput" placeholder="🔍 Buscar grupos por nome, categoria ou local..." 
+               style="width: 100%; padding: 14px 16px 14px 45px; border-radius: 50px; border: 1px solid var(--border); background: var(--card); color: inherit; outline: none; transition: all 0.3s ease;">
+        <button id="clearSearchBtn" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text2); cursor: pointer; display: none;">
+            <i class="fas fa-times-circle"></i>
+        </button>
+    </div>
+    
+    <div class="filters-right" style="display: flex; gap: 12px; margin-top: 0; flex-wrap: wrap; align-items: center;">
+        <!-- Select de estado melhorado -->
+        <div style="flex: 1; min-width: 160px;">
+            <label style="display: block; font-size: 11px; font-weight: 600; margin-bottom: 4px; color: var(--text2);">
+                <i class="fas fa-map-marker-alt"></i> Localização
+            </label>
+            <select id="estadoFilter" class="filter-select" style="width: 100%; padding: 10px 16px; border-radius: 30px; border: 1px solid var(--border); background: var(--card); color: inherit; cursor: pointer;">
+                <option value="">🌎 Todos os estados</option>
+                <option value="CE">🇧🇷 Ceará</option>
+                <option value="BA">🇧🇷 Bahia</option>
+                <option value="PE">🇧🇷 Pernambuco</option>
+                <option value="MA">🇧🇷 Maranhão</option>
+                <option value="PB">🇧🇷 Paraíba</option>
+                <option value="PI">🇧🇷 Piauí</option>
+                <option value="RN">🇧🇷 Rio Grande do Norte</option>
+                <option value="SE">🇧🇷 Sergipe</option>
+                <option value="AL">🇧🇷 Alagoas</option>
+            </select>
         </div>
-
-        <!-- Grid de Grupos -->
-        <div id="gruposGrid" class="grupos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
-            <!-- Cards serão inseridos aqui via JS -->
-            <div class="skeleton-card" style="background: var(--card); border-radius: 20px; padding: 16px; height: 200px;"></div>
-            <div class="skeleton-card" style="background: var(--card); border-radius: 20px; padding: 16px; height: 200px;"></div>
-            <div class="skeleton-card" style="background: var(--card); border-radius: 20px; padding: 16px; height: 200px;"></div>
+        
+        <!-- Botões de ordenação melhorados -->
+        <div style="flex: 2;">
+            <label style="display: block; font-size: 11px; font-weight: 600; margin-bottom: 4px; color: var(--text2);">
+                <i class="fas fa-sort"></i> Ordenar por
+            </label>
+            <div class="sort-buttons" style="display: flex; gap: 8px;">
+                <button class="sort-btn active" data-sort="destaque" style="padding: 8px 16px; border-radius: 30px; background: var(--primary); color: white; border: none; cursor: pointer; transition: all 0.2s;">
+                    <i class="fas fa-fire"></i> Destaque
+                </button>
+                <button class="sort-btn" data-sort="membros" style="padding: 8px 16px; border-radius: 30px; background: var(--card); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s;">
+                    <i class="fas fa-user-friends"></i> Mais membros
+                </button>
+                <button class="sort-btn" data-sort="novos" style="padding: 8px 16px; border-radius: 30px; background: var(--card); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s;">
+                    <i class="fas fa-clock"></i> Recentes
+                </button>
+            </div>
         </div>
     </div>
+    
+    <!-- Contador de resultados e botão limpar filtros -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border);">
+        <span id="gruposResultCount" style="font-size: 12px; color: var(--text2);">
+            <i class="fas fa-users"></i> 0 grupos encontrados
+        </span>
+        <button id="clearFiltersBtn" style="background: none; border: none; color: var(--primary); font-size: 12px; cursor: pointer; display: none;">
+            <i class="fas fa-times"></i> Limpar filtros
+        </button>
+    </div>
 </div>
-
-<!-- Modal de Detalhes do Grupo -->
+<!-- Grid de Grupos -->
+<div id="gruposGrid" class="grupos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+    <!-- Skeletons melhorados -->
+    <div class="skeleton-card" style="background: var(--card); border-radius: 20px; padding: 16px; height: 220px; animation: pulse 1.5s infinite;"></div>
+    <div class="skeleton-card" style="background: var(--card); border-radius: 20px; padding: 16px; height: 220px; animation: pulse 1.5s infinite 0.2s;"></div>
+    <div class="skeleton-card" style="background: var(--card); border-radius: 20px; padding: 16px; height: 220px; animation: pulse 1.5s infinite 0.4s;"></div>
+    <div class="skeleton-card" style="background: var(--card); border-radius: 20px; padding: 16px; height: 220px; animation: pulse 1.5s infinite 0.6s;"></div>
+</div>
+<!-- Modal de Detalhes do Grupo - VERSÃO PREMIUM -->
 <div id="grupoModal" class="modal">
-    <div class="modal-content" style="max-width: 550px;">
-        <div class="modal-header">
-            <h2 id="grupoModalTitle">Detalhes do Grupo</h2>
-            <span class="modal-close" onclick="fecharModalGrupo()">&times;</span>
+    <div class="modal-content" style="max-width: 550px; border-radius: 28px; overflow: hidden; animation: modalSlideIn 0.3s ease;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #1a1a2e, #0f3460); padding: 20px 24px; border-bottom: none;">
+            <h2 id="grupoModalTitle" style="color: white; font-size: 18px; margin: 0; display: flex; align-items: center; gap: 8px;">
+                <i class="fab fa-whatsapp" style="color: #25D366;"></i> Detalhes do Grupo
+            </h2>
+            <span class="modal-close" onclick="fecharModalGrupo()" style="color: white; opacity: 0.8; font-size: 24px; cursor: pointer;">&times;</span>
         </div>
-        <div class="modal-body" id="grupoModalBody">
-            <!-- Conteúdo dinâmico -->
+        <div class="modal-body" id="grupoModalBody" style="padding: 20px;">
+            <!-- Conteúdo dinâmico será inserido aqui -->
         </div>
-        <div style="padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 12px;">
-            <button class="btn-primary" id="btnEntrarGrupo" style="flex: 1;">📱 Entrar no grupo agora</button>
-            <button class="btn-secondary" id="btnCompartilharGrupo" onclick="compartilharGrupoFeed()">📤 Compartilhar</button>
+        <div style="padding: 16px 20px 20px; border-top: 1px solid var(--border); display: flex; gap: 12px;">
+            <button class="btn-primary" id="btnEntrarGrupo" style="flex: 1; background: linear-gradient(135deg, #25D366, #128C7E); border: none; border-radius: 40px; padding: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fab fa-whatsapp"></i> Entrar no grupo
+            </button>
+            <button class="btn-secondary" id="btnCompartilharGrupo" onclick="compartilharGrupoFeed()" style="border-radius: 40px; padding: 12px 20px; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-share-alt"></i> Compartilhar
+            </button>
         </div>
     </div>
 </div>
-
 <footer class="footer">
     <div class="container">
         <div class="footer-grid">
@@ -4658,6 +5467,48 @@ function toggleDarkMode() {
     
     showToastMsg(isDark ? '🌙 Modo escuro ativado' : '☀️ Modo claro ativado', 'success');
 }
+// Configurar eventos dos novos elementos (adicione dentro do initComunidades ou no inicializador)
+function initFiltrosBusca() {
+    const searchInput = document.getElementById('gruposSearchInput');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    const estadoFilter = document.getElementById('estadoFilter');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            if (clearSearchBtn) {
+                clearSearchBtn.style.display = this.value.length > 0 ? 'block' : 'none';
+            }
+            renderizarGruposComFiltros();
+        });
+    }
+    
+    if (clearSearchBtn) {
+        clearSearchBtn.addEventListener('click', function() {
+            if (searchInput) {
+                searchInput.value = '';
+                this.style.display = 'none';
+                renderizarGruposComFiltros();
+            }
+        });
+    }
+    
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', function() {
+            if (searchInput) searchInput.value = '';
+            if (estadoFilter) estadoFilter.value = '';
+            if (clearSearchBtn) clearSearchBtn.style.display = 'none';
+            renderizarGruposComFiltros();
+        });
+    }
+    
+    if (estadoFilter) {
+        estadoFilter.addEventListener('change', renderizarGruposComFiltros);
+    }
+}
+
+// Chame esta função no seu inicializador
+// initFiltrosBusca();
 
 function showToastMsg(message, type = 'success') {
     if (typeof Toastify !== 'undefined') {
@@ -9968,7 +10819,12 @@ function renderizarGruposComFiltros() {
         filtrados = filtrados.filter(g => g.estado === estadoFiltro);
     }
     
-    // Atualizar contador
+    // Ordenação (Destaque, Membros, Novos)
+    if (sortAtual === 'destaque') filtrados.sort((a, b) => (b.destaque ? 1 : 0) - (a.destaque ? 1 : 0));
+    else if (sortAtual === 'membros') filtrados.sort((a, b) => (b.participantes || 0) - (a.participantes || 0));
+    else if (sortAtual === 'novos') filtrados.sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao));
+    
+    // Atualizar contador de resultados
     const resultSpan = document.getElementById('gruposResultCount');
     if (resultSpan) {
         resultSpan.innerHTML = `<i class="fas fa-users"></i> ${filtrados.length} grupo${filtrados.length !== 1 ? 's' : ''}`;
@@ -9979,25 +10835,79 @@ function renderizarGruposComFiltros() {
         return;
     }
     
-    // Renderizar cards
-    container.innerHTML = filtrados.map(grupo => `
-        <div class="grupo-card" onclick="abrirDetalhesGrupoMelhorado('${grupo.grupoID}')">
-            <div class="grupo-card-inner" style="padding: 16px;">
-                <div style="display: flex; gap: 12px; margin-bottom: 12px;">
-                    <div class="grupo-avatar">${grupo.imagem ? `<img src="${grupo.imagem}" style="width:100%;height:100%;border-radius:16px;object-fit:cover;">` : '<i class="fab fa-whatsapp"></i>'}</div>
-                    <div style="flex:1; min-width:0;">
-                        <h3 style="font-size:16px;font-weight:700;">${escapeHtml(grupo.nome || 'Grupo WhatsApp')}</h3>
-                        <div class="grupo-categoria">${getEmojiCategoria(grupo.categoria)} ${grupo.categoria || 'Geral'}</div>
+    // ==================== NOVO RENDER COM DESIGN MELHORADO ====================
+    container.innerHTML = filtrados.map(grupo => {
+        const isNew = new Date(grupo.dataCriacao) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const isDestaque = grupo.destaque || false;
+        
+        // Definir badge
+        let badgeHtml = '';
+        if (isDestaque) badgeHtml = '<span class="grupo-badge destaque"><i class="fas fa-crown"></i> Destaque</span>';
+        else if (isNew) badgeHtml = '<span class="grupo-badge novo"><i class="fas fa-clock"></i> Novo</span>';
+        
+        // Verificado
+        const verificadoHtml = grupo.verificado ? '<span class="grupo-verified"><i class="fas fa-check-circle"></i> Verificado</span>' : '';
+        
+        // Status de atividade baseado em membros
+        let statusClass = 'status-calmo';
+        let statusTexto = 'Calmo';
+        if (grupo.participantes > 300) { statusClass = 'status-muito-ativo'; statusTexto = 'Muito Ativo'; }
+        else if (grupo.participantes > 100) { statusClass = 'status-ativo'; statusTexto = 'Ativo'; }
+        
+        return `
+            <div class="grupo-card" onclick="abrirDetalhesGrupoMelhorado('${grupo.grupoID}')">
+                <div class="grupo-card-header">
+                    <div class="grupo-avatar">
+                        ${grupo.imagem ? 
+                            `<img src="${grupo.imagem}" alt="${escapeHtml(grupo.nome)}">` : 
+                            '<i class="fab fa-whatsapp"></i>'
+                        }
+                    </div>
+                    <div class="grupo-info">
+                        <h3 class="grupo-nome">${escapeHtml(grupo.nome || 'Grupo WhatsApp')}</h3>
+                        <div class="grupo-meta">
+                            <span class="grupo-categoria">${getEmojiCategoria(grupo.categoria)} ${grupo.categoria || 'Geral'}</span>
+                            ${verificadoHtml}
+                        </div>
+                    </div>
+                    ${badgeHtml}
+                </div>
+                
+                <p class="grupo-descricao">${escapeHtml(grupo.descricao || '✨ Comunidade incrível para você fazer parte! Novos amigos e muito conteúdo.')}</p>
+                
+                <div class="grupo-stats">
+                    <div class="grupo-stat">
+                        <i class="fas fa-user-friends"></i>
+                        <span>${formatarNumero(grupo.participantes)} membros</span>
+                    </div>
+                    <div class="grupo-stat">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>${grupo.estado || 'BR'}</span>
+                    </div>
+                    <div class="grupo-stat ${statusClass}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>${statusTexto}</span>
                     </div>
                 </div>
-                <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-clamp:2;">${escapeHtml(grupo.descricao || '✨ Grupo incrível para você fazer parte!')}</p>
-                <div class="grupo-stats">
-                    <span><i class="fas fa-user-friends"></i> ${formatarNumero(grupo.participantes)} membros</span>
-                    <span><i class="fas fa-map-marker-alt"></i> ${grupo.estado || 'BR'}</span>
+                
+                <div class="grupo-footer">
+                    <button class="grupo-btn-entrar" onclick="event.stopPropagation(); entrarGrupoLink('${grupo.link}')">
+                        <i class="fab fa-whatsapp"></i> Entrar no grupo
+                    </button>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
+}
+
+// Função auxiliar para entrar no grupo
+function entrarGrupoLink(link) {
+    if (link && link !== '#') {
+        window.open(link, '_blank');
+        showToastMsg('🎉 Redirecionando para o grupo!', 'success');
+    } else {
+        showToastMsg('❌ Link do grupo não disponível', 'error');
+    }
 }
 
 function getEmojiCategoria(cat) {
@@ -10019,69 +10929,127 @@ function abrirDetalhesGrupoMelhorado(grupoID) {
     const grupo = gruposDataCompleto.find(g => g.grupoID === grupoID);
     if (!grupo) return;
     
+    const isDestaque = grupo.destaque || false;
+    const isNew = new Date(grupo.dataCriacao) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const isMuitoAtivo = grupo.participantes > 300;
+    const isAtivo = grupo.participantes > 100;
+    
+    // Detectar modo claro/escuro para cores dinâmicas
+    const isLightMode = document.body.classList.contains('light-mode');
+    
+    // Status de atividade
+    let statusClass = 'status-calmo';
+    let statusTexto = 'Calmo';
+    let statusIcon = 'fa-bed';
+    if (isMuitoAtivo) { 
+        statusClass = 'status-muito-ativo'; 
+        statusTexto = 'Muito Ativo'; 
+        statusIcon = 'fa-fire';
+    } else if (isAtivo) { 
+        statusClass = 'status-ativo'; 
+        statusTexto = 'Ativo'; 
+        statusIcon = 'fa-chart-line';
+    }
+    
+    // Cores do gradiente conforme o modo
+    const gradientStart = isLightMode ? '#667eea' : '#1a1a2e';
+    const gradientEnd = isLightMode ? '#764ba2' : '#0f3460';
+    
     Swal.fire({
         title: '',
         html: `
-            <div style="text-align: left;">
-                <!-- Cabeçalho com gradiente -->
-                <div style="background: linear-gradient(135deg, #2563eb, #1e40af); margin: -32px -32px 20px -32px; padding: 30px 20px; text-align: center; border-radius: 20px 20px 0 0;">
-                    <div style="width: 70px; height: 70px; background: white; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
-                        <i class="fab fa-whatsapp" style="font-size: 40px; color: #25D366;"></i>
+            <div class="grupo-modal-moderno">
+                <!-- Cabeçalho com gradiente dinâmico -->
+                <div class="modal-header-grupo" style="background: linear-gradient(135deg, ${gradientStart}, ${gradientEnd});">
+                    <div class="modal-avatar-grupo">
+                        ${grupo.imagem ? 
+                            `<img src="${grupo.imagem}" alt="${escapeHtml(grupo.nome)}">` : 
+                            '<i class="fab fa-whatsapp"></i>'
+                        }
                     </div>
-                    <h2 style="color: white; font-size: 22px; margin: 0;">${escapeHtml(grupo.nome || 'Grupo WhatsApp')}</h2>
-                    <div style="background: rgba(255,255,255,0.2); display: inline-block; padding: 4px 12px; border-radius: 30px; margin-top: 8px;">
-                        <span style="color: white; font-size: 12px;">${getEmojiCategoria(grupo.categoria)} ${escapeHtml(grupo.categoria || 'Geral')}</span>
+                    <h2 class="modal-nome-grupo" style="color: white;">${escapeHtml(grupo.nome || 'Grupo WhatsApp')}</h2>
+                    <div class="modal-categoria-grupo">
+                        ${getEmojiCategoria(grupo.categoria)} ${grupo.categoria || 'Geral'}
+                        ${grupo.verificado ? '<span class="verified-badge" style="background: rgba(16,185,129,0.15); color: #10b981;"><i class="fas fa-check-circle"></i> Verificado</span>' : ''}
+                        ${isDestaque ? '<span class="verified-badge" style="background: linear-gradient(135deg, #FFD700, #FFA500); color:#000;"><i class="fas fa-crown"></i> Destaque</span>' : ''}
+                        ${isNew ? '<span class="verified-badge" style="background: #10b981; color: white;"><i class="fas fa-clock"></i> Novo</span>' : ''}
                     </div>
                 </div>
                 
-                <!-- Informações -->
-                <div style="padding: 0 8px;">
-                    <div style="display: flex; gap: 16px; justify-content: center; margin-bottom: 20px;">
-                        <div style="text-align: center;">
-                            <div style="font-size: 22px; font-weight: 800;">${formatarNumero(grupo.participantes)}</div>
-                            <div style="font-size: 11px; color: #6b7280;">Membros</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 22px; font-weight: 800;">✓</div>
-                            <div style="font-size: 11px; color: #6b7280;">Verificado</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 22px; font-weight: 800;">📅</div>
-                            <div style="font-size: 11px; color: #6b7280;">Ativo</div>
+                <!-- Cards de estatísticas -->
+                <div class="modal-stats-grid">
+                    <div class="modal-stat-card">
+                        <i class="fas fa-user-friends"></i>
+                        <div>
+                            <div class="stat-number">${formatarNumero(grupo.participantes)}</div>
+                            <div class="stat-label">Membros</div>
                         </div>
                     </div>
-                    
-                    <div style="background: #f3f4f6; border-radius: 16px; padding: 16px; margin-bottom: 20px;">
-                        <h4 style="font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fas fa-info-circle" style="color: #2563eb;"></i> Sobre o grupo
-                        </h4>
-                        <p style="color: #4b5563; line-height: 1.5; margin: 0;">${escapeHtml(grupo.descricao || '✨ Grupo incrível esperando por você!')}</p>
+                    <div class="modal-stat-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <div class="stat-number">${grupo.estado || 'BR'}</div>
+                            <div class="stat-label">Localização</div>
+                        </div>
                     </div>
-                    
-                    <div style="display: flex; gap: 12px; margin-top: 8px;">
-                        <a href="${grupo.link}" target="_blank" class="btn-primary" style="flex: 1; text-align: center; text-decoration: none; background: #25D366; border-radius: 40px;">
-                            <i class="fab fa-whatsapp"></i> Entrar no grupo
-                        </a>
-                        <button onclick="copiarLinkGrupo('${grupo.link}')" class="btn-secondary" style="flex: 1; border-radius: 40px;">
-                            <i class="fas fa-copy"></i> Copiar link
-                        </button>
+                    <div class="modal-stat-card ${statusClass}">
+                        <i class="fas ${statusIcon}"></i>
+                        <div>
+                            <div class="stat-number">${statusTexto}</div>
+                            <div class="stat-label">Atividade</div>
+                        </div>
                     </div>
+                </div>
+                
+                <!-- Descrição -->
+                <div class="modal-descricao-grupo">
+                    <h4><i class="fas fa-info-circle"></i> Sobre o grupo</h4>
+                    <p>${escapeHtml(grupo.descricao || '✨ Comunidade incrível para você fazer parte! Conecte-se com pessoas que compartilham dos mesmos interesses.')}</p>
+                </div>
+                
+                <!-- Botões -->
+                <div class="modal-acoes-grupo">
+                    <a href="${grupo.link}" target="_blank" class="btn-whatsapp-modal" style="background: linear-gradient(135deg, #25D366, #128C7E); color: white;">
+                        <i class="fab fa-whatsapp"></i> Entrar no grupo
+                    </a>
+                    <button onclick="copiarLinkGrupo('${grupo.link}')" class="btn-copiar-modal">
+                        <i class="fas fa-copy"></i> Copiar link
+                    </button>
+                </div>
+                
+                <!-- Footer -->
+                <div class="modal-footer-grupo">
+                    <i class="fas fa-shield-alt"></i> Grupo seguro • Respeite as regras
                 </div>
             </div>
         `,
         showConfirmButton: false,
         showCancelButton: true,
         cancelButtonText: 'Fechar',
-        cancelButtonColor: '#6b7280',
+        cancelButtonColor: isLightMode ? '#9ca3af' : '#6b7280',
         width: '480px',
         padding: '0',
+        background: isLightMode ? '#FFFFFF' : 'var(--card)',
         customClass: {
-            popup: 'grupo-modal-profissional'
+            popup: 'grupo-modal-popup-estiloso'
         }
     });
 }
 
-// Função auxiliar para copiar link
+// Função auxiliar para copiar link (se não existir)
+function copiarLinkGrupo(link) {
+    navigator.clipboard.writeText(link).then(() => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Link copiado!',
+            timer: 1500,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end'
+        });
+    });
+}
+
 function copiarLinkGrupo(link) {
     navigator.clipboard.writeText(link).then(() => {
         Swal.fire({
@@ -10151,41 +11119,12 @@ function renderizarGrupos() {
 function abrirDetalhesGrupo(index) {
     const grupo = gruposData[index];
     if (!grupo) return;
-    grupoSelecionado = grupo;
     
-    const categoriaIcon = categoriasGrupos.find(c => c.nome === grupo.categoria)?.icone || '📌';
-    const isDestaque = grupo.destaque || index < 3;
+    // Fechar o modal antigo se estiver aberto
+    fecharModalGrupo();
     
-    let destaqueHtml = '';
-    if (isDestaque && index === 0) destaqueHtml = '<div style="background:linear-gradient(135deg,#FFD700,#FFA500);padding:8px 16px;border-radius:12px;margin-bottom:16px;text-align:center;"><i class="fas fa-crown"></i> GRUPO CAMPEÃO DO DIA</div>';
-    else if (isDestaque && index === 1) destaqueHtml = '<div style="background:linear-gradient(135deg,#ff6b6b,#ee5a24);padding:8px 16px;border-radius:12px;margin-bottom:16px;text-align:center;"><i class="fas fa-fire"></i> MAIS ATIVO DO NORDESTE</div>';
-    
-    document.getElementById('grupoModalTitle').innerHTML = `<div style="display:flex;align-items:center;gap:8px;">${categoriaIcon} ${grupo.nome || 'Grupo WhatsApp'}</div>`;
-    document.getElementById('grupoModalBody').innerHTML = `
-        ${destaqueHtml}
-        <div style="display:flex;gap:12px;margin-bottom:20px;">
-            <div class="grupo-avatar" style="width:70px;height:70px;font-size:32px;">${grupo.imagem ? `<img src="${grupo.imagem}" style="width:100%;height:100%;border-radius:16px;object-fit:cover;">` : '<i class="fab fa-whatsapp"></i>'}</div>
-            <div style="flex:1;">
-                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-                    <span class="grupo-categoria">${categoriaIcon} ${grupo.categoria}</span>
-                    <span class="grupo-categoria"><i class="fas fa-map-marker-alt"></i> ${grupo.estado}</span>
-                    ${grupo.verificado ? '<span class="grupo-categoria" style="background:rgba(16,185,129,0.1);color:#10b981;"><i class="fas fa-check-circle"></i> Verificado</span>' : ''}
-                </div>
-                <div class="grupo-stats"><span><i class="fas fa-user-friends"></i> ${formatarNumero(grupo.participantes)} membros</span><span><i class="fas fa-calendar"></i> Criado em ${new Date(grupo.dataCriacao).toLocaleDateString('pt-BR')}</span></div>
-            </div>
-        </div>
-        <div style="margin-bottom:20px;"><h4 style="font-weight:700;margin-bottom:8px;"><i class="fas fa-info-circle"></i> Sobre o grupo</h4><p style="color:var(--text2);line-height:1.6;">${grupo.descricao || '✨ Grupo incrível para você fazer parte!'}</p></div>
-        ${grupo.regras ? `<div style="margin-bottom:20px;background:rgba(239,68,68,0.05);border-radius:12px;padding:12px;"><h4 style="font-weight:700;margin-bottom:8px;"><i class="fas fa-gavel"></i> Regras</h4><p style="white-space:pre-line;">${grupo.regras}</p></div>` : ''}
-        <div><h4 style="font-weight:700;margin-bottom:8px;"><i class="fas fa-users"></i> Administradores</h4><div style="display:flex;flex-wrap:wrap;gap:8px;">${grupo.administradores.map(adm => `<span style="padding:4px 12px;background:var(--border);border-radius:20px;font-size:12px;"><i class="fas fa-shield-alt"></i> ${adm}</span>`).join('')}</div></div>
-    `;
-    
-    const btnEntrar = document.getElementById('btnEntrarGrupo');
-    btnEntrar.onclick = () => {
-        if (grupo.link) { window.open(grupo.link, '_blank'); showToastGrupo('🎉 Redirecionando para o grupo!', 'success'); }
-        else showToastGrupo('❌ Link não disponível', 'error');
-    };
-    
-    document.getElementById('grupoModal').style.display = 'flex';
+    // Chamar a função bonita com o grupoID
+    abrirDetalhesGrupoMelhorado(grupo.grupoID);
 }
 
 function compartilharGrupoFeed() {
