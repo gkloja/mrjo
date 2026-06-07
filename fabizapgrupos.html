@@ -3550,6 +3550,75 @@ body.light-mode .swal2-cancel {
 body.light-mode .swal2-cancel:hover {
     background: #6b7280 !important;
 }
+/* ========== ESTILO PARA CITAÇÕES COM > ========== */
+.quote-block {
+    background: rgba(37, 99, 235, 0.08);
+    border-left: 4px solid #2563eb;
+    padding: 10px 14px;
+    margin: 8px 0;
+    border-radius: 12px;
+    font-style: italic;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    animation: quoteFadeIn 0.4s ease;
+}
+
+.quote-block:hover {
+    background: rgba(37, 99, 235, 0.12);
+    transform: translateX(4px);
+}
+
+@keyframes quoteFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Estilo para modo claro */
+body.light-mode .quote-block {
+    background: rgba(37, 99, 235, 0.06);
+    border-left-color: #3b82f6;
+}
+
+body.light-mode .quote-block:hover {
+    background: rgba(37, 99, 235, 0.1);
+}
+/* ========== ESTILO PARA IMAGENS DE POSTS NORMAIS ========== */
+.post-media-normal {
+    margin: 12px 0 8px 0 !important;
+    border-radius: 16px !important;
+    overflow: hidden;
+}
+
+.post-media-normal img {
+    width: 100%;
+    max-height: 350px;
+    object-fit: contain;
+    border-radius: 16px;
+    background: #0A0A0A;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.post-media-normal img:hover {
+    transform: scale(1.01);
+}
+
+.post-media-normal video {
+    width: 100%;
+    max-height: 350px;
+    border-radius: 16px;
+}
+
+/* Para o modo claro */
+body.light-mode .post-media-normal img {
+    background: #F5F5F5;
+}
 </style>
 </head>
 <body>
@@ -7388,9 +7457,77 @@ function renderPost(post) {
     const podeInteragir = currentUser !== null;
     const comentariosCount = post.comments?.length || 0;
     
-    // 🔥 PEGAR A IMAGEM DO POST (se for divulgação de grupo)
-    const imagemGrupo = post.media && post.mediaType === 'image' ? post.media : null;
+    // DETECTAR SE É POST DE DIVULGAÇÃO DE GRUPO
+    const isDivulgacaoGrupo = post.text && (post.text.includes('chat.whatsapp.com'))
     
+    // PEGAR A IMAGEM SE EXISTIR
+    const temImagem = post.media && post.media !== '' && (post.mediaType === 'image' || post.media.match(/\.(jpg|jpeg|png|gif|webp)/i));
+    const imagemUrl = temImagem ? post.media : null;
+    
+    // SE FOR POST DE DIVULGAÇÃO, USA O CARD BONITO E NÃO MOSTRA IMAGEM SEPARADA
+    if (isDivulgacaoGrupo) {
+        return `
+            <div class="post-card" data-post-id="${post.id}">
+                <div class="post-header">
+                    <div class="post-avatar" onclick="event.stopPropagation(); abrirPerfilUsuario('${post.author?.id || ''}', '${escapeHtml(post.author?.nome || 'Usuário')}', '${post.author?.avatar || ''}')">
+                        <img src="${post.author?.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(post.author?.nome || 'Usuário') + '&background=7c4dff&color=fff'}" 
+                             style="width:100%;height:100%;border-radius:50%;object-fit:cover;" alt="Avatar">
+                    </div>
+                    <div class="post-header-info">
+                        <div class="post-author-row">
+                            <span class="post-author" onclick="abrirPerfilUsuario('${post.author?.id || ''}', '${escapeHtml(post.author?.nome || 'Usuário')}', '${post.author?.avatar || ''}')">${post.anonymous ? 'Anônimo' : escapeHtml(post.author?.nome || 'Usuário')}</span>
+                            <span class="post-time">· ${formatarData(post.createdAt)}</span>
+                        </div>
+                    </div>
+                    <button class="post-menu-btn" onclick="event.stopPropagation(); abrirMenuPost(${post.id})" title="Mais opções">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                </div>
+                
+                <div class="post-text">${tornarLinksClicaveis(post.text || '', imagemUrl)}</div>
+                
+                ${post.poll ? renderPoll(post.poll, post.id) : ''}
+                
+                <div class="post-actions-row">
+                    <button class="post-action-icon ${isLiked ? 'liked' : ''}" onclick="${podeInteragir ? `likePost(${post.id})` : `mostrarLoginPrompt()`}" title="Curtir">
+                        <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
+                        <span class="action-count">${post.likes?.length || 0}</span>
+                    </button>
+                    <button class="post-action-icon" onclick="${podeInteragir ? `abrirComentarios(${post.id})` : `mostrarLoginPrompt()`}" title="Comentar">
+                        <i class="far fa-comment"></i>
+                        <span class="action-count">${post.comments?.length || 0}</span>
+                    </button>
+                    <button class="post-action-icon" onclick="compartilharPost(${post.id})" title="Compartilhar">
+                        <i class="far fa-paper-plane"></i>
+                        <span class="action-count">${post.shares || 0}</span>
+                    </button>
+                </div>
+                
+                ${comentariosCount > 0 ? `
+                    <div class="post-comments-preview">
+                        ${(post.comments || []).slice(-2).map(c => `
+                            <div class="post-comment-item">
+                                <img class="post-comment-avatar" src="${c.author?.avatar || 'https://ui-avatars.com/api/?name=U&background=7c4dff&color=fff'}" 
+                                     onerror="this.src='https://ui-avatars.com/api/?name=U&background=7c4dff&color=fff'">
+                                <div class="post-comment-content">
+                                    <span class="post-comment-author">${escapeHtml(c.author?.nome || 'Anônimo')}</span>
+                                    <span class="post-comment-text">${escapeHtml(c.text?.substring(0, 80) || '')}${c.text?.length > 80 ? '...' : ''}</span>
+                                    <span class="post-comment-time">${formatarData(c.createdAt)}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                        ${comentariosCount > 2 ? `
+                            <button class="post-ver-mais" onclick="${podeInteragir ? `abrirComentarios(${post.id})` : `mostrarLoginPrompt()`}">
+                                Ver todos os ${comentariosCount} comentários
+                            </button>
+                        ` : ''}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+    
+    // SE FOR POST NORMAL (SEM SER DIVULGAÇÃO)
     return `
         <div class="post-card" data-post-id="${post.id}">
             <div class="post-header">
@@ -7409,10 +7546,18 @@ function renderPost(post) {
                 </button>
             </div>
             
-            <!-- 🔥 PASSAR A IMAGEM DO GRUPO PARA A FUNÇÃO -->
-            <div class="post-text">${tornarLinksClicaveis(post.text || '', imagemGrupo)}</div>
+            <!-- IMAGEM DO POST NORMAL -->
+            ${imagemUrl ? `<div class="post-media" style="margin-bottom: 12px; border-radius: 12px; overflow: hidden;">
+                <img src="${imagemUrl}" 
+                     alt="Imagem do post" 
+                     style="width: 100%; max-height: 400px; object-fit: contain; background: #0A0A0A; cursor: pointer; display: block;" 
+                     loading="lazy" 
+                     onclick="window.open('${imagemUrl}', '_blank')"
+                     onerror="this.style.display='none'">
+            </div>` : ''}
             
-            ${!imagemGrupo && post.media ? `<div class="post-media">${renderMedia(post.media, post.mediaType)}</div>` : ''}
+            <div class="post-text">${tornarLinksClicaveis(post.text || '', null)}</div>
+            
             ${post.poll ? renderPoll(post.poll, post.id) : ''}
             
             <div class="post-actions-row">
@@ -7455,7 +7600,7 @@ function renderPost(post) {
 }
 
     // ==================== INTERAÇÕES COM POSTS ====================
-    function renderMedia(mediaUrl, mediaType) {
+function renderMedia(mediaUrl, mediaType) {
     if (!mediaUrl) return '';
     
     // Verifica se é link do YouTube
@@ -7481,8 +7626,9 @@ function renderPost(post) {
             <div class="post-media" style="margin: 10px 0;">
                 <img src="${mediaUrl}" 
                      alt="Post" 
-                     style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 12px; display: block; background: rgba(0,0,0,0.05);" 
+                     style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 12px; display: block; background: rgba(0,0,0,0.05); cursor: pointer;" 
                      loading="lazy" 
+                     onclick="window.open('${mediaUrl}', '_blank')"
                      onerror="this.style.display='none'; this.parentElement.innerHTML='<a href=\'${mediaUrl}\' target=\'_blank\' style=\'color: #2563eb; text-decoration: underline;\'><i class=\'fas fa-image\'></i> Ver imagem</a>';">
             </div>`;
     }
@@ -8138,7 +8284,7 @@ async function deletarMidiaAposUso(midiaId) {
         console.error('Erro ao deletar mídia:', error);
     }
 }
-    async function enviarPost() {
+async function enviarPost() {
     if (!currentUser) { mostrarLoginPrompt(); return; }
     
     const text = document.getElementById('postText').value;
@@ -8160,6 +8306,17 @@ async function deletarMidiaAposUso(midiaId) {
         loadingSwal.close();
         
         if (!mediaUrl) return; // Erro no upload
+        
+        // ✅ NOTIFICAÇÃO DE SUCESSO DO UPLOAD - ADICIONADA AQUI!
+        Swal.fire({
+            icon: 'success',
+            title: 'Upload concluído!',
+            text: 'Sua imagem/vídeo foi anexado. Agora publique o post.',
+            timer: 1500,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end'
+        });
     }
     
     if (!text && !mediaUrl) {
@@ -10404,6 +10561,8 @@ function mudarSecao(section) {
 }
     // ==================== UTILITÁRIOS ====================
     // Função para tornar links clicáveis
+// Função para tornar links clicáveis e processar posts de divulgação
+// Função para tornar links clicáveis e processar posts de divulgação
 function tornarLinksClicaveis(texto, imagemUrl = null) {
     if (!texto) return '';
     
@@ -10417,7 +10576,26 @@ function tornarLinksClicaveis(texto, imagemUrl = null) {
         .replace(/&gt;/g, '>')
         .replace(/&amp;/g, '&');
     
-    // ========== 2. EXTRAIR DADOS DO POST DE DIVULGAÇÃO ==========
+    // ========== 2. PROCESSAR CITAÇÕES (COM >) ==========
+    // Detecta linhas que começam com "> " e aplica estilo especial
+    const quoteRegex = /^&gt;\s+(.+)$|^>\s+(.+)$/gm;
+    processado = processado.replace(quoteRegex, (match, p1, p2) => {
+        const quoteText = p1 || p2;
+        return `<div class="quote-block" style="background: rgba(37, 99, 235, 0.08); border-left: 4px solid #2563eb; padding: 10px 14px; margin: 8px 0; border-radius: 12px; font-style: italic; color: var(--text-color);">
+                    <i class="fas fa-quote-left" style="color: #2563eb; font-size: 12px; margin-right: 8px; opacity: 0.7;"></i>
+                    ${escapeHtml(quoteText)}
+                </div>`;
+    });
+    
+    // Também processa citações no meio do texto (não apenas no início da linha)
+    processado = processado.replace(/(?:^|>)\s*&gt;\s*([^<\n]+)/g, (match, quoteText) => {
+        return `<div class="quote-block" style="background: rgba(37, 99, 235, 0.08); border-left: 4px solid #2563eb; padding: 10px 14px; margin: 8px 0; border-radius: 12px; font-style: italic; color: var(--text-color);">
+                    <i class="fas fa-quote-left" style="color: #2563eb; font-size: 12px; margin-right: 8px; opacity: 0.7;"></i>
+                    ${escapeHtml(quoteText.trim())}
+                </div>`;
+    });
+    
+    // ========== 3. EXTRAIR DADOS DO POST DE DIVULGAÇÃO ==========
     const categoriaMatch = processado.match(/│\s*(.+?)\s*│/);
     const categoria = categoriaMatch ? categoriaMatch[1].trim() : null;
     
@@ -10434,16 +10612,17 @@ function tornarLinksClicaveis(texto, imagemUrl = null) {
     const linkMatch = processado.match(/chat\.whatsapp\.com\/[^\s<]+/);
     const link = linkMatch ? `https://${linkMatch[0]}` : null;
     
-    // ========== 3. SE FOR UM POST DE DIVULGAÇÃO ==========
+    // ========== 4. SE FOR UM POST DE DIVULGAÇÃO ==========
     if (categoria && nome) {
         let html = `<div class="divulgacao-container" style="background: var(--card); border-radius: 20px; margin: 12px 0; border: 1px solid var(--border); transition: all 0.3s ease; overflow: hidden;">`;
         
-        // ========== IMAGEM DO GRUPO (USA A IMAGEM DO POST) ==========
+        // ========== IMAGEM DO GRUPO ==========
         if (imagemUrl) {
             html += `
                 <div class="divulgacao-imagem" style="margin: 0; position: relative; overflow: hidden; max-height: 200px;">
                     <img src="${imagemUrl}" alt="${escapeHtml(nome)}" loading="lazy" 
-                         style="width: 100%; height: 100%; max-height: 200px; object-fit: cover; transition: transform 0.5s ease;"
+                         style="width: 100%; height: 100%; max-height: 200px; object-fit: cover; transition: transform 0.5s ease; cursor: pointer;"
+                         onclick="window.open('${imagemUrl}', '_blank')"
                          onerror="this.parentElement.innerHTML='<div class=\'divulgacao-avatar\' style=\'background: linear-gradient(135deg, #25D366, #128C7E); padding: 30px; text-align: center;\'><i class=\'fab fa-whatsapp\' style=\'font-size: 48px; color: white; opacity: 0.8;\'></i><h3 style=\'color: white; margin-top: 12px; font-size: 16px;\'>${escapeHtml(nome)}</h3></div>'">
                     <div class="divulgacao-imagem-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);"></div>
                     <div class="divulgacao-imagem-badge" style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 30px; font-size: 11px; font-weight: 600; color: white; display: flex; align-items: center; gap: 6px;">
@@ -10536,10 +10715,11 @@ function tornarLinksClicaveis(texto, imagemUrl = null) {
         return html;
     }
     
-    // ========== 4. SE NÃO FOR POST DE DIVULGAÇÃO ==========
+    // ========== 5. PROCESSAR FORMAtações BÁSICAS ==========
     processado = processado.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     processado = processado.replace(/\*(.*?)\*/g, '<em>$1</em>');
     
+    // ========== 6. PROCESSAR URLs ==========
     const urlRegex = /(https?:\/\/[^\s<]+)(?![^<]*>)/g;
     processado = processado.replace(urlRegex, (url) => {
         let cleanUrl = url.replace(/[.,;:!?)]$/, '');
@@ -10549,6 +10729,7 @@ function tornarLinksClicaveis(texto, imagemUrl = null) {
         return `<a href="${cleanUrl}" target="_blank" style="color: #2563eb; text-decoration: underline;">${cleanUrl}</a>`;
     });
     
+    // ========== 7. PROCESSAR VÍDEOS DO YOUTUBE ==========
     const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/gi;
     processado = processado.replace(youtubeRegex, (match, videoId) => {
         return `<div style="margin: 15px 0; border-radius: 12px; overflow: hidden;">
@@ -10558,11 +10739,13 @@ function tornarLinksClicaveis(texto, imagemUrl = null) {
                 </div>`;
     });
     
+    // ========== 8. PROCESSAR IMAGENS ==========
     const imgRegex = /(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|bmp)(?:\?[^\s]*)?)/gi;
     processado = processado.replace(imgRegex, (match) => {
-        return `<img src="${match}" style="max-width: 100%; max-height: 300px; border-radius: 12px; margin: 10px 0; object-fit: cover;" loading="lazy">`;
+        return `<img src="${match}" style="max-width: 100%; max-height: 300px; border-radius: 12px; margin: 10px 0; object-fit: cover; cursor: pointer;" loading="lazy" onclick="window.open('${match}', '_blank')">`;
     });
     
+    // ========== 9. PROCESSAR QUEBRAS DE LINHA ==========
     processado = processado.replace(/\n/g, '<br>');
     
     return processado;
