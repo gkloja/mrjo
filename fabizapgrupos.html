@@ -4192,7 +4192,7 @@ body.light-mode .post-media-normal img {
   let categoriaAtual = "Todos";
 let gruposDataCompleto = [];
     // ==================== CONFIGURAÇÃO ====================
-    const API_URL = 'http://br2.bronxyshost.com:4009';
+    const API_URL = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
     const USER_SESSION_KEY = 'neconecta_user_session';
     
     let currentUser = null;
@@ -4584,7 +4584,8 @@ function abrirFormularioDivulgarGrupo() {
                     formData.append('user_nome', currentUser.nome);
                     
                     const uploadResponse = await fetch(`${API_URL}/cliente06/midia-upload`, {
-                        method: 'POST',
+                        method: 'POST', mode: 'cors',
+                        
                         body: formData
                     });
                     
@@ -4611,7 +4612,7 @@ function abrirFormularioDivulgarGrupo() {
                     `💬 Divulgado no FabiZap Grupos`;
                 
                 const response = await fetch(`${API_URL}/cliente06/posts`, {
-                    method: 'POST',
+                    method: 'POST', mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         author: { id: currentUser.id, nome: currentUser.nome, avatar: currentUser.avatar },
@@ -5281,7 +5282,7 @@ async function enviarAudio(audioBlob, respostaContexto = null) {
     
     try {
         const response = await fetch(`${API_URL}/cliente06/chat-global/audio`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             body: formData
         });
         
@@ -5797,7 +5798,7 @@ async function reportarEstado() {
         const state = watchPlayer.getPlayerState() || 2;
         
         await fetch(`${API_URL}/cliente06/watch-rooms/${watchRoomAtual}/sync`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 currentTime: currentTime,
@@ -5898,7 +5899,7 @@ async function criarSalaWatch() {
     try {
         const videoId = getYouTubeId(videoUrl);
         const response = await fetch(`${API_URL}/cliente06/watch-rooms`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 title, videoUrl, videoId,
@@ -5957,7 +5958,7 @@ async function entrarSalaWatch(roomId) {
         }
         
         await fetch(`${API_URL}/cliente06/watch-rooms/${roomId}/join`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: currentUser.id, userName: currentUser.nome })
         });
@@ -6015,7 +6016,7 @@ async function enviarMsgWatch() {
     
     try {
         await fetch(`${API_URL}/cliente06/watch-rooms/${watchRoomAtual}/chat`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 userId: currentUser.id,
@@ -6359,7 +6360,7 @@ function pararOnlinePing() {
     // Notificar servidor que saiu
     if (currentUser) {
         fetch(`${API_URL}/cliente06/online/offline`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: currentUser.id })
         }).catch(() => {});
@@ -6372,7 +6373,7 @@ async function enviarOnlinePing() {
     
     try {
         const response = await fetch(`${API_URL}/cliente06/online/ping`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 userId: currentUser.id,
@@ -6767,7 +6768,7 @@ async function carregarMensagensPrivadas(outroUsuarioId) {
     try {
         // Marcar mensagens como lidas
         await fetch(`${API_URL}/cliente06/chat-privado/marcar-lidas`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 userId: currentUser.id,
@@ -6820,7 +6821,7 @@ async function enviarMensagemPrivada() {
     
     try {
         const response = await fetch(`${API_URL}/cliente06/chat-privado/enviar`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 remetenteId: currentUser.id,
@@ -6833,7 +6834,7 @@ async function enviarMensagemPrivada() {
             // Enviar notificação
             try {
                 await fetch(`${API_URL}/cliente06/notificacoes/criar`, {
-                    method: 'POST',
+                    method: 'POST', mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         de: currentUser.id,
@@ -7320,7 +7321,7 @@ async function denunciarPost(postId) {
     
     try {
         await fetch(`${API_URL}/cliente06/posts/${postId}/denunciar`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 userId: currentUser.id,
@@ -7663,7 +7664,7 @@ function renderMedia(mediaUrl, mediaType) {
     try {
         salvarCurtida(postId);
         const response = await fetch(`${API_URL}/cliente06/posts/${postId}/like`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: currentUser.id })
         });
@@ -7673,7 +7674,7 @@ function renderMedia(mediaUrl, mediaType) {
             if (post && post.author?.id && post.author.id !== currentUser.id) {
                 try {
                     await fetch(`${API_URL}/cliente06/notificacoes/criar`, {
-                        method: 'POST',
+                        method: 'POST', mode: 'cors',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             de: currentUser.id,
@@ -7788,7 +7789,7 @@ async function reagirComentario(postId, commentId, emoji) {
     
     try {
         const response = await fetch(`${API_URL}/cliente06/posts/${postId}/comments/${commentId}/reagir`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 userId: currentUser.id,
@@ -7821,7 +7822,7 @@ async function adicionarComentario(postId) {
     
     try {
         const response = await fetch(`${API_URL}/cliente06/posts/${postId}/comments`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 author: { 
@@ -7839,7 +7840,7 @@ async function adicionarComentario(postId) {
             if (post && post.author?.id && post.author.id !== currentUser.id) {
                 try {
                     await fetch(`${API_URL}/cliente06/notificacoes/criar`, {
-                        method: 'POST',
+                        method: 'POST', mode: 'cors',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             de: currentUser.id,
@@ -8028,7 +8029,7 @@ async function votarEnquete(postId, optionText) {
     try {
         salvarVoto(post.poll.id);
         const response = await fetch(`${API_URL}/cliente06/posts/${postId}/poll`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 userId: currentUser.id, 
@@ -8236,7 +8237,7 @@ async function enviarMidiaParaServidor(file) {
         console.log('🌐 Enviando para:', url);
         
         const response = await fetch(url, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             body: formData
         });
         
@@ -8274,7 +8275,7 @@ async function deletarMidiaAposUso(midiaId) {
     if (!midiaId) return;
     try {
         const response = await fetch(`${API_URL}/cliente06/midia-deletar-apos-uso`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ midia_id: midiaId })
         });
@@ -8377,7 +8378,7 @@ async function enviarPost() {
     
     try {
         const res = await fetch(`${API_URL}/cliente06/posts`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newPost)
         });
@@ -8538,7 +8539,7 @@ async function reagirMensagemChat(msgId, emoji) {
     
     try {
         const response = await fetch(`${API_URL}/cliente06/chat-global/mensagens/${msgId}/reagir`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 userId: currentUser.id,
@@ -8837,7 +8838,7 @@ function formatarDuracao(segundos) {
         if (!currentUser) { mostrarLoginPrompt(); return; }
         try {
             await fetch(`${API_URL}/cliente06/chat-global/mensagens/${id}/like`, {
-                method: 'POST',
+                method: 'POST', mode: 'cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userId: currentUser.id })
             });
@@ -8893,7 +8894,7 @@ function formatarDuracao(segundos) {
             };
             
             await fetch(`${API_URL}/cliente06/chat-global/mensagens/${respondendoPara.id}/responder`, {
-                method: 'POST',
+                method: 'POST', mode: 'cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ resposta })
             });
@@ -8915,7 +8916,7 @@ function formatarDuracao(segundos) {
             };
             
             const response = await fetch(`${API_URL}/cliente06/chat-global/mensagens`, {
-                method: 'POST',
+                method: 'POST', mode: 'cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(mensagem)
             });
@@ -9044,7 +9045,7 @@ async function enviarVaga() {
     
     try {
         const response = await fetch(`${API_URL}/cliente06/vagas/enviar`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 titulo,
@@ -9429,7 +9430,7 @@ async function buscarImagensBackground() {
         const promessa = (async (index, not) => {
             try {
                 const response = await fetch(`${API_URL}/api/noticia/imagem`, {
-                    method: 'POST',
+                    method: 'POST', mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ url: not.url })
                 });
@@ -9609,7 +9610,7 @@ async function gerarAudioNoticia(texto, voice = "Francisca") {
         });
         
         const response = await fetch(`${API_URL}/cliente06/tts/gerar`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ texto: textoLimpo, voz: voice })
         });
@@ -10340,7 +10341,7 @@ async function seguirUsuario(userId) {
     
     try {
         const response = await fetch(`${API_URL}/cliente06/seguir`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ seguidorId: currentUser.id, seguindoId: userId })
         });
@@ -10354,7 +10355,7 @@ async function seguirUsuario(userId) {
             // Enviar notificação
             try {
                 await fetch(`${API_URL}/cliente06/notificacoes/criar`, {
-                    method: 'POST',
+                    method: 'POST', mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         de: currentUser.id,
@@ -10374,7 +10375,7 @@ async function deixarDeSeguir(userId) {
     
     try {
         const response = await fetch(`${API_URL}/cliente06/deixar-de-seguir`, {
-            method: 'POST',
+            method: 'POST', mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 seguidorId: currentUser.id,
@@ -11319,7 +11320,7 @@ function compartilharGrupoFeed() {
     Swal.fire({ title: '📤 Compartilhando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
     
     fetch(`${API_URL}/cliente06/posts`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ author: { id: currentUser.id, nome: currentUser.nome, avatar: currentUser.avatar }, anonymous: false, text: postText, status: 'pending', createdAt: new Date().toISOString() })
     }).then(async res => {
         Swal.close();
