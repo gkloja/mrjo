@@ -4192,7 +4192,7 @@ body.light-mode .post-media-normal img {
   let categoriaAtual = "Todos";
 let gruposDataCompleto = [];
     // ==================== CONFIGURAÇÃO ====================
-    const API_URL = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009';
+    const API_URL = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
     const USER_SESSION_KEY = 'neconecta_user_session';
     
     let currentUser = null;
@@ -4741,13 +4741,13 @@ async function carregarDestaquesFeed() {
     
     try {
         // Carregar ranking para pegar os TOPs
-        const rankingResponse = await fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/ranking.json');
+        const rankingResponse = await fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009/ranking.json');
         if (!rankingResponse.ok) throw new Error('Erro ao carregar ranking');
         
         const ranking = await rankingResponse.json();
         
         // Carregar todos os grupos
-        const gruposResponse = await fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/grupos.json');
+        const gruposResponse = await fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009/grupos.json');
         const allGroupsData = await gruposResponse.json();
         
         // Função para encontrar grupo completo por nome ou link
@@ -4966,7 +4966,7 @@ function entrarGrupoDestaque(link) {
 }
 
 function abrirModalGrupoDestaque(grupoID) {
-    fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/grupos.json')
+    fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009/grupos.json')
         .then(res => res.json())
         .then(data => {
             const grupo = data.find(g => g.grupoID === grupoID);
@@ -5018,7 +5018,7 @@ function abrirModalGrupoDestaque(grupoID) {
         abrirDetalhesGrupoMelhorado(grupoID);
     } else {
         // Fallback: buscar grupo e abrir modal simples
-        fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/grupos.json')
+        fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009/grupos.json')
             .then(res => res.json())
             .then(data => {
                 const grupo = data.find(g => g.grupoID === grupoID);
@@ -10892,7 +10892,7 @@ let gruposData = [];
 let grupoSelecionado = null;
 let sortAtual = 'destaque';
 
-const GRUPOS_API_URL = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/grupos.json';
+const GRUPOS_API_URL = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009/grupos.json';
 
 const categoriasGrupos = [
     { nome: 'Tecnologia', icone: '💻' }, { nome: 'Música/Forró', icone: '🎵' },
@@ -10923,7 +10923,7 @@ async function carregarGruposMelhorado() {
     container.innerHTML = `<div class="skeleton-card" style="background: var(--card); border-radius: 20px; padding: 16px; height: 200px;"></div>`.repeat(3);
     
     try {
-        const response = await fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/grupos.json');
+        const response = await fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009/grupos.json');
         if (!response.ok) throw new Error('Erro ao carregar grupos');
         
         const data = await response.json();
