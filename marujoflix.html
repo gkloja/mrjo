@@ -3925,7 +3925,7 @@ function atualizarSidebarProgresso() {
         // ==========================================
     // ⚓ MOTOR SOCIAL (TAVERNA, AMIGOS E DMS)
     // ==========================================
-    const API_BASE = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009';
+    const API_BASE = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
     let marujoEmFoco = null; 
     let amigoPrivadoAtual = null; 
     let timerChatPrivado = null; 
@@ -4357,9 +4357,8 @@ msgList.innerHTML += `
 
         // O link da sua API
     // O link da sua API
-    const API_COMENTARIOS = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009';
+    const API_COMENTARIOS = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
   
-
             function abrirPerfilUsuario(id, nome, foto, nivel, patente) {
         // Guarda os dados para usar no botão de adicionar
         marujoEmFoco = { id, nome, foto, nivel, patente };
@@ -4408,7 +4407,7 @@ msgList.innerHTML += `
         };
 
         // Usa o mesmo link da API que você já tem
-        const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009';
+        const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
 
         try {
             const resposta = await fetch(`${linkApi}/adicionar_amigo`, {
@@ -5104,7 +5103,7 @@ save: async function() { // <--- Torna a função assíncrona
             history: this.history
         };
 
-        const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009';
+        const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
         try {
             await fetch(`${linkApi}/salvar_progresso`, {
                 method: 'POST',
@@ -5134,7 +5133,7 @@ save: async function() { // <--- Torna a função assíncrona
 async function verificarStatus(transactionId) {
     try {
         // 1. MONTA A URL COM O ID DA TRANSAÇÃO
-        const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009';
+        const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
         const url = `${linkApi}/api/doacoes/verificar/${transactionId}`;
         
         console.log(`📡 Chamando: ${url}`);
@@ -5285,7 +5284,7 @@ function updateLoadingScreen() {
 }
 async function carregarDataAtualizacao() {
     try {
-        const response = await fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/atualsite_metadata.json');
+        const response = await fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009/atualsite_metadata.json');
         const data = await response.json();
         document.getElementById('dataAtualizacao').textContent = data.ultima_atualizacao;
     } catch (error) {
@@ -5494,8 +5493,8 @@ function verificarAmbienteNavegacao() {
 
         const IPTVSystem = {
         config: { 
-            apiUrl: 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/lista.json', 
-            statsUrl: 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/user_data.json', 
+            apiUrl: 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009/lista.json', 
+            statsUrl: 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009/user_data.json', 
             itemsPerPage: 36 
         },
         todosItens: [], filtrados: [], generosUnicos: [], 
@@ -6727,7 +6726,7 @@ async function gerarPix() {
     btn.disabled = true;
     
     try {
-        const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009';
+        const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
         const response = await fetch(`${linkApi}/api/doacoes/gerar-pix`, {
             method: 'POST',
             mode: 'cors',
@@ -6831,7 +6830,7 @@ function iniciarVerificacaoPix(transactionId, dataExpiracao) {
             }
             
             // Faz a verificação no servidor
-            const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009';
+            const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
             const response = await fetch(`${linkApi}/api/doacoes/verificar/${transactionId}`);
             const data = await response.json();
             
@@ -6942,7 +6941,7 @@ window.addEventListener('load', () => {
                     iniciarVerificacaoPix(savedTransactionId, savedExpiracao);
                     
                     // Tenta buscar o QR Code novamente
-                    const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009';
+                    const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
                     fetch(`${linkApi}/api/doacoes/recuperar/${savedTransactionId}`)
                         .then(res => res.json())
                         .then(data => {
@@ -6969,7 +6968,7 @@ function verificarPagamentoAgora() {
     const statusElement = document.getElementById('pixStatus');
     statusElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
     
-    const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009';
+    const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
     fetch(`${linkApi}/api/doacoes/verificar/${transactionIdAtual}`)
         .then(res => res.json())
         .then(data => {
@@ -7039,7 +7038,7 @@ function atualizarContadorEspectadores() {
     lastHeartbeat = agora;
     
     // Faz a requisição para o backend
-const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009';
+const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
     fetch(`${linkApi}/api/viewers/${RADAR_CHANNEL_ID}`)
         .then(resposta => {
             if (!resposta.ok) {
@@ -7195,7 +7194,7 @@ async function registrarUsuarioNoOneSignal(user) {
       // Se logou, busca os dados salvos no seu servidor
       ToastSystem.show("Sincronizando com o Navio Principal...", "info");
 
-      const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009';
+      const linkApi = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
       try {
         const resposta = await fetch(`${linkApi}/ler_progresso/${user.uid}`, { method: 'GET', mode: 'cors' });
         if (resposta.ok) {
