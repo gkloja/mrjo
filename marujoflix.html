@@ -5503,7 +5503,7 @@ function verificarAmbienteNavegacao() {
         busca: '', generoAtivo: 'all', paginaAtual: 1, abaAtual: 'todos', searchTimeout: null,
         irParaVideo: function(itemId) {
             userProgress.addXP(25); 
-            window.location.href = `https://marujodigital.onrender.com/proxy?url=https://fabibot.vercel.app/player/${itemId}`;
+            window.location.href = `https://marujodigital.onrender.com/proxy?url=https://fabibot-taupe.vercel.app/player/${itemId}`;
         },
 
         // --- NOVO SISTEMA DE RECOMPENSA FLUTUANTE ---
@@ -5914,7 +5914,7 @@ atualizarViewsNosItens: function() {
                 <p><strong>✅ SOLUÇÃO RÁPIDA:</strong></p>
                 <p>1. Execute no terminal do servidor:</p>
                 <code style="display: block; background: black; color: #00ffb3; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                curl -s https://fabibot.vercel.app/lista.m3u | awk '...' > ./public/lista.json
+                curl -s https://fabibot-taupe.vercel.app/lista.m3u | awk '...' > ./public/lista.json
                 </code>
                 <p>2. Verifique se o arquivo foi criado:</p>
                 <code style="display: block; background: black; color: #00ffb3; padding: 10px; border-radius: 5px; margin: 10px 0;">
@@ -6485,7 +6485,7 @@ removerDoHistorico: function(event, itemId) {
                 irParaVideo: function(itemId) {
             userProgress.addXP(25); 
             // Usa o itemId específico que veio do clique no botão
-            window.location.href = `https://marujodigital.onrender.com/proxy?url=https://fabibot.vercel.app/player/${itemId}`;
+            window.location.href = `https://marujodigital.onrender.com/proxy?url=https://fabibot-taupe.vercel.app/player/${itemId}`;
         }
                 
 
@@ -6529,7 +6529,7 @@ window.compartilharFilmeAtivo = async function() {
         
         // Adiciona proxy CORS à URL da logo
         const logoComCors = `${logoUrl.replace(/^https?:\/\//, '')}`;
-        const linkApi = 'https://fabibot.vercel.app';
+        const linkApi = 'https://fabibot-taupe.vercel.app';
         
         // Gera uma nota de avaliação realista (entre 7.0 e 9.5)
         const nota = (Math.random() * 2.5 + 7.0).toFixed(1);
@@ -6589,7 +6589,7 @@ window.compartilharFilmeAtivo = async function() {
         }
         
         // Fallback: gera o link manualmente
-        const shareUrlManual = `https://fabibot.vercel.app/compartilhar?logo=${encodeURIComponent(logoComCors)}&titulo=${encodeURIComponent(title)}&desc=${encodeURIComponent(`▶️Clique e assita`)}`;
+        const shareUrlManual = `https://fabibot-taupe.vercel.app/compartilhar?logo=${encodeURIComponent(logoComCors)}&titulo=${encodeURIComponent(title)}&desc=${encodeURIComponent(`▶️Clique e assita`)}`;
         
         const textoCompartilhamento = 
             `${shareUrlManual}  \n\n\n\n` +
