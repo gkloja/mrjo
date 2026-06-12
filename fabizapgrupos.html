@@ -3619,6 +3619,515 @@ body.light-mode .quote-block:hover {
 body.light-mode .post-media-normal img {
     background: #F5F5F5;
 }
+/* ========== DESTAQUES PREMIUM ========== */
+.destaque-premium-section {
+    margin-bottom: 28px;
+    position: relative;
+}
+
+.destaque-premium-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.destaque-premium-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.destaque-premium-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #FFD700, #FFA500, #FF6B6B);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: gradientShift 3s ease infinite;
+    background-size: 200% 200%;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.destaque-premium-icon i {
+    font-size: 22px;
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.destaque-premium-title h3 {
+    font-size: 20px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.destaque-premium-badge {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    padding: 5px 14px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    animation: pulse 2s infinite;
+}
+
+.destaque-premium-badge i {
+    font-size: 12px;
+}
+
+/* Carrossel horizontal */
+.destaque-carrossel {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 8px 4px 12px 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) var(--border);
+}
+
+.destaque-carrossel::-webkit-scrollbar {
+    height: 5px;
+}
+
+.destaque-carrossel::-webkit-scrollbar-track {
+    background: var(--border);
+    border-radius: 10px;
+}
+
+.destaque-carrossel::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
+
+/* Card Premium - PROPORCIONAL */
+.destaque-card-premium {
+    min-width: 300px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    background: var(--card);
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.destaque-card-premium:hover {
+    transform: translateY(-6px);
+    border-color: var(--primary);
+    box-shadow: 0 20px 30px -12px rgba(0,0,0,0.3);
+}
+
+/* Efeito de brilho no hover */
+.destaque-card-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    transition: left 0.6s ease;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.destaque-card-premium:hover::before {
+    left: 100%;
+}
+
+/* Imagem de capa - PROPORCIONAL */
+.destaque-card-cover {
+    position: relative;
+    height: 130px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.destaque-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.destaque-card-premium:hover .destaque-card-cover img {
+    transform: scale(1.08);
+}
+
+.destaque-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+}
+
+/* Ranking Badge */
+.ranking-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 10px;
+    font-weight: 800;
+    color: #000;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    z-index: 3;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    backdrop-filter: blur(2px);
+}
+
+.ranking-badge i {
+    font-size: 11px;
+}
+
+.ranking-badge.fire {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+}
+
+.ranking-badge.crown {
+    background: linear-gradient(135deg, #FFD700, #DAA520);
+    color: #000;
+}
+
+/* Avatar do criador */
+.destaque-creator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px 0 14px;
+    flex-shrink: 0;
+}
+
+.destaque-creator-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary);
+}
+
+.destaque-creator-name {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text2);
+}
+
+.destaque-creator-name span {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* Conteúdo do card */
+.destaque-card-content {
+    padding: 10px 14px 14px 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.destaque-card-categoria {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(37,99,235,0.12);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    width: fit-content;
+}
+
+.destaque-card-nome {
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+
+.destaque-card-descricao {
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 10px;
+    flex: 1;
+}
+
+/* Stats row */
+.destaque-stats-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.destaque-stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--text2);
+}
+
+.destaque-stat i {
+    font-size: 10px;
+}
+
+/* Botão entrar */
+.destaque-btn-entrar {
+    width: 100%;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 40px;
+    color: white;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: auto;
+}
+
+.destaque-btn-entrar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37,211,102,0.4);
+    gap: 10px;
+}
+
+.destaque-btn-entrar i:first-child {
+    font-size: 14px;
+}
+
+.destaque-btn-entrar i:last-child {
+    font-size: 10px;
+    transition: transform 0.3s;
+}
+
+.destaque-btn-entrar:hover i:last-child {
+    transform: translateX(3px);
+}
+
+/* Card skeleton */
+.destaque-skeleton-card {
+    min-width: 300px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    background: var(--card);
+    border-radius: 20px;
+    overflow: hidden;
+    animation: pulse 1.5s infinite;
+}
+
+.destaque-skeleton-cover {
+    height: 130px;
+    background: linear-gradient(90deg, var(--border), #2a2a2a, var(--border));
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.destaque-skeleton-content {
+    padding: 14px;
+}
+
+.destaque-skeleton-line {
+    height: 10px;
+    background: linear-gradient(90deg, var(--border), #2a2a2a, var(--border));
+    background-size: 200% 100%;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    animation: shimmer 1.5s infinite;
+}
+
+.destaque-skeleton-line.short {
+    width: 60%;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+}
+
+/* Botão ver tudo */
+.btn-ver-tudo {
+    background: rgba(37,99,235,0.1);
+    border: 1px solid var(--border);
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-ver-tudo:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    transform: translateX(4px);
+}
+
+/* Modo claro */
+body.light-mode .destaque-card-premium {
+    background: #FFFFFF;
+}
+
+body.light-mode .destaque-skeleton-cover {
+    background: linear-gradient(90deg, #e5e7eb, #f3f4f6, #e5e7eb);
+    background-size: 200% 100%;
+}
+
+body.light-mode .destaque-skeleton-line {
+    background: linear-gradient(90deg, #e5e7eb, #f3f4f6, #e5e7eb);
+    background-size: 200% 100%;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .destaque-card-premium {
+        min-width: 260px;
+        max-width: 280px;
+    }
+    
+    .destaque-card-cover {
+        height: 110px;
+    }
+    
+    .destaque-premium-title h3 {
+        font-size: 16px;
+    }
+    
+    .destaque-premium-icon {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .destaque-premium-icon i {
+        font-size: 16px;
+    }
+    
+    .destaque-card-nome {
+        font-size: 14px;
+    }
+    
+    .destaque-card-descricao {
+        font-size: 10px;
+    }
+    
+    .destaque-stats-row {
+        gap: 8px;
+    }
+    
+    .destaque-stat {
+        font-size: 9px;
+    }
+    
+    .destaque-btn-entrar {
+        padding: 7px 10px;
+        font-size: 11px;
+    }
+}
+/* Botão Grupo estilizado */
+#grupoOption {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+#grupoOption::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(37, 211, 102, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+#grupoOption:hover::before {
+    left: 100%;
+}
+
+#grupoOption:hover {
+    background: linear-gradient(135deg, #25D366, #128C7E) !important;
+    transform: translateY(-2px);
+}
+
+#grupoOption:hover i {
+    color: white !important;
+}
+
+#grupoOption i {
+    transition: all 0.3s ease;
+}
+
+/* Badge de novidade no botão */
+#grupoOption {
+    position: relative;
+}
+
+#grupoOption::after {
+    content: 'NOVO';
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 20px;
+    animation: pulse 1.5s infinite;
+}
 </style>
 </head>
 <body>
@@ -3787,37 +4296,73 @@ body.light-mode .post-media-normal img {
                 <div class="create-post-header">
                     <div class="create-post-avatar" id="currentUserAvatar">👤</div>
                     <div class="create-post-input" id="createPostInput">
-                        <i class="fas fa-pen"></i> O que você está pensando?
+                        <i class="fas fa-pen"></i>  Vamos divulgar o que hoje??
                     </div>
                 </div>
-                <div class="create-post-options">
-                    <button class="post-option" id="fotoOption"><i class="fas fa-image"></i> Foto</button>
-                    <button class="post-option" id="videoOption"><i class="fas fa-video"></i> Vídeo</button>
-                    <button class="post-option" id="enqueteOption"><i class="fas fa-chart-simple"></i> Enquete</button>
-                </div>
+<div class="create-post-options">
+    <button class="post-option" id="fotoOption"><i class="fas fa-image"></i> Foto</button>
+    <button class="post-option" id="videoOption"><i class="fas fa-video"></i> Vídeo</button>
+    <button class="post-option" id="enqueteOption"><i class="fas fa-chart-simple"></i> Enquete</button>
+    <button class="post-option" id="grupoOption" style="background: linear-gradient(135deg, #25D36615, #128C7E15); border: 1px solid #25D36630;">
+        <i class="fab fa-whatsapp" style="color: #25D366;"></i> Grupo
+    </button>
+</div>
             </div>
             <!-- SEÇÃO DE GRUPOS EM DESTAQUE NO FEED -->
-<div class="destaque-grupos-feed" id="destaqueGruposFeed" style="margin-bottom: 24px;">
-    <div class="destaque-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #25D366, #128C7E); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                <i class="fab fa-whatsapp" style="color: white; font-size: 18px;"></i>
+
+<!-- SEÇÃO DE GRUPOS EM DESTAQUE - VERSÃO PREMIUM -->
+<div class="destaque-premium-section" id="destaquePremiumSection">
+    <div class="destaque-premium-header">
+        <div class="destaque-premium-title">
+            <div class="destaque-premium-icon">
+                <i class="fas fa-trophy"></i>
             </div>
             <div>
-                <h3 style="font-size: 16px; font-weight: 700;">Comunidades em Destaque</h3>
-                <p style="font-size: 11px; color: var(--text2);">Grupos verificados esperando por você</p>
+                <h3>Comunidades em Destaque</h3>
+                <p style="font-size: 11px; color: var(--text2);">Os melhores grupos do momento 🔥</p>
             </div>
         </div>
-        <a href="#" onclick="mudarSecao('comunidades'); return false;" style="font-size: 12px; color: var(--primary); text-decoration: none;">
-            Ver todos <i class="fas fa-arrow-right"></i>
-        </a>
+        <div class="destaque-premium-badge">
+            <i class="fas fa-chart-line"></i>
+            <span>Atualizado agora</span>
+        </div>
     </div>
     
-    <div id="destaqueGruposContainer" style="display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;">
-        <!-- Cards serão inseridos via JS -->
-        <div class="destaque-skeleton" style="min-width: 280px; background: var(--card); border-radius: 16px; height: 160px; animation: pulse 1.5s infinite;"></div>
-        <div class="destaque-skeleton" style="min-width: 280px; background: var(--card); border-radius: 16px; height: 160px; animation: pulse 1.5s infinite 0.2s;"></div>
-        <div class="destaque-skeleton" style="min-width: 280px; background: var(--card); border-radius: 16px; height: 160px; animation: pulse 1.5s infinite 0.4s;"></div>
+    <div class="destaque-carrossel" id="destaqueCarrosselContainer">
+        <!-- Skeletons -->
+        <div class="destaque-skeleton-card">
+            <div class="destaque-skeleton-cover"></div>
+            <div class="destaque-skeleton-content">
+                <div class="destaque-skeleton-line short"></div>
+                <div class="destaque-skeleton-line"></div>
+                <div class="destaque-skeleton-line"></div>
+                <div class="destaque-skeleton-line short" style="width: 40%;"></div>
+            </div>
+        </div>
+        <div class="destaque-skeleton-card">
+            <div class="destaque-skeleton-cover"></div>
+            <div class="destaque-skeleton-content">
+                <div class="destaque-skeleton-line short"></div>
+                <div class="destaque-skeleton-line"></div>
+                <div class="destaque-skeleton-line"></div>
+                <div class="destaque-skeleton-line short" style="width: 40%;"></div>
+            </div>
+        </div>
+        <div class="destaque-skeleton-card">
+            <div class="destaque-skeleton-cover"></div>
+            <div class="destaque-skeleton-content">
+                <div class="destaque-skeleton-line short"></div>
+                <div class="destaque-skeleton-line"></div>
+                <div class="destaque-skeleton-line"></div>
+                <div class="destaque-skeleton-line short" style="width: 40%;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div style="text-align: right; margin-top: 8px;">
+        <button class="btn-ver-tudo" onclick="mudarSecao('comunidades')">
+            Ver todas as comunidades <i class="fas fa-arrow-right"></i>
+        </button>
     </div>
 </div>
             <div id="postsContainer">
@@ -4058,7 +4603,7 @@ body.light-mode .post-media-normal img {
             <div class="comunidades-title-section">
                 <h2 class="comunidades-title" style="font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 10px;">
                     <i class="fab fa-whatsapp" style="color: #25D366;"></i>
-                    <span class="gradient-text">Comunidades do Nordeste</span>
+                    <span class="gradient-text">Grupos</span>
                 </h2>
                 <p class="comunidades-subtitle" style="color: var(--text2); margin-top: 4px;">
                     Encontre grupos de WhatsApp da sua região e conecte-se com pessoas que compartilham seus interesses
@@ -4205,6 +4750,8 @@ let gruposDataCompleto = [];
 
     // ==================== FUNÇÕES DE PERSISTÊNCIA ====================
     
+// ==================== FUNÇÕES DE PERSISTÊNCIA CORRIGIDAS ====================
+
 function salvarSessao() {
     if (!currentUser) {
         localStorage.removeItem(USER_SESSION_KEY);
@@ -4223,34 +4770,53 @@ function salvarSessao() {
     };
     
     localStorage.setItem(USER_SESSION_KEY, JSON.stringify(sessao));
-    console.log('💾 Sessão salva:', sessao.nome);
+    console.log('💾 Sessão completa salva:', sessao.nome, '| Seguidores:', sessao.seguidores.length, '| Seguindo:', sessao.seguindo.length);
 }
+
+function restaurarSessao() {
+    const sessao = localStorage.getItem(USER_SESSION_KEY);
     
-    function restaurarSessao() {
-        const sessao = localStorage.getItem(USER_SESSION_KEY);
-        
-        if (sessao) {
-            try {
-                const dados = JSON.parse(sessao);
-                console.log('🔄 Restaurando sessão:', dados.nome);
-                
-                currentUser = {
-                    id: dados.id,
-                    nome: dados.nome,
-                    email: dados.email,
-                    avatar: dados.avatar,
-                    provider: dados.provider
-                };
-                
-                atualizarPerfilUI();
-                return true;
-            } catch (e) {
-                console.error('Erro ao restaurar sessão:', e);
-            }
+    if (sessao) {
+        try {
+            const dados = JSON.parse(sessao);
+            console.log('🔄 Restaurando sessão completa:', dados.nome);
+            
+            currentUser = {
+                id: dados.id,
+                nome: dados.nome,
+                email: dados.email,
+                avatar: dados.avatar,
+                provider: dados.provider,
+                seguidores: dados.seguidores || [],
+                seguindo: dados.seguindo || []
+            };
+            
+            atualizarPerfilUI();
+            
+            // ✅ Forçar recarregamento dos posts para sincronizar seguidores do servidor
+            setTimeout(async () => {
+                try {
+                    const response = await fetch(`${API_URL}/cliente06/seguidores/${currentUser.id}`);
+                    const data = await response.json();
+                    currentUser.seguidores = data.seguidores || [];
+                    currentUser.seguindo = data.seguindo || [];
+                    salvarSessao(); // Atualiza o cache local
+                    atualizarPerfilUI();
+                    console.log('🔄 Dados de seguidores sincronizados com o servidor');
+                } catch (error) {
+                    console.log('⚠️ Erro ao sincronizar seguidores, usando cache local');
+                }
+            }, 500);
+            
+            return true;
+        } catch (e) {
+            console.error('Erro ao restaurar sessão:', e);
+            localStorage.removeItem(USER_SESSION_KEY);
         }
-        
-        return false;
     }
+    
+    return false;
+}
     
     
     
@@ -4365,6 +4931,37 @@ function vibrar(duracao) {
 
 // ==================== DIVULGAR GRUPO (DESIGN RENOVADO) ====================
 
+// Adicionar evento para o botão Grupo
+function initGrupoButton() {
+    const grupoBtn = document.getElementById('grupoOption');
+    if (grupoBtn) {
+        grupoBtn.onclick = () => {
+            if (currentUser) {
+                abrirFormularioDivulgarGrupo();
+            } else {
+                mostrarLoginPrompt();
+            }
+        };
+    }
+}
+
+// Atualizar a função atualizarPerfilUI para incluir o botão grupo
+const atualizarPerfilUIOriginal = atualizarPerfilUI;
+atualizarPerfilUI = function() {
+    atualizarPerfilUIOriginal();
+    
+    // Configurar botão de grupo
+    const grupoBtn = document.getElementById('grupoOption');
+    if (grupoBtn) {
+        grupoBtn.onclick = () => {
+            if (currentUser) {
+                abrirFormularioDivulgarGrupo();
+            } else {
+                mostrarLoginPrompt();
+            }
+        };
+    }
+};
 function abrirFormularioDivulgarGrupo() {
     if (!currentUser) {
         mostrarLoginPrompt();
@@ -4737,209 +5334,399 @@ function ocultarIndicadorGravacao() {
 // ==================== GRUPOS EM DESTAQUE NO FEED (MAIS ATIVO + MAIS RICO) ====================
 
 async function carregarDestaquesFeed() {
-    const container = document.getElementById('destaqueGruposContainer');
-    if (!container) return;
+    const container = document.getElementById('destaqueCarrosselContainer');
+    if (!container) {
+        console.error('❌ Container destaqueCarrosselContainer não encontrado');
+        return;
+    }
     
     try {
+        console.log('🔄 Carregando destaques...');
+        
         // Carregar ranking para pegar os TOPs
         const rankingResponse = await fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009/ranking.json');
         if (!rankingResponse.ok) throw new Error('Erro ao carregar ranking');
         
         const ranking = await rankingResponse.json();
+        console.log('📊 Ranking carregado');
         
         // Carregar todos os grupos
         const gruposResponse = await fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009/grupos.json');
         const allGroupsData = await gruposResponse.json();
+        console.log('📦 Grupos carregados:', allGroupsData.length);
         
-        // Função para encontrar grupo completo por nome ou link
+        // Função segura para escapar HTML
+        function safeEscapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+        
+        // Função segura para encodeURIComponent
+        function safeEncodeURI(str) {
+            if (!str) return 'G';
+            try {
+                return encodeURIComponent(String(str).substring(0, 1));
+            } catch (e) {
+                return 'G';
+            }
+        }
+        
+        // Função para encontrar grupo completo
         function encontrarGrupo(grupoRanking) {
-            // Tenta encontrar pelo nome
+            if (!grupoRanking) return null;
+            
             let grupo = allGroupsData.find(g => 
-                g.nome === grupoRanking.nome || 
-                g.grupoID === grupoRanking.grupoID
+                g.grupoID === grupoRanking.grupoID || 
+                g.nome === grupoRanking.nome
             );
             
-            // Se não encontrou, tenta pelo link
             if (!grupo && grupoRanking.link) {
+                const linkPart = String(grupoRanking.link).split('/').pop();
                 grupo = allGroupsData.find(g => 
-                    g.link === grupoRanking.link ||
-                    (g.link && grupoRanking.link && g.link.includes(grupoRanking.link.split('/').pop()))
+                    g.link && String(g.link).includes(linkPart)
                 );
             }
             
             return grupo;
         }
         
-        // Pegar o grupo MAIS ATIVO (#1 do ranking)
-        const grupoMaisAtivoRanking = ranking.top10Ativos?.[0];
-        let grupoMaisAtivo = null;
-        let grupoMaisRico = null;
-        let gruposAdicionais = [];
+        // Array para armazenar os destaques
+        const destaques = [];
         
+        // 1. PEGAR GRUPO MAIS ATIVO
+        const grupoMaisAtivoRanking = ranking.top10Ativos?.[0];
         if (grupoMaisAtivoRanking) {
-            grupoMaisAtivo = encontrarGrupo(grupoMaisAtivoRanking);
-            if (!grupoMaisAtivo) {
-                // Criar objeto básico se não encontrado
-                grupoMaisAtivo = {
-                    grupoID: grupoMaisAtivoRanking.grupoID || `rank_ativo_${Date.now()}`,
-                    nome: grupoMaisAtivoRanking.nome || 'Grupo Ativo',
+            let grupo = encontrarGrupo(grupoMaisAtivoRanking);
+            if (!grupo) {
+                grupo = {
+                    grupoID: grupoMaisAtivoRanking.grupoID || `ativo_${Date.now()}`,
+                    nome: grupoMaisAtivoRanking.nome || '🔥 Grupo Mais Ativo',
                     link: grupoMaisAtivoRanking.link || '#',
-                    participantes: grupoMaisAtivoRanking.participantes || '?',
+                    participantes: grupoMaisAtivoRanking.participantes || 500,
                     categoria: grupoMaisAtivoRanking.categoria || 'Destaque',
-                    descricao: `🔥 Grupo #1 em atividade! Mais de ${grupoMaisAtivoRanking.atividade?.toLocaleString() || 'milhares'} interações nas últimas 24h.`,
-                    emDestaque: true,
+                    descricao: `🔥 #1 EM ATIVIDADE! Mais de ${(grupoMaisAtivoRanking.atividade || 2500).toLocaleString()} interações nas últimas 24h.`,
+                    estado: grupoMaisAtivoRanking.estado || 'Brasil',
+                    imagem: grupoMaisAtivoRanking.imagem || null,
                     tipoDestaque: 'maisAtivo'
                 };
             } else {
-                grupoMaisAtivo.tipoDestaque = 'maisAtivo';
-                grupoMaisAtivo.emDestaque = true;
+                grupo.tipoDestaque = 'maisAtivo';
+                if (!grupo.descricao) {
+                    grupo.descricao = `🔥 Grupo mais ativo do momento! Venha participar.`;
+                }
             }
+            destaques.push(grupo);
         }
         
-        // Pegar o grupo MAIS RICO (#1 do ranking)
+        // 2. PEGAR GRUPO MAIS RICO
         const grupoMaisRicoRanking = ranking.top10Ricos?.[0];
-        
         if (grupoMaisRicoRanking) {
-            grupoMaisRico = encontrarGrupo(grupoMaisRicoRanking);
-            if (!grupoMaisRico) {
-                grupoMaisRico = {
-                    grupoID: grupoMaisRicoRanking.grupoID || `rank_rico_${Date.now()}`,
-                    nome: grupoMaisRicoRanking.nome || 'Grupo Premium',
+            let grupo = encontrarGrupo(grupoMaisRicoRanking);
+            if (!grupo) {
+                grupo = {
+                    grupoID: grupoMaisRicoRanking.grupoID || `rico_${Date.now()}`,
+                    nome: grupoMaisRicoRanking.nome || '💰 Grupo Premium',
                     link: grupoMaisRicoRanking.link || '#',
-                    participantes: grupoMaisRicoRanking.participantes || '?',
+                    participantes: grupoMaisRicoRanking.participantes || 300,
                     categoria: grupoMaisRicoRanking.categoria || 'Premium',
-                    descricao: `💰 Grupo #1 em riqueza! Média de ${formatarGolds(grupoMaisRicoRanking.mediaGolds)} golds por membro.`,
-                    emDestaque: true,
+                    descricao: `💰 #1 EM RIQUEZA! Grupo de alto nível.`,
+                    estado: grupoMaisRicoRanking.estado || 'Brasil',
+                    imagem: grupoMaisRicoRanking.imagem || null,
                     tipoDestaque: 'maisRico'
                 };
             } else {
-                grupoMaisRico.tipoDestaque = 'maisRico';
-                grupoMaisRico.emDestaque = true;
+                grupo.tipoDestaque = 'maisRico';
+                if (!grupo.descricao) {
+                    grupo.descricao = `💰 Grupo premium com os membros mais ricos da plataforma!`;
+                }
             }
+            destaques.push(grupo);
         }
         
-        // Pegar mais 2 grupos do ranking (2º e 3º de ativos ou ricos)
+        // 3. PEGAR SEGUNDO MAIS ATIVO
         const segundoAtivo = ranking.top10Ativos?.[1];
-        const terceiroAtivo = ranking.top10Ativos?.[2];
-        
-        if (segundoAtivo) {
+        if (segundoAtivo && destaques.length < 4) {
             let grupo = encontrarGrupo(segundoAtivo);
             if (!grupo) {
                 grupo = {
-                    grupoID: segundoAtivo.grupoID || `rank_2_${Date.now()}`,
-                    nome: segundoAtivo.nome || 'Grupo em Alta',
+                    grupoID: segundoAtivo.grupoID || `ativo2_${Date.now()}`,
+                    nome: segundoAtivo.nome || '🚀 Grupo em Alta',
                     link: segundoAtivo.link || '#',
-                    participantes: segundoAtivo.participantes || '?',
+                    participantes: segundoAtivo.participantes || 400,
                     categoria: segundoAtivo.categoria || 'Destaque',
-                    descricao: `🔥 Entre os mais ativos do momento!`,
+                    descricao: `🚀 Entre os mais ativos! Comunidade vibrante.`,
+                    estado: segundoAtivo.estado || 'Brasil',
+                    imagem: segundoAtivo.imagem || null
                 };
             }
-            gruposAdicionais.push(grupo);
+            destaques.push(grupo);
         }
         
-        if (terceiroAtivo) {
+        // 4. PEGAR TERCEIRO MAIS ATIVO
+        const terceiroAtivo = ranking.top10Ativos?.[2];
+        if (terceiroAtivo && destaques.length < 5) {
             let grupo = encontrarGrupo(terceiroAtivo);
             if (!grupo) {
                 grupo = {
-                    grupoID: terceiroAtivo.grupoID || `rank_3_${Date.now()}`,
-                    nome: terceiroAtivo.nome || 'Grupo Promissor',
+                    grupoID: terceiroAtivo.grupoID || `ativo3_${Date.now()}`,
+                    nome: terceiroAtivo.nome || '⭐ Grupo Promissor',
                     link: terceiroAtivo.link || '#',
-                    participantes: terceiroAtivo.participantes || '?',
+                    participantes: terceiroAtivo.participantes || 300,
                     categoria: terceiroAtivo.categoria || 'Destaque',
-                    descricao: `🚀 Grupo em ascensão no ranking!`,
+                    descricao: `⭐ Grupo em ascensão no ranking! Venha fazer parte.`,
+                    estado: terceiroAtivo.estado || 'Brasil',
+                    imagem: terceiroAtivo.imagem || null
                 };
             }
-            gruposAdicionais.push(grupo);
+            destaques.push(grupo);
         }
         
-        // Montar array de destaques (máximo 4)
-        const destaques = [];
-        if (grupoMaisAtivo) destaques.push(grupoMaisAtivo);
-        if (grupoMaisRico) destaques.push(grupoMaisRico);
-        destaques.push(...gruposAdicionais.slice(0, 2));
+        // Se ainda não tem destaques, usar grupos do JSON
+        if (destaques.length === 0) {
+            const gruposDisponiveis = allGroupsData.filter(g => g.link && String(g.link).includes('chat.whatsapp.com')).slice(0, 4);
+            for (let g of gruposDisponiveis) {
+                destaques.push({
+                    ...g,
+                    descricao: g.descricao || '✨ Comunidade incrível esperando por você!'
+                });
+            }
+        }
         
         if (destaques.length === 0) {
-            container.innerHTML = `<div style="min-width: 100%; text-align: center; padding: 20px; color: var(--text2);">
-                <i class="fas fa-trophy" style="font-size: 32px; margin-bottom: 8px; display: block;"></i>
-                <p>Ranking sendo atualizado...</p>
-                <p style="font-size: 11px;">Volte em instantes</p>
+            container.innerHTML = `<div style="min-width: 100%; text-align: center; padding: 40px; color: var(--text2);">
+                <i class="fas fa-trophy" style="font-size: 48px; margin-bottom: 12px; display: block; color: #FFD700;"></i>
+                <p style="font-weight: 600;">🏆 Nenhum destaque no momento</p>
+                <p style="font-size: 12px;">Volte em breve para ver os grupos em destaque</p>
             </div>`;
             return;
         }
         
-        // Função auxiliar para formatar golds
+        // Funções auxiliares
         function formatarGolds(value) {
             if (!value) return '0';
-            if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
-            if (value >= 1000) return (value / 1000).toFixed(1) + 'K';
-            return value.toLocaleString();
+            const num = Number(value);
+            if (isNaN(num)) return '0';
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toLocaleString();
         }
         
-        // Gerar HTML dos cards
-        container.innerHTML = destaques.map((grupo, idx) => {
+        function formatarNumero(num) {
+            if (!num) return '0';
+            const n = Number(num);
+            if (isNaN(n)) return '0';
+            if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+            return n.toString();
+        }
+        
+        function getEmojiCategoria(cat) {
+            if (!cat) return '📌';
+            const emojis = {
+                'Tecnologia': '💻', 'Educação': '📚', 'Negócios': '💼', 'Saúde': '🏥',
+                'Música': '🎵', 'Forró': '🎵', 'Games': '🎮', 'Jogos': '🎮',
+                'Esportes': '⚽', 'Arte': '🎨', 'Culinária': '🍳', 'Viagens': '✈️',
+                'Relacionamentos': '💕', 'Automotivo': '🚗', 'Política': '🏛️',
+                'Notícias': '📰', 'Geral': '🌍', 'Amizade': '👥', 'Networking': '🤝',
+                'Premium': '💎', 'Destaque': '⭐'
+            };
+            return emojis[cat] || '📌';
+        }
+        
+        // Gerar HTML dos cards - USANDO A IMAGEM REAL DO GRUPO
+        container.innerHTML = destaques.slice(0, 5).map((grupo, idx) => {
             const isAtivo = grupo.tipoDestaque === 'maisAtivo';
             const isRico = grupo.tipoDestaque === 'maisRico';
+            const rankNum = idx + 1;
             
             let badgeHtml = '';
             if (isAtivo) {
                 badgeHtml = `
-                    <div class="destaque-badge" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);">
+                    <div class="ranking-badge fire">
                         <i class="fas fa-fire"></i>
-                        <span>🔥 MAIS ATIVO</span>
+                        <span>#1 MAIS ATIVO 🔥</span>
                     </div>
                 `;
             } else if (isRico) {
                 badgeHtml = `
-                    <div class="destaque-badge" style="background: linear-gradient(135deg, #FFD700, #FFA500);">
-                        <i class="fas fa-crown crown-icon"></i>
-                        <span>💰 MAIS RICO</span>
+                    <div class="ranking-badge crown">
+                        <i class="fas fa-crown"></i>
+                        <span>#1 MAIS RICO 💰</span>
                     </div>
                 `;
-            } else if (idx === 0) {
+            } else if (rankNum === 2) {
                 badgeHtml = `
-                    <div class="destaque-badge" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <div class="ranking-badge" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
                         <i class="fas fa-chart-line"></i>
-                        <span>🚀 TOP RANKING</span>
+                        <span>TOP 2 🔥</span>
+                    </div>
+                `;
+            } else if (rankNum === 3) {
+                badgeHtml = `
+                    <div class="ranking-badge" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white;">
+                        <i class="fas fa-chart-line"></i>
+                        <span>TOP 3 🚀</span>
+                    </div>
+                `;
+            } else {
+                badgeHtml = `
+                    <div class="ranking-badge">
+                        <i class="fas fa-star"></i>
+                        <span>DESTAQUE ⭐</span>
                     </div>
                 `;
             }
             
+            const categoriaNome = grupo.categoria || 'Destaque';
+            const emojiCategoria = getEmojiCategoria(categoriaNome);
+            
+            // 🔥 USA A IMAGEM REAL DO GRUPO SE EXISTIR
+            const imagemGrupo = grupo.imagem || null;
+            const nomeGrupo = safeEscapeHtml(String(grupo.nome || 'Comunidade WhatsApp'));
+            const participantes = formatarNumero(grupo.participantes);
+            const estado = safeEscapeHtml(String(grupo.estado || 'Brasil'));
+            const descricao = safeEscapeHtml(String(grupo.descricao || '✨ Comunidade incrível esperando por você! Faça parte e conheça novas pessoas.'));
+            const linkGrupo = String(grupo.link || '#');
+            const grupoID = safeEscapeHtml(String(grupo.grupoID || `grupo_${idx}`));
+            const primeiraLetra = safeEncodeURI(nomeGrupo);
+            
+            // Se tem imagem do grupo, usa ela, senão usa o avatar com a primeira letra
+            const coverHtml = imagemGrupo ? 
+                `<img src="${imagemGrupo}" alt="${nomeGrupo}" onerror="this.src='https://ui-avatars.com/api/?name=${primeiraLetra}&background=25D366&color=fff&length=1&size=120&fontsize=60'">` :
+                `<div style="width:100%;height:100%;background: linear-gradient(135deg, #25D366, #128C7E); display: flex; align-items: center; justify-content: center;">
+                    <i class="fab fa-whatsapp" style="font-size: 48px; color: white; opacity: 0.8;"></i>
+                </div>`;
+            
             return `
-                <div class="destaque-card" onclick="abrirModalGrupoDestaque('${grupo.grupoID}')" data-grupo-id="${grupo.grupoID}">
-                    ${badgeHtml}
-                    <div style="display: flex; gap: 12px;">
-                        <div class="destaque-avatar" style="${isAtivo ? 'background: linear-gradient(135deg, #ff6b6b, #ee5a24);' : isRico ? 'background: linear-gradient(135deg, #FFD700, #FFA500);' : ''}">
-                            ${grupo.imagem ? `<img src="${grupo.imagem}" style="width:100%;height:100%;border-radius:14px;object-fit:cover;">` : '<i class="fab fa-whatsapp"></i>'}
-                        </div>
-                        <div style="flex: 1; min-width: 0;">
-                            <div class="destaque-nome">${escapeHtml(grupo.nome || 'Grupo WhatsApp')}</div>
-                            <div class="destaque-categoria">
-                                ${getEmojiCategoriaGrupo(grupo.categoria)} ${grupo.categoria || 'Geral'}
-                            </div>
-                            <div class="destaque-stats">
-                                <span><i class="fas fa-user-friends"></i> ${formatarNumero(grupo.participantes)}</span>
-                                <span><i class="fas fa-map-marker-alt"></i> ${grupo.estado || 'BR'}</span>
-                            </div>
-                        </div>
+                <div class="destaque-card-premium" onclick="abrirModalGrupoDestaque('${grupoID.replace(/'/g, "\\'")}')" data-grupo-id="${grupoID}">
+                    <div class="destaque-card-cover">
+                        ${coverHtml}
+                        <div class="destaque-overlay"></div>
+                        ${badgeHtml}
                     </div>
-                    <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
-                        <button class="destaque-btn" onclick="event.stopPropagation(); entrarGrupoDestaque('${grupo.link}')">
-                            <i class="fab fa-whatsapp"></i> Entrar
+                    
+                    <div class="destaque-creator">
+                        <img class="destaque-creator-avatar" 
+                             src="https://ui-avatars.com/api/?name=${primeiraLetra}&background=25D366&color=fff&length=1&fontsize=14"
+                             alt="Avatar">
+                        <span class="destaque-creator-name">
+                            Comunidade <span>verificada</span>
+                        </span>
+                    </div>
+                    
+                    <div class="destaque-card-content">
+                        <div class="destaque-card-categoria">
+                            ${emojiCategoria} ${safeEscapeHtml(categoriaNome)}
+                        </div>
+                        <h4 class="destaque-card-nome" title="${nomeGrupo}">${nomeGrupo}</h4>
+                        <p class="destaque-card-descricao">${descricao}</p>
+                        
+                        <div class="destaque-stats-row">
+                            <div class="destaque-stat" title="Membros">
+                                <i class="fas fa-user-friends"></i>
+                                <span>${participantes} membros</span>
+                            </div>
+                            <div class="destaque-stat" title="Localização">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${estado}</span>
+                            </div>
+                            <div class="destaque-stat" title="Grupo Verificado">
+                                <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                                <span>Verificado</span>
+                            </div>
+                        </div>
+                        
+                        <button class="destaque-btn-entrar" onclick="event.stopPropagation(); entrarGrupoDestaquePremium('${linkGrupo.replace(/'/g, "\\'")}')">
+                            <i class="fab fa-whatsapp"></i> Entrar no grupo
+                            <i class="fas fa-arrow-right"></i>
                         </button>
                     </div>
                 </div>
             `;
         }).join('');
         
-        console.log(`✅ ${destaques.length} grupos em destaque carregados (MAIS ATIVO + MAIS RICO)`);
+        console.log(`✅ ${destaques.length} grupos em destaque carregados com imagens reais!`);
         
     } catch (error) {
-        console.error('Erro ao carregar destaques:', error);
-        container.innerHTML = `<div style="min-width: 100%; text-align: center; padding: 20px; color: var(--text2);">
-            <i class="fas fa-exclamation-triangle"></i>
-            <p>Erro ao carregar destaques</p>
+        console.error('❌ Erro ao carregar destaques:', error);
+        container.innerHTML = `<div style="min-width: 100%; text-align: center; padding: 40px; color: var(--text2);">
+            <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 12px; display: block; color: #ef4444;"></i>
+            <p>⚠️ Erro ao carregar destaques</p>
+            <p style="font-size: 12px; margin-top: 8px;">${safeEscapeHtml(String(error.message))}</p>
+            <button onclick="carregarDestaquesFeed()" style="margin-top: 16px; padding: 10px 24px; background: var(--primary); color: white; border: none; border-radius: 30px; cursor: pointer; font-weight: 600;">
+                Tentar novamente
+            </button>
         </div>`;
     }
+}
+// Função auxiliar para entrar no grupo
+function entrarGrupoDestaquePremium(link) {
+    if (!link || link === '#') {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire('Erro', 'Link do grupo não disponível no momento', 'error');
+        }
+        return;
+    }
+    
+    window.open(link, '_blank');
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'success',
+            title: 'Redirecionando...',
+            text: 'Você será levado ao grupo do WhatsApp',
+            timer: 1500,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end'
+        });
+    }
+}
+
+// Função auxiliar para abrir modal do grupo
+if (typeof abrirModalGrupoDestaque !== 'function') {
+    window.abrirModalGrupoDestaque = function(grupoID) {
+        console.log('Abrir modal do grupo:', grupoID);
+        
+        fetch('https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009/grupos.json')
+            .then(res => res.json())
+            .then(grupos => {
+                const grupo = grupos.find(g => g.grupoID === grupoID);
+                if (grupo && grupo.link && grupo.link !== '#') {
+                    Swal.fire({
+                        title: String(grupo.nome || 'Grupo WhatsApp'),
+                        html: `
+                            <div style="text-align: center;">
+                                <p><strong>Categoria:</strong> ${String(grupo.categoria || 'Geral')}</p>
+                                <p><strong>Membros:</strong> ${formatarNumero(grupo.participantes)}</p>
+                                <p><strong>Sobre:</strong> ${String(grupo.descricao || 'Grupo incrível!')}</p>
+                                <hr style="margin: 12px 0;">
+                                <a href="${String(grupo.link)}" target="_blank" class="btn-primary" style="display:inline-block;text-align:center;text-decoration:none;padding:10px 24px;border-radius:30px;">
+                                    <i class="fab fa-whatsapp"></i> Entrar no grupo
+                                </a>
+                            </div>
+                        `,
+                        confirmButtonText: 'Fechar'
+                    });
+                } else {
+                    Swal.fire('Grupo', 'Link do grupo não disponível', 'info');
+                }
+            })
+            .catch(() => {
+                Swal.fire('Erro', 'Não foi possível carregar os detalhes do grupo', 'error');
+            });
+    };
+}
+
+function formatarNumero(num) {
+    if (!num) return '0';
+    const n = Number(num);
+    if (isNaN(n)) return '0';
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+    return n.toString();
 }
 
 function getEmojiCategoriaGrupo(cat) {
@@ -11380,6 +12167,7 @@ mudarSecao = function(section) {
     initRadio();
     loadYouTubeAPI();
     initComunidades();
+    initGrupoButton()
     const sessaoRestaurada = restaurarSessao();
     
     if (sessaoRestaurada) {
