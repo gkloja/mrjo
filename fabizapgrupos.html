@@ -7350,7 +7350,7 @@ async function carregarWatchRooms() {
     try {
         const response = await fetch(`${API_URL}/cliente06/watch-rooms`);
         const rooms = await response.json();
-        
+        rooms.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         if (rooms.length === 0) {
             container.innerHTML = `
                 <div class="watch-empty-state">
