@@ -873,77 +873,151 @@
     body.light-mode .radio-station-card-name { color: #111; }
     .radio-station-card-meta { font-size: 11px; color: var(--text2); }
     #radioAudioPlayer { display: none; }
+/* ========== WATCH PARTY ========== */
+.watch-container { width: 100%; max-width: 100%; margin: 0 auto; padding: 0; overflow-x: hidden; }
+.watch-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding: 0 12px; flex-wrap: wrap; gap: 8px; }
+.watch-title { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 6px; color: #F5F5F5; }
+body.light-mode .watch-title { color: #111; }
+.watch-title i { color: #ef4444; font-size: 20px; }
+.watch-create-btn { background: linear-gradient(135deg, #ef4444, #dc2626); border: none; padding: 8px 14px; border-radius: 30px; color: white; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.2s; white-space: nowrap; }
+.watch-player-wrapper { padding: 0; margin-bottom: 16px; width: 100%; }
+.watch-active-layout { display: flex; gap: 12px; align-items: flex-start; }
+.watch-player-col { flex: 1; min-width: 0; width: 100%; }
+.watch-player-box { position: relative; width: 100%; max-width: 100%; background: #000; overflow: hidden; border-radius: 0; padding-bottom: 56.25%; height: 0; }
+.watch-player-box > div { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.watch-player-box iframe { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; max-width: 100vw; }
+.watch-room-info-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding: 10px 12px; background: #1A1A1A; border: 1px solid #333; border-radius: 12px; gap: 8px; width: 100%; box-sizing: border-box; }
+body.light-mode .watch-room-info-bar { background: #FFFFFF; border: 2px solid #111; }
+.watch-room-info-left { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
+.watch-room-avatar { width: 32px; height: 32px; border-radius: 8px; background: rgba(239,68,68,0.1); display: flex; align-items: center; justify-content: center; font-size: 14px; color: #ef4444; flex-shrink: 0; }
+.watch-room-title-active { font-weight: 700; font-size: 12px; color: #F5F5F5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
+body.light-mode .watch-room-title-active { color: #111; }
+.watch-room-meta-active { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #A0A0A0; flex-wrap: wrap; }
+body.light-mode .watch-room-meta-active { color: #666; }
+.watch-room-viewers { display: inline-flex; align-items: center; gap: 3px; background: rgba(239,68,68,0.1); color: #ef4444; border-radius: 20px; padding: 2px 7px; font-size: 10px; font-weight: 600; }
+.watch-room-actions { display: flex; gap: 5px; flex-shrink: 0; }
+.watch-action-btn { display: flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 30px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s; border: none; white-space: nowrap; }
+.watch-action-btn.share { background: rgba(37,99,235,0.1); color: #2563eb; border: 1px solid rgba(37,99,235,0.3); }
+.watch-action-btn.leave { background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+.watch-chat-col { width: 320px; flex-shrink: 0; }
 
-    /* ========== WATCH PARTY ========== */
-    .watch-container { width: 100%; max-width: 100%; margin: 0 auto; padding: 0; overflow-x: hidden; }
-    .watch-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding: 0 12px; flex-wrap: wrap; gap: 8px; }
-    .watch-title { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 6px; color: #F5F5F5; }
-    body.light-mode .watch-title { color: #111; }
-    .watch-title i { color: #ef4444; font-size: 20px; }
-    .watch-create-btn { background: linear-gradient(135deg, #ef4444, #dc2626); border: none; padding: 8px 14px; border-radius: 30px; color: white; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.2s; white-space: nowrap; }
-    .watch-player-wrapper { padding: 0; margin-bottom: 16px; width: 100%; }
-    .watch-active-layout { display: flex; gap: 12px; align-items: flex-start; }
-    .watch-player-col { flex: 1; min-width: 0; width: 100%; }
-    .watch-player-box { position: relative; width: 100%; max-width: 100%; background: #000; overflow: hidden; border-radius: 0; padding-bottom: 56.25%; height: 0; }
-    .watch-player-box > div { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-    .watch-player-box iframe { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; max-width: 100vw; }
-    .watch-room-info-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding: 10px 12px; background: #1A1A1A; border: 1px solid #333; border-radius: 12px; gap: 8px; width: 100%; box-sizing: border-box; }
-    body.light-mode .watch-room-info-bar { background: #FFFFFF; border: 2px solid #111; }
-    .watch-room-info-left { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
-    .watch-room-avatar { width: 32px; height: 32px; border-radius: 8px; background: rgba(239,68,68,0.1); display: flex; align-items: center; justify-content: center; font-size: 14px; color: #ef4444; flex-shrink: 0; }
-    .watch-room-title-active { font-weight: 700; font-size: 12px; color: #F5F5F5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
-    body.light-mode .watch-room-title-active { color: #111; }
-    .watch-room-meta-active { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #A0A0A0; flex-wrap: wrap; }
-    body.light-mode .watch-room-meta-active { color: #666; }
-    .watch-room-viewers { display: inline-flex; align-items: center; gap: 3px; background: rgba(239,68,68,0.1); color: #ef4444; border-radius: 20px; padding: 2px 7px; font-size: 10px; font-weight: 600; }
-    .watch-room-actions { display: flex; gap: 5px; flex-shrink: 0; }
-    .watch-action-btn { display: flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 30px; font-weight: 600; font-size: 10px; cursor: pointer; transition: all 0.2s; border: none; white-space: nowrap; }
-    .watch-action-btn.share { background: rgba(37,99,235,0.1); color: #2563eb; border: 1px solid rgba(37,99,235,0.3); }
-    .watch-action-btn.leave { background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
-    .watch-chat-col { width: 320px; flex-shrink: 0; }
-    .watch-chat-box { background: #1A1A1A; border: 1px solid #333; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; height: 450px; }
-    body.light-mode .watch-chat-box { background: #FFFFFF; border: 2px solid #111; }
-    .watch-chat-header-bar { display: flex; align-items: center; gap: 6px; padding: 10px 12px; border-bottom: 1px solid #333; font-weight: 700; font-size: 12px; }
-    body.light-mode .watch-chat-header-bar { border-bottom: 2px solid #111; color: #111; }
-    .watch-chat-online { margin-left: auto; font-size: 9px; color: #10b981; font-weight: 600; }
-    .watch-chat-messages { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 4px; }
-    .watch-chat-empty { text-align: center; padding: 20px; color: #888; margin: auto; }
-    .watch-chat-empty i { font-size: 24px; margin-bottom: 4px; display: block; opacity: 0.5; }
-    .watch-chat-msg { display: flex; gap: 5px; padding: 4px; border-radius: 8px; }
-    .watch-chat-avatar { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex-shrink: 0; cursor: pointer; }
-    .watch-chat-content { flex: 1; min-width: 0; }
-    .watch-chat-author { font-weight: 700; font-size: 10px; cursor: pointer; color: #2563eb; }
-    .watch-chat-text { font-size: 11px; line-height: 1.3; word-break: break-word; color: #E5E5E5; }
-    body.light-mode .watch-chat-text { color: #333; }
-    .watch-chat-input-bar { display: flex; gap: 6px; padding: 8px; border-top: 1px solid #333; }
-    body.light-mode .watch-chat-input-bar { border-top: 2px solid #111; }
-    .watch-chat-input { flex: 1; padding: 7px 10px; border-radius: 16px; border: 1px solid #333; background: rgba(255,255,255,0.05); color: white; font-family: inherit; font-size: 11px; outline: none; }
-    body.light-mode .watch-chat-input { background: #F5F5F5; border-color: #CCC; color: #111; }
-    .watch-chat-input:focus { border-color: #ef4444; }
-    .watch-chat-send-btn { width: 30px; height: 30px; border-radius: 50%; background: #ef4444; border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .watch-rooms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; padding: 0 12px; }
-    .watch-room-card { background: #1A1A1A; border: 1px solid #333; border-radius: 16px; overflow: hidden; cursor: pointer; transition: all 0.3s; }
-    body.light-mode .watch-room-card { background: #FFFFFF; border: 2px solid #111; }
-    .watch-room-card:active { transform: scale(0.98); }
-    .watch-room-thumb-container { position: relative; width: 100%; height: 140px; overflow: hidden; background: #000; }
-    .watch-room-thumb { width: 100%; height: 100%; object-fit: cover; }
-    .watch-room-play-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 36px; height: 36px; background: rgba(0,0,0,0.7); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
-    .watch-room-info { padding: 10px 12px; }
-    .watch-room-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; color: #F5F5F5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    body.light-mode .watch-room-title { color: #111; }
-    .watch-room-meta { display: flex; justify-content: space-between; align-items: center; }
-    .watch-room-creator { font-size: 10px; color: #A0A0A0; }
-    body.light-mode .watch-room-creator { color: #555; }
-    .watch-live-badge { position: absolute; top: 6px; left: 6px; background: #ef4444; color: white; padding: 2px 7px; border-radius: 20px; font-size: 9px; font-weight: 700; display: flex; align-items: center; gap: 3px; z-index: 2; }
-    .watch-live-dot { width: 5px; height: 5px; border-radius: 50%; background: white; }
-    .watch-empty-state { text-align: center; padding: 30px 20px; grid-column: 1 / -1; }
-    .watch-empty-icon { font-size: 40px; color: #ef4444; margin-bottom: 10px; }
-    .watch-empty-title { font-weight: 700; font-size: 14px; margin-bottom: 3px; }
-    body.light-mode .watch-empty-title { color: #111; }
-    .watch-empty-text { font-size: 11px; color: var(--text2); margin-bottom: 14px; }
+/* CORREÇÃO DO CHAT - BOX PRINCIPAL */
+.watch-chat-box { 
+    background: #1A1A1A; 
+    border: 1px solid #333; 
+    border-radius: 14px; 
+    overflow: hidden; 
+    display: flex !important; 
+    flex-direction: column !important; 
+    height: 450px; 
+    max-height: 450px;
+}
+body.light-mode .watch-chat-box { background: #FFFFFF; border: 2px solid #111; }
 
-    /* ========== RESPONSIVO WATCH PARTY ========== */
-/* Substitua o bloco @media (max-width: 768px) do WATCH PARTY por este: */
+.watch-chat-header-bar { 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    padding: 10px 12px; 
+    border-bottom: 1px solid #333; 
+    font-weight: 700; 
+    font-size: 12px; 
+    flex-shrink: 0;
+}
+body.light-mode .watch-chat-header-bar { border-bottom: 2px solid #111; color: #111; }
+
+.watch-chat-online { margin-left: auto; font-size: 9px; color: #10b981; font-weight: 600; }
+
+/* ÁREA DAS MENSAGENS - CORREÇÃO PRINCIPAL */
+.watch-chat-messages { 
+    flex: 1 1 auto !important; 
+    overflow-y: auto !important; 
+    padding: 10px; 
+    display: flex !important; 
+    flex-direction: column !important; 
+    gap: 8px; 
+    min-height: 0 !important;
+    max-height: 320px !important;
+}
+
+.watch-chat-empty { text-align: center; padding: 20px; color: #888; margin: auto; }
+.watch-chat-empty i { font-size: 24px; margin-bottom: 4px; display: block; opacity: 0.5; }
+.watch-chat-msg { display: flex; gap: 5px; padding: 4px; border-radius: 8px; }
+.watch-chat-avatar { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex-shrink: 0; cursor: pointer; }
+.watch-chat-content { flex: 1; min-width: 0; }
+.watch-chat-author { font-weight: 700; font-size: 10px; cursor: pointer; color: #2563eb; }
+.watch-chat-text { font-size: 11px; line-height: 1.3; word-break: break-word; color: #E5E5E5; }
+body.light-mode .watch-chat-text { color: #333; }
+
+/* BARRA DE INPUT - FIXA NO FUNDO */
+.watch-chat-input-bar { 
+    display: flex !important; 
+    gap: 8px; 
+    padding: 10px 12px !important; 
+    border-top: 1px solid #333; 
+    flex-shrink: 0 !important;
+    background: #1A1A1A;
+    margin-top: auto !important;
+}
+body.light-mode .watch-chat-input-bar { 
+    background: #FFFFFF; 
+    border-top: 2px solid #111; 
+}
+
+/* INPUT - MAIOR E MAIS VISÍVEL */
+.watch-chat-input { 
+    flex: 1; 
+    padding: 10px 14px !important; 
+    border-radius: 25px !important; 
+    border: 1px solid #333; 
+    background: rgba(255,255,255,0.05); 
+    color: white; 
+    font-family: inherit; 
+    font-size: 13px !important; 
+    outline: none; 
+    min-height: 40px !important;
+}
+body.light-mode .watch-chat-input { background: #F5F5F5; border-color: #CCC; color: #111; }
+.watch-chat-input:focus { border-color: #ef4444; }
+
+/* BOTÃO ENVIAR - MAIOR */
+.watch-chat-send-btn { 
+    width: 40px !important; 
+    height: 40px !important; 
+    border-radius: 50% !important; 
+    background: #ef4444; 
+    border: none; 
+    color: white; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    flex-shrink: 0; 
+}
+.watch-chat-send-btn:hover { background: #dc2626; transform: scale(1.05); }
+
+.watch-rooms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; padding: 0 12px; }
+.watch-room-card { background: #1A1A1A; border: 1px solid #333; border-radius: 16px; overflow: hidden; cursor: pointer; transition: all 0.3s; }
+body.light-mode .watch-room-card { background: #FFFFFF; border: 2px solid #111; }
+.watch-room-card:active { transform: scale(0.98); }
+.watch-room-thumb-container { position: relative; width: 100%; height: 140px; overflow: hidden; background: #000; }
+.watch-room-thumb { width: 100%; height: 100%; object-fit: cover; }
+.watch-room-play-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 36px; height: 36px; background: rgba(0,0,0,0.7); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
+.watch-room-info { padding: 10px 12px; }
+.watch-room-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; color: #F5F5F5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body.light-mode .watch-room-title { color: #111; }
+.watch-room-meta { display: flex; justify-content: space-between; align-items: center; }
+.watch-room-creator { font-size: 10px; color: #A0A0A0; }
+body.light-mode .watch-room-creator { color: #555; }
+.watch-live-badge { position: absolute; top: 6px; left: 6px; background: #ef4444; color: white; padding: 2px 7px; border-radius: 20px; font-size: 9px; font-weight: 700; display: flex; align-items: center; gap: 3px; z-index: 2; }
+.watch-live-dot { width: 5px; height: 5px; border-radius: 50%; background: white; }
+.watch-empty-state { text-align: center; padding: 30px 20px; grid-column: 1 / -1; }
+.watch-empty-icon { font-size: 40px; color: #ef4444; margin-bottom: 10px; }
+.watch-empty-title { font-weight: 700; font-size: 14px; margin-bottom: 3px; }
+body.light-mode .watch-empty-title { color: #111; }
+.watch-empty-text { font-size: 11px; color: var(--text2); margin-bottom: 14px; }
+
+/* ========== RESPONSIVO WATCH PARTY - CORREÇÃO TOTAL ========== */
 @media (max-width: 768px) {
     .watch-active-layout {
         flex-direction: column;
@@ -957,26 +1031,40 @@
     
     .watch-chat-col {
         width: 100%;
-        padding: 0;
+        padding: 0 12px;
+        margin-bottom: 70px;
     }
     
+    /* CORREÇÃO PRINCIPAL DO CHAT NO CELULAR */
     .watch-chat-box {
-        height: 350px !important;
-        max-height: 350px;
-        display: flex;
-        flex-direction: column;
+        height: auto !important;
+        max-height: 380px !important;
+        min-height: 320px !important;
+        display: flex !important;
+        flex-direction: column !important;
     }
     
     .watch-chat-messages {
-        flex: 1;
+        flex: 1 1 auto !important;
         overflow-y: auto !important;
-        min-height: 0;
+        min-height: 0 !important;
         padding: 10px;
+        max-height: 250px !important;
     }
     
     .watch-chat-input-bar {
-        flex-shrink: 0;
-        padding: 10px;
+        flex-shrink: 0 !important;
+        padding: 10px 12px !important;
+    }
+    
+    .watch-chat-input {
+        font-size: 14px !important;
+        padding: 12px 16px !important;
+    }
+    
+    .watch-chat-send-btn {
+        width: 44px !important;
+        height: 44px !important;
     }
     
     .watch-room-info-bar {
@@ -989,14 +1077,47 @@
         justify-content: flex-end;
     }
 }
-    @media (max-width: 480px) {
-        .watch-rooms-grid { grid-template-columns: 1fr; }
-        .watch-room-thumb-container { height: 150px; }
-        .watch-title { font-size: 16px; }
-        .watch-chat-box { height: 250px; }
-        .watch-player-box { width: 100%; max-width: 100vw; margin: 0; padding-bottom: 56.25%; }
-    }
 
+@media (max-width: 480px) {
+    .watch-rooms-grid { grid-template-columns: 1fr; }
+    .watch-room-thumb-container { height: 150px; }
+    .watch-title { font-size: 16px; }
+    
+    .watch-chat-col {
+        margin-bottom: 60px;
+    }
+    
+    .watch-chat-box {
+        max-height: 320px !important;
+        min-height: 280px !important;
+    }
+    
+    .watch-chat-messages {
+        max-height: 200px !important;
+    }
+    
+    .watch-player-box { 
+        width: 100%; 
+        max-width: 100vw; 
+        margin: 0; 
+        padding-bottom: 56.25%; 
+    }
+}
+
+/* CORREÇÃO EXTRA PARA QUANDO O TECLADO ESTIVER ABERTO */
+@media (max-width: 768px) and (pointer: coarse) {
+    .watch-chat-col {
+        margin-bottom: 50px;
+    }
+    
+    .watch-chat-box {
+        max-height: 300px !important;
+    }
+    
+    .watch-chat-messages {
+        max-height: 190px !important;
+    }
+}
     /* ========== REAÇÕES EM COMENTÁRIOS ========== */
     .comentario-reacoes { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
     .comentario-reacao-btn { background: rgba(0,0,0,0.05); border: 1px solid transparent; border-radius: 20px; padding: 3px 8px; font-size: 13px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 3px; }
@@ -4637,7 +4758,9 @@ body.light-mode #destaquePremiumSection .btn-ver-tudo:hover {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+
 }
+
 </style>
 </head>
 <body>
