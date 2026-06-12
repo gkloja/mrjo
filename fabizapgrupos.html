@@ -4549,6 +4549,64 @@ body.light-mode #destaquePremiumSection .btn-ver-tudo:hover {
     color: white;
     cursor: pointer;
 }
+.watch-chat-box {
+    background: #1A1A1A;
+    border: 1px solid #333;
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 450px; /* Altura fixa */
+    max-height: 450px;
+}
+
+.watch-chat-messages {
+    flex: 1;
+    overflow-y: auto !important;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* ESSENCIAL: permite rolagem */
+    min-height: 0;
+}
+
+.watch-chat-input-bar {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    background: #1A1A1A;
+    border-top: 1px solid #333;
+    /* FIXA O INPUT NA PARTE INFERIOR */
+    flex-shrink: 0;
+    position: relative;
+    bottom: 0;
+}
+
+.watch-chat-input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 25px;
+    border: 1px solid #333;
+    background: #111;
+    color: white;
+    font-size: 13px;
+    outline: none;
+}
+
+.watch-chat-send-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ef4444;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
 </style>
 </head>
 <body>
@@ -4995,28 +5053,17 @@ body.light-mode #destaquePremiumSection .btn-ver-tudo:hover {
                 </div>
             </div>
             <div class="watch-chat-col">
-                <div class="watch-chat-box">
-                    <div class="watch-chat-header-bar">
-                        <i class="fas fa-comments"></i>
-                        <span>Chat da Sala</span>
-                        <span class="watch-chat-online" id="watchChatOnline">0 online</span>
-                    </div>
-                    <div class="watch-chat-messages" id="watchChat">
-                        <div class="watch-chat-empty">
-                            <i class="fas fa-comment-dots"></i>
-                            <p>Nenhuma mensagem ainda</p>
-                            <span>Seja o primeiro a conversar!</span>
-                        </div>
-                    </div>
-                    <div class="watch-chat-input-bar">
-                        <input type="text" class="watch-chat-input" id="watchChatInput" 
-                               placeholder="Envie uma mensagem..." 
-                               onkeypress="if(event.key==='Enter') enviarMsgWatch()">
-                        <button class="watch-chat-send-btn" onclick="enviarMsgWatch()">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
+<div class="watch-chat-box">
+    <div class="watch-chat-header-bar">
+        <i class="fas fa-comments"></i> Chat da Sala
+        <span class="watch-chat-online">0 online</span>
+    </div>
+    <div class="watch-chat-messages" id="watchChat"></div>
+    <div class="watch-chat-input-bar">
+        <input type="text" class="watch-chat-input" id="watchChatInput" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter') enviarMsgWatch()">
+        <button class="watch-chat-send-btn" onclick="enviarMsgWatch()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
             </div>
         </div>
     </div>
@@ -7049,6 +7096,15 @@ function copiarLinkWatch(url) {
     });
 }
 
+// Adicione esta função no final do script do FabiZap
+function scrollWatchChatToBottom() {
+    const chatMessages = document.getElementById('watchChat');
+    if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+}
+
+// Modifique a função sincronizarChat para scrollar automaticamente
 async function sincronizarChat(roomId) {
     try {
         const response = await fetch(`${API_URL}/cliente06/watch-rooms/${roomId}`);
@@ -7059,30 +7115,24 @@ async function sincronizarChat(roomId) {
         
         const chatDiv = document.getElementById('watchChat');
         if (room.chat && room.chat.length > 0) {
-            chatDiv.innerHTML = room.chat.slice(-30).map(msg => {
+            chatDiv.innerHTML = room.chat.slice(-50).map(msg => {
                 const avatarUrl = msg.userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(msg.userName || 'U')}&background=ef4444&color=fff`;
                 return `
-                    <div class="watch-chat-msg">
+                    <div class="watch-chat-msg" style="display:flex; gap:8px; margin-bottom:8px;">
                         <img src="${avatarUrl}" class="watch-chat-avatar" 
-                             onerror="this.src='https://ui-avatars.com/api/?name=U&background=ef4444&color=fff'"
-                             style="cursor:pointer;" title="Ver perfil"
+                             style="width:28px; height:28px; border-radius:50%; object-fit:cover; cursor:pointer;"
                              onclick="abrirPerfilUsuario('${msg.userId || ''}', '${escapeHtml(msg.userName || '').replace(/'/g, "\\'")}', '${(msg.userAvatar || '').replace(/'/g, "\\'")}')">
-                        <div class="watch-chat-content">
-                            <span class="watch-chat-author" style="cursor:pointer;" 
+                        <div style="flex:1;">
+                            <span class="watch-chat-author" style="cursor:pointer; font-weight:bold; font-size:12px;" 
                                   onclick="abrirPerfilUsuario('${msg.userId || ''}', '${escapeHtml(msg.userName || '').replace(/'/g, "\\'")}', '${(msg.userAvatar || '').replace(/'/g, "\\'")}')">${escapeHtml(msg.userName || 'Anônimo')}</span>
-                            <div class="watch-chat-text">${escapeHtml(msg.text)}</div>
+                            <div class="watch-chat-text" style="font-size:12px; margin-top:2px;">${escapeHtml(msg.text)}</div>
                         </div>
                     </div>
                 `;
             }).join('');
+            
+            // 🔥 SCROLL AUTOMÁTICO PARA O FINAL
             chatDiv.scrollTop = chatDiv.scrollHeight;
-        } else {
-            chatDiv.innerHTML = `
-                <div class="watch-chat-empty">
-                    <i class="fas fa-comment-dots"></i>
-                    <p>Nenhuma mensagem ainda</p>
-                    <span>Seja o primeiro a conversar!</span>
-                </div>`;
         }
     } catch (error) {}
 }
