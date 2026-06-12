@@ -6482,11 +6482,30 @@ removerDoHistorico: function(event, itemId) {
 },
 
 
-                irParaVideo: function(itemId) {
-            userProgress.addXP(25); 
-            // Usa o itemId específico que veio do clique no botão
-            window.location.href = `https://marujodigital.onrender.com/proxy?url=https://fabibot-taupe.vercel.app/player/${itemId}`;
-        }
+// No arquivo do Marujo Flix - função irParaVideo
+irParaVideo: function(itemId) {
+    const grupo = this.todosItens.find(i => i.id_main === itemId);
+    if (!grupo) return;
+    
+    const videoUrl = grupo.children[0].videoUrl;
+    const titulo = grupo.titulo;
+    const poster = grupo.poster;
+    
+    // 🔥 REDIRECIONA PARA O FABIZAP COM OS DADOS DO FILME
+    const fabizapUrl = 'https://marujodigital.onrender.com/fabigrupos'; // URL DO SEU FABIZAP
+    
+    // Codificar os dados para passar via URL
+    const params = new URLSearchParams({
+        acao: 'criar_sala',
+        titulo: titulo,
+        videoUrl: videoUrl,
+        poster: poster || '',
+        timestamp: Date.now()
+    });
+    
+    // Redirecionar para o FabiZap
+    window.location.href = `${fabizapUrl}?${params.toString()}`;
+}
                 
 
     };

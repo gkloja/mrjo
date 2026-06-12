@@ -6636,7 +6636,188 @@ async function compartilharSalaWatch() {
         console.error('Erro:', error);
     }
 }
+// ==================== RECEBER FILME DO MARUJO FLIX ====================
 
+function verificarFilmeDoMarujoFlix() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const acao = urlParams.get('acao');
+    
+    if (acao === 'criar_sala') {
+        const titulo = urlParams.get('titulo');
+        const videoUrl = urlParams.get('videoUrl');
+        const poster = urlParams.get('poster');
+        
+        if (titulo && videoUrl) {
+            // Limpar URL para não recriar a sala ao recarregar
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, '', newUrl);
+            
+            // Criar sala automaticamente com os dados do filme
+            setTimeout(() => {
+                criarSalaDoMarujoFlix(titulo, videoUrl, poster);
+            }, 500);
+        }
+    }
+}
+
+async function criarSalaDoMarujoFlix(titulo, videoUrl, poster) {
+    if (!currentUser) {
+        // Se não estiver logado, mostrar login e depois criar sala
+        Swal.fire({
+            title: '🔐 Faça login para criar a sala',
+            text: 'Você precisa estar logado para assistir em grupo',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Entrar com Google',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Salvar dados para criar depois do login
+                sessionStorage.setItem('filmePendente', JSON.stringify({
+                    titulo, videoUrl, poster
+                }));
+                loginGoogle();
+            }
+        });
+        return;
+    }
+    
+    // Verificar se tem filme pendente (para depois do login)
+    const filmePendente = sessionStorage.getItem('filmePendente');
+    if (filmePendente) {
+        const dados = JSON.parse(filmePendente);
+        sessionStorage.removeItem('filmePendente');
+        titulo = dados.titulo;
+        videoUrl = dados.videoUrl;
+        poster = dados.poster;
+    }
+    
+    // Mostrar loading
+    Swal.fire({
+        title: '🎬 Criando sala de cinema...',
+        html: `
+            <div style="text-align: center; padding: 20px;">
+                <div class="spinner" style="width: 50px; height: 50px; margin: 0 auto 15px;"></div>
+                <p><strong>${escapeHtml(titulo)}</strong></p>
+                <p style="font-size: 12px; color: var(--text2);">Preparando sala para você e seus amigos</p>
+            </div>
+        `,
+        allowOutsideClick: false,
+        showConfirmButton: false
+    });
+    
+    try {
+        // Criar sala no servidor
+        const response = await fetch(`${API_URL}/cliente06/watch-rooms`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: `🎬 ${titulo.substring(0, 50)}`,
+                videoUrl: videoUrl,
+                videoId: `movie_${Date.now()}`,
+                videoType: 'movie',
+                originalUrl: videoUrl,
+                poster: poster || null,
+                creator: currentUser.nome,
+                creatorId: currentUser.id,
+                creatorAvatar: currentUser.avatar,
+                playerState: { currentTime: 0, isPlaying: false, timestamp: Date.now() }
+            })
+        });
+        
+        const data = await response.json();
+        Swal.close();
+        
+        if (data.success) {
+            const roomId = data.room.id;
+            const salaUrl = `${window.location.origin}${window.location.pathname}?watch=${roomId}`;
+            
+            // Mostrar modal de sucesso com opções
+            Swal.fire({
+                title: '🎉 Sala criada com sucesso!',
+                html: `
+                    <div style="text-align: center;">
+                        ${poster ? `<img src="${poster}" style="width: 120px; border-radius: 16px; margin-bottom: 15px;" onerror="this.style.display='none'">` : ''}
+                        <h3 style="font-size: 16px; margin-bottom: 5px;">${escapeHtml(titulo)}</h3>
+                        <p style="font-size: 12px; color: var(--text2); margin-bottom: 15px;">
+                            <i class="fas fa-user"></i> Criado por ${currentUser.nome}
+                        </p>
+                        
+                        <div style="background: rgba(0,0,0,0.05); border-radius: 12px; padding: 12px; margin-bottom: 15px;">
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="linkSala" value="${salaUrl}" readonly 
+                                       style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); font-size: 11px;">
+                                <button id="copiarLinkBtn" class="btn-primary" style="width: auto; padding: 10px 15px; margin: 0;">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
+                            <button id="whatsappBtn" style="background: #25D366; border: none; padding: 10px 20px; border-radius: 30px; color: white; font-weight: 600; cursor: pointer;">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                            <button id="telegramBtn" style="background: #0088cc; border: none; padding: 10px 20px; border-radius: 30px; color: white; font-weight: 600; cursor: pointer;">
+                                <i class="fab fa-telegram"></i> Telegram
+                            </button>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <button id="entrarSalaBtn" class="btn-primary" style="width: auto; padding: 12px 30px;">
+                                <i class="fas fa-door-open"></i> Entrar na sala
+                            </button>
+                            <button id="fecharBtn" class="btn-secondary" style="width: auto; padding: 12px 30px;">
+                                Fechar
+                            </button>
+                        </div>
+                    </div>
+                `,
+                showConfirmButton: false,
+                width: '480px',
+                didOpen: () => {
+                    // Copiar link
+                    document.getElementById('copiarLinkBtn').onclick = () => {
+                        const link = document.getElementById('linkSala').value;
+                        navigator.clipboard.writeText(link);
+                        Swal.fire({ icon: 'success', title: 'Link copiado!', timer: 1500, showConfirmButton: false, toast: true, position: 'top-end' });
+                    };
+                    
+                    // WhatsApp
+                    document.getElementById('whatsappBtn').onclick = () => {
+                        const texto = `🎬 *${titulo}*\n\n👤 *${currentUser.nome}* está assistindo e te convida!\n\n🔗 ${salaUrl}\n\n🍿 Venha assistir junto no FabiZap Grupos!`;
+                        window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
+                    };
+                    
+                    // Telegram
+                    document.getElementById('telegramBtn').onclick = () => {
+                        const texto = `🎬 *${titulo}*\n\n👤 ${currentUser.nome} está assistindo e te convida!\n\n🔗 ${salaUrl}`;
+                        window.open(`https://t.me/share/url?url=${encodeURIComponent(salaUrl)}&text=${encodeURIComponent(texto)}`, '_blank');
+                    };
+                    
+                    // Entrar na sala
+                    document.getElementById('entrarSalaBtn').onclick = () => {
+                        Swal.close();
+                        entrarSalaWatch(roomId);
+                        mudarSecao('watch');
+                    };
+                    
+                    // Fechar
+                    document.getElementById('fecharBtn').onclick = () => {
+                        Swal.close();
+                    };
+                }
+            });
+            
+        } else {
+            Swal.fire('Erro', data.error || 'Não foi possível criar a sala', 'error');
+        }
+        
+    } catch (error) {
+        Swal.close();
+        console.error('Erro:', error);
+        Swal.fire('Erro de conexão', 'Verifique sua internet', 'error');
+    }
+}
 // Funções auxiliares de compartilhamento
 function copiarLinkWatch(url) {
     navigator.clipboard.writeText(url).then(() => {
@@ -12553,6 +12734,7 @@ mudarSecao = function(section) {
     loadYouTubeAPI();
     initComunidades();
     initGrupoButton()
+    verificarFilmeDoMarujoFlix()
     const sessaoRestaurada = restaurarSessao();
     
     if (sessaoRestaurada) {
