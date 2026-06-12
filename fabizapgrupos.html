@@ -7052,8 +7052,19 @@ let watchReportInterval = null;
 
 // ==================== COMPARTILHAR SALA WATCH ====================
 
+// ==================== COMPARTILHAR SALA WATCH - CORRIGIDO ====================
+
 async function compartilharSalaWatch() {
-    if (!watchRoomAtual) return;
+    if (!watchRoomAtual) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Nenhuma sala ativa',
+            text: 'Entre em uma sala primeiro para compartilhar',
+            timer: 2000,
+            showConfirmButton: false
+        });
+        return;
+    }
     
     try {
         // Buscar dados da sala
@@ -7064,56 +7075,74 @@ async function compartilharSalaWatch() {
         const url = `${window.location.origin}${window.location.pathname}?watch=${watchRoomAtual}`;
         
         // Texto para compartilhar
-        const shareText = `🎬 ${currentUser.nome} está assistindo "${room.title}" no FabiZap Grupos! Venha assistir junto!`;
+        const shareText = `🎬 ${currentUser ? currentUser.nome : 'Alguém'} está assistindo "${room.title}" no FabiZap Grupos! Venha assistir junto!`;
         
-        // Mostrar modal de compartilhamento
+        // Verificar se o navegador suporta compartilhamento nativo
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'FabiZap Grupos - Assistir Juntos',
+                    text: shareText,
+                    url: url
+                });
+                return;
+            } catch (err) {
+                console.log('Compartilhamento cancelado ou falhou:', err);
+                // Se falhar, continua para o modal alternativo
+            }
+        }
+        
+        // Modal alternativo para dispositivos que não suportam share nativo
         Swal.fire({
             title: '🔗 Compartilhar Sala',
             html: `
                 <div style="text-align: center;">
-                    <p style="font-size: 14px; margin-bottom: 12px;">Compartilhe esta sala com seus amigos!</p>
+                    <div style="background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 16px; padding: 16px; margin-bottom: 16px;">
+                        <i class="fas fa-video" style="font-size: 32px; color: white;"></i>
+                        <p style="color: white; margin-top: 8px; font-weight: 600;">${escapeHtml(room.title)}</p>
+                    </div>
                     
-                    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                    <p style="font-size: 13px; margin-bottom: 12px;">Compartilhe este link com seus amigos:</p>
+                    
+                    <div style="display: flex; gap: 8px; margin-bottom: 20px;">
                         <input type="text" id="shareLinkInput" value="${url}" readonly 
-                               style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border); 
-                                      background: transparent; color: inherit; font-size: 12px; text-align: center;"
+                               style="flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border); 
+                                      background: var(--bg); color: inherit; font-size: 12px; text-align: center;"
                                onclick="this.select()">
-                        <button onclick="copiarLinkWatch('${url}')" 
-                                style="background: #2563eb; border: none; padding: 10px 16px; border-radius: 8px; 
+                        <button onclick="copiarLinkSala('${url}')" 
+                                style="background: #2563eb; border: none; padding: 12px 20px; border-radius: 12px; 
                                        color: white; cursor: pointer; font-weight: 600; font-size: 12px; white-space: nowrap;">
                             <i class="fas fa-copy"></i> Copiar
                         </button>
                     </div>
                     
-                    <p style="font-size: 13px; margin-bottom: 12px; font-weight: 600;">Ou compartilhe direto:</p>
-                    
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
-                        <button onclick="compartilharWhatsAppWatch('${url}', '${escapeHtml(room.title).replace(/'/g, "\\'")}')" 
-                                style="background: #25D366; border: none; padding: 10px 16px; border-radius: 30px; 
-                                       color: white; cursor: pointer; font-weight: 600; font-size: 12px; display: flex; align-items: center; gap: 6px;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                        <button onclick="compartilharWhatsAppSala('${url}', '${escapeHtml(room.title).replace(/'/g, "\\'")}')" 
+                                style="background: #25D366; border: none; padding: 10px 18px; border-radius: 40px; 
+                                       color: white; cursor: pointer; font-weight: 600; font-size: 12px; display: flex; align-items: center; gap: 8px;">
                             <i class="fab fa-whatsapp"></i> WhatsApp
                         </button>
                         
-                        <button onclick="compartilharTelegramWatch('${url}', '${escapeHtml(room.title).replace(/'/g, "\\'")}')" 
-                                style="background: #0088cc; border: none; padding: 10px 16px; border-radius: 30px; 
-                                       color: white; cursor: pointer; font-weight: 600; font-size: 12px; display: flex; align-items: center; gap: 6px;">
+                        <button onclick="compartilharTelegramSala('${url}', '${escapeHtml(room.title).replace(/'/g, "\\'")}')" 
+                                style="background: #0088cc; border: none; padding: 10px 18px; border-radius: 40px; 
+                                       color: white; cursor: pointer; font-weight: 600; font-size: 12px; display: flex; align-items: center; gap: 8px;">
                             <i class="fab fa-telegram-plane"></i> Telegram
                         </button>
                         
-                        <button onclick="compartilharTwitterWatch('${url}', '${escapeHtml(room.title).replace(/'/g, "\\'")}')" 
-                                style="background: #1DA1F2; border: none; padding: 10px 16px; border-radius: 30px; 
-                                       color: white; cursor: pointer; font-weight: 600; font-size: 12px; display: flex; align-items: center; gap: 6px;">
+                        <button onclick="compartilharTwitterSala('${url}', '${escapeHtml(room.title).replace(/'/g, "\\'")}')" 
+                                style="background: #1DA1F2; border: none; padding: 10px 18px; border-radius: 40px; 
+                                       color: white; cursor: pointer; font-weight: 600; font-size: 12px; display: flex; align-items: center; gap: 8px;">
                             <i class="fab fa-twitter"></i> Twitter
                         </button>
                         
-                        <button onclick="compartilharFacebookWatch('${url}')" 
-                                style="background: #1877F2; border: none; padding: 10px 16px; border-radius: 30px; 
-                                       color: white; cursor: pointer; font-weight: 600; font-size: 12px; display: flex; align-items: center; gap: 6px;">
+                        <button onclick="compartilharFacebookSala('${url}')" 
+                                style="background: #1877F2; border: none; padding: 10px 18px; border-radius: 40px; 
+                                       color: white; cursor: pointer; font-weight: 600; font-size: 12px; display: flex; align-items: center; gap: 8px;">
                             <i class="fab fa-facebook-f"></i> Facebook
                         </button>
                     </div>
                     
-                    <p style="font-size: 10px; color: var(--text2); margin-top: 12px;">
+                    <p style="font-size: 10px; color: var(--text2); margin-top: 16px;">
                         Quem acessar este link entrará direto na sala!
                     </p>
                 </div>
@@ -7121,13 +7150,62 @@ async function compartilharSalaWatch() {
             showConfirmButton: false,
             showCancelButton: true,
             cancelButtonText: 'Fechar',
-            width: '480px',
-            customClass: { popup: 'share-modal-popup' }
+            cancelButtonColor: '#6b7280',
+            width: '500px'
         });
         
     } catch (error) {
-        console.error('Erro:', error);
+        console.error('Erro ao compartilhar:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Não foi possível compartilhar a sala',
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
+}
+
+// Funções auxiliares para compartilhamento
+function copiarLinkSala(url) {
+    navigator.clipboard.writeText(url).then(() => {
+        Swal.fire({
+            icon: 'success',
+            title: '✅ Link copiado!',
+            text: 'Link da sala copiado para a área de transferência',
+            timer: 2000,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end'
+        });
+    }).catch(() => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Não foi possível copiar o link',
+            timer: 1500,
+            showConfirmButton: false
+        });
+    });
+}
+
+function compartilharWhatsAppSala(url, title) {
+    const text = encodeURIComponent(`🎬 *${title}*\n\n👤 Venha assistir comigo no FabiZap Grupos!\n\n🔗 ${url}`);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
+function compartilharTelegramSala(url, title) {
+    const text = encodeURIComponent(`🎬 ${title}\n\nVenha assistir comigo no FabiZap Grupos!\n\n${url}`);
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${text}`, '_blank');
+}
+
+function compartilharTwitterSala(url, title) {
+    const text = encodeURIComponent(`🎬 Assistindo "${title}" no FabiZap Grupos! Venha assistir junto! ${url}`);
+    window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+}
+
+function compartilharFacebookSala(url) {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
 }
 // ==================== RECEBER FILME DO MARUJO FLIX ====================
 
