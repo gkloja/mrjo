@@ -5412,16 +5412,16 @@ updateLoadingScreen();
             // 🔥 NOVO: Mostra a QUALIDADE no botão!
             const qualidadeText = child.qualidade ? ` [${child.qualidade}]` : '';
             
-            return `
-            <div class="episode-btn-mini" onclick="IPTVSystem.irParaVideo('${child.id}')" style="flex: 1; min-width: 140px; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 10px;">
-                <i class="fas ${langIcon}" style="color: ${corBotao}; font-size: 1.1rem;"></i>
-                <div style="display: flex; flex-direction: column; flex: 1;">
-                    <span style="font-size: 0.85rem; font-weight: bold; color: white;">${langText}${qualidadeText}</span>
-                    ${child.qualidade ? `<span style="font-size: 0.65rem; color: ${corBotao};">${child.qualidade}</span>` : ''}
-                </div>
-                <i class="fas fa-play" style="color: ${corBotao}; font-size: 0.9rem; opacity: 0.7;"></i>
-            </div>
-            `;
+           return `
+    <div class="episode-btn-mini" onclick="IPTVSystem.irParaVideo('${child.id}')" data-child-id="${child.id}" style="flex: 1; min-width: 140px; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 10px;">
+        <i class="fas ${langIcon}" style="color: ${corBotao}; font-size: 1.1rem;"></i>
+        <div style="display: flex; flex-direction: column; flex: 1;">
+            <span style="font-size: 0.85rem; font-weight: bold; color: white;">${langText}${qualidadeText}</span>
+            ${child.qualidade ? `<span style="font-size: 0.65rem; color: ${corBotao};">${child.qualidade}</span>` : ''}
+        </div>
+        <i class="fas fa-play" style="color: ${corBotao}; font-size: 0.9rem; opacity: 0.7;"></i>
+    </div>
+`;
         }).join('');
 
         // Mostra o Título do Episódio (ex: "JOGOS DO DIA - 20:30")
@@ -5568,10 +5568,7 @@ function escapeHtml(str) {
 
         estatisticasSite: { viewsPopulares: {}, totalViews: 0 }, // GUARDA OS DADOS AQUI
         busca: '', generoAtivo: 'all', paginaAtual: 1, abaAtual: 'todos', searchTimeout: null,
-        irParaVideo: function(itemId) {
-            userProgress.addXP(25); 
-            window.location.href = `https://marujodigital.onrender.com/proxy?url=https://fabibot-taupe.vercel.app/player/${itemId}`;
-        },
+      
 
         // --- NOVO SISTEMA DE RECOMPENSA FLUTUANTE ---
 
@@ -6549,7 +6546,9 @@ removerDoHistorico: function(event, itemId) {
 },
 
 
+// Substitua a função irParaVideo no seu código
 irParaVideo: function(itemId) {
+    console.log('🎬 irParaVideo chamado com ID:', itemId);
     userProgress.addXP(25);
     
     // Buscar dados do filme/série
@@ -6557,19 +6556,36 @@ irParaVideo: function(itemId) {
     const child = grupo?.children?.find(c => c.id === itemId);
     
     if (grupo && child) {
-        // Criar sala no FabiZap
-        criarSalaMarujoFlix(
-            grupo.titulo,
-            child.videoUrl,
-            grupo.poster,
-            grupo.tipo,
-            grupo.id_main
-        );
+        const titulo = encodeURIComponent(grupo.titulo);
+        const poster = encodeURIComponent(grupo.poster || '');
+        // 👇 AGORA USA O LINK SEM O PROXY
+        const videoUrl = encodeURIComponent(`https://fabibot-taupe.vercel.app/player/${itemId}`);
+        
+        // Redireciona para o FabiZap
+        const fabizapUrl = `https://marujodigital.onrender.com/fabizapgrupos?acao=criar_sala&titulo=${titulo}&poster=${poster}&videoUrl=${videoUrl}`;
+        
+        console.log('🚀 Redirecionando:', fabizapUrl);
+        window.location.href = fabizapUrl;
+        
     } else {
-        // Fallback: vai direto para o player
-        window.location.href = `https://marujodigital.onrender.com/proxy?url=https://fabibot-taupe.vercel.app/player/${itemId}`;
+        console.error('❌ Grupo ou child não encontrado');
+        ToastSystem.show('Erro ao carregar o vídeo', 'error');
     }
 },
+
+// Nova função auxiliar para abrir o player
+abrirPlayerComLink: function(link, titulo) {
+    if (link.includes('.m3u8') || link.includes('youtube.com') || link.includes('vimeo.com')) {
+        // Se for um link conhecido, tenta abrir seu player
+        window.location.href = link;
+    } else {
+        // Fallback: tenta carregar em uma nova aba
+        window.open(link, '_blank');
+    }
+    
+    // Sempre adiciona XP quando tenta assistir
+    userProgress.addXP(25);
+}
                 
 
     };

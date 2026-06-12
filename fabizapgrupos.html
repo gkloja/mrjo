@@ -4513,6 +4513,42 @@ body.light-mode #destaquePremiumSection .btn-ver-tudo:hover {
 .destaque-header > div:first-child > div:first-child {
     background: linear-gradient(135deg, #25D366, #128C7E) !important;
 }
+/* CORREÇÃO: Chat do Watch Party */
+.watch-chat-box {
+    display: flex !important;
+    flex-direction: column;
+}
+
+.watch-chat-messages {
+    display: flex !important;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.watch-chat-input-bar {
+    display: flex !important;
+    gap: 8px;
+    padding: 8px;
+}
+
+.watch-chat-input {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: inherit;
+}
+
+.watch-chat-send-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #ef4444;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -7351,6 +7387,7 @@ async function carregarWatchRooms() {
         const response = await fetch(`${API_URL}/cliente06/watch-rooms`);
         const rooms = await response.json();
         rooms.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
         if (rooms.length === 0) {
             container.innerHTML = `
                 <div class="watch-empty-state">
@@ -7365,8 +7402,15 @@ async function carregarWatchRooms() {
         }
         
         container.innerHTML = rooms.map(room => {
-            const videoId = room.videoId || getYouTubeId(room.videoUrl);
-            const thumb = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
+            // 🔥 CORREÇÃO: Usar poster se existir, senão tenta thumb do YouTube
+            let thumb = '';
+            if (room.poster) {
+                thumb = room.poster;
+            } else if (room.videoId) {
+                thumb = `https://img.youtube.com/vi/${room.videoId}/hqdefault.jpg`;
+            } else {
+                thumb = 'https://via.placeholder.com/300x140?text=🎬+Sala';
+            }
             
             return `
                 <div class="watch-room-card" onclick="entrarSalaWatch('${room.id}')">
@@ -7374,7 +7418,7 @@ async function carregarWatchRooms() {
                         <span class="watch-live-badge">
                             <span class="watch-live-dot"></span> AO VIVO
                         </span>
-                        <img class="watch-room-thumb" src="${thumb}" onerror="this.style.display='none'" alt="${escapeHtml(room.title)}">
+                        <img class="watch-room-thumb" src="${thumb}" onerror="this.src='https://via.placeholder.com/300x140?text=🎬'" alt="${escapeHtml(room.title)}">
                         <div class="watch-room-play-overlay">
                             <i class="fas fa-play"></i>
                         </div>
@@ -7392,6 +7436,7 @@ async function carregarWatchRooms() {
             `;
         }).join('');
     } catch (error) {
+        console.error('Erro ao carregar salas:', error);
         container.innerHTML = '<div class="watch-empty-state"><p>Erro ao carregar salas</p></div>';
     }
 }
@@ -7735,7 +7780,9 @@ async function enviarMsgWatch() {
         
         input.value = '';
         sincronizarChat(watchRoomAtual);
-    } catch (error) {}
+    } catch (error) {
+        console.error('Erro ao enviar:', error);
+    }
 }
 
 function sairSalaWatch() {
