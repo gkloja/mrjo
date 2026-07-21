@@ -9,30 +9,68 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089"
      crossorigin="anonymous"></script>
-     <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js"></script>
-
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
-
+  
   OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
-      notifyButton: {
-        enable: false
+    try {
+      await OneSignal.init({
+        appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
+        allowLocalhostAsSecureOrigin: true,
+        serviceWorkerPath: "/OneSignalSDKWorker.js",
+        notifyButton: {
+          enable: true,
+          position: "bottom-right",
+          size: "large",
+          showCredit: false,
+          prenotify: true,
+          colors: {
+            "circle.background": "#C1272D",
+            "circle.foreground": "white",
+            "badge.background": "#C1272D",
+            "badge.foreground": "white",
+            "badge.bordercolor": "#C1272D",
+            "pulse.color": "#C1272D",
+            "dialog.button.background.hovering": "#A41E23",
+            "dialog.main.title.foreground": "#333333"
+          }
+        },
+        welcomeNotification: {
+          title: "Bem-vindo ao G1!",
+          message: "Receba notificações de notícias importantes",
+          url: "/"
+        }
+      });
+      
+      console.log("OneSignal inicializado com sucesso!");
+      
+      // Verificar permissão
+      const permission = await OneSignal.Notifications.getPermissionAsync();
+      console.log("Permissão de notificações:", permission);
+      
+      if (!permission) {
+        setTimeout(() => {
+          OneSignal.Notifications.requestPermission();
+        }, 2000);
       }
-    });
-
-    // 🔥 REGISTRA O TOKEN CORRETAMENTE
-    if (typeof LibSignal !== "undefined") {
-      LibSignal.register();
+      
+    } catch(e) {
+      console.error("Erro ao inicializar OneSignal:", e);
     }
   });
 </script>
-    
+
+<script>
+  // Registrar Service Worker para OneSignal
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/OneSignalSDKWorker.js')
+      .then(reg => console.log('Service Worker registrado:', reg))
+      .catch(err => console.log('Erro ao registrar SW:', err));
+  }
+</script>
+
     <style>
         * {
             margin: 0;
@@ -532,10 +570,6 @@
         </div>
         
         <div class="nav-actions">
-            <button class="share-btn" onclick="ativarNotificacoes()" title="Ativar notificações">
-                <i class="fas fa-bell"></i>
-                <span>Notificações</span>
-            </button>
             <button class="share-btn" onclick="toggleShareMenu()">
                 <i class="fas fa-share-alt"></i>
                 <span>Compartilhar</span>
@@ -896,6 +930,7 @@
 
 </body>
 </html>
+
 
 
 
