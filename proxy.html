@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="google-adsense-account" content="ca-pub-2351298778216089">
-    <title>Marujo Proxy | Acesse qualquer site</title>
+    <title>G1 Globo | Acesse qualquer site</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089"
      crossorigin="anonymous"></script>
@@ -16,17 +16,41 @@
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
       appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
+      serviceWorkerPath: "/OneSignalSDKWorker.js",
+      allowLocalhostAsSecureOrigin: true,
       notifyButton: {
-        enable: false
+        enable: true,
+        position: "bottom-right",
+        size: "medium",
+        showCredit: false,
+        prenotify: true,
+        colors: {
+          "circle.background": "#C1272D",
+          "circle.foreground": "white",
+          "badge.background": "#C1272D",
+          "badge.foreground": "white",
+          "badge.bordercolor": "#C1272D",
+          "pulse.color": "#C1272D",
+          "dialog.button.background.hovering": "#A41E23",
+          "dialog.main.title.foreground": "#1a1a1a"
+        }
+      },
+      welcomeNotification: {
+        title: "Bem-vindo ao G1 Globo!",
+        message: "Receba notificações sobre novos conteúdos",
+        url: "/"
       }
     });
 
-    // 🔥 REGISTRA O TOKEN CORRETAMENTE
-    if (typeof LibSignal !== "undefined") {
-      LibSignal.register();
-    }
+    OneSignal.Notifications.addEventListener('click', (event) => {
+      console.log('Notificação clicada:', event);
+    });
+
+    // Adicionar permissão de notificação
+    OneSignal.Notifications.requestPermission();
   });
 </script>
+
     <style>
         * {
             margin: 0;
@@ -36,7 +60,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: #f1f5f9;
+            background: #f8f8f8;
         }
 
         /* ==================== BARRA SUPERIOR ==================== */
@@ -45,10 +69,11 @@
             top: 0;
             left: 0;
             right: 0;
-            background: #0f172a;
+            background: #ffffff;
             padding: 8px 20px;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(193, 39, 45, 0.1);
+            border-bottom: 3px solid #C1272D;
         }
 
         .nav-container {
@@ -66,16 +91,17 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            color: white;
-            font-weight: 600;
+            color: #C1272D;
+            font-weight: 700;
             font-size: 18px;
             white-space: nowrap;
         }
 
         .logo img {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 6px;
+            object-fit: cover;
         }
 
         /* ==================== BOTÕES DE AÇÃO ==================== */
@@ -86,7 +112,7 @@
         }
 
         .share-btn {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            background: linear-gradient(135deg, #C1272D, #A41E23);
             border: none;
             padding: 10px 20px;
             color: white;
@@ -98,13 +124,13 @@
             align-items: center;
             gap: 8px;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 2px 8px rgba(193, 39, 45, 0.3);
         }
 
         .share-btn:hover {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #A41E23, #8B181F);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 4px 12px rgba(193, 39, 45, 0.4);
         }
 
         .share-btn i {
@@ -137,7 +163,7 @@
         }
 
         .share-menu-header {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+            background: linear-gradient(135deg, #C1272D, #A41E23);
             color: white;
             padding: 12px 16px;
             font-weight: 600;
@@ -145,16 +171,16 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            border-bottom: 2px solid #3b82f6;
+            border-bottom: 2px solid #8B181F;
         }
 
         .share-site-title {
-            background: linear-gradient(135deg, #1e293b, #334155);
-            color: #3b82f6;
+            background: #f8f8f8;
+            color: #C1272D;
             padding: 10px 16px;
             font-size: 12px;
             font-weight: 500;
-            border-bottom: 1px solid #475569;
+            border-bottom: 1px solid #e2e8f0;
             word-break: break-word;
             max-height: 60px;
             overflow-y: auto;
@@ -177,21 +203,21 @@
         }
 
         .share-menu-item:hover {
-            background: #f1f5f9;
+            background: #f8f8f8;
         }
 
         .share-menu-item i {
             font-size: 18px;
             width: 24px;
             text-align: center;
-            color: #3b82f6;
+            color: #C1272D;
         }
 
         .share-menu-item.linkedin i { color: #0a66c2; }
         .share-menu-item.twitter i { color: #000; }
         .share-menu-item.whatsapp i { color: #25d366; }
         .share-menu-item.telegram i { color: #0088cc; }
-        .share-menu-item.copy i { color: #f59e0b; }
+        .share-menu-item.copy i { color: #C1272D; }
 
         .share-menu-item span {
             font-size: 13px;
@@ -204,7 +230,7 @@
             top: 60px;
             left: 0;
             right: 0;
-            background: white;
+            background: #f8f8f8;
             text-align: center;
             padding: 8px;
             border-bottom: 1px solid #e2e8f0;
@@ -221,14 +247,14 @@
             position: absolute;
             top: 4px;
             right: 8px;
-            background: #e2e8f0;
+            background: #C1272D;
             border: none;
             border-radius: 50%;
             width: 24px;
             height: 24px;
             font-size: 16px;
             cursor: pointer;
-            color: #475569;
+            color: white;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -238,25 +264,22 @@
         }
 
         .ad-close:hover {
-            background: #cbd5e1;
-            color: #1e293b;
+            background: #A41E23;
+            color: white;
         }
 
         /* ==================== ANÚNCIO LATERAL ==================== */
         .ad-sidebar {
             position: fixed;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
+            right: 0;
+            top: 60px;
             width: 160px;
-            background: white;
-            border-radius: 0 12px 12px 0;
-            padding: 12px 8px;
-            text-align: center;
+            height: calc(100vh - 60px);
+            background: #f8f8f8;
+            border-left: 1px solid #e2e8f0;
+            padding: 8px 4px;
+            overflow-y: auto;
             z-index: 998;
-            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-            border: 1px solid #e2e8f0;
-            border-left: none;
             transition: all 0.3s;
         }
 
@@ -264,36 +287,39 @@
             display: none;
         }
 
-        .sidebar-close {
+        .ad-sidebar-close {
             position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #e2e8f0;
+            top: 8px;
+            right: 8px;
+            background: #C1272D;
             border: none;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 14px;
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
             cursor: pointer;
-            color: #475569;
+            color: white;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s;
+            z-index: 1001;
         }
 
-        .sidebar-close:hover {
-            background: #cbd5e1;
-            color: #1e293b;
+        .ad-sidebar-close:hover {
+            background: #A41E23;
         }
 
-        /* ==================== CONTAINER DO IFRAME ==================== */
-        .iframe-container {
+        /* ==================== IFRAME ==================== */
+        #iframeContainer {
             position: fixed;
             top: 130px;
             left: 0;
             right: 0;
             bottom: 0;
+            width: 100%;
+            height: calc(100vh - 130px);
             background: white;
             transition: all 0.3s;
             z-index: 1;
@@ -306,279 +332,422 @@
             background: white;
         }
 
-        /* ==================== BOTÃO FLUTUANTE ==================== */
-        .fullscreen-btn {
+        .fullscreen-mode #iframeContainer {
+            top: 0;
+            left: 0 !important;
+            right: 0;
+            bottom: 0;
+            height: 100vh;
+        }
+
+        /* ==================== BARRA LATERAL DE FERRAMENTAS ==================== */
+        .sidebar-tools {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+            left: 0;
+            top: 60px;
+            width: 60px;
+            height: calc(100vh - 60px);
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px 4px;
+            z-index: 997;
+            box-shadow: 1px 0 3px rgba(0,0,0,0.05);
+        }
+
+        .tool-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
             border: none;
-            border-radius: 50%;
+            background: #f8f8f8;
+            color: #666;
             cursor: pointer;
-            z-index: 1001;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
+            font-size: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .tool-btn:hover {
+            background: #C1272D;
             color: white;
-            font-size: 24px;
+            transform: translateX(4px);
         }
 
-        .fullscreen-btn:hover {
-            transform: scale(1.1);
-            background: linear-gradient(135deg, #1e293b, #334155);
+        .tool-btn i {
+            font-size: 22px;
         }
 
-        .fullscreen-btn::before {
-            content: '';
+        .tooltip {
             position: absolute;
-            top: -4px;
-            left: -4px;
-            right: -4px;
-            bottom: -4px;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            border-radius: 50%;
-            z-index: -1;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.5; transform: scale(1); }
-            70% { opacity: 0; transform: scale(1.3); }
-            100% { opacity: 0; transform: scale(1.3); }
-        }
-
-        .fullscreen-btn .tooltip {
-            position: absolute;
-            bottom: 70px;
-            right: 0;
-            background: #0f172a;
+            left: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
             color: white;
-            padding: 8px 16px;
-            border-radius: 30px;
+            padding: 6px 12px;
+            border-radius: 6px;
             font-size: 12px;
             white-space: nowrap;
             opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
             pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 2000;
         }
 
-        .fullscreen-btn:hover .tooltip {
+        .tool-btn:hover .tooltip {
             opacity: 1;
-            visibility: visible;
-            bottom: 65px;
         }
 
-        /* ==================== NOTIFICAÇÃO DE CÓPIA ==================== */
+        /* ==================== HOME PAGE ==================== */
+        .home-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 130px);
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+        }
+
+        .home-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(193, 39, 45, 0.2);
+            object-fit: cover;
+        }
+
+        .home-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #C1272D;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .home-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .search-examples {
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .search-examples span {
+            display: inline-block;
+            margin: 0 8px;
+            padding: 4px 8px;
+            background: #f0f0f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .search-examples span:hover {
+            background: #C1272D;
+            color: white;
+        }
+
+        .search-form {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 2px solid #C1272D;
+            border-radius: 30px;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(193, 39, 45, 0.1);
+            border-color: #A41E23;
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        .search-btn {
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #C1272D, #A41E23);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(193, 39, 45, 0.3);
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(135deg, #A41E23, #8B181F);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(193, 39, 45, 0.4);
+        }
+
+        /* ==================== NOTIFICAÇÕES ==================== */
         .copy-notification {
             position: fixed;
-            bottom: 100px;
-            right: 30px;
-            background: linear-gradient(135deg, #22c55e, #16a34a);
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #C1272D, #A41E23);
             color: white;
-            padding: 14px 20px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 600;
-            z-index: 2001;
-            animation: slideUp 0.3s ease, slideDown 0.3s ease 2.7s;
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-            max-width: 280px;
-            border-left: 4px solid rgba(255,255,255,0.3);
-        }
-
-        .copy-notification small {
-            display: block;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            font-weight: 400;
-            opacity: 0.95;
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 9999;
+            box-shadow: 0 4px 20px rgba(193, 39, 45, 0.3);
+            animation: slideUp 0.3s ease;
         }
 
         @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes slideDown {
-            from { transform: translateY(0); opacity: 1; }
-            to { transform: translateY(20px); opacity: 0; }
-        }
-
-        /* Responsivo */
-        @media (max-width: 768px) {
-            .nav-bar { padding: 8px 12px; }
-            .logo span { display: none; }
-            .share-btn span { display: none; }
-            .ad-header { top: 52px; }
-            .iframe-container { top: 100px; }
-            .fullscreen-btn { bottom: 20px; right: 20px; width: 48px; height: 48px; font-size: 20px; }
-            .share-menu {
-                top: 50px;
-                right: 12px;
-                min-width: 200px;
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
             }
         }
 
-        .ad-label {
-            font-size: 9px;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 1024px) {
+            .sidebar-tools {
+                width: 0;
+                padding: 0;
+                border: none;
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .ad-sidebar {
+                width: 0;
+                padding: 0;
+                border: none;
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            #iframeContainer {
+                left: 0;
+            }
+
+            .home-title {
+                font-size: 28px;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
         }
 
-        .adsbygoogle {
-            max-height: 100px !important;
-        }
+        @media (max-width: 600px) {
+            .nav-bar {
+                padding: 10px;
+            }
 
-        .fullscreen-mode .ad-header,
-        .fullscreen-mode .ad-sidebar,
-        .fullscreen-mode .nav-bar {
-            display: none !important;
-        }
+            .nav-container {
+                gap: 8px;
+            }
 
-        .fullscreen-mode .iframe-container {
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-        }
+            .logo {
+                font-size: 14px;
+            }
 
-        .fullscreen-mode .fullscreen-btn {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
+            .share-btn {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+
+            .home-title {
+                font-size: 24px;
+            }
+
+            .home-subtitle {
+                font-size: 14px;
+            }
+
+            .search-input,
+            .search-btn {
+                font-size: 12px;
+                padding: 12px 16px;
+            }
         }
     </style>
+
 </head>
 <body>
 
-<!-- BARRA SUPERIOR -->
-<div class="nav-bar">
-    <div class="nav-container">
-        <div class="logo" onclick="resetToHome()">
-            <img src="imagens/logo.png" alt="Logo">
-            <span>Marujo Proxy</span>
+    <!-- BARRA SUPERIOR -->
+    <div class="nav-bar">
+        <div class="nav-container">
+            <div class="logo" id="logo">
+                <img src="https://play-lh.googleusercontent.com/E2L634I8-5aWWH0HF_g2M4-w2NCngTk_Fi_LMkSCfXj2jxNdC-k7GSe36M1kNJ7dMwTZlmzvwlVmanZ_a7STZQ" alt="Marujo Proxy">
+                <span>G1 Globo</span>
+            </div>
+            <div class="nav-actions">
+                <button class="share-btn" id="shareBtn">
+                    <i class="fas fa-share-alt"></i>
+                    Compartilhar
+                </button>
+            </div>
         </div>
-        
-        <div class="nav-actions">
-            <button class="share-btn" onclick="toggleShareMenu()">
-                <i class="fas fa-share-alt"></i>
-                <span>Compartilhar</span>
-            </button>
+    </div>
+
+    <!-- MENU COMPARTILHAMENTO -->
+    <div class="share-menu" id="shareMenu">
+        <div class="share-menu-header">
+            <i class="fas fa-link"></i>
+            Compartilhar Site
+        </div>
+        <div class="share-site-title" id="siteTitleText">Carregando...</div>
+        <div class="share-menu-item linkedin" onclick="compartilharLinkedIn()">
+            <i class="fab fa-linkedin"></i>
+            <span>LinkedIn</span>
+        </div>
+        <div class="share-menu-item twitter" onclick="compartilharTwitter()">
+            <i class="fab fa-twitter"></i>
+            <span>Twitter/X</span>
+        </div>
+        <div class="share-menu-item whatsapp" onclick="compartilharWhatsApp()">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp</span>
+        </div>
+        <div class="share-menu-item telegram" onclick="compartilharTelegram()">
+            <i class="fab fa-telegram"></i>
+            <span>Telegram</span>
+        </div>
+        <div class="share-menu-item copy" onclick="copiarLink()">
+            <i class="fas fa-copy"></i>
+            <span>Copiar Link</span>
         </div>
     </div>
-</div>
 
-<!-- MENU DE COMPARTILHAMENTO -->
-<div id="shareMenu" class="share-menu">
-    <div class="share-menu-header">
-        <i class="fas fa-share-alt"></i>
-        Compartilhar
+    <!-- ANÚNCIO SUPERIOR -->
+    <div class="ad-header" id="adHeader">
+        <div id="google_ads_horizontal"></div>
+        <button class="ad-close" onclick="fecharAnuncioTopo()">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
-    
-    <div class="share-site-title" id="siteTitleDisplay">
-        <i class="fas fa-globe" style="margin-right: 6px;"></i>
-        <span id="siteTitleText">Carregando...</span>
+
+    <!-- BARRA LATERAL DE FERRAMENTAS -->
+    <div class="sidebar-tools">
+        <button class="tool-btn" id="fullscreenBtn" onclick="toggleFullscreenClean()">
+            <i class="fas fa-expand"></i>
+            <span class="tooltip">🎬 Modo Cinema</span>
+        </button>
     </div>
-    
-    <a class="share-menu-item linkedin" onclick="compartilharLinkedIn()" href="javascript:void(0)">
-        <i class="fab fa-linkedin"></i>
-        <span>LinkedIn</span>
-    </a>
-    
-    <a class="share-menu-item twitter" onclick="compartilharTwitter()" href="javascript:void(0)">
-        <i class="fab fa-twitter"></i>
-        <span>Twitter/X</span>
-    </a>
-    
-    <a class="share-menu-item whatsapp" onclick="compartilharWhatsApp()" href="javascript:void(0)">
-        <i class="fab fa-whatsapp"></i>
-        <span>WhatsApp</span>
-    </a>
-    
-    <a class="share-menu-item telegram" onclick="compartilharTelegram()" href="javascript:void(0)">
-        <i class="fab fa-telegram"></i>
-        <span>Telegram</span>
-    </a>
-    
-    <a class="share-menu-item copy" onclick="copiarLink()" href="javascript:void(0)">
-        <i class="fas fa-copy"></i>
-        <span>Copiar Link</span>
-    </a>
-</div>
 
-<!-- ANÚNCIO SUPERIOR -->
-<div id="adHeader" class="ad-header">
-    <button class="ad-close" onclick="fecharAnuncioTopo()">×</button>
-    <div class="ad-label">PUBLICIDADE</div>
-    <ins class="adsbygoogle"
-         style="display:inline-block;width:728px;height:90px"
-         data-ad-client="ca-pub-2351298778216089"
-         data-ad-slot="4868424735"
-         data-ad-format="horizontal"
-         data-full-width-responsive="true"></ins>
-    <script>
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense header:', e); }
-    </script>
-</div>
+    <!-- ANÚNCIO LATERAL -->
+    <div class="ad-sidebar" id="adSidebar">
+        <button class="ad-sidebar-close" onclick="fecharAnuncioLateral()">
+            <i class="fas fa-times"></i>
+        </button>
+        <div id="google_ads_sidebar"></div>
+    </div>
 
-<!-- ANÚNCIO LATERAL -->
-<div id="adSidebar" class="ad-sidebar">
-    <button class="sidebar-close" onclick="fecharAnuncioLateral()">×</button>
-    <div class="ad-label">PUBLICIDADE</div>
-    <ins class="adsbygoogle"
-         style="display:inline-block;width:160px;height:600px"
-         data-ad-client="ca-pub-2351298778216089"
-         data-ad-slot="4868424735"
-         data-ad-format="vertical"
-         data-full-width-responsive="false"></ins>
-    <script>
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense sidebar:', e); }
-    </script>
-</div>
+    <!-- IFRAME CONTAINER -->
+    <div id="iframeContainer">
+        <div class="home-container">
+            <img src="https://play-lh.googleusercontent.com/E2L634I8-5aWWH0HF_g2M4-w2NCngTk_Fi_LMkSCfXj2jxNdC-k7GSe36M1kNJ7dMwTZlmzvwlVmanZ_a7STZQ" alt="Logo" class="home-logo">
+            <h1 class="home-title">G1 Globo</h1>
+            <p class="home-subtitle">Pesquise o que você quer encontrar na internet</p>
+            <form class="search-form" onsubmit="event.preventDefault(); pesquisarNoGoogle(document.getElementById('searchInput').value);">
+                <input type="text" id="searchInput" class="search-input" placeholder="Digite sua pesquisa..." autocomplete="off" autofocus>
+                <button type="submit" class="search-btn">Pesquisar</button>
+            </form>
+            <div class="search-examples">
+                <span onclick="pesquisarNoGoogle('Python tutorial')">Python</span>
+                <span onclick="pesquisarNoGoogle('Como fazer um website')">Websites</span>
+                <span onclick="pesquisarNoGoogle('Notícias de tecnologia')">Tecnologia</span>
+                <span onclick="pesquisarNoGoogle('Filmes em cartaz')">Filmes</span>
+            </div>
+        </div>
+    </div>
 
-<!-- IFRAME PRINCIPAL -->
-<div class="iframe-container" id="iframeContainer">
-    <iframe 
-        id="proxyFrame" 
-        src="about:blank" 
-        title="Marujo Proxy"
-        allow="autoplay; fullscreen; encrypted-media; picture-in-picture; camera; microphone; geolocation"
-        allowfullscreen="true"
-        referrerpolicy="no-referrer"
-    ></iframe>
-</div>
-
-<!-- BOTÃO FLUTUANTE -->
-<button id="fullscreenBtn" class="fullscreen-btn" onclick="toggleFullscreenClean()">
-    <span class="tooltip">⛶ Tela Cheia</span>
-    ⛶
-</button>
+    <!-- IFRAME (inicialmente oculto) -->
+    <iframe id="mainIframe" style="display: none;"></iframe>
 
 <script>
-    // ==================== CONFIGURAÇÃO DO PROXY ====================
-    const DEFAULT_URL = 'https://g1.globo.com/';
-    
+    // ==================== CONFIGURAÇÃO ====================
+    const DEFAULT_URL = 'https://www.google.com';
     let currentUrl = DEFAULT_URL;
     let isFullscreenClean = false;
     
-    const iframe = document.getElementById('proxyFrame');
+    // ==================== ELEMENTOS ====================
+    const shareBtn = document.getElementById('shareBtn');
+    const shareMenu = document.getElementById('shareMenu');
     const adHeader = document.getElementById('adHeader');
     const adSidebar = document.getElementById('adSidebar');
     const iframeContainer = document.getElementById('iframeContainer');
     const fullscreenBtn = document.getElementById('fullscreenBtn');
-    const shareMenu = document.getElementById('shareMenu');
+    const logo = document.getElementById('logo');
     const body = document.body;
+    
+    // ==================== USAR IFRAME EXISTENTE OU CRIAR ====================
+    let iframe = document.getElementById('mainIframe');
+    if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.id = 'mainIframe';
+        iframeContainer.appendChild(iframe);
+    }
+    
+    iframe.style.display = 'block';
+    
+    // Configurar referência de namespace global para carregar
+    window.pesquisarNoGoogle = pesquisarNoGoogle;
+    window.carregarUrl = carregarUrl;
+    window.resetToHome = resetToHome;
+    window.toggleFullscreenClean = toggleFullscreenClean;
+    window.fecharAnuncioTopo = fecharAnuncioTopo;
+    window.fecharAnuncioLateral = fecharAnuncioLateral;
+    window.compartilharLinkedIn = compartilharLinkedIn;
+    window.compartilharTwitter = compartilharTwitter;
+    window.compartilharWhatsApp = compartilharWhatsApp;
+    window.compartilharTelegram = compartilharTelegram;
+    window.copiarLink = copiarLink;
+    
+    // Logo clicável para voltar ao home
+    logo.addEventListener('click', () => {
+        resetToHome();
+        iframeContainer.querySelector('.home-container')?.scrollIntoView();
+    });
     
     // ==================== COMPARTILHAMENTO ====================
     function toggleShareMenu() {
         shareMenu.classList.toggle('active');
     }
+    
+    shareBtn.addEventListener('click', toggleShareMenu);
     
     // Fechar menu quando clicar fora
     document.addEventListener('click', (e) => {
@@ -588,16 +757,16 @@
     });
     
     function getCurrentPageInfo() {
-        // Tentar pegar o título do site carregado no iframe
-        let siteTitle = 'Site';
+        let siteTitle = 'Resultado da Pesquisa';
         try {
-            siteTitle = iframe.contentDocument?.title || 'Site';
+            const pageTitle = iframe.contentDocument?.title;
+            if (pageTitle && pageTitle.trim()) {
+                siteTitle = pageTitle;
+            }
         } catch(e) {
-            // Se não conseguir acessar iframe por CORS, tenta pegar do atributo title
-            siteTitle = iframe.getAttribute('title') || 'Site';
+            // Se não conseguir acessar o title por CORS, usa o padrão
         }
         
-        // Construir URL do proxy com o site
         const baseUrl = window.location.origin + window.location.pathname;
         const proxyUrl = `${baseUrl}?url=${encodeURIComponent(currentUrl)}`;
         
@@ -605,7 +774,7 @@
             url: proxyUrl,
             siteUrl: currentUrl,
             title: siteTitle,
-            message: `Confira este site no Marujo Proxy: ${siteTitle}`
+            message: `Confira no G1 Globo: ${siteTitle}`
         };
     }
     
@@ -617,12 +786,10 @@
         }
     }
     
-    // Atualizar título quando o iframe carregar
     iframe.addEventListener('load', function() {
         setTimeout(updateSiteTitleDisplay, 500);
     });
     
-    // Atualizar título inicial
     setTimeout(updateSiteTitleDisplay, 1000);
     
     function compartilharLinkedIn() {
@@ -634,7 +801,7 @@
     
     function compartilharTwitter() {
         const info = getCurrentPageInfo();
-        const tweetText = `Confira "${info.title}" no Marujo Proxy! 🎬\n${info.url}`;
+        const tweetText = `Encontrei no G1 Globo: ${info.title}\n${info.url}`;
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
         window.open(twitterUrl, 'twitter-share', 'width=550,height=480');
         shareMenu.classList.remove('active');
@@ -642,7 +809,7 @@
     
     function compartilharWhatsApp() {
         const info = getCurrentPageInfo();
-        const message = `🎬 *${info.title}*\n\nVem conferir no Marujo Proxy:\n${info.url}`;
+        const message = `🔍 *${info.title}*\n\nEncontrei no G1 Globo 🚀\n${info.url}`;
         const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, 'whatsapp-share');
         shareMenu.classList.remove('active');
@@ -650,7 +817,7 @@
     
     function compartilharTelegram() {
         const info = getCurrentPageInfo();
-        const message = `🎬 *${info.title}*\n\nConfira no Marujo Proxy:`;
+        const message = `🔍 Encontrei no G1 Globo:`;
         const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(info.url)}&text=${encodeURIComponent(message)}`;
         window.open(telegramUrl, 'telegram-share');
         shareMenu.classList.remove('active');
@@ -661,7 +828,6 @@
         navigator.clipboard.writeText(info.url).then(() => {
             shareMenu.classList.remove('active');
             
-            // Mostrar notificação
             const notification = document.createElement('div');
             notification.className = 'copy-notification';
             notification.innerHTML = `<i class="fas fa-check-circle" style="margin-right: 8px;"></i>Link do Proxy copiado!<br><small style="font-size: 11px; margin-top: 4px; opacity: 0.9;">${info.title}</small>`;
@@ -711,7 +877,7 @@
             }
         } else {
             body.classList.remove('fullscreen-mode');
-            fullscreenBtn.style.background = "linear-gradient(135deg, #0f172a, #1e293b)";
+            fullscreenBtn.style.background = "linear-gradient(135deg, #C1272D, #A41E23)";
             fullscreenBtn.querySelector('.tooltip').textContent = '🎬 Modo Cinema';
             
             if (document.exitFullscreen) {
@@ -738,7 +904,7 @@
         if (!document.fullscreenElement && isFullscreenClean) {
             isFullscreenClean = false;
             body.classList.remove('fullscreen-mode');
-            fullscreenBtn.style.background = "linear-gradient(135deg, #0f172a, #1e293b)";
+            fullscreenBtn.style.background = "linear-gradient(135deg, #C1272D, #A41E23)";
             fullscreenBtn.querySelector('.tooltip').textContent = '🎬 Modo Cinema';
             
             setTimeout(() => {
@@ -757,6 +923,41 @@
         }
     });
     
+    // ==================== PESQUISAR NO GOOGLE ====================
+    function pesquisarNoGoogle(pesquisa) {
+        if (!pesquisa) return;
+        
+        let pesquisaLimpa = pesquisa.trim();
+        
+        // Verificar se é uma URL válida
+        const ehUrl = pesquisaLimpa.includes('.') && 
+                     (pesquisaLimpa.includes('.com') || 
+                      pesquisaLimpa.includes('.br') || 
+                      pesquisaLimpa.includes('.net') ||
+                      pesquisaLimpa.includes('.org') ||
+                      pesquisaLimpa.includes('localhost') ||
+                      pesquisaLimpa.startsWith('http://') ||
+                      pesquisaLimpa.startsWith('https://'));
+        
+        let urlFinal;
+        
+        if (ehUrl) {
+            // Se for URL, carrega direto
+            urlFinal = pesquisaLimpa;
+            if (!urlFinal.startsWith('http://') && !urlFinal.startsWith('https://')) {
+                urlFinal = 'https://' + urlFinal;
+            }
+        } else {
+            // Se for pesquisa, busca no Google
+            urlFinal = 'https://www.google.com/search?q=' + encodeURIComponent(pesquisaLimpa);
+        }
+        
+        carregarUrl(urlFinal);
+        
+        // Limpar o input
+        document.getElementById('searchInput').value = '';
+    }
+    
     // ==================== CARREGAR URL ====================
     function carregarUrl(url) {
         if (!url) return;
@@ -770,6 +971,11 @@
         currentUrl = finalUrl;
         iframe.src = finalUrl;
         
+        // Mostrar o iframe e esconder o home
+        iframe.style.display = 'block';
+        const homeContainer = iframeContainer.querySelector('.home-container');
+        if (homeContainer) homeContainer.style.display = 'none';
+        
         const newUrl = new URL(window.location);
         newUrl.searchParams.set('url', finalUrl);
         window.history.pushState({ url: finalUrl }, '', newUrl);
@@ -780,7 +986,15 @@
     }
     
     function resetToHome() {
-        carregarUrl(DEFAULT_URL);
+        const homeContainer = iframeContainer.querySelector('.home-container');
+        if (homeContainer) homeContainer.style.display = 'flex';
+        iframe.style.display = 'none';
+        iframe.src = '';
+        currentUrl = DEFAULT_URL;
+        
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.delete('url');
+        window.history.pushState({}, '', newUrl);
     }
     
     function getUrlFromParams() {
@@ -792,12 +1006,22 @@
         return null;
     }
     
+    // ==================== EVENT LISTENERS DO INPUT ====================
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                pesquisarNoGoogle(this.value);
+            }
+        });
+    }
+    
     // ==================== INICIALIZAR ====================
     function init() {
         let startUrl = getUrlFromParams();
-        if (!startUrl) startUrl = DEFAULT_URL;
-        
-        carregarUrl(startUrl);
+        if (startUrl) {
+            carregarUrl(startUrl);
+        }
         
         setInterval(() => {
             try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
@@ -817,3 +1041,4 @@
 
 </body>
 </html>
+
