@@ -9,78 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089"
      crossorigin="anonymous"></script>
-     <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js"></script>
-
-<script>
-  // Configuração Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyDruRISw56lL0dZpnKpFv2COaJkUmamgoc",
-    authDomain: "marujoflix.firebaseapp.com",
-    databaseURL: "https://marujoflix-default-rtdb.firebaseio.com",
-    projectId: "marujoflix",
-    storageBucket: "marujoflix.firebasestorage.app",
-    messagingSenderId: "258606436715",
-    appId: "1:258606436715:web:798dbdf480cd4bc55cfc2e",
-    measurementId: "G-K9CC93KZ3Z"
-  };
-
-  // Inicializar Firebase
-  firebase.initializeApp(firebaseConfig);
-  const messaging = firebase.messaging();
-
-  // Função para ativar notificações
-  window.ativarNotificacoes = async function() {
-    try {
-      console.log("Solicitando permissão de notificações...");
-      
-      const permission = await Notification.requestPermission();
-      
-      if (permission === "granted") {
-        console.log("Permissão concedida!");
-        
-        // Obter token
-        const token = await messaging.getToken({
-          vapidKey: "BIV-6Gd-NTx9T0pvMgeIbwnTzvH3EhUjwbx5g7ZtuUuggzu9l-R8XaORpXGQXxxJOytJsin5G3ul4FED25Qt-9o"
-        });
-        
-        console.log("Token FCM:", token);
-        alert("✅ Notificações ativadas com sucesso!\n\nToken: " + token.substring(0, 20) + "...");
-        
-        // Salvar token (opcional - para seu servidor)
-        localStorage.setItem("fcmToken", token);
-      } else {
-        alert("❌ Permissão de notificações recusada");
-      }
-    } catch(error) {
-      console.error("Erro ao ativar notificações:", error);
-      alert("❌ Erro: " + error.message);
-    }
-  };
-
-  // Receber notificações em primeiro plano
-  messaging.onMessage((payload) => {
-    console.log("Notificação recebida:", payload);
     
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-      body: payload.notification.body,
-      icon: payload.notification.image || 'https://play-lh.googleusercontent.com/E2L634I8-5aWWH0HF_g2M4-w2NCngTk_Fi_LMkSCfXj2jxNdC-k7GSe36M1kNJ7dMwTZlmzvwlVmanZ_a7STZQ'
-    };
-    
-    new Notification(notificationTitle, notificationOptions);
-  });
-</script>
-
-<script>
-  // Registrar Service Worker para Firebase Messaging
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/firebase-messaging-sw.js')
-      .then(reg => console.log('Firebase SW registrado:', reg))
-      .catch(err => console.log('Erro ao registrar SW:', err));
-  }
-</script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js"></script>
 
     <style>
         * {
@@ -691,6 +623,147 @@
 </button>
 
 <script>
+    // ==================== CONFIGURAÇÃO FIREBASE ====================
+    const firebaseConfig = {
+        apiKey: "AIzaSyDruRISw56lL0dZpnKpFv2COaJkUmamgoc",
+        authDomain: "marujoflix.firebaseapp.com",
+        databaseURL: "https://marujoflix-default-rtdb.firebaseio.com",
+        projectId: "marujoflix",
+        storageBucket: "marujoflix.firebasestorage.app",
+        messagingSenderId: "258606436715",
+        appId: "1:258606436715:web:798dbdf480cd4bc55cfc2e",
+        measurementId: "G-K9CC93KZ3Z"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+
+    // ==================== REGISTRAR SERVICE WORKER INLINE ====================
+    async function registrarServiceWorkerInline() {
+        if (!('serviceWorker' in navigator)) return;
+
+        try {
+            // Service Worker como Blob
+            const swCode = `
+importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js');
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDruRISw56lL0dZpnKpFv2COaJkUmamgoc",
+  authDomain: "marujoflix.firebaseapp.com",
+  databaseURL: "https://marujoflix-default-rtdb.firebaseio.com",
+  projectId: "marujoflix",
+  storageBucket: "marujoflix.firebasestorage.app",
+  messagingSenderId: "258606436715",
+  appId: "1:258606436715:web:798dbdf480cd4bc55cfc2e",
+  measurementId: "G-K9CC93KZ3Z"
+};
+
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
+
+// Notificações em background
+messaging.onBackgroundMessage((payload) => {
+  console.log("Notificação em background:", payload);
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: payload.notification.image || 'https://play-lh.googleusercontent.com/E2L634I8-5aWWH0HF_g2M4-w2NCngTk_Fi_LMkSCfXj2jxNdC-k7GSe36M1kNJ7dMwTZlmzvwlVmanZ_a7STZQ',
+    badge: 'https://play-lh.googleusercontent.com/E2L634I8-5aWWH0HF_g2M4-w2NCngTk_Fi_LMkSCfXj2jxNdC-k7GSe36M1kNJ7dMwTZlmzvwlVmanZ_a7STZQ',
+    data: payload.fcmOptions?.link ? { link: payload.fcmOptions.link } : (payload.data || {})
+  };
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// Handler para clique na notificação
+self.addEventListener('notificationclick', function(event) {
+  console.log("Notificação clicada");
+  event.notification.close();
+  let urlAbrir = '/';
+  if (event.notification.data && event.notification.data.link) {
+    urlAbrir = event.notification.data.link;
+  }
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then(function(windowClients) {
+      for (let i = 0; i < windowClients.length; i++) {
+        if (windowClients[i].url === urlAbrir && 'focus' in windowClients[i]) {
+          return windowClients[i].focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(urlAbrir);
+      }
+    })
+  );
+});
+            `;
+
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            
+            const registration = await navigator.serviceWorker.register(swUrl);
+            console.log('Service Worker registrado com sucesso via Blob URL');
+        } catch (error) {
+            console.error('Erro ao registrar Service Worker:', error);
+        }
+    }
+
+    // ==================== NOTIFICAÇÕES ====================
+    window.ativarNotificacoes = async function() {
+        try {
+            console.log("Solicitando permissão de notificações...");
+            
+            const permission = await Notification.requestPermission();
+            
+            if (permission === "granted") {
+                console.log("Permissão concedida!");
+                
+                // Registrar Service Worker
+                await registrarServiceWorkerInline();
+                
+                // Obter token
+                const token = await messaging.getToken({
+                    vapidKey: "BIV-6Gd-NTx9T0pvMgeIbwnTzvH3EhUjwbx5g7ZtuUuggzu9l-R8XaORpXGQXxxJOytJsin5G3ul4FED25Qt-9o"
+                });
+                
+                console.log("Token FCM:", token);
+                alert("✅ Notificações ativadas com sucesso!\n\nToken: " + token.substring(0, 20) + "...");
+                localStorage.setItem("fcmToken", token);
+            } else {
+                alert("❌ Permissão de notificações recusada");
+            }
+        } catch(error) {
+            console.error("Erro ao ativar notificações:", error);
+            alert("❌ Erro: " + error.message);
+        }
+    };
+
+    // Receber notificações em primeiro plano
+    messaging.onMessage((payload) => {
+        console.log("Notificação recebida em primeiro plano:", payload);
+        
+        const notificationTitle = payload.notification.title;
+        const notificationOptions = {
+            body: payload.notification.body,
+            icon: payload.notification.image || 'https://play-lh.googleusercontent.com/E2L634I8-5aWWH0HF_g2M4-w2NCngTk_Fi_LMkSCfXj2jxNdC-k7GSe36M1kNJ7dMwTZlmzvwlVmanZ_a7STZQ',
+            tag: 'notification',
+            data: payload.fcmOptions?.link ? { link: payload.fcmOptions.link } : (payload.data || {})
+        };
+        
+        const notif = new Notification(notificationTitle, notificationOptions);
+        
+        // Clique em primeiro plano
+        notif.onclick = function() {
+            window.focus();
+            this.close();
+            let urlAbrir = notificationOptions.data?.link;
+            if (urlAbrir) {
+                carregarUrl(urlAbrir);
+            }
+        };
+    });
+
     // ==================== CONFIGURAÇÃO DO PROXY ====================
     const DEFAULT_URL = 'https://www.google.com/search?q=';
     
@@ -842,7 +915,6 @@
         
         let entradaLimpa = entrada.trim();
         
-        // Verificar se é uma URL
         const ehUrl = /^(https?:\/\/|www\.|[\w-]+\.[\w-]+\.)/.test(entradaLimpa) ||
                      entradaLimpa.includes('.com') ||
                      entradaLimpa.includes('.br') ||
@@ -853,13 +925,11 @@
         let urlFinal;
         
         if (ehUrl) {
-            // Carregar URL direto
             urlFinal = entradaLimpa;
             if (!urlFinal.startsWith('http://') && !urlFinal.startsWith('https://')) {
                 urlFinal = 'https://' + urlFinal;
             }
         } else {
-            // Pesquisar no G1 Globo
             urlFinal = 'https://g1.globo.com/busca/?q=' + encodeURIComponent(entradaLimpa);
         }
         
@@ -879,8 +949,6 @@
         
         currentUrl = finalUrl;
         iframe.src = finalUrl;
-        
-        // Esconder home search
         homeSearch.classList.add('hidden');
         
         const newUrl = new URL(window.location);
@@ -933,7 +1001,6 @@
         }
     });
     
-    // Event listener para ENTER no input
     document.getElementById('searchInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             pesquisarOuAcessar(this.value);
