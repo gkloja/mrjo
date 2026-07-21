@@ -9,64 +9,75 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089"
      crossorigin="anonymous"></script>
-     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+     <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js"></script>
 
 <script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  
-  OneSignalDeferred.push(async function(OneSignal) {
+  // Configuração Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyDruRISw56lL0dZpnKpFv2COaJkUmamgoc",
+    authDomain: "marujoflix.firebaseapp.com",
+    databaseURL: "https://marujoflix-default-rtdb.firebaseio.com",
+    projectId: "marujoflix",
+    storageBucket: "marujoflix.firebasestorage.app",
+    messagingSenderId: "258606436715",
+    appId: "1:258606436715:web:798dbdf480cd4bc55cfc2e",
+    measurementId: "G-K9CC93KZ3Z"
+  };
+
+  // Inicializar Firebase
+  firebase.initializeApp(firebaseConfig);
+  const messaging = firebase.messaging();
+
+  // Função para ativar notificações
+  window.ativarNotificacoes = async function() {
     try {
-      await OneSignal.init({
-        appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
-        allowLocalhostAsSecureOrigin: true,
-        serviceWorkerPath: "/OneSignalSDKWorker.js",
-        notifyButton: {
-          enable: true,
-          position: "bottom-right",
-          size: "large",
-          showCredit: false,
-          prenotify: true,
-          colors: {
-            "circle.background": "#C1272D",
-            "circle.foreground": "white",
-            "badge.background": "#C1272D",
-            "badge.foreground": "white",
-            "badge.bordercolor": "#C1272D",
-            "pulse.color": "#C1272D",
-            "dialog.button.background.hovering": "#A41E23",
-            "dialog.main.title.foreground": "#333333"
-          }
-        },
-        welcomeNotification: {
-          title: "Bem-vindo ao G1!",
-          message: "Receba notificações de notícias importantes",
-          url: "/"
-        }
-      });
+      console.log("Solicitando permissão de notificações...");
       
-      console.log("OneSignal inicializado com sucesso!");
+      const permission = await Notification.requestPermission();
       
-      // Verificar permissão
-      const permission = await OneSignal.Notifications.getPermissionAsync();
-      console.log("Permissão de notificações:", permission);
-      
-      if (!permission) {
-        setTimeout(() => {
-          OneSignal.Notifications.requestPermission();
-        }, 2000);
+      if (permission === "granted") {
+        console.log("Permissão concedida!");
+        
+        // Obter token
+        const token = await messaging.getToken({
+          vapidKey: "BIV-6Gd-NTx9T0pvMgeIbwnTzvH3EhUjwbx5g7ZtuUuggzu9l-R8XaORpXGQXxxJOytJsin5G3ul4FED25Qt-9o"
+        });
+        
+        console.log("Token FCM:", token);
+        alert("✅ Notificações ativadas com sucesso!\n\nToken: " + token.substring(0, 20) + "...");
+        
+        // Salvar token (opcional - para seu servidor)
+        localStorage.setItem("fcmToken", token);
+      } else {
+        alert("❌ Permissão de notificações recusada");
       }
-      
-    } catch(e) {
-      console.error("Erro ao inicializar OneSignal:", e);
+    } catch(error) {
+      console.error("Erro ao ativar notificações:", error);
+      alert("❌ Erro: " + error.message);
     }
+  };
+
+  // Receber notificações em primeiro plano
+  messaging.onMessage((payload) => {
+    console.log("Notificação recebida:", payload);
+    
+    const notificationTitle = payload.notification.title;
+    const notificationOptions = {
+      body: payload.notification.body,
+      icon: payload.notification.image || 'https://play-lh.googleusercontent.com/E2L634I8-5aWWH0HF_g2M4-w2NCngTk_Fi_LMkSCfXj2jxNdC-k7GSe36M1kNJ7dMwTZlmzvwlVmanZ_a7STZQ'
+    };
+    
+    new Notification(notificationTitle, notificationOptions);
   });
 </script>
 
 <script>
-  // Registrar Service Worker para OneSignal
+  // Registrar Service Worker para Firebase Messaging
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/OneSignalSDKWorker.js')
-      .then(reg => console.log('Service Worker registrado:', reg))
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      .then(reg => console.log('Firebase SW registrado:', reg))
       .catch(err => console.log('Erro ao registrar SW:', err));
   }
 </script>
@@ -570,6 +581,10 @@
         </div>
         
         <div class="nav-actions">
+            <button class="share-btn" onclick="ativarNotificacoes()" title="Ativar notificações">
+                <i class="fas fa-bell"></i>
+                <span>Notificações</span>
+            </button>
             <button class="share-btn" onclick="toggleShareMenu()">
                 <i class="fas fa-share-alt"></i>
                 <span>Compartilhar</span>
@@ -930,5 +945,7 @@
 
 </body>
 </html>
+
+
 
 
