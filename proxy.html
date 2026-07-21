@@ -17,36 +17,10 @@
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
       appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
-      serviceWorkerPath: "/OneSignalSDKWorker.js",
       allowLocalhostAsSecureOrigin: true,
-      notifyButton: {
-        enable: true,
-        position: "bottom-right",
-        size: "medium",
-        showCredit: false,
-        prenotify: true,
-        colors: {
-          "circle.background": "#C1272D",
-          "circle.foreground": "white",
-          "badge.background": "#C1272D",
-          "badge.foreground": "white",
-          "badge.bordercolor": "#C1272D",
-          "pulse.color": "#C1272D",
-          "dialog.button.background.hovering": "#A41E23",
-          "dialog.main.title.foreground": "#1a1a1a"
-        }
-      },
-      welcomeNotification: {
-        title: "Bem-vindo ao G1 Globo!",
-        message: "Pesquise e acesse qualquer site com segurança",
-        url: "/"
-      }
     });
-
-    OneSignal.Notifications.addEventListener('click', (event) => {
-      console.log('Notificação clicada:', event);
-    });
-
+    
+    // Solicitar permissão para notificações
     OneSignal.Notifications.requestPermission();
   });
 </script>
@@ -910,3 +884,4 @@
 
 </body>
 </html>
+
