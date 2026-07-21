@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="google-adsense-account" content="ca-pub-2351298778216089">
-    <title>Marujo Proxy | Acesse qualquer site</title>
+    <title>G1 Globo | Pesquise qualquer coisa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089"
      crossorigin="anonymous"></script>
@@ -16,17 +16,40 @@
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
       appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
+      serviceWorkerPath: "/OneSignalSDKWorker.js",
+      allowLocalhostAsSecureOrigin: true,
       notifyButton: {
-        enable: false
+        enable: true,
+        position: "bottom-right",
+        size: "medium",
+        showCredit: false,
+        prenotify: true,
+        colors: {
+          "circle.background": "#C1272D",
+          "circle.foreground": "white",
+          "badge.background": "#C1272D",
+          "badge.foreground": "white",
+          "badge.bordercolor": "#C1272D",
+          "pulse.color": "#C1272D",
+          "dialog.button.background.hovering": "#A41E23",
+          "dialog.main.title.foreground": "#1a1a1a"
+        }
+      },
+      welcomeNotification: {
+        title: "Bem-vindo ao G1 Globo!",
+        message: "Pesquise e acesse qualquer site com segurança",
+        url: "/"
       }
     });
 
-    // 🔥 REGISTRA O TOKEN CORRETAMENTE
-    if (typeof LibSignal !== "undefined") {
-      LibSignal.register();
-    }
+    OneSignal.Notifications.addEventListener('click', (event) => {
+      console.log('Notificação clicada:', event);
+    });
+
+    OneSignal.Notifications.requestPermission();
   });
 </script>
+
     <style>
         * {
             margin: 0;
@@ -45,10 +68,11 @@
             top: 0;
             left: 0;
             right: 0;
-            background: #0f172a;
+            background: #ffffff;
             padding: 8px 20px;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(193, 39, 45, 0.1);
+            border-bottom: 3px solid #C1272D;
         }
 
         .nav-container {
@@ -66,16 +90,17 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            color: white;
-            font-weight: 600;
+            color: #C1272D;
+            font-weight: 700;
             font-size: 18px;
             white-space: nowrap;
         }
 
         .logo img {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 6px;
+            object-fit: cover;
         }
 
         /* ==================== BOTÕES DE AÇÃO ==================== */
@@ -86,7 +111,7 @@
         }
 
         .share-btn {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            background: linear-gradient(135deg, #C1272D, #A41E23);
             border: none;
             padding: 10px 20px;
             color: white;
@@ -98,13 +123,13 @@
             align-items: center;
             gap: 8px;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 2px 8px rgba(193, 39, 45, 0.3);
         }
 
         .share-btn:hover {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #A41E23, #8B181F);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 4px 12px rgba(193, 39, 45, 0.4);
         }
 
         .share-btn i {
@@ -137,7 +162,7 @@
         }
 
         .share-menu-header {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+            background: linear-gradient(135deg, #C1272D, #A41E23);
             color: white;
             padding: 12px 16px;
             font-weight: 600;
@@ -145,16 +170,16 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            border-bottom: 2px solid #3b82f6;
+            border-bottom: 2px solid #8B181F;
         }
 
         .share-site-title {
-            background: linear-gradient(135deg, #1e293b, #334155);
-            color: #3b82f6;
+            background: #f8f8f8;
+            color: #C1272D;
             padding: 10px 16px;
             font-size: 12px;
             font-weight: 500;
-            border-bottom: 1px solid #475569;
+            border-bottom: 1px solid #e2e8f0;
             word-break: break-word;
             max-height: 60px;
             overflow-y: auto;
@@ -177,21 +202,21 @@
         }
 
         .share-menu-item:hover {
-            background: #f1f5f9;
+            background: #f8f8f8;
         }
 
         .share-menu-item i {
             font-size: 18px;
             width: 24px;
             text-align: center;
-            color: #3b82f6;
+            color: #C1272D;
         }
 
         .share-menu-item.linkedin i { color: #0a66c2; }
         .share-menu-item.twitter i { color: #000; }
         .share-menu-item.whatsapp i { color: #25d366; }
         .share-menu-item.telegram i { color: #0088cc; }
-        .share-menu-item.copy i { color: #f59e0b; }
+        .share-menu-item.copy i { color: #C1272D; }
 
         .share-menu-item span {
             font-size: 13px;
@@ -221,14 +246,14 @@
             position: absolute;
             top: 4px;
             right: 8px;
-            background: #e2e8f0;
+            background: #C1272D;
             border: none;
             border-radius: 50%;
             width: 24px;
             height: 24px;
             font-size: 16px;
             cursor: pointer;
-            color: #475569;
+            color: white;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -238,8 +263,7 @@
         }
 
         .ad-close:hover {
-            background: #cbd5e1;
-            color: #1e293b;
+            background: #A41E23;
         }
 
         /* ==================== ANÚNCIO LATERAL ==================== */
@@ -268,14 +292,14 @@
             position: absolute;
             top: -10px;
             right: -10px;
-            background: #e2e8f0;
+            background: #C1272D;
             border: none;
             border-radius: 50%;
             width: 22px;
             height: 22px;
             font-size: 14px;
             cursor: pointer;
-            color: #475569;
+            color: white;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -283,8 +307,7 @@
         }
 
         .sidebar-close:hover {
-            background: #cbd5e1;
-            color: #1e293b;
+            background: #A41E23;
         }
 
         /* ==================== CONTAINER DO IFRAME ==================== */
@@ -306,19 +329,19 @@
             background: white;
         }
 
-        /* ==================== BOTÃO FLUTUANTE ==================== */
+        /* ==================== BOTÃO FLUTUANTE TELA CHEIA ==================== */
         .fullscreen-btn {
             position: fixed;
             bottom: 30px;
             right: 30px;
             width: 56px;
             height: 56px;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+            background: linear-gradient(135deg, #C1272D, #A41E23);
             border: none;
             border-radius: 50%;
             cursor: pointer;
             z-index: 1001;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(193, 39, 45, 0.3);
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
@@ -329,33 +352,14 @@
 
         .fullscreen-btn:hover {
             transform: scale(1.1);
-            background: linear-gradient(135deg, #1e293b, #334155);
-        }
-
-        .fullscreen-btn::before {
-            content: '';
-            position: absolute;
-            top: -4px;
-            left: -4px;
-            right: -4px;
-            bottom: -4px;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            border-radius: 50%;
-            z-index: -1;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.5; transform: scale(1); }
-            70% { opacity: 0; transform: scale(1.3); }
-            100% { opacity: 0; transform: scale(1.3); }
+            background: linear-gradient(135deg, #A41E23, #8B181F);
         }
 
         .fullscreen-btn .tooltip {
             position: absolute;
             bottom: 70px;
             right: 0;
-            background: #0f172a;
+            background: #C1272D;
             color: white;
             padding: 8px 16px;
             border-radius: 30px;
@@ -378,7 +382,7 @@
             position: fixed;
             bottom: 100px;
             right: 30px;
-            background: linear-gradient(135deg, #22c55e, #16a34a);
+            background: linear-gradient(135deg, #C1272D, #A41E23);
             color: white;
             padding: 14px 20px;
             border-radius: 12px;
@@ -386,7 +390,7 @@
             font-weight: 600;
             z-index: 2001;
             animation: slideUp 0.3s ease, slideDown 0.3s ease 2.7s;
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+            box-shadow: 0 4px 12px rgba(193, 39, 45, 0.3);
             max-width: 280px;
             border-left: 4px solid rgba(255,255,255,0.3);
         }
@@ -410,6 +414,83 @@
             to { transform: translateY(20px); opacity: 0; }
         }
 
+        /* ==================== SEARCH BOX NA HOMEPAGE ==================== */
+        .home-search {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 500px;
+            z-index: 100;
+            text-align: center;
+        }
+
+        .home-search-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            border-radius: 15px;
+            object-fit: cover;
+        }
+
+        .home-search-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #C1272D;
+            margin-bottom: 10px;
+        }
+
+        .home-search-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 2px solid #C1272D;
+            border-radius: 30px;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(193, 39, 45, 0.1);
+            border-color: #A41E23;
+        }
+
+        .search-btn {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #C1272D, #A41E23);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(193, 39, 45, 0.3);
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(135deg, #A41E23, #8B181F);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(193, 39, 45, 0.4);
+        }
+
+        .home-search.hidden {
+            display: none;
+        }
+
         /* Responsivo */
         @media (max-width: 768px) {
             .nav-bar { padding: 8px 12px; }
@@ -423,6 +504,12 @@
                 right: 12px;
                 min-width: 200px;
             }
+            .home-search-title {
+                font-size: 24px;
+            }
+            .search-form {
+                flex-direction: column;
+            }
         }
 
         .ad-label {
@@ -431,10 +518,6 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 4px;
-        }
-
-        .adsbygoogle {
-            max-height: 100px !important;
         }
 
         .fullscreen-mode .ad-header,
@@ -461,8 +544,8 @@
 <div class="nav-bar">
     <div class="nav-container">
         <div class="logo" onclick="resetToHome()">
-            <img src="imagens/logo.png" alt="Logo">
-            <span>Marujo Proxy</span>
+            <img src="https://play-lh.googleusercontent.com/E2L634I8-5aWWH0HF_g2M4-w2NCngTk_Fi_LMkSCfXj2jxNdC-k7GSe36M1kNJ7dMwTZlmzvwlVmanZ_a7STZQ" alt="Logo">
+            <span>G1 Globo</span>
         </div>
         
         <div class="nav-actions">
@@ -542,12 +625,23 @@
     </script>
 </div>
 
+<!-- SEARCH BOX NA HOMEPAGE -->
+<div id="homeSearch" class="home-search">
+    <img src="https://play-lh.googleusercontent.com/E2L634I8-5aWWH0HF_g2M4-w2NCngTk_Fi_LMkSCfXj2jxNdC-k7GSe36M1kNJ7dMwTZlmzvwlVmanZ_a7STZQ" alt="Logo" class="home-search-logo">
+    <h1 class="home-search-title">G1 Globo</h1>
+    <p class="home-search-subtitle">Pesquise ou acesse qualquer site</p>
+    <form class="search-form" onsubmit="event.preventDefault(); pesquisarOuAcessar(document.getElementById('searchInput').value);">
+        <input type="text" id="searchInput" class="search-input" placeholder="Digite uma pesquisa ou URL..." autocomplete="off" autofocus>
+        <button type="submit" class="search-btn">Buscar</button>
+    </form>
+</div>
+
 <!-- IFRAME PRINCIPAL -->
 <div class="iframe-container" id="iframeContainer">
     <iframe 
         id="proxyFrame" 
         src="about:blank" 
-        title="Marujo Proxy"
+        title="G1 Globo"
         allow="autoplay; fullscreen; encrypted-media; picture-in-picture; camera; microphone; geolocation"
         allowfullscreen="true"
         referrerpolicy="no-referrer"
@@ -556,15 +650,15 @@
 
 <!-- BOTÃO FLUTUANTE -->
 <button id="fullscreenBtn" class="fullscreen-btn" onclick="toggleFullscreenClean()">
-    <span class="tooltip">⛶ Tela Cheia</span>
+    <span class="tooltip">🎬 Modo Cinema</span>
     ⛶
 </button>
 
 <script>
     // ==================== CONFIGURAÇÃO DO PROXY ====================
-    const DEFAULT_URL = 'https://g1.globo.com/';
+    const DEFAULT_URL = 'https://www.google.com/search?q=';
     
-    let currentUrl = DEFAULT_URL;
+    let currentUrl = '';
     let isFullscreenClean = false;
     
     const iframe = document.getElementById('proxyFrame');
@@ -573,6 +667,7 @@
     const iframeContainer = document.getElementById('iframeContainer');
     const fullscreenBtn = document.getElementById('fullscreenBtn');
     const shareMenu = document.getElementById('shareMenu');
+    const homeSearch = document.getElementById('homeSearch');
     const body = document.body;
     
     // ==================== COMPARTILHAMENTO ====================
@@ -580,7 +675,6 @@
         shareMenu.classList.toggle('active');
     }
     
-    // Fechar menu quando clicar fora
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.share-btn') && !e.target.closest('.share-menu')) {
             shareMenu.classList.remove('active');
@@ -588,16 +682,13 @@
     });
     
     function getCurrentPageInfo() {
-        // Tentar pegar o título do site carregado no iframe
-        let siteTitle = 'Site';
+        let siteTitle = 'Resultado';
         try {
-            siteTitle = iframe.contentDocument?.title || 'Site';
+            siteTitle = iframe.contentDocument?.title || 'Resultado';
         } catch(e) {
-            // Se não conseguir acessar iframe por CORS, tenta pegar do atributo title
-            siteTitle = iframe.getAttribute('title') || 'Site';
+            siteTitle = iframe.getAttribute('title') || 'Resultado';
         }
         
-        // Construir URL do proxy com o site
         const baseUrl = window.location.origin + window.location.pathname;
         const proxyUrl = `${baseUrl}?url=${encodeURIComponent(currentUrl)}`;
         
@@ -605,7 +696,7 @@
             url: proxyUrl,
             siteUrl: currentUrl,
             title: siteTitle,
-            message: `Confira este site no Marujo Proxy: ${siteTitle}`
+            message: `Confira no G1 Globo: ${siteTitle}`
         };
     }
     
@@ -617,12 +708,10 @@
         }
     }
     
-    // Atualizar título quando o iframe carregar
     iframe.addEventListener('load', function() {
         setTimeout(updateSiteTitleDisplay, 500);
     });
     
-    // Atualizar título inicial
     setTimeout(updateSiteTitleDisplay, 1000);
     
     function compartilharLinkedIn() {
@@ -634,7 +723,7 @@
     
     function compartilharTwitter() {
         const info = getCurrentPageInfo();
-        const tweetText = `Confira "${info.title}" no Marujo Proxy! 🎬\n${info.url}`;
+        const tweetText = `Confira no G1 Globo: ${info.title}\n${info.url}`;
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
         window.open(twitterUrl, 'twitter-share', 'width=550,height=480');
         shareMenu.classList.remove('active');
@@ -642,7 +731,7 @@
     
     function compartilharWhatsApp() {
         const info = getCurrentPageInfo();
-        const message = `🎬 *${info.title}*\n\nVem conferir no Marujo Proxy:\n${info.url}`;
+        const message = `🔍 ${info.title}\n\nVem conferir no G1 Globo:\n${info.url}`;
         const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, 'whatsapp-share');
         shareMenu.classList.remove('active');
@@ -650,7 +739,7 @@
     
     function compartilharTelegram() {
         const info = getCurrentPageInfo();
-        const message = `🎬 *${info.title}*\n\nConfira no Marujo Proxy:`;
+        const message = `🔍 Confira no G1 Globo:`;
         const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(info.url)}&text=${encodeURIComponent(message)}`;
         window.open(telegramUrl, 'telegram-share');
         shareMenu.classList.remove('active');
@@ -661,10 +750,9 @@
         navigator.clipboard.writeText(info.url).then(() => {
             shareMenu.classList.remove('active');
             
-            // Mostrar notificação
             const notification = document.createElement('div');
             notification.className = 'copy-notification';
-            notification.innerHTML = `<i class="fas fa-check-circle" style="margin-right: 8px;"></i>Link do Proxy copiado!<br><small style="font-size: 11px; margin-top: 4px; opacity: 0.9;">${info.title}</small>`;
+            notification.innerHTML = `<i class="fas fa-check-circle" style="margin-right: 8px;"></i>Link copiado!<br><small style="font-size: 11px; margin-top: 4px; opacity: 0.9;">${info.title}</small>`;
             document.body.appendChild(notification);
             
             setTimeout(() => notification.remove(), 3000);
@@ -674,24 +762,10 @@
     // ==================== FECHAR ANÚNCIOS ====================
     function fecharAnuncioTopo() {
         adHeader.classList.add('hidden');
-        if (!isFullscreenClean) {
-            if (window.innerWidth >= 1024 && !adSidebar.classList.contains('hidden')) {
-                iframeContainer.style.top = '60px';
-                iframeContainer.style.left = '170px';
-            } else if (window.innerWidth >= 1024 && adSidebar.classList.contains('hidden')) {
-                iframeContainer.style.top = '60px';
-                iframeContainer.style.left = '0';
-            } else {
-                iframeContainer.style.top = '52px';
-            }
-        }
     }
     
     function fecharAnuncioLateral() {
         adSidebar.classList.add('hidden');
-        if (!isFullscreenClean) {
-            iframeContainer.style.left = '0';
-        }
     }
     
     // ==================== TELA CHEIA ====================
@@ -700,8 +774,7 @@
         
         if (isFullscreenClean) {
             body.classList.add('fullscreen-mode');
-            fullscreenBtn.style.background = "linear-gradient(135deg, #22c55e, #16a34a)";
-            fullscreenBtn.querySelector('.tooltip').textContent = '🎬 Sair do Modo Cinema';
+            fullscreenBtn.querySelector('.tooltip').textContent = '🎬 Sair do Cinema';
             
             const container = document.getElementById('iframeContainer');
             if (container.requestFullscreen) {
@@ -711,26 +784,11 @@
             }
         } else {
             body.classList.remove('fullscreen-mode');
-            fullscreenBtn.style.background = "linear-gradient(135deg, #0f172a, #1e293b)";
             fullscreenBtn.querySelector('.tooltip').textContent = '🎬 Modo Cinema';
             
             if (document.exitFullscreen) {
                 document.exitFullscreen();
             }
-            
-            setTimeout(() => {
-                if (!adHeader.classList.contains('hidden')) {
-                    iframeContainer.style.top = '130px';
-                } else {
-                    iframeContainer.style.top = '60px';
-                }
-                
-                if (window.innerWidth >= 1024 && !adSidebar.classList.contains('hidden')) {
-                    iframeContainer.style.left = '170px';
-                } else {
-                    iframeContainer.style.left = '0';
-                }
-            }, 100);
         }
     }
     
@@ -738,24 +796,40 @@
         if (!document.fullscreenElement && isFullscreenClean) {
             isFullscreenClean = false;
             body.classList.remove('fullscreen-mode');
-            fullscreenBtn.style.background = "linear-gradient(135deg, #0f172a, #1e293b)";
             fullscreenBtn.querySelector('.tooltip').textContent = '🎬 Modo Cinema';
-            
-            setTimeout(() => {
-                if (!adHeader.classList.contains('hidden')) {
-                    iframeContainer.style.top = '130px';
-                } else {
-                    iframeContainer.style.top = '60px';
-                }
-                
-                if (window.innerWidth >= 1024 && !adSidebar.classList.contains('hidden')) {
-                    iframeContainer.style.left = '170px';
-                } else {
-                    iframeContainer.style.left = '0';
-                }
-            }, 100);
         }
     });
+    
+    // ==================== PESQUISAR OU ACESSAR ====================
+    function pesquisarOuAcessar(entrada) {
+        if (!entrada) return;
+        
+        let entradaLimpa = entrada.trim();
+        
+        // Verificar se é uma URL
+        const ehUrl = /^(https?:\/\/|www\.|[\w-]+\.[\w-]+\.)/.test(entradaLimpa) ||
+                     entradaLimpa.includes('.com') ||
+                     entradaLimpa.includes('.br') ||
+                     entradaLimpa.includes('.net') ||
+                     entradaLimpa.includes('.org') ||
+                     entradaLimpa.includes('localhost');
+        
+        let urlFinal;
+        
+        if (ehUrl) {
+            // Carregar URL direto
+            urlFinal = entradaLimpa;
+            if (!urlFinal.startsWith('http://') && !urlFinal.startsWith('https://')) {
+                urlFinal = 'https://' + urlFinal;
+            }
+        } else {
+            // Pesquisar no Google através do proxy
+            urlFinal = 'https://www.google.com/search?q=' + encodeURIComponent(entradaLimpa);
+        }
+        
+        carregarUrl(urlFinal);
+        document.getElementById('searchInput').value = '';
+    }
     
     // ==================== CARREGAR URL ====================
     function carregarUrl(url) {
@@ -770,6 +844,9 @@
         currentUrl = finalUrl;
         iframe.src = finalUrl;
         
+        // Esconder home search
+        homeSearch.classList.add('hidden');
+        
         const newUrl = new URL(window.location);
         newUrl.searchParams.set('url', finalUrl);
         window.history.pushState({ url: finalUrl }, '', newUrl);
@@ -780,7 +857,15 @@
     }
     
     function resetToHome() {
-        carregarUrl(DEFAULT_URL);
+        currentUrl = '';
+        iframe.src = 'about:blank';
+        homeSearch.classList.remove('hidden');
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchInput').focus();
+        
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.delete('url');
+        window.history.pushState({}, '', newUrl);
     }
     
     function getUrlFromParams() {
@@ -795,9 +880,9 @@
     // ==================== INICIALIZAR ====================
     function init() {
         let startUrl = getUrlFromParams();
-        if (!startUrl) startUrl = DEFAULT_URL;
-        
-        carregarUrl(startUrl);
+        if (startUrl) {
+            carregarUrl(startUrl);
+        }
         
         setInterval(() => {
             try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
@@ -809,6 +894,13 @@
         let url = params.get('url');
         if (url && url !== currentUrl) {
             carregarUrl(url);
+        }
+    });
+    
+    // Event listener para ENTER no input
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            pesquisarOuAcessar(this.value);
         }
     });
     
