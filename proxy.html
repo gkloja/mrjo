@@ -8,6 +8,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089"
      crossorigin="anonymous"></script>
+     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
+      notifyButton: {
+        enable: false
+      }
+    });
+
+    // 🔥 REGISTRA O TOKEN CORRETAMENTE
+    if (typeof LibSignal !== "undefined") {
+      LibSignal.register();
+    }
+  });
+</script>
     <style>
         * {
             margin: 0;
