@@ -9,29 +9,35 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089"
      crossorigin="anonymous"></script>
-     <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js"></script>
+     
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js"></script>
 
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <!-- OneSignal SDK -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
+    <script>
+      // ==================== CONFIGURAÇÃO ONESIGNAL ====================
+      // OneSignal: Serviço de Web Push Notifications (notificações no navegador)
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
-      notifyButton: {
-        enable: false
-      }
-    });
+      OneSignalDeferred.push(async function(OneSignal) {
+        // Inicializa o OneSignal com seu App ID
+        await OneSignal.init({
+          appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
+          // notifyButton desabilitado = você controla manualmente quando mostrar notificações
+          notifyButton: {
+            enable: false
+          }
+        });
 
-    // 🔥 REGISTRA O TOKEN CORRETAMENTE
-    if (typeof LibSignal !== "undefined") {
-      LibSignal.register();
-    }
-  });
-</script>
+        // Registra o token do usuário para envio de notificações
+        if (typeof LibSignal !== "undefined") {
+          LibSignal.register();
+        }
+      });
+    </script>
     
     <style>
         * {
@@ -86,11 +92,54 @@
             object-fit: cover;
         }
 
-        /* ==================== BOTÕES DE AÇÃO ==================== */
+        /* ==================== BOTÕES DE AÇÃO APRIMORADOS ==================== */
         .nav-actions {
             display: flex;
             align-items: center;
             gap: 4px;
+        }
+
+        /* Botões de ícone (Notificação + Pesquisa) */
+        .icon-btn {
+            position: relative;
+            background: linear-gradient(135deg, #C1272D, #A41E23);
+            border: none;
+            padding: 4px 8px;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(193, 39, 45, 0.3);
+            min-width: 32px;
+            height: 32px;
+        }
+
+        .icon-btn:hover {
+            background: linear-gradient(135deg, #A41E23, #8B181F);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(193, 39, 45, 0.4);
+        }
+
+        /* Badge de notificações não lidas */
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            border: 2px solid white;
         }
 
         .share-btn {
@@ -117,6 +166,159 @@
 
         .share-btn i {
             font-size: 12px;
+        }
+
+        /* ==================== MENU DE PESQUISA ==================== */
+        .search-menu {
+            position: absolute;
+            top: 60px;
+            right: 200px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            padding: 0;
+            min-width: 300px;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .search-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .search-menu-header {
+            background: linear-gradient(135deg, #C1272D, #A41E23);
+            color: white;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid #8B181F;
+        }
+
+        .search-input-wrapper {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .search-input-wrapper input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #C1272D;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input-wrapper input:focus {
+            border-color: #A41E23;
+            box-shadow: 0 0 8px rgba(193, 39, 45, 0.2);
+        }
+
+        .search-suggestion {
+            padding: 10px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 13px;
+            color: #1e293b;
+        }
+
+        .search-suggestion:hover {
+            background: #f8f8f8;
+        }
+
+        /* ==================== MENU DE NOTIFICAÇÕES ==================== */
+        .notification-menu {
+            position: absolute;
+            top: 60px;
+            right: 265px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            padding: 0;
+            min-width: 320px;
+            max-height: 400px;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+        }
+
+        .notification-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .notification-menu-header {
+            background: linear-gradient(135deg, #C1272D, #A41E23);
+            color: white;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            border-bottom: 2px solid #8B181F;
+            position: sticky;
+            top: 0;
+        }
+
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s;
+        }
+
+        .notification-item:hover {
+            background: #f8f8f8;
+        }
+
+        .notification-item.unread {
+            background: #fff5f5;
+            border-left: 3px solid #C1272D;
+            padding-left: 13px;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .notification-text {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .notification-time {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .notification-empty {
+            padding: 30px 16px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
         }
 
         /* ==================== MENU COMPARTILHAMENTO ==================== */
@@ -249,663 +451,559 @@
             background: #A41E23;
         }
 
-        /* ==================== ANÚNCIO LATERAL ==================== */
-        .ad-sidebar {
-            position: fixed;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 160px;
-            background: white;
-            border-radius: 0 12px 12px 0;
-            padding: 12px 8px;
-            text-align: center;
-            z-index: 998;
-            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-            border: 1px solid #e2e8f0;
-            border-left: none;
-            transition: all 0.3s;
-        }
-
-        .ad-sidebar.hidden {
-            display: none;
-        }
-
-        .sidebar-close {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #C1272D;
-            border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 14px;
-            cursor: pointer;
-            color: white;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .sidebar-close:hover {
-            background: #A41E23;
-        }
-
-        /* ==================== CONTAINER DO IFRAME ==================== */
-        .iframe-container {
-            position: fixed;
-            top: 110px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: white;
-            transition: all 0.3s;
-            z-index: 1;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: white;
-        }
-
-        /* ==================== BOTÃO FLUTUANTE TELA CHEIA ==================== */
-        .fullscreen-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #C1272D, #A41E23);
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 1001;
-            box-shadow: 0 4px 15px rgba(193, 39, 45, 0.3);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-        }
-
-        .fullscreen-btn:hover {
-            transform: scale(1.1);
-            background: linear-gradient(135deg, #A41E23, #8B181F);
-        }
-
-        .fullscreen-btn .tooltip {
-            position: absolute;
-            bottom: 70px;
-            right: 0;
-            background: #C1272D;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 12px;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-            pointer-events: none;
-        }
-
-        .fullscreen-btn:hover .tooltip {
-            opacity: 1;
-            visibility: visible;
-            bottom: 65px;
-        }
-
-        /* ==================== NOTIFICAÇÃO DE CÓPIA ==================== */
-        .copy-notification {
-            position: fixed;
-            bottom: 100px;
-            right: 30px;
-            background: linear-gradient(135deg, #C1272D, #A41E23);
-            color: white;
-            padding: 14px 20px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 600;
-            z-index: 2001;
-            animation: slideUp 0.3s ease, slideDown 0.3s ease 2.7s;
-            box-shadow: 0 4px 12px rgba(193, 39, 45, 0.3);
-            max-width: 280px;
-            border-left: 4px solid rgba(255,255,255,0.3);
-        }
-
-        .copy-notification small {
-            display: block;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            font-weight: 400;
-            opacity: 0.95;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes slideDown {
-            from { transform: translateY(0); opacity: 1; }
-            to { transform: translateY(20px); opacity: 0; }
-        }
-
-        /* ==================== SEARCH BOX NA HOMEPAGE ==================== */
+        /* ==================== HOME SEARCH ==================== */
         .home-search {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 500px;
-            z-index: 100;
-            text-align: center;
-        }
-
-        .home-search-logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 30px;
-            border-radius: 15px;
-            object-fit: cover;
-        }
-
-        .home-search-title {
-            font-size: 32px;
-            font-weight: 700;
-            color: #C1272D;
-            margin-bottom: 10px;
-        }
-
-        .home-search-subtitle {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 25px;
-        }
-
-        .search-form {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 12px 18px;
-            border: 2px solid #C1272D;
-            border-radius: 30px;
-            font-size: 14px;
-            font-family: inherit;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            box-shadow: 0 0 0 3px rgba(193, 39, 45, 0.1);
-            border-color: #A41E23;
-        }
-
-        .search-btn {
-            padding: 12px 28px;
-            background: linear-gradient(135deg, #C1272D, #A41E23);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(193, 39, 45, 0.3);
-        }
-
-        .search-btn:hover {
-            background: linear-gradient(135deg, #A41E23, #8B181F);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(193, 39, 45, 0.4);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            text-align: center;
         }
 
         .home-search.hidden {
             display: none;
         }
 
-        /* Responsivo */
-        @media (max-width: 768px) {
-            .nav-bar { padding: 8px 12px; }
-            .logo span { display: none; }
-            .share-btn span { display: none; }
-            .ad-header { top: 52px; }
-            .iframe-container { top: 100px; }
-            .fullscreen-btn { bottom: 20px; right: 20px; width: 48px; height: 48px; font-size: 20px; }
-            .share-menu {
-                top: 50px;
-                right: 12px;
-                min-width: 200px;
-            }
-            .home-search-title {
-                font-size: 24px;
-            }
-            .search-form {
-                flex-direction: column;
-            }
+        .logo-grande {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(193, 39, 45, 0.2);
         }
 
-        .ad-label {
-            font-size: 7px;
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 2px solid #C1272D;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #1e293b;
+        }
+
+        .search-box input::placeholder {
             color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
         }
 
-        .fullscreen-mode .ad-header,
-        .fullscreen-mode .ad-sidebar,
-        .fullscreen-mode .nav-bar {
-            display: none !important;
+        .search-box button {
+            background: #C1272D;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
         }
 
-        .fullscreen-mode .iframe-container {
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
+        .search-box button:hover {
+            background: #A41E23;
         }
 
-        .fullscreen-mode .fullscreen-btn {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
+        /* ==================== IFRAME CONTAINER ==================== */
+        .iframe-container {
+            position: fixed;
+            top: 32px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+        }
+
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .iframe-container.hidden {
+            display: none;
+        }
+
+        /* ==================== NOTIFICAÇÃO TOAST ==================== */
+        .copy-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #C1272D;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- BARRA DE NAVEGAÇÃO -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="https://play-lh.googleusercontent.com/E2L634I8-5aWWH0HF_g2M4-w2NCngTk_Fi_LMkSCfXj2jxNdC-k7GSe36M1kNJ7dMwTZlmzvwlVmanZ_a7STZQ" alt="G1">
+                <span>G1 GLOBO</span>
+            </div>
+            <div class="nav-actions">
+                <!-- BOTÃO DE NOTIFICAÇÕES -->
+                <button class="icon-btn" id="notificationBtn" title="Notificações">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                </button>
 
-<!-- BARRA SUPERIOR -->
-<div class="nav-bar">
-    <div class="nav-container">
-        <div class="logo" onclick="resetToHome()">
-            <img src="https://play-lh.googleusercontent.com/E2L634I8-5aWWH0HF_g2M4-w2NCngTk_Fi_LMkSCfXj2jxNdC-k7GSe36M1kNJ7dMwTZlmzvwlVmanZ_a7STZQ" alt="Logo">
-            <span>G1 Globo</span>
+                <!-- BOTÃO DE PESQUISA -->
+                <button class="icon-btn" id="searchBtn" title="Pesquisar">
+                    <i class="fas fa-search"></i>
+                </button>
+
+                <!-- BOTÃO DE COMPARTILHAMENTO -->
+                <button class="share-btn" id="shareBtn">
+                    <i class="fas fa-share-alt"></i>
+                    Compartilhar
+                </button>
+            </div>
         </div>
-        
-        <div class="nav-actions">
-            <button class="share-btn" onclick="ativarNotificacoes()" title="Ativar notificações">
-                <i class="fas fa-bell"></i>
-                <span>Notificações</span>
-            </button>
-            <button class="share-btn" onclick="toggleShareMenu()">
-                <i class="fas fa-share-alt"></i>
-                <span>Compartilhar</span>
-            </button>
+    </nav>
+
+    <!-- MENU DE NOTIFICAÇÕES -->
+    <div class="notification-menu" id="notificationMenu">
+        <div class="notification-menu-header">
+            <span>📢 Notificações</span>
+            <button style="background: none; border: none; color: white; cursor: pointer; font-size: 16px;" onclick="document.getElementById('notificationMenu').classList.remove('active')">×</button>
+        </div>
+        <div id="notificationList">
+            <div class="notification-empty">Nenhuma notificação no momento</div>
         </div>
     </div>
-</div>
 
-<!-- MENU DE COMPARTILHAMENTO -->
-<div id="shareMenu" class="share-menu">
-    <div class="share-menu-header">
-        <i class="fas fa-share-alt"></i>
-        Compartilhar
+    <!-- MENU DE PESQUISA -->
+    <div class="search-menu" id="searchMenu">
+        <div class="search-menu-header">
+            <i class="fas fa-search"></i>
+            Buscar
+        </div>
+        <div class="search-input-wrapper">
+            <input type="text" id="searchMenuInput" placeholder="Digite sua busca..." autocomplete="off">
+        </div>
+        <div id="searchSuggestions">
+            <div class="search-suggestion" onclick="pesquisarOuAcessar('notícias g1 globo')">📰 Notícias G1 Globo</div>
+            <div class="search-suggestion" onclick="pesquisarOuAcessar('futebol ge')">⚽ Futebol GE</div>
+            <div class="search-suggestion" onclick="pesquisarOuAcessar('economia g1')">💰 Economia</div>
+            <div class="search-suggestion" onclick="pesquisarOuAcessar('tecnologia')">💻 Tecnologia</div>
+        </div>
     </div>
-    
-    <div class="share-site-title" id="siteTitleDisplay">
-        <i class="fas fa-globe" style="margin-right: 6px;"></i>
-        <span id="siteTitleText">Carregando...</span>
+
+    <!-- MENU DE COMPARTILHAMENTO -->
+    <div class="share-menu" id="shareMenu">
+        <div class="share-menu-header">
+            <i class="fas fa-share-alt"></i>
+            Compartilhar
+        </div>
+        <div class="share-site-title" id="siteTitleText">Resultado</div>
+        <a class="share-menu-item linkedin" href="#" onclick="compartilharLinkedIn(); return false;">
+            <i class="fab fa-linkedin"></i>
+            <span>LinkedIn</span>
+        </a>
+        <a class="share-menu-item twitter" href="#" onclick="compartilharTwitter(); return false;">
+            <i class="fab fa-twitter"></i>
+            <span>Twitter / X</span>
+        </a>
+        <a class="share-menu-item whatsapp" href="#" onclick="compartilharWhatsApp(); return false;">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp</span>
+        </a>
+        <a class="share-menu-item telegram" href="#" onclick="compartilharTelegram(); return false;">
+            <i class="fab fa-telegram"></i>
+            <span>Telegram</span>
+        </a>
+        <a class="share-menu-item copy" href="#" onclick="copiarLink(); return false;">
+            <i class="fas fa-copy"></i>
+            <span>Copiar Link</span>
+        </a>
     </div>
-    
-    <a class="share-menu-item linkedin" onclick="compartilharLinkedIn()" href="javascript:void(0)">
-        <i class="fab fa-linkedin"></i>
-        <span>LinkedIn</span>
-    </a>
-    
-    <a class="share-menu-item twitter" onclick="compartilharTwitter()" href="javascript:void(0)">
-        <i class="fab fa-twitter"></i>
-        <span>Twitter/X</span>
-    </a>
-    
-    <a class="share-menu-item whatsapp" onclick="compartilharWhatsApp()" href="javascript:void(0)">
-        <i class="fab fa-whatsapp"></i>
-        <span>WhatsApp</span>
-    </a>
-    
-    <a class="share-menu-item telegram" onclick="compartilharTelegram()" href="javascript:void(0)">
-        <i class="fab fa-telegram"></i>
-        <span>Telegram</span>
-    </a>
-    
-    <a class="share-menu-item copy" onclick="copiarLink()" href="javascript:void(0)">
-        <i class="fas fa-copy"></i>
-        <span>Copiar Link</span>
-    </a>
-</div>
 
-<!-- ANÚNCIO SUPERIOR -->
-<div id="adHeader" class="ad-header">
-    <button class="ad-close" onclick="fecharAnuncioTopo()">×</button>
-    <div class="ad-label">PUBLICIDADE</div>
-    <ins class="adsbygoogle"
-         style="display:inline-block;width:728px;height:90px"
-         data-ad-client="ca-pub-2351298778216089"
-         data-ad-slot="4868424735"
-         data-ad-format="horizontal"
-         data-full-width-responsive="true"></ins>
-    <script>
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense header:', e); }
-    </script>
-</div>
-
-<!-- ANÚNCIO LATERAL -->
-<div id="adSidebar" class="ad-sidebar">
-    <button class="sidebar-close" onclick="fecharAnuncioLateral()">×</button>
-    <div class="ad-label">PUBLICIDADE</div>
-    <ins class="adsbygoogle"
-         style="display:inline-block;width:160px;height:600px"
-         data-ad-client="ca-pub-2351298778216089"
-         data-ad-slot="4868424735"
-         data-ad-format="vertical"
-         data-full-width-responsive="false"></ins>
-    <script>
-        try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense sidebar:', e); }
-    </script>
-</div>
-
-<!-- SEARCH BOX NA HOMEPAGE -->
-<div id="homeSearch" class="home-search">
-    <img src="https://play-lh.googleusercontent.com/E2L634I8-5aWWH0HF_g2M4-w2NCngTk_Fi_LMkSCfXj2jxNdC-k7GSe36M1kNJ7dMwTZlmzvwlVmanZ_a7STZQ" alt="Logo" class="home-search-logo">
-    <h1 class="home-search-title">G1 Globo</h1>
-    <p class="home-search-subtitle">Pesquise ou acesse qualquer site</p>
-    <form class="search-form" onsubmit="event.preventDefault(); pesquisarOuAcessar(document.getElementById('searchInput').value);">
-        <input type="text" id="searchInput" class="search-input" placeholder="Digite uma pesquisa ou URL..." autocomplete="off" autofocus>
-        <button type="submit" class="search-btn">Buscar</button>
-    </form>
-</div>
-
-<!-- IFRAME PRINCIPAL -->
-<div class="iframe-container" id="iframeContainer">
-    <iframe 
-        id="proxyFrame" 
-        src="about:blank" 
-        title="G1 Globo"
-        allow="autoplay; fullscreen; encrypted-media; picture-in-picture; camera; microphone; geolocation"
-        allowfullscreen="true"
-        referrerpolicy="no-referrer"
-    ></iframe>
-</div>
-
-<!-- BOTÃO FLUTUANTE -->
-<button id="fullscreenBtn" class="fullscreen-btn" onclick="toggleFullscreenClean()">
-    <span class="tooltip">🎬 Modo Cinema</span>
-    ⛶
-</button>
-
-<script>
-    // ==================== CONFIGURAÇÃO DO PROXY ====================
-    const DEFAULT_URL = 'https://www.google.com/search?q=';
-    
-    let currentUrl = '';
-    let isFullscreenClean = false;
-    
-    const iframe = document.getElementById('proxyFrame');
-    const adHeader = document.getElementById('adHeader');
-    const adSidebar = document.getElementById('adSidebar');
-    const iframeContainer = document.getElementById('iframeContainer');
-    const fullscreenBtn = document.getElementById('fullscreenBtn');
-    const shareMenu = document.getElementById('shareMenu');
-    const homeSearch = document.getElementById('homeSearch');
-    const body = document.body;
-    
-    // ==================== COMPARTILHAMENTO ====================
-    function toggleShareMenu() {
-        shareMenu.classList.toggle('active');
-    }
-    
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.share-btn') && !e.target.closest('.share-menu')) {
-            shareMenu.classList.remove('active');
-        }
-    });
-    
-    function getCurrentPageInfo() {
-        let siteTitle = 'Resultado';
-        try {
-            siteTitle = iframe.contentDocument?.title || 'Resultado';
-        } catch(e) {
-            siteTitle = iframe.getAttribute('title') || 'Resultado';
-        }
+    <!-- HOME SCREEN COM PESQUISA -->
+    <div class="home-search" id="homeSearch">
+        <img class="logo-grande" src="https://play-lh.googleusercontent.com/E2L634I8-5aWWH0HF_g2M4-w2NCngTk_Fi_LMkSCfXj2jxNdC-k7GSe36M1kNJ7dMwTZlmzvwlVmanZ_a7STZQ" alt="G1">
+        <h1 style="color: #C1272D; margin-bottom: 10px;">G1 GLOBO</h1>
+        <p style="color: #64748b; margin-bottom: 30px; font-size: 14px;">Pesquise qualquer coisa</p>
         
-        const baseUrl = window.location.origin + window.location.pathname;
-        const proxyUrl = `${baseUrl}?url=${encodeURIComponent(currentUrl)}`;
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Notícias, URLs, qualquer coisa...">
+                <button onclick="pesquisarOuAcessar(document.getElementById('searchInput').value)">🔍</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- IFRAME PARA CARREGAR CONTEÚDO -->
+    <div class="iframe-container" id="iframeContainer">
+        <iframe id="contentFrame" title="Resultado da pesquisa"></iframe>
+    </div>
+
+    <!-- ANÚNCIO TOPO -->
+    <div class="ad-header" id="adHeader">
+        <div id="ad-header-content"></div>
+        <button class="ad-close" onclick="fecharAnuncioTopo()">×</button>
+    </div>
+
+    <script>
+        // ==================== VARIÁVEIS GLOBAIS ====================
+        const shareMenu = document.getElementById('shareMenu');
+        const searchMenu = document.getElementById('searchMenu');
+        const notificationMenu = document.getElementById('notificationMenu');
+        const shareBtn = document.getElementById('shareBtn');
+        const searchBtn = document.getElementById('searchBtn');
+        const notificationBtn = document.getElementById('notificationBtn');
+        const homeSearch = document.getElementById('homeSearch');
+        const iframe = document.getElementById('contentFrame');
+        const adHeader = document.getElementById('adHeader');
         
-        return {
-            url: proxyUrl,
-            siteUrl: currentUrl,
-            title: siteTitle,
-            message: `Confira no G1 Globo: ${siteTitle}`
-        };
-    }
-    
-    function updateSiteTitleDisplay() {
-        const info = getCurrentPageInfo();
-        const titleDisplay = document.getElementById('siteTitleText');
-        if (titleDisplay) {
-            titleDisplay.textContent = info.title;
-        }
-    }
-    
-    iframe.addEventListener('load', function() {
-        setTimeout(updateSiteTitleDisplay, 500);
-    });
-    
-    setTimeout(updateSiteTitleDisplay, 1000);
-    
-    function compartilharLinkedIn() {
-        const info = getCurrentPageInfo();
-        const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(info.url)}`;
-        window.open(linkedInUrl, 'linkedin-share', 'width=550,height=480');
-        shareMenu.classList.remove('active');
-    }
-    
-    function compartilharTwitter() {
-        const info = getCurrentPageInfo();
-        const tweetText = `Confira no G1 Globo: ${info.title}\n${info.url}`;
-        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
-        window.open(twitterUrl, 'twitter-share', 'width=550,height=480');
-        shareMenu.classList.remove('active');
-    }
-    
-    function compartilharWhatsApp() {
-        const info = getCurrentPageInfo();
-        const message = `🔍 ${info.title}\n\nVem conferir no G1 Globo:\n${info.url}`;
-        const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, 'whatsapp-share');
-        shareMenu.classList.remove('active');
-    }
-    
-    function compartilharTelegram() {
-        const info = getCurrentPageInfo();
-        const message = `🔍 Confira no G1 Globo:`;
-        const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(info.url)}&text=${encodeURIComponent(message)}`;
-        window.open(telegramUrl, 'telegram-share');
-        shareMenu.classList.remove('active');
-    }
-    
-    function copiarLink() {
-        const info = getCurrentPageInfo();
-        navigator.clipboard.writeText(info.url).then(() => {
-            shareMenu.classList.remove('active');
-            
-            const notification = document.createElement('div');
-            notification.className = 'copy-notification';
-            notification.innerHTML = `<i class="fas fa-check-circle" style="margin-right: 8px;"></i>Link copiado!<br><small style="font-size: 11px; margin-top: 4px; opacity: 0.9;">${info.title}</small>`;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => notification.remove(), 3000);
+        let currentUrl = '';
+        let isFullscreenClean = false;
+        let notificationCount = 0;
+        let notifications = [];
+
+        // ==================== EVENTOS DOS MENUS ====================
+        shareBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            shareMenu.classList.toggle('active');
+            searchMenu.classList.remove('active');
+            notificationMenu.classList.remove('active');
         });
-    }
-    
-    // ==================== FECHAR ANÚNCIOS ====================
-    function fecharAnuncioTopo() {
-        adHeader.classList.add('hidden');
-    }
-    
-    function fecharAnuncioLateral() {
-        adSidebar.classList.add('hidden');
-    }
-    
-    // ==================== TELA CHEIA ====================
-    function toggleFullscreenClean() {
-        isFullscreenClean = !isFullscreenClean;
-        
-        if (isFullscreenClean) {
-            body.classList.add('fullscreen-mode');
-            fullscreenBtn.querySelector('.tooltip').textContent = '🎬 Sair do Cinema';
+
+        searchBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            searchMenu.classList.toggle('active');
+            shareMenu.classList.remove('active');
+            notificationMenu.classList.remove('active');
+            document.getElementById('searchMenuInput').focus();
+        });
+
+        notificationBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            notificationMenu.classList.toggle('active');
+            shareMenu.classList.remove('active');
+            searchMenu.classList.remove('active');
+        });
+
+        // Fechar menus ao clicar fora
+        document.addEventListener('click', function() {
+            shareMenu.classList.remove('active');
+            searchMenu.classList.remove('active');
+            notificationMenu.classList.remove('active');
+        });
+
+        // Pesquisa no menu de pesquisa
+        document.getElementById('searchMenuInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                pesquisarOuAcessar(this.value);
+                searchMenu.classList.remove('active');
+            }
+        });
+
+        // ==================== FUNÇÕES DE NOTIFICAÇÃO ====================
+        function adicionarNotificacao(titulo, mensagem) {
+            const notif = {
+                id: Date.now(),
+                titulo: titulo,
+                mensagem: mensagem,
+                horario: new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})
+            };
             
-            const container = document.getElementById('iframeContainer');
-            if (container.requestFullscreen) {
-                container.requestFullscreen().catch(err => {
-                    console.log('Erro fullscreen:', err);
-                });
-            }
-        } else {
-            body.classList.remove('fullscreen-mode');
-            fullscreenBtn.querySelector('.tooltip').textContent = '🎬 Modo Cinema';
+            notifications.unshift(notif);
+            notificationCount++;
             
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
+            atualizarNotificacoes();
+            
+            // Auto-remover depois de 5 segundos
+            setTimeout(() => {
+                removerNotificacao(notif.id);
+            }, 5000);
+        }
+
+        function removerNotificacao(id) {
+            notifications = notifications.filter(n => n.id !== id);
+            atualizarNotificacoes();
+        }
+
+        function atualizarNotificacoes() {
+            const notificationList = document.getElementById('notificationList');
+            const badge = document.getElementById('notificationBadge');
+
+            if (notifications.length === 0) {
+                notificationList.innerHTML = '<div class="notification-empty">Nenhuma notificação no momento</div>';
+                badge.style.display = 'none';
+                notificationCount = 0;
+            } else {
+                notificationList.innerHTML = notifications.map(notif => `
+                    <div class="notification-item unread">
+                        <div class="notification-title">${notif.titulo}</div>
+                        <div class="notification-text">${notif.mensagem}</div>
+                        <div class="notification-time">${notif.horario}</div>
+                    </div>
+                `).join('');
+                
+                if (notificationCount > 0) {
+                    badge.textContent = Math.min(notificationCount, 9) + (notificationCount > 9 ? '+' : '');
+                    badge.style.display = 'flex';
+                }
             }
         }
-    }
-    
-    document.addEventListener('fullscreenchange', function() {
-        if (!document.fullscreenElement && isFullscreenClean) {
-            isFullscreenClean = false;
-            body.classList.remove('fullscreen-mode');
-            fullscreenBtn.querySelector('.tooltip').textContent = '🎬 Modo Cinema';
-        }
-    });
-    
-    // ==================== PESQUISAR OU ACESSAR ====================
-    function pesquisarOuAcessar(entrada) {
-        if (!entrada) return;
-        
-        let entradaLimpa = entrada.trim();
-        
-        // Verificar se é uma URL
-        const ehUrl = /^(https?:\/\/|www\.|[\w-]+\.[\w-]+\.)/.test(entradaLimpa) ||
-                     entradaLimpa.includes('.com') ||
-                     entradaLimpa.includes('.br') ||
-                     entradaLimpa.includes('.net') ||
-                     entradaLimpa.includes('.org') ||
-                     entradaLimpa.includes('localhost');
-        
-        let urlFinal;
-        
-        if (ehUrl) {
-            // Carregar URL direto
-            urlFinal = entradaLimpa;
-            if (!urlFinal.startsWith('http://') && !urlFinal.startsWith('https://')) {
-                urlFinal = 'https://' + urlFinal;
+
+        // ==================== ONESIGNAL - RECEBER NOTIFICAÇÕES ====================
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.init({
+              appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
+              notifyButton: {
+                enable: false
+              }
+            });
+
+            // Listener para receber notificações push
+            OneSignal.Notifications.addEventListener('foreground', function(event) {
+                const notif = event.notification;
+                adicionarNotificacao(
+                    notif.title || '📢 Nova notificação',
+                    notif.body || 'Você tem uma nova mensagem'
+                );
+            });
+
+            if (typeof LibSignal !== "undefined") {
+              LibSignal.register();
             }
-        } else {
-            // Pesquisar no G1 Globo
-            urlFinal = 'https://g1.globo.com/busca/?q=' + encodeURIComponent(entradaLimpa);
+        });
+
+        // ==================== FUNÇÕES DE COMPARTILHAMENTO ====================
+        function getCurrentPageInfo() {
+            let siteTitle = 'G1 Globo';
+            try {
+                siteTitle = iframe.contentDocument?.title || 'Resultado';
+            } catch(e) {
+                siteTitle = iframe.getAttribute('title') || 'Resultado';
+            }
+            
+            const baseUrl = window.location.origin + window.location.pathname;
+            const proxyUrl = `${baseUrl}?url=${encodeURIComponent(currentUrl)}`;
+            
+            return {
+                url: proxyUrl,
+                siteUrl: currentUrl,
+                title: siteTitle,
+                message: `Confira no G1 Globo: ${siteTitle}`
+            };
         }
         
-        carregarUrl(urlFinal);
-        document.getElementById('searchInput').value = '';
-    }
-    
-    // ==================== CARREGAR URL ====================
-    function carregarUrl(url) {
-        if (!url) return;
-        
-        let finalUrl = url.trim();
-        
-        if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-            finalUrl = 'https://' + finalUrl;
+        function updateSiteTitleDisplay() {
+            const info = getCurrentPageInfo();
+            const titleDisplay = document.getElementById('siteTitleText');
+            if (titleDisplay) {
+                titleDisplay.textContent = info.title;
+            }
         }
         
-        currentUrl = finalUrl;
+        iframe.addEventListener('load', function() {
+            setTimeout(updateSiteTitleDisplay, 500);
+        });
         
-        // Verificar se é GE Globo - usar proxy
-        // Verificar se é G1 Globo - carregar sem proxy
-        let urlParaCarregar;
+        setTimeout(updateSiteTitleDisplay, 1000);
         
-        if (finalUrl.includes('ge.globo.com')) {
-            // Usar proxy apenas para GE Globo
-            urlParaCarregar = 'https://orange-hill-2e61.gbscabral15.workers.dev/?url=' + encodeURIComponent(finalUrl);
-        } else {
-            // Carregar direto sem proxy (G1 e outros)
-            urlParaCarregar = finalUrl;
+        function compartilharLinkedIn() {
+            const info = getCurrentPageInfo();
+            const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(info.url)}`;
+            window.open(linkedInUrl, 'linkedin-share', 'width=550,height=480');
+            shareMenu.classList.remove('active');
         }
         
-        iframe.src = urlParaCarregar;
-        
-        // Esconder home search
-        homeSearch.classList.add('hidden');
-        
-        const newUrl = new URL(window.location);
-        newUrl.searchParams.set('url', finalUrl);
-        window.history.pushState({ url: finalUrl }, '', newUrl);
-        
-        setTimeout(() => {
-            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-        }, 500);
-    }
-    
-    function resetToHome() {
-        currentUrl = '';
-        iframe.src = 'about:blank';
-        homeSearch.classList.remove('hidden');
-        document.getElementById('searchInput').value = '';
-        document.getElementById('searchInput').focus();
-        
-        const newUrl = new URL(window.location);
-        newUrl.searchParams.delete('url');
-        window.history.pushState({}, '', newUrl);
-    }
-    
-    function getUrlFromParams() {
-        const params = new URLSearchParams(window.location.search);
-        let url = params.get('url');
-        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-            return url;
-        }
-        return null;
-    }
-    
-    // ==================== INICIALIZAR ====================
-    function init() {
-        let startUrl = getUrlFromParams();
-        if (startUrl) {
-            carregarUrl(startUrl);
+        function compartilharTwitter() {
+            const info = getCurrentPageInfo();
+            const tweetText = `Confira no G1 Globo: ${info.title}\n${info.url}`;
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+            window.open(twitterUrl, 'twitter-share', 'width=550,height=480');
+            shareMenu.classList.remove('active');
         }
         
-        setInterval(() => {
-            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-        }, 30000);
-    }
-    
-    window.addEventListener('popstate', () => {
-        const params = new URLSearchParams(window.location.search);
-        let url = params.get('url');
-        if (url && url !== currentUrl) {
-            carregarUrl(url);
+        function compartilharWhatsApp() {
+            const info = getCurrentPageInfo();
+            const message = `🔍 ${info.title}\n\nVem conferir no G1 Globo:\n${info.url}`;
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, 'whatsapp-share');
+            shareMenu.classList.remove('active');
         }
-    });
-    
-    // Event listener para ENTER no input
-    document.getElementById('searchInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            pesquisarOuAcessar(this.value);
+        
+        function compartilharTelegram() {
+            const info = getCurrentPageInfo();
+            const message = `🔍 Confira no G1 Globo:`;
+            const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(info.url)}&text=${encodeURIComponent(message)}`;
+            window.open(telegramUrl, 'telegram-share');
+            shareMenu.classList.remove('active');
         }
-    });
-    
-    init();
-</script>
+        
+        function copiarLink() {
+            const info = getCurrentPageInfo();
+            navigator.clipboard.writeText(info.url).then(() => {
+                shareMenu.classList.remove('active');
+                
+                const notification = document.createElement('div');
+                notification.className = 'copy-notification';
+                notification.innerHTML = `<i class="fas fa-check-circle" style="margin-right: 8px;"></i>Link copiado!<br><small style="font-size: 11px; margin-top: 4px; opacity: 0.9;">${info.title}</small>`;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => notification.remove(), 3000);
+            });
+        }
+        
+        // ==================== FECHAR ANÚNCIOS ====================
+        function fecharAnuncioTopo() {
+            adHeader.classList.add('hidden');
+        }
+        
+        // ==================== PESQUISAR OU ACESSAR ====================
+        function pesquisarOuAcessar(entrada) {
+            if (!entrada) return;
+            
+            let entradaLimpa = entrada.trim();
+            
+            // Verificar se é uma URL
+            const ehUrl = /^(https?:\/\/|www\.|[\w-]+\.[\w-]+\.)/.test(entradaLimpa) ||
+                         entradaLimpa.includes('.com') ||
+                         entradaLimpa.includes('.br') ||
+                         entradaLimpa.includes('.net') ||
+                         entradaLimpa.includes('.org') ||
+                         entradaLimpa.includes('localhost');
+            
+            let urlFinal;
+            
+            if (ehUrl) {
+                urlFinal = entradaLimpa;
+                if (!urlFinal.startsWith('http://') && !urlFinal.startsWith('https://')) {
+                    urlFinal = 'https://' + urlFinal;
+                }
+            } else {
+                urlFinal = 'https://g1.globo.com/busca/?q=' + encodeURIComponent(entradaLimpa);
+            }
+            
+            carregarUrl(urlFinal);
+            document.getElementById('searchInput').value = '';
+        }
+        
+        // ==================== CARREGAR URL ====================
+        function carregarUrl(url) {
+            if (!url) return;
+            
+            let finalUrl = url.trim();
+            
+            if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+                finalUrl = 'https://' + finalUrl;
+            }
+            
+            currentUrl = finalUrl;
+            
+            let urlParaCarregar;
+            
+            if (finalUrl.includes('ge.globo.com')) {
+                urlParaCarregar = 'https://orange-hill-2e61.gbscabral15.workers.dev/?url=' + encodeURIComponent(finalUrl);
+            } else {
+                urlParaCarregar = finalUrl;
+            }
+            
+            iframe.src = urlParaCarregar;
+            
+            homeSearch.classList.add('hidden');
+            
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.set('url', finalUrl);
+            window.history.pushState({ url: finalUrl }, '', newUrl);
+            
+            setTimeout(() => {
+                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+            }, 500);
+        }
+        
+        function resetToHome() {
+            currentUrl = '';
+            iframe.src = 'about:blank';
+            homeSearch.classList.remove('hidden');
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchInput').focus();
+            
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.delete('url');
+            window.history.pushState({}, '', newUrl);
+        }
+        
+        function getUrlFromParams() {
+            const params = new URLSearchParams(window.location.search);
+            let url = params.get('url');
+            if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+                return url;
+            }
+            return null;
+        }
+        
+        // ==================== INICIALIZAR ====================
+        function init() {
+            let startUrl = getUrlFromParams();
+            if (startUrl) {
+                carregarUrl(startUrl);
+            }
+            
+            setInterval(() => {
+                try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+            }, 30000);
+        }
+        
+        window.addEventListener('popstate', () => {
+            const params = new URLSearchParams(window.location.search);
+            let url = params.get('url');
+            if (url && url !== currentUrl) {
+                carregarUrl(url);
+            }
+        });
+        
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                pesquisarOuAcessar(this.value);
+            }
+        });
+        
+        init();
+
+        // ==================== TESTE DE NOTIFICAÇÕES ====================
+        // Descomente para testar notificações localmente
+        // setTimeout(() => {
+        //     adicionarNotificacao('📰 Notícia Importante', 'Acompanhe as últimas notícias do G1 Globo');
+        // }, 2000);
+    </script>
 
 </body>
 </html>
