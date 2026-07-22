@@ -868,6 +868,19 @@
             searchMenu.classList.remove('active');
         });
 
+        // Prevenir que cliques dentro dos menus os fechem
+        shareMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        searchMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        notificationMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
         // Fechar menus ao clicar fora
         document.addEventListener('click', function() {
             shareMenu.classList.remove('active');
@@ -1164,6 +1177,10 @@
 
 </body>
 </html>
+
+
+
+
 
 
 
