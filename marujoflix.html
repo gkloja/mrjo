@@ -5486,69 +5486,19 @@ function verificarAmbienteNavegacao() {
 
 // ========== INTEGRAÇÃO COM FABIZAP ==========
 async function criarSalaMarujoFlix(titulo, videoUrl, poster, tipo, id_main) {
-    const FABIZAP_API = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
-    
-    Swal.fire({
-        title: '🎬 Criando sala...',
-        html: `<div style="text-align:center"><div class="spinner"></div><p>${escapeHtml(titulo)}</p></div>`,
-        allowOutsideClick: false,
-        showConfirmButton: false
-    });
-    
+    // Abre o videoUrl diretamente sem criar sala
     try {
-        const response = await fetch(`${FABIZAP_API}/cliente06/watch-rooms`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                title: `🎬 ${titulo.substring(0, 50)}`,
-                videoUrl: videoUrl,
-                videoId: `marujo_${id_main || Date.now()}`,
-                videoType: videoUrl.includes('youtube') ? 'youtube' : 'marujo',
-                poster: poster,
-                creator: currentUser?.displayName?.split(' ')[0] || 'Marujo',
-                creatorId: currentUser?.uid || 'anonymous',
-                creatorAvatar: currentUser?.photoURL || 'imagens/1772133683485~2.png',
-                playerState: { currentTime: 0, isPlaying: false, timestamp: Date.now() }
-            })
-        });
-        
-        const data = await response.json();
-        Swal.close();
-        
-        if (data.success) {
-            const salaUrl = `${window.location.origin}/?watch=${data.room.id}`;
-            
-            const result = await Swal.fire({
-                title: '🎉 Sala criada!',
-                html: `
-                    <div style="text-align:center">
-                        ${poster ? `<img src="${poster}" style="width:100px;border-radius:12px;margin-bottom:10px">` : ''}
-                        <h3>${escapeHtml(titulo)}</h3>
-                        <div style="display:flex;gap:8px;margin:15px 0">
-                            <input type="text" id="linkSala" value="${salaUrl}" readonly style="flex:1;padding:8px;border-radius:8px">
-                            <button id="copiarBtn" class="btn-primary" style="padding:8px 15px;margin:0">Copiar</button>
-                        </div>
-                        <button id="entrarBtn" class="btn-primary" style="background:#ef4444;width:100%">🎬 Entrar na Sala</button>
-                    </div>
-                `,
-                showConfirmButton: false,
-                didOpen: () => {
-                    document.getElementById('copiarBtn').onclick = () => {
-                        navigator.clipboard.writeText(salaUrl);
-                        Swal.fire({ icon: 'success', title: 'Link copiado!', timer: 1500, showConfirmButton: false });
-                    };
-                    document.getElementById('entrarBtn').onclick = () => {
-                        Swal.close();
-                        window.location.href = salaUrl;
-                    };
-                }
-            });
-        } else {
-            throw new Error('Erro ao criar sala');
+        if (!videoUrl) {
+            Swal.fire({ icon: 'error', title: 'Erro', text: 'URL do vídeo não disponível' });
+            return;
         }
+        
+        // Abre o vídeo diretamente
+        window.open(videoUrl, '_blank');
+        ToastSystem.show(`🎬 Abrindo: ${titulo}`, 'success');
     } catch (error) {
-        Swal.close();
-        Swal.fire({ icon: 'error', title: 'Erro', text: 'Não foi possível criar a sala' });
+        console.error('Erro ao abrir vídeo:', error);
+        Swal.fire({ icon: 'error', title: 'Erro', text: 'Não foi possível abrir o vídeo' });
     }
 }
 
