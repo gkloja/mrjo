@@ -178,6 +178,8 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.15);
             padding: 0;
             min-width: 300px;
+            max-width: calc(100vw - 40px);
+            max-height: 70vh;
             z-index: 2000;
             opacity: 0;
             visibility: hidden;
@@ -185,6 +187,24 @@
             transition: all 0.3s ease;
             overflow: hidden;
             border: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .search-menu {
+                right: auto;
+                left: 10px;
+                max-width: calc(100vw - 20px);
+                min-width: auto;
+                width: 90vw;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-menu {
+                left: 8px;
+                max-width: calc(100vw - 16px);
+                min-width: auto;
+            }
         }
 
         .search-menu.active {
@@ -248,6 +268,7 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.15);
             padding: 0;
             min-width: 320px;
+            max-width: calc(100vw - 40px);
             max-height: 400px;
             z-index: 2000;
             opacity: 0;
@@ -256,6 +277,25 @@
             transition: all 0.3s ease;
             overflow-y: auto;
             border: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .notification-menu {
+                right: auto;
+                left: 10px;
+                max-width: calc(100vw - 20px);
+                min-width: auto;
+                width: 90vw;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .notification-menu {
+                left: 8px;
+                max-width: calc(100vw - 16px);
+                min-width: auto;
+                max-height: 60vh;
+            }
         }
 
         .notification-menu.active {
@@ -331,6 +371,7 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.15);
             padding: 0;
             min-width: 250px;
+            max-width: calc(100vw - 40px);
             z-index: 2000;
             opacity: 0;
             visibility: hidden;
@@ -338,6 +379,24 @@
             transition: all 0.3s ease;
             overflow: hidden;
             border: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .share-menu {
+                right: auto;
+                left: 10px;
+                max-width: calc(100vw - 20px);
+                min-width: auto;
+                width: 90vw;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .share-menu {
+                left: 8px;
+                max-width: calc(100vw - 16px);
+                min-width: auto;
+            }
         }
 
         .share-menu.active {
@@ -451,6 +510,58 @@
             background: #A41E23;
         }
 
+        /* ==================== ANÚNCIO LATERAL ==================== */
+        .ad-sidebar {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 160px;
+            background: white;
+            border-radius: 0 12px 12px 0;
+            padding: 12px 8px;
+            text-align: center;
+            z-index: 998;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            border-left: none;
+            transition: all 0.3s;
+        }
+
+        .ad-sidebar.hidden {
+            display: none;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #C1272D;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 14px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-close:hover {
+            background: #A41E23;
+        }
+
+        .ad-label {
+            font-size: 7px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
         /* ==================== HOME SEARCH ==================== */
         .home-search {
             display: flex;
@@ -562,6 +673,23 @@
                 opacity: 1;
             }
         }
+
+        .fullscreen-mode .ad-header,
+        .fullscreen-mode .ad-sidebar,
+        .fullscreen-mode .nav-bar {
+            display: none !important;
+        }
+
+        .fullscreen-mode .iframe-container {
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+        }
+
+        .fullscreen-mode .fullscreen-btn {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
     </style>
 </head>
 <body>
@@ -648,6 +776,36 @@
             <i class="fas fa-copy"></i>
             <span>Copiar Link</span>
         </a>
+    </div>
+
+    <!-- ANÚNCIO SUPERIOR -->
+    <div id="adHeader" class="ad-header">
+        <button class="ad-close" onclick="fecharAnuncioTopo()">×</button>
+        <div class="ad-label">PUBLICIDADE</div>
+        <ins class="adsbygoogle"
+             style="display:inline-block;width:728px;height:90px"
+             data-ad-client="ca-pub-2351298778216089"
+             data-ad-slot="4868424735"
+             data-ad-format="horizontal"
+             data-full-width-responsive="true"></ins>
+        <script>
+            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense header:', e); }
+        </script>
+    </div>
+
+    <!-- ANÚNCIO LATERAL -->
+    <div id="adSidebar" class="ad-sidebar">
+        <button class="sidebar-close" onclick="fecharAnuncioLateral()">×</button>
+        <div class="ad-label">PUBLICIDADE</div>
+        <ins class="adsbygoogle"
+             style="display:inline-block;width:160px;height:600px"
+             data-ad-client="ca-pub-2351298778216089"
+             data-ad-slot="4868424735"
+             data-ad-format="vertical"
+             data-full-width-responsive="false"></ins>
+        <script>
+            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.log('AdSense sidebar:', e); }
+        </script>
     </div>
 
     <!-- HOME SCREEN COM PESQUISA -->
@@ -1007,6 +1165,10 @@
 
 </body>
 </html>
+
+
+
+
 
 
 
