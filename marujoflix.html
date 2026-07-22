@@ -6505,20 +6505,14 @@ irParaVideo: function(itemId) {
     const grupo = this.todosItens?.find(i => i.children?.some(child => child.id === itemId));
     const child = grupo?.children?.find(c => c.id === itemId);
     
-    if (grupo && child) {
-        const titulo = encodeURIComponent(grupo.titulo);
-        const poster = encodeURIComponent(grupo.poster || '');
-        // 👇 AGORA USA O LINK SEM O PROXY
-        const videoUrl = encodeURIComponent(`https://fabibot-taupe.vercel.app/player/${itemId}`);
-        
-        // Redireciona para o FabiZap
-        const fabizapUrl = `https://marujodigital.onrender.com/fabizapgrupos?acao=criar_sala&titulo=${titulo}&poster=${poster}&videoUrl=${videoUrl}`;
-        
-        console.log('🚀 Redirecionando:', fabizapUrl);
-        window.location.href = fabizapUrl;
+    if (grupo && child && child.videoUrl) {
+        // 👇 ABRE O LINK REAL DO VÍDEO
+        console.log('🚀 Abrindo vídeo direto:', child.videoUrl);
+        window.open(child.videoUrl, '_blank');
+        ToastSystem.show(`🎬 Abrindo: ${grupo.titulo}`, 'success');
         
     } else {
-        console.error('❌ Grupo ou child não encontrado');
+        console.error('❌ Grupo, child ou videoUrl não encontrado');
         ToastSystem.show('Erro ao carregar o vídeo', 'error');
     }
 },
