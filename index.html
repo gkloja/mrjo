@@ -136,25 +136,6 @@
           integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
           crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
-      notifyButton: {
-        enable: false
-      }
-    });
-
-    // 🔥 REGISTRA O TOKEN CORRETAMENTE
-    if (typeof LibSignal !== "undefined") {
-      LibSignal.register();
-    }
-  });
-</script>
     
     <style>
     :root {
@@ -188,6 +169,151 @@
             radial-gradient(circle at 80% 70%, rgba(255, 204, 0, 0.05) 0%, transparent 50%);
     }
     
+    /* ===== BLOQUEIO PROMOCIONAL DE APP (INTERSTITIAL) ===== */
+    .app-lock-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 999999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(5, 18, 35, 0.88);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        animation: appLockFadeIn 0.4s ease;
+    }
+    .app-lock-overlay.show {
+        display: flex;
+    }
+    @keyframes appLockFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    .app-lock-card {
+        position: relative;
+        width: 100%;
+        max-width: 380px;
+        background: linear-gradient(160deg, #0d2745, #061527);
+        border: 1px solid rgba(255, 204, 0, 0.35);
+        border-radius: 22px;
+        padding: 30px 24px 26px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03);
+        animation: appLockPop 0.45s cubic-bezier(.2,.9,.3,1.3);
+    }
+    @keyframes appLockPop {
+        from { transform: scale(0.85); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .app-lock-icon {
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 16px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #0066cc, #004a99);
+        border: 2px solid var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,102,204,0.5);
+    }
+    .app-lock-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .app-lock-badge {
+        display: inline-block;
+        background: rgba(255, 204, 0, 0.15);
+        color: var(--accent);
+        border: 1px solid rgba(255,204,0,0.4);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+    }
+    .app-lock-card h2 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: #fff;
+    }
+    .app-lock-card p {
+        font-size: 0.92rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        margin-bottom: 14px;
+    }
+    .app-lock-benefits {
+        list-style: none;
+        text-align: left;
+        margin: 0 0 20px;
+        padding: 0;
+    }
+    .app-lock-benefits li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+    }
+    .app-lock-benefits i {
+        color: var(--accent);
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+    .app-lock-btn {
+        width: 100%;
+        border: none;
+        border-radius: 14px;
+        padding: 15px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: #05203a;
+        background: linear-gradient(135deg, #ffcc00, #ffb300);
+        box-shadow: 0 8px 20px rgba(255,204,0,0.35);
+        transition: transform 0.2s ease;
+        margin-bottom: 10px;
+    }
+    .app-lock-btn:active {
+        transform: scale(0.97);
+    }
+    .app-lock-free {
+        font-size: 0.75rem;
+        color: #8fe38f;
+        font-weight: 600;
+        margin-bottom: 18px;
+    }
+    .app-lock-skip {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        text-decoration: underline;
+        cursor: pointer;
+        padding: 6px;
+    }
+    .app-lock-skip.visible {
+        display: inline-block;
+    }
+    .app-lock-note {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        margin-top: 10px;
+        line-height: 1.4;
+    }
+
     /* BOTÃO DE DOWNLOAD CRIATIVO */
 /* BOTÃO DE DOWNLOAD CÍRCULO PEQUENO */
 .download-promo-container {
@@ -5041,58 +5167,6 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
 }
 </script>
   
-<div class="floating-download-container">
-    <!-- Botão principal do download -->
-    <div class="floating-download-btn" onclick="toggleDownloadControls()">
-        <div class="floating-download-image">
-            <i class="fas fa-download"></i>
-        </div>
-    </div>
-    
-    <!-- Painel de controles do download -->
-    <div class="download-controls-panel" id="downloadControls">
-        <!-- Cabeçalho do download -->
-        <div class="download-header">
-            <div class="download-logo">
-                <i class="fas fa-ship"></i>
-            </div>
-            <div class="download-info">
-                <h4 id="downloadAppName">Marujo Digital App</h4>
-                <p id="downloadAppVersion">Versão 1.2.0 - Android</p>
-                <p id="downloadAppSlogan" class="download-slogan">"Cerimonial naval na palma da sua mão!"</p>
-            </div>
-            <button class="download-close" onclick="toggleDownloadControls()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <!-- Conteúdo do download -->
-        <div class="download-content">
-            
-            <!-- Botões de ação -->
-            <div class="download-actions">
-                <button class="download-action-btn primary" onclick="downloadAppNow()">
-                    <i class="fas fa-download"></i>
-                    BAIXAR APK (GRATUITO)
-                </button>
-                <button class="download-action-btn secondary" onclick="shareApp()">
-                    <i class="fas fa-share-alt"></i>
-                    COMPARTILHAR
-                </button>
-            </div>
-            
-            <!-- Informações de segurança -->
-            <div class="download-security">
-                <i class="fas fa-info-circle"></i>
-                <p>
-                    <strong>Importante:</strong> Permita "Fontes Desconhecidas" nas configurações do 
-                    Android para instalar o aplicativo.
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="floating-chat-container">
     <!-- Botão principal simplificado -->
     <div class="floating-chat-btn" onclick="toggleChat()" id="floatingChatBtn">
@@ -6211,11 +6285,6 @@ function downloadAppNow() {
     link.click();
     document.body.removeChild(link);
     
-    // Mostrar feedback visual
-    const btn = document.querySelector('.floating-download-btn');
-    btn.classList.add('pulse');
-    setTimeout(() => btn.classList.remove('pulse'), 3000);
-    
     // Opcional: mostrar notificação
     showNotification('✅ Download iniciado! Verifique suas notificações.');
 }
@@ -6260,18 +6329,6 @@ function showNotification(message) {
     }, 7000);
 }
 
-// Fechar painel ao clicar fora
-document.addEventListener('click', (event) => {
-    const controls = document.getElementById('downloadControls');
-    const btn = document.querySelector('.floating-download-btn');
-    
-    if (controls.classList.contains('show') && 
-        !controls.contains(event.target) && 
-        !btn.contains(event.target)) {
-        controls.classList.remove('show');
-        btn.classList.remove('active');
-    }
-});
 // Função para carregar uma rádio
 function loadRadio(radioId) {
     const radio = radioStations[radioId];
@@ -20001,7 +20058,127 @@ setTimeout(() => {
 
 
     </script>
-    
+
+    <!-- ===== MODAL DE BLOQUEIO PROMOCIONAL - BAIXAR APP ===== -->
+    <div class="app-lock-overlay" id="appLockOverlay">
+        <div class="app-lock-card">
+            <span class="app-lock-badge">100% Grátis</span>
+            <div class="app-lock-icon"><img src="imagens/logo.png" alt="Marujo Digital"></div>
+            <h2 id="appLockTitle">Continue no App Marujo Digital</h2>
+            <p id="appLockText">Pra liberar o acesso completo ao Bizu, baixe o app gratuito. Fica salvo no seu celular, funciona offline e não some quando a internet cair.</p>
+            <ul class="app-lock-benefits">
+                <li><i class="fas fa-wifi"></i> Acesso offline, sem depender de internet</li>
+                <li><i class="fas fa-bolt"></i> Abre mais rápido que o navegador</li>
+                <li><i class="fas fa-bell"></i> Avisa quando sair conteúdo novo</li>
+                <li><i class="fas fa-lock"></i> Sem custo nenhum, para sempre</li>
+            </ul>
+            <a class="app-lock-btn" id="appLockDownloadBtn" href="marujodigitalandroid.apk" download="MarujoDigital_App.apk" onclick="appLockDownload()">
+                <i class="fas fa-download"></i> Baixar App Grátis
+            </a>
+            <div class="app-lock-free"><i class="fas fa-check-circle"></i> Sem cadastro, sem cartão, sem pegadinha</div>
+            <button class="app-lock-skip visible" id="appLockSkipBtn" onclick="appLockClose()">Já tenho o app instalado</button>
+            <div class="app-lock-note" id="appLockNote"></div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        var STORAGE_KEY = 'marujoDigital_appDownloaded';
+        var DELAY_MS = 3000; // tempo até o modal aparecer (3 minutos = 180000ms)
+
+        var overlay = document.getElementById('appLockOverlay');
+        var title = document.getElementById('appLockTitle');
+        var text = document.getElementById('appLockText');
+        var downloadBtn = document.getElementById('appLockDownloadBtn');
+        var skipBtn = document.getElementById('appLockSkipBtn');
+        var note = document.getElementById('appLockNote');
+
+        var ua = navigator.userAgent || '';
+        var isAndroid = /Android/i.test(ua);
+        var isIOS = /iPhone|iPad|iPod/i.test(ua);
+
+        function isInsideOwnApp() {
+            // 1) Se o app (WebView) mandar um parâmetro na URL, ex: ?origem=app
+            var params = new URLSearchParams(window.location.search);
+            if (params.get('origem') === 'app' || params.get('app') === '1') return true;
+
+            // 2) Se o app injetar um identificador global antes de carregar a página
+            //    (ex: window.MarujoDigitalApp = true; no WebView nativo)
+            if (window.MarujoDigitalApp === true) return true;
+
+            // 3) PWA instalado e aberto em modo standalone
+            if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
+            if (window.navigator.standalone === true) return true;
+
+            // 4) Assinatura customizada no User-Agent do WebView do app
+            //    (recomendado: configure o WebView do app pra adicionar algo como
+            //    "MarujoDigitalApp/1.0" no User-Agent — assim essa detecção fica 100% certeira)
+            if (/MarujoDigitalApp/i.test(ua)) return true;
+
+            return false;
+        }
+
+        function alreadyHandled() {
+            try { return localStorage.getItem(STORAGE_KEY) === '1'; }
+            catch (e) { return false; }
+        }
+
+        function markHandled() {
+            try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) {}
+        }
+
+        function lockScroll(lock) {
+            document.body.style.overflow = lock ? 'hidden' : '';
+        }
+
+        function openLock() {
+            overlay.classList.add('show');
+            lockScroll(true);
+        }
+
+        window.appLockClose = function () {
+            overlay.classList.remove('show');
+            lockScroll(false);
+            markHandled();
+        };
+
+        window.appLockDownload = function () {
+            if (isAndroid) {
+                if (typeof downloadAppNow === 'function') {
+                    downloadAppNow();
+                } else {
+                    var link = document.createElement('a');
+                    link.href = 'marujodigitalandroid.apk';
+                    link.download = 'MarujoDigital_App.apk';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+                markHandled();
+                setTimeout(window.appLockClose, 900);
+            } else {
+                // iOS / Desktop: ainda não temos loja pra esses. Não trava o usuário.
+                if (typeof showNotification === 'function') {
+                    showNotification('📱 O app ainda é exclusivo para Android. Em breve chega em outras plataformas!');
+                }
+                window.appLockClose();
+            }
+        };
+
+        if (isInsideOwnApp()) return;
+
+        if (alreadyHandled()) return;
+
+        if (!isAndroid) {
+            // iOS/desktop: não existe onde baixar ainda, então não prende o usuário.
+            // Ajuste os textos/plataforma quando o app de iOS/PWA existir.
+            return;
+        }
+
+        setTimeout(openLock, DELAY_MS);
+    })();
+    </script>
+
 </body>
 </html>
 
@@ -20010,6 +20187,100 @@ setTimeout(() => {
 
 
 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
 
 
 
