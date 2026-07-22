@@ -150,6 +150,10 @@
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
     }
+
+    html {
+        scroll-behavior: smooth;
+    }
     
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -1775,50 +1779,79 @@ audio::-webkit-media-controls-mute-button {
         background: var(--primary-dark);
     }
     
-/* Menu de Navegação - FIXO APENAS NO TOPO */
+/* Menu de Navegação - FIXO NO TOPO AO ROLAR */
 .navy-nav {
     background: rgba(5, 18, 35, 0.95);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    position: relative; /* MUDEI de sticky para relative */
-    /* REMOVA: top: 0; */
+    position: sticky;
+    top: 0;
     z-index: 1000;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, padding 0.3s ease;
+}
+
+.navy-nav.is-stuck {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    border-bottom-color: rgba(255, 204, 0, 0.25);
 }
 
 .nav-menu {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    gap: 1px;
-    padding: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nav-menu::-webkit-scrollbar {
+    display: none;
 }
 
 .nav-item {
-    flex: 1;
+    flex: 0 0 auto;
     text-align: center;
 }
 
 .nav-link {
-    display: block;
-    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 16px;
     color: var(--text-secondary);
     text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s;
-    border-bottom: 3px solid transparent;
-    background: rgba(255, 255, 255, 0.05);
+    font-weight: 600;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid transparent;
+}
+
+.nav-link i {
+    font-size: 0.85rem;
 }
 
 .nav-link:hover {
     color: white;
     background: rgba(255, 255, 255, 0.1);
-    border-bottom-color: var(--accent);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
 }
 
 .nav-link.active {
-    color: white;
-    background: rgba(0, 102, 204, 0.2);
-    border-bottom-color: var(--primary);
+    color: #051223;
+    background: linear-gradient(135deg, var(--accent), #ffe680);
+    border-color: var(--accent);
+    box-shadow: 0 4px 16px rgba(255, 204, 0, 0.4);
+    font-weight: 700;
 }
 
 /* Conteúdo Principal */
@@ -2918,7 +2951,13 @@ audio::-webkit-media-controls-mute-button {
         }
         
         .nav-menu {
-            flex-direction: column;
+            justify-content: flex-start;
+            padding: 8px 12px;
+        }
+
+        .nav-link {
+            padding: 9px 14px;
+            font-size: 0.78rem;
         }
         
         .flags-grid {
@@ -3609,44 +3648,44 @@ audio::-webkit-media-controls-mute-button {
         
     </div>
 </header>
-      <!-- Navegação -->
-    <nav class="navy-nav">
+      <!-- Navegação fixa: rolagem suave até cada seção, todas visíveis na página -->
+    <nav class="navy-nav" id="mainNav">
         <div class="nav-menu">
             <div class="nav-item">
-                <a href="#bandeiras" class="nav-link active" onclick="showSection('bandeiras')">
+                <a href="#bandeiras" class="nav-link active" onclick="showSection('bandeiras', event)">
                     <i class="fas fa-flag"></i> Bandeiras
                 </a>
             </div>
             <div class="nav-item">
-                <a href="#insignias" class="nav-link" onclick="showSection('insignias')">
+                <a href="#insignias" class="nav-link" onclick="showSection('insignias', event)">
                     <i class="fas fa-chess-queen"></i> Insígnias
                 </a>
             </div>
             <div class="nav-item">
-                <a href="#sinais" class="nav-link" onclick="showSection('sinais')">
-                    <i class="fas fa-signal"></i> Cód Sinais
+                <a href="#sinais" class="nav-link" onclick="showSection('sinais', event)">
+                    <i class="fas fa-signal"></i> Sinais
                 </a>
             </div>
             <div class="nav-item">
-                <a href="#protocolos" class="nav-link" onclick="showSection('protocolos')">
+                <a href="#fonoclama" class="nav-link" onclick="showSection('fonoclama', event)">
+                    <i class="fas fa-bullhorn"></i> Fonoclama
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#protocolos" class="nav-link" onclick="showSection('protocolos', event)">
                     <i class="fas fa-book-open"></i> Protocolos
                 </a>
             </div>
-                        <!-- Na navegação principal -->
-<div class="nav-item">
-    <a href="apitos.html" class="nav-link" onclick="showSection('apitos')">
-        <i class="fas fa-bullhorn"></i> Apitos
-    </a>
-</div>
-<!-- Na navegação principal, adicione: -->
-<div class="nav-item">
-    <a href="#fonoclama" class="nav-link" onclick="showSection('fonoclama')">
-        <i class="fas fa-bullhorn"></i> Fonoclama
-    </a>
-</div>
-            <a href="sobre.html" class="nav-link">
-    <i class="fas fa-info-circle"></i> Sobre
-</a>
+            <div class="nav-item">
+                <a href="#apitos" class="nav-link" onclick="showSection('apitos', event)">
+                    <i class="fas fa-volume-up"></i> Apitos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="sobre.html" class="nav-link">
+                    <i class="fas fa-info-circle"></i> Sobre
+                </a>
+            </div>
         </div>
     </nav>
 <!-- ===== SEÇÃO DE NOTÍCIAS MILITARES COM MINIMIZAR TOTAL E COMPARTILHAMENTO ===== -->
@@ -6961,7 +7000,7 @@ setInterval(() => {
         </section>
         
         <!-- Outras seções (inicialmente ocultas) -->
-        <section id="insignias" class="content-section" style="display: none;">
+        <section id="insignias" class="content-section">
             <div class="content-card">
                 <div class="card-header">
                     <div class="card-icon">
@@ -6978,7 +7017,7 @@ setInterval(() => {
             </div>
         </section>
         
-        <section id="sinais" class="content-section" style="display: none;">
+        <section id="sinais" class="content-section">
             <div class="content-card">
                 <div class="card-header">
                     <div class="card-icon">
@@ -6996,7 +7035,7 @@ setInterval(() => {
         </section>
         
         <!-- NOVA SEÇÃO: FONOCLAMA - FALAS PADRONIZADAS -->
-<section id="fonoclama" class="content-section" style="display: none;">
+<section id="fonoclama" class="content-section">
     <div class="content-card">
         <div class="card-header">
             <div class="card-icon">
@@ -7034,42 +7073,8 @@ setInterval(() => {
     </div>
 </section>
         
-        <section id="cerimonial" class="content-section" style="display: none;">
-            <div class="content-card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-hat-cowboy"></i>
-                    </div>
-                    <div>
-                        <h2 class="card-title">Cerimonial à Bandeira</h2>
-                        <div class="card-subtitle">Procedimentos e Honras</div>
-                    </div>
-                </div>
-                <div id="ceremonialContent">
-                    <!-- Conteúdo carregado dinamicamente -->
-                </div>
-            </div>
-        </section>
-        
-        <section id="protocolos" class="content-section" style="display: none;">
-            <div class="content-card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-book-open"></i>
-                    </div>
-                    <div>
-                        <h2 class="card-title">Protocolos e Honras</h2>
-                        <div class="card-subtitle">Normas de Cortesia e Respeito</div>
-                    </div>
-                </div>
-                <div id="protocolsContent">
-                    <!-- Conteúdo carregado dinamicamente -->
-                </div>
-            </div>
-        </section>
-        
 <!-- Na área de conteúdo -->
-<section id="apitos" class="content-section" style="display: none;">
+<section id="apitos" class="content-section">
     <div class="content-card mobile-card">
         <div class="card-header">
             <div class="card-icon">
@@ -7086,13 +7091,14 @@ setInterval(() => {
     </div>
 </section>
         <!-- Informações Gerais do PDF -->
+        <section id="protocolos" class="content-section">
         <div class="content-card">
             <div class="card-header">
                 <div class="card-icon">
                     <i class="fas fa-file-alt"></i>
                 </div>
                 <div>
-                    <h2 class="card-title">Cerimonial da Marinha</h2>
+                    <h2 class="card-title">Protocolos e Cerimonial</h2>
                     <div class="card-subtitle">EMN-006 • 2ª Revisão • Aprovado em 25/10/2022</div>
                 </div>
             </div>
@@ -7328,6 +7334,7 @@ setInterval(() => {
                 </div>
             </div>
         </div>
+        </section>
     </main>
 
 
@@ -7575,7 +7582,26 @@ setInterval(() => {
     max-width: 100%;
     overflow-x: hidden;
     padding: 0;
-    margin: 0;
+    margin: 0 0 36px 0;
+    scroll-margin-top: 90px;
+    display: block !important;
+    animation: sectionReveal 0.6s ease both;
+}
+
+.content-section + .content-section {
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+@keyframes sectionReveal {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .content-section {
+        scroll-margin-top: 130px;
+    }
 }
 
 .content-card {
@@ -16355,10 +16381,10 @@ function getRankColor(level) {
             <div class="footer-section">
                 <h3>Recursos</h3>
                 <ul class="footer-links">
-                    <li><a href="#" onclick="showSection('bandeiras')"><i class="fas fa-flag"></i> Bandeiras</a></li>
-                    <li><a href="#" onclick="showSection('insignias')"><i class="fas fa-chess-queen"></i> Insígnias</a></li>
-                    <li><a href="#" onclick="showSection('sinais')"><i class="fas fa-signal"></i> Códigos de Sinais</a></li>
-                    <li><a href="#" onclick="showSection('cerimonial')"><i class="fas fa-hat-cowboy"></i> Procedimentos</a></li>
+                    <li><a href="#bandeiras" onclick="showSection('bandeiras', event)"><i class="fas fa-flag"></i> Bandeiras</a></li>
+                    <li><a href="#insignias" onclick="showSection('insignias', event)"><i class="fas fa-chess-queen"></i> Insígnias</a></li>
+                    <li><a href="#sinais" onclick="showSection('sinais', event)"><i class="fas fa-signal"></i> Códigos de Sinais</a></li>
+                    <li><a href="#protocolos" onclick="showSection('protocolos', event)"><i class="fas fa-hat-cowboy"></i> Procedimentos</a></li>
                 </ul>
             </div>
             
@@ -17628,24 +17654,26 @@ let activeModal = null;
 
 // Funções principais
 function showSection(sectionId, event) {
-    // Esconder todas as seções
-    document.querySelectorAll('.content-section').forEach(section => {
-        section.style.display = 'none';
-    });
-    
-    // Atualizar navegação
+    // Todas as seções já ficam visíveis na página; aqui apenas rolamos
+    // suavemente até a seção escolhida e destacamos o item do menu.
+    if (event) {
+        event.preventDefault();
+    }
+
+    const target = document.getElementById(sectionId);
+    if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + sectionId) {
+            link.classList.add('active');
+        }
     });
-    
-    if (event && event.target) {
-        event.target.classList.add('active');
-    }
-    
-    // Mostrar seção selecionada
-    document.getElementById(sectionId).style.display = 'block';
-    
-    // Carregar conteúdo específico
+
+    // Garante que o conteúdo da seção esteja renderizado/atualizado
+    try {
     switch(sectionId) {
       case 'jogo':
             showGameSection();
@@ -17672,6 +17700,11 @@ case 'apitos':
     break;
 
 
+    }
+    } catch (e) {
+        // Alguns conteúdos (ex.: cerimonial/protocolos) já vêm prontos na página,
+        // então erros aqui não devem interromper a navegação.
+        console.warn('showSection:', e);
     }
 }
 
@@ -20026,8 +20059,13 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     });
 }
     
-    // Carregar conteúdo inicial
+    // Carregar conteúdo inicial de TODAS as seções de uma vez,
+    // já que agora tudo fica visível na mesma página (sem precisar clicar)
     loadAllFlags();
+    try { loadSubstitutasSection(); } catch (e) { console.warn('insignias:', e); }
+    try { loadSignals(); } catch (e) { console.warn('sinais:', e); }
+    try { renderFonoclama('all'); } catch (e) { console.warn('fonoclama:', e); }
+    try { loadApitosSection(); } catch (e) { console.warn('apitos:', e); }
     setupAudioEvents();
     // Animar entrada
     setTimeout(() => {
@@ -20051,6 +20089,48 @@ setTimeout(() => {
 });
 // Adicionar eventos de áudio para atualizar o player fixo
 
+// ===== MENU FIXO: sombra ao rolar + destaque automático da seção visível =====
+(function () {
+    const nav = document.getElementById('mainNav');
+    if (!nav) return;
+
+    // Sombra no menu assim que a página começa a rolar
+    const toggleStuck = () => {
+        nav.classList.toggle('is-stuck', window.scrollY > 8);
+    };
+    toggleStuck();
+    window.addEventListener('scroll', toggleStuck, { passive: true });
+
+    // Destaca o item do menu correspondente à seção visível na tela
+    const sections = Array.from(document.querySelectorAll('main.main-content > .content-section'));
+    const navLinks = Array.from(document.querySelectorAll('.nav-menu .nav-link[href^="#"]'));
+    if (!sections.length || !navLinks.length) return;
+
+    const setActiveLink = (id) => {
+        navLinks.forEach(link => {
+            const isActive = link.getAttribute('href') === '#' + id;
+            link.classList.toggle('active', isActive);
+            if (isActive) {
+                // Mantém o item ativo visível dentro do menu com rolagem horizontal
+                link.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }
+        });
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                setActiveLink(entry.target.id);
+            }
+        });
+    }, {
+        root: null,
+        rootMargin: '-45% 0px -50% 0px', // considera "ativa" a seção próxima ao topo visível
+        threshold: 0
+    });
+
+    sections.forEach(section => observer.observe(section));
+})();
 
     </script>
 
