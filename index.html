@@ -20103,10 +20103,10 @@ setTimeout(() => {
             if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
             if (window.navigator.standalone === true) return true;
 
-            // 4) Assinatura customizada no User-Agent do WebView do app
-            //    (recomendado: configure o WebView do app pra adicionar algo como
-            //    "MarujoDigitalApp/1.0" no User-Agent — assim essa detecção fica 100% certeira)
-            if (/MarujoDigitalApp/i.test(ua)) return true;
+            // 4) Assinatura que o app da Median.co injeta de verdade no User-Agent.
+            //    Por padrão o Median adiciona "MedianAndroid/1.0 median" (Android)
+            //    ou "MedianIOS/1.0 median" (iOS) ao final do User-Agent do dispositivo.
+            if (/median/i.test(ua)) return true;
 
             return false;
         }
