@@ -827,12 +827,6 @@
         <iframe id="contentFrame" title="Resultado da pesquisa"></iframe>
     </div>
 
-    <!-- ANÚNCIO TOPO -->
-    <div class="ad-header" id="adHeader">
-        <div id="ad-header-content"></div>
-        <button class="ad-close" onclick="fecharAnuncioTopo()">×</button>
-    </div>
-
     <script>
         // ==================== VARIÁVEIS GLOBAIS ====================
         const shareMenu = document.getElementById('shareMenu');
@@ -844,6 +838,7 @@
         const homeSearch = document.getElementById('homeSearch');
         const iframe = document.getElementById('contentFrame');
         const adHeader = document.getElementById('adHeader');
+        const adSidebar = document.getElementById('adSidebar');
         
         let currentUrl = '';
         let isFullscreenClean = false;
@@ -1045,6 +1040,10 @@
             adHeader.classList.add('hidden');
         }
         
+        function fecharAnuncioLateral() {
+            adSidebar.classList.add('hidden');
+        }
+        
         // ==================== PESQUISAR OU ACESSAR ====================
         function pesquisarOuAcessar(entrada) {
             if (!entrada) return;
@@ -1165,6 +1164,10 @@
 
 </body>
 </html>
+
+
+
+
 
 
 
