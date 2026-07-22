@@ -136,6 +136,7 @@
           integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
           crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+
     
     <style>
     :root {
@@ -20076,21 +20077,19 @@ setTimeout(() => {
                 <i class="fas fa-download"></i> Baixar App Grátis
             </a>
             <div class="app-lock-free"><i class="fas fa-check-circle"></i> Sem cadastro, sem cartão, sem pegadinha</div>
-            <button class="app-lock-skip visible" id="appLockSkipBtn" onclick="appLockClose()">Já tenho o app instalado</button>
-            <div class="app-lock-note" id="appLockNote"></div>
+            <div class="app-lock-note" id="appLockNote">Para continuar acessando pelo Android, é necessário usar o app. Se você já baixou, abra o app instalado no seu celular.</div>
         </div>
     </div>
 
     <script>
     (function () {
         var STORAGE_KEY = 'marujoDigital_appDownloaded';
-        var DELAY_MS = 3000; // tempo até o modal aparecer (3 minutos = 180000ms)
+        var DELAY_MS = 180000; // tempo até o modal aparecer (3 minutos = 180000ms)
 
         var overlay = document.getElementById('appLockOverlay');
         var title = document.getElementById('appLockTitle');
         var text = document.getElementById('appLockText');
         var downloadBtn = document.getElementById('appLockDownloadBtn');
-        var skipBtn = document.getElementById('appLockSkipBtn');
         var note = document.getElementById('appLockNote');
 
         var ua = navigator.userAgent || '';
@@ -20118,12 +20117,14 @@ setTimeout(() => {
             return false;
         }
 
-        function alreadyHandled() {
+        // "Já baixei" só conta se a pessoa REALMENTE clicou em baixar
+        // (ação real do navegador), nunca por afirmação/clique de "pular".
+        function alreadyDownloaded() {
             try { return localStorage.getItem(STORAGE_KEY) === '1'; }
             catch (e) { return false; }
         }
 
-        function markHandled() {
+        function markDownloaded() {
             try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) {}
         }
 
@@ -20136,11 +20137,10 @@ setTimeout(() => {
             lockScroll(true);
         }
 
-        window.appLockClose = function () {
+        function closeLock() {
             overlay.classList.remove('show');
             lockScroll(false);
-            markHandled();
-        };
+        }
 
         window.appLockDownload = function () {
             if (isAndroid) {
@@ -20154,27 +20154,34 @@ setTimeout(() => {
                     link.click();
                     document.body.removeChild(link);
                 }
-                markHandled();
-                setTimeout(window.appLockClose, 900);
+                // Marca que ela baixou de verdade (ação real, não promessa).
+                // Mesmo assim, o site só libera o acesso completo quando ela
+                // ABRIR o app de fato (isInsideOwnApp() confirma isso).
+                markDownloaded();
+                if (note) {
+                    note.textContent = 'Download iniciado! Agora abra o app instalado no seu celular para continuar.';
+                }
             } else {
-                // iOS / Desktop: ainda não temos loja pra esses. Não trava o usuário.
+                // iOS / Desktop: acesso livre pelo site, não existe app pra essas plataformas ainda.
                 if (typeof showNotification === 'function') {
                     showNotification('📱 O app ainda é exclusivo para Android. Em breve chega em outras plataformas!');
                 }
-                window.appLockClose();
+                closeLock();
             }
         };
 
+        // ÚNICA forma de não ver o modal de novo no Android:
+        // estar de fato dentro do app (WebView/PWA), nunca por clique de "já tenho".
         if (isInsideOwnApp()) return;
 
-        if (alreadyHandled()) return;
-
         if (!isAndroid) {
-            // iOS/desktop: não existe onde baixar ainda, então não prende o usuário.
-            // Ajuste os textos/plataforma quando o app de iOS/PWA existir.
+            // iOS/desktop: acesso normal pelo site, sem bloqueio.
             return;
         }
 
+        // Android fora do app: sempre trava após o tempo definido,
+        // mesmo que já tenha clicado em baixar antes (só quem abre
+        // pelo app de verdade deixa de ver o modal).
         setTimeout(openLock, DELAY_MS);
     })();
     </script>
