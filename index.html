@@ -4692,7 +4692,6 @@ const NewsSystem = {
                 this.updateStats(data);
                 this.renderNews();
                 
-                
                 // Mostrar botão "Ver Mais" se houver mais notícias
                 this.toggleLoadMoreButton();
             } else {
@@ -20383,7 +20382,8 @@ if (honrasTable && cerimonialData.honrasPortalo) {
         });
     }, 100);
     
-    
+    // Mensagem de boas-vindas
+
 });
 // Adicionar eventos de áudio para atualizar o player fixo
 
@@ -21329,10 +21329,10 @@ if (honrasTable && cerimonialData.honrasPortalo) {
         // **negrito**, ~tachado~, "aspas em destaque" e linhas "> citação".
         formatarMarkdown(textoEscapado) {
             return textoEscapado
-                .replace(/(^|\n)&gt;\s?(.*)/g, '$1<span class="md-chat-citacao">$2</span>')
-                .replace(/\*\*(.+?)\*\*/g, '<strong class="md-chat-negrito">$1</strong>')
+                .replace(/(^|\n)&gt;\s?(.*)/g, "$1<span class='md-chat-citacao'>$2</span>")
+                .replace(/\*\*(.+?)\*\*/g, "<strong class='md-chat-negrito'>$1</strong>")
                 .replace(/~([^~\n]+)~/g, '<del>$1</del>')
-                .replace(/"([^"\n]+)"/g, '<span class="md-chat-aspas">&ldquo;$1&rdquo;</span>')
+                .replace(/"([^"\n]+)"/g, "<span class='md-chat-aspas'>&ldquo;$1&rdquo;</span>")
                 .replace(/\n/g, '<br>');
         },
 
