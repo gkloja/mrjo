@@ -20700,12 +20700,19 @@ setTimeout(() => {
     function mdToken() {
         return localStorage.getItem(MD_TOKEN_KEY) || '';
     }
-    // Wrapper de fetch que sempre manda o token (quando existir) além do cookie.
+    // Manda o token na própria URL (query string) em vez de um header
+    // customizado: headers customizados obrigam o navegador a fazer uma
+    // requisição de "preflight" que depende do proxy/CORS liberar
+    // exatamente esse header — e se o proxy não repassar isso direito, a
+    // chamada INTEIRA é bloqueada (é o que estava derrubando até o ranking
+    // e o chat). Query string não tem esse problema: sempre chega no servidor.
     async function authFetch(url, opts = {}) {
         const token = mdToken();
-        const headers = { ...(opts.headers || {}) };
-        if (token) headers['x-md-token'] = token;
-        return fetch(url, { ...FETCH_OPTS, ...opts, headers });
+        let finalUrl = url;
+        if (token) {
+            finalUrl += (finalUrl.includes('?') ? '&' : '?') + 'md_token=' + encodeURIComponent(token);
+        }
+        return fetch(finalUrl, { ...FETCH_OPTS, ...opts });
     }
 
     const MarujoConta = {
