@@ -9311,39 +9311,51 @@ setInterval(() => {
         </button>
     </div>
 </div>
-<button class="cerimonial-floating-btn" id="openCerimonialBtn">
-    <!-- Ícone Principal com Badge de Nível -->
-    <div class="btn-icon-container" id="btnIconContainer" onclick="event.stopPropagation(); MarujoConta.onFloatingAvatarClick();" title="Meu perfil">
-        <i class="fas fa-anchor" id="floatingAnchorIcon"></i>
-        <img id="floatingAvatarImg" src="" alt="Perfil" style="display:none;">
-        <div class="level-badge" id="floatingLevelBadge">1</div>
-    </div>
-    
-    <!-- Informação de XP e Patente -->
-    <div class="btn-info">
-        <div class="xp-display">
-            <span class="xp-current" id="floatingXP">0</span>
-            <span class="xp-separator">/</span>
-            <span class="xp-next" id="floatingNextXP">100</span>
-            <span class="xp-label">XP</span>
+<div class="cerimonial-floating-btn" id="openCerimonialBtn" role="button" tabindex="0" aria-label="Responder o quiz do dia">
+
+    <!-- ZONA 1: Perfil (avatar + nível) — clique aqui SEMPRE abre o perfil -->
+    <div class="fab-zone fab-zone-profile" id="fabZoneProfile" onclick="event.stopPropagation(); MarujoConta.onFloatingAvatarClick();" title="Meu perfil" role="button" tabindex="0" aria-label="Abrir meu perfil">
+        <div class="btn-icon-container" id="btnIconContainer">
+            <i class="fas fa-anchor" id="floatingAnchorIcon"></i>
+            <img id="floatingAvatarImg" src="" alt="Perfil" style="display:none;">
+            <div class="level-badge" id="floatingLevelBadge">1</div>
         </div>
-        <span class="rank-display" id="floatingRank">Recruta</span>
+        <span class="fab-zone-label">Perfil</span>
     </div>
-    
-    <!-- Status (Streak + Indicador) -->
-    <div class="btn-status">
-        <div class="streak-badge" id="streakBadge">
-            <i class="fas fa-fire"></i>
-            <span id="floatingStreak">0</span>
+
+    <!-- Divisória: separa visualmente "ver perfil" de "responder quiz" -->
+    <div class="fab-divider" aria-hidden="true"></div>
+
+    <!-- ZONA 2: Quiz do dia — clique aqui SEMPRE abre o quiz -->
+    <div class="fab-zone fab-zone-quiz" id="fabZoneQuiz" title="Responder o quiz do dia">
+        <div class="btn-info">
+            <div class="xp-display">
+                <span class="xp-current" id="floatingXP">0</span>
+                <span class="xp-separator">/</span>
+                <span class="xp-next" id="floatingNextXP">100</span>
+                <span class="xp-label">XP</span>
+            </div>
+            <span class="rank-display" id="floatingRank">Recruta</span>
         </div>
-        <div class="new-indicator" id="newIndicator" style="display: none;"></div>
+
+        <div class="btn-status">
+            <div class="streak-badge" id="streakBadge">
+                <i class="fas fa-fire"></i>
+                <span id="floatingStreak">0</span>
+            </div>
+            <div class="fab-cta">
+                <span class="fab-cta-text">Jogar</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="new-indicator" id="newIndicator" style="display: none;"></div>
+        </div>
     </div>
-    
+
     <!-- Barra de Progresso Decorativa -->
     <div class="progress-bar-bottom">
         <div class="progress-fill" id="progressFill" style="width: 0%"></div>
     </div>
-</button>
+</div>
 
 <!-- CSS DO BOTÃO -->
 <style>
@@ -9358,12 +9370,12 @@ setInterval(() => {
     background: linear-gradient(135deg, #0a1e3a, #05152b);
     border: 2px solid #ffd700;
     border-radius: 50px;
-    padding: 6px 16px 6px 8px;
+    padding: 6px 14px 6px 8px;
     
     /* Flexbox */
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 0;
     
     /* Sombras */
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 215, 0, 0.3);
@@ -9378,7 +9390,7 @@ setInterval(() => {
     
     /* Tamanho */
     min-width: 300px;
-    height: 56px;
+    height: 60px;
     
     /* Overflow para a barra */
     overflow: hidden;
@@ -9388,6 +9400,99 @@ setInterval(() => {
     transform: translateX(-50%) translateY(-3px);
     border-color: #ffed4a;
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8), 0 0 0 2px rgba(255, 215, 0, 0.5);
+}
+
+.cerimonial-floating-btn:focus-visible {
+    outline: 2px solid #ffed4a;
+    outline-offset: 3px;
+}
+
+/* ===== As duas "zonas" do widget =====
+   Um único balão flutuante, mas com duas áreas de clique bem distintas:
+   à esquerda "Perfil" (foto/nível), à direita "Jogar" (XP/patente/streak
+   e o CTA do quiz). A divisória entre elas deixa claro, visualmente, que
+   são duas ações diferentes — sem precisar de dois botões separados. */
+.fab-zone {
+    display: flex;
+    align-items: center;
+    border-radius: 40px;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.fab-zone-profile {
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px 10px 4px 2px;
+    cursor: pointer;
+}
+.fab-zone-profile:hover {
+    background: rgba(255, 215, 0, 0.1);
+}
+.fab-zone-profile:active {
+    transform: scale(0.96);
+}
+
+.fab-zone-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--text-secondary, #a8c7fa);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fab-divider {
+    width: 1px;
+    align-self: stretch;
+    margin: 10px 10px;
+    background: linear-gradient(to bottom, transparent, rgba(255, 215, 0, 0.35), transparent);
+    flex-shrink: 0;
+}
+
+.fab-zone-quiz {
+    flex: 1;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 8px 4px 0;
+    cursor: pointer;
+    border-radius: 30px;
+}
+.fab-zone-quiz:hover {
+    background: rgba(255, 215, 0, 0.06);
+}
+.fab-zone-quiz:hover .fab-cta {
+    background: linear-gradient(135deg, #ffed4a, #ffcc00);
+    box-shadow: 0 3px 10px rgba(255, 215, 0, 0.5);
+}
+.fab-zone-quiz:active {
+    transform: scale(0.98);
+}
+
+/* Chip "Jogar" — deixa explícito que aquela metade abre o quiz do dia */
+.fab-cta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid rgba(255, 215, 0, 0.5);
+    color: #ffd700;
+    font-weight: 800;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+.fab-zone-quiz:hover .fab-cta {
+    color: #0a1e3a;
+}
+.fab-cta i {
+    font-size: 0.65rem;
+    transition: transform 0.2s ease;
+}
+.fab-zone-quiz:hover .fab-cta i {
+    transform: translateX(2px);
 }
 
 /* Container do Ícone */
@@ -9404,9 +9509,15 @@ setInterval(() => {
     font-size: 1.3rem;
     box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);
     flex-shrink: 0;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.btn-icon-container:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 14px rgba(255, 215, 0, 0.65), 0 0 0 3px rgba(255, 215, 0, 0.25);
 }
 
-/* Badge de Nível */
+/* Badge de Nível — puramente decorativo: nunca deve "roubar" o clique da
+   foto por baixo (ela fica com uma quina encostando na do badge). */
 .level-badge {
     position: absolute;
     top: -5px;
@@ -9424,6 +9535,7 @@ setInterval(() => {
     justify-content: center;
     padding: 0 4px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
 }
 
 /* Informações */
@@ -9598,6 +9710,26 @@ setInterval(() => {
     
     .streak-badge span {
         font-size: 0.8rem;
+    }
+
+    .fab-zone-profile {
+        padding: 2px 8px 2px 0;
+    }
+
+    .fab-zone-label {
+        font-size: 0.55rem;
+    }
+
+    .fab-divider {
+        margin: 8px 6px;
+    }
+
+    /* Em telas pequenas o chip vira só a setinha, pra não apertar o layout */
+    .fab-cta-text {
+        display: none;
+    }
+    .fab-cta {
+        padding: 6px 8px;
     }
 }
 </style>
@@ -14651,6 +14783,42 @@ const userProgress = {
         localStorage.setItem('marujo_stats', JSON.stringify(this.stats));
         localStorage.setItem('marujo_todayQuestions', JSON.stringify(this.todayQuestions));
     },
+
+    // Zera o progresso guardado NESTE NAVEGADOR (localStorage).
+    // Por quê existe: o progresso do quiz é salvo localmente antes mesmo de
+    // existir conta. Ao criar/entrar numa conta, esse progresso local é
+    // enviado pro servidor (sincronizarProgresso). Se, ao SAIR da conta, o
+    // localStorage não fosse limpo, a mesma pessoa poderia deslogar e criar
+    // uma segunda conta nova, que herdaria — via sincronização automática —
+    // o XP/nível da conta anterior, duplicando o mesmo progresso em várias
+    // contas. Chamado em MarujoConta.logout() logo após encerrar a sessão.
+    resetProgress() {
+        this.xp = 0;
+        this.level = 1;
+        this.streak = 0;
+        this.lastPlay = null;
+        this.answeredToday = false;
+        this.achievements = {};
+        this.stats = {
+            totalQuestions: 0,
+            correctAnswers: 0,
+            totalXP: 0,
+            byCategory: {
+                bandeiras: { total: 0, correct: 0 },
+                sinais: { total: 0, correct: 0 },
+                protocolos: { total: 0, correct: 0 },
+                datas: { total: 0, correct: 0 },
+                apitos: { total: 0, correct: 0 }
+            },
+            byDifficulty: {
+                fácil: { total: 0, correct: 0 },
+                médio: { total: 0, correct: 0 },
+                difícil: { total: 0, correct: 0 }
+            }
+        };
+        this.todayQuestions = [];
+        this.saveProgress();
+    },
     
     hasNewQuiz() {
         if (!this.lastPlay) return true;
@@ -16226,6 +16394,17 @@ function showAchievementUnlocked(id, title, description, xp) {
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('openCerimonialBtn').addEventListener('click', openCerimonialDia);
     document.getElementById('closeCerimonialBtn').addEventListener('click', closeCerimonialDia);
+    // Acessibilidade por teclado: como o widget agora é uma div (para permitir
+    // duas sub-áreas clicáveis independentes — perfil e quiz), replicamos o
+    // comportamento nativo de "Enter/Espaço = clique" do <button>.
+    document.querySelectorAll('#openCerimonialBtn, #fabZoneProfile').forEach(el => {
+        el.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                el.click();
+            }
+        });
+    });
     updateCerimonialBadge();
     setInterval(updateCerimonialBadge, 3600000);
     
@@ -20190,7 +20369,7 @@ setTimeout(() => {
     <script>
     (function () {
         var STORAGE_KEY = 'marujoDigital_appDownloaded';
-        var DELAY_MS = 15000; // tempo até o modal aparecer (3 minutos = 180000ms)
+        var DELAY_MS = 150000; // tempo até o modal aparecer (3 minutos = 180000ms)
 
         var overlay = document.getElementById('appLockOverlay');
         var title = document.getElementById('appLockTitle');
@@ -20400,12 +20579,15 @@ setTimeout(() => {
     content: ''; position: absolute; width: 6px; height: 6px; border-radius: 50%;
     background: radial-gradient(circle at 35% 35%, var(--md-brass-light), #7a5a20);
     box-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    pointer-events: none; /* decoração não pode roubar clique do botão de fechar */
 }
 .md-modal::before { top: 10px; left: 10px; }
 .md-modal::after  { top: 10px; right: 10px; }
 
 .md-modal-close {
-    position: absolute; top: 12px; right: 14px;
+    position: absolute; top: 6px; right: 8px; z-index: 5;
+    width: 34px; height: 34px; padding: 0;
+    display: flex; align-items: center; justify-content: center;
     background: none; border: none; color: var(--text-secondary,#a8c7fa);
     font-size: 22px; cursor: pointer; line-height: 1;
     transition: color .15s ease, transform .15s ease;
@@ -20470,6 +20652,14 @@ setTimeout(() => {
     font-size: 12.5px; cursor: pointer; transition: border-color .15s ease, color .15s ease;
 }
 .md-btn-ghost:hover { border-color: rgba(255,204,0,0.4); color: var(--accent,#ffcc00); }
+.md-btn-secondary {
+    width: 100%; padding: 12px; border-radius: 11px; margin-top: 8px; cursor: pointer;
+    background: rgba(255,204,0,0.08); border: 1px solid rgba(255,204,0,0.35);
+    color: var(--accent,#ffcc00); font-weight: 700; font-size: 13.5px;
+    letter-spacing: 0.02em; transition: background .15s ease, transform .15s ease;
+}
+.md-btn-secondary:hover { background: rgba(255,204,0,0.16); transform: translateY(-1px); }
+.md-btn-secondary:active { transform: translateY(0); }
 .md-erro { color: #ff7b7b; font-size: 12.5px; margin-top: 9px; min-height: 16px; }
 .md-ok { color: #4ade80; font-size: 12.5px; margin-top: 9px; }
 
@@ -20492,6 +20682,41 @@ setTimeout(() => {
 .md-perfil-nome { font-family: 'Cinzel', serif; font-size: 17px; font-weight: 700; letter-spacing: 0.01em; }
 .md-perfil-stats { display: flex; gap: 20px; margin-top: 12px; font-size: 11.5px; color: var(--text-secondary,#a8c7fa); text-align: center; text-transform: uppercase; letter-spacing: 0.04em; }
 .md-perfil-stats b { display: block; color: var(--accent,#ffcc00); font-size: 16px; font-family: 'Cinzel', serif; }
+
+/* Anel do avatar muda de liga conforme a faixa de patente */
+.md-avatar-wrap.md-tier-bronze { background: radial-gradient(circle at 35% 30%, #d9925a, #8a5a2c 45%, #4a2e14 100%); }
+.md-avatar-wrap.md-tier-prata  { background: radial-gradient(circle at 35% 30%, #e6e9ee, #a9b0bb 45%, #5c626b 100%); }
+.md-avatar-wrap.md-tier-ouro   { background: radial-gradient(circle at 35% 30%, var(--md-brass-light), var(--md-brass) 45%, #6b4f1f 100%); }
+.md-avatar-wrap.md-tier-platina { background: radial-gradient(circle at 35% 30%, #eafcff, #8fd9e8 45%, #1c5866 100%); box-shadow: 0 0 0 3px rgba(140,235,255,0.25), 0 8px 22px rgba(0,0,0,0.5); }
+
+/* Selo de patente logo abaixo do nome */
+.md-perfil-patente {
+    display: inline-flex; align-items: center; gap: 7px; margin-top: 8px;
+    padding: 5px 14px; border-radius: 20px;
+    background: linear-gradient(135deg, #ffd700, #ffaa00);
+    box-shadow: 0 3px 10px rgba(255,204,0,0.35);
+}
+.md-perfil-patente-icone { font-size: 11px; letter-spacing: -1px; }
+.md-perfil-patente-titulo {
+    color: #0a1e3a; font-weight: 800; font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.03em; font-family: 'Cinzel', serif;
+}
+
+/* Progresso até a próxima patente */
+.md-perfil-proxima { margin-top: 16px; margin-bottom: 4px; }
+.md-perfil-proxima-track {
+    width: 100%; height: 7px; border-radius: 20px; overflow: hidden;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.06);
+}
+.md-perfil-proxima-fill {
+    height: 100%; width: 0%; border-radius: 20px;
+    background: linear-gradient(90deg, #ffd700, #ffaa00);
+    transition: width .6s cubic-bezier(.2,.8,.2,1);
+}
+.md-perfil-proxima p {
+    margin: 7px 0 0; text-align: center; font-size: 11.5px;
+    color: var(--text-secondary,#a8c7fa); letter-spacing: 0.01em;
+}
 
 /* ---------- Ranking ---------- */
 .md-rank-item {
@@ -20634,14 +20859,23 @@ setTimeout(() => {
                 </label>
             </div>
             <div class="md-perfil-nome" id="md-perfil-nome"></div>
+            <div class="md-perfil-patente" id="md-perfil-patente">
+                <span class="md-perfil-patente-icone" id="md-perfil-patente-icone">⛵</span>
+                <span class="md-perfil-patente-titulo" id="md-perfil-patente-titulo">Recruta</span>
+            </div>
         </div>
         <div class="md-perfil-stats" style="justify-content:center">
             <div><b id="md-perfil-nivel">1</b>Nível</div>
             <div><b id="md-perfil-xp">0</b>XP</div>
             <div><b id="md-perfil-streak">0</b>Sequência</div>
         </div>
+        <div class="md-perfil-proxima">
+            <div class="md-perfil-proxima-track"><div class="md-perfil-proxima-fill" id="md-perfil-proxima-fill"></div></div>
+            <p id="md-perfil-proxima-patente">Faltam níveis para a próxima patente</p>
+        </div>
         <div class="md-erro" id="md-avatar-erro"></div>
-        <button class="md-btn-primary" onclick="MarujoConta.abrirRanking()">🏆 Ver ranking</button>
+        <button class="md-btn-primary" onclick="MarujoConta.fecharModal('md-perfil-overlay'); openCerimonialDia();">⚓ Cerimonial do Dia</button>
+        <button class="md-btn-secondary" onclick="MarujoConta.abrirRanking()">🏆 Ver ranking</button>
         <button class="md-btn-ghost" onclick="MarujoConta.logout()">Sair da conta</button>
     </div>
 </div>
@@ -20825,7 +21059,17 @@ setTimeout(() => {
         },
 
         // ---------- Modais ----------
+        // Todas as janelas (login/registro, perfil, ranking) compartilham a
+        // classe .md-overlay. Antes, abrir uma de dentro da outra (ex.: "Ver
+        // ranking" a partir do perfil) deixava a de baixo com .md-show ainda
+        // ativo — as duas ficavam empilhadas, e apertar o "×" da de cima só
+        // fechava ela, revelando a debaixo (parecia que o "×" não fazia nada).
+        // Agora só existe UMA aberta por vez.
+        fecharTodosOverlays() {
+            document.querySelectorAll('.md-overlay.md-show').forEach(el => el.classList.remove('md-show'));
+        },
         abrirAuth() {
+            this.fecharTodosOverlays();
             document.getElementById('md-auth-overlay').classList.add('md-show');
         },
         fecharAuth() {
@@ -20849,16 +21093,73 @@ setTimeout(() => {
 
         async abrirPerfil() {
             if (!this.logado) return this.abrirAuth();
+            this.fecharTodosOverlays();
+            const nivel = this.usuario.level || 1;
+
             document.getElementById('md-perfil-avatar').src = this.avatarUrl(this.usuario);
             document.getElementById('md-perfil-avatar').onerror = () => {
                 document.getElementById('md-perfil-avatar').src = this.avatarFallback(this.usuario.nome);
             };
             document.getElementById('md-perfil-nome').textContent = this.usuario.nome;
-            document.getElementById('md-perfil-nivel').textContent = this.usuario.level;
+            document.getElementById('md-perfil-nivel').textContent = nivel;
             document.getElementById('md-perfil-xp').textContent = this.usuario.pontosTotais;
             document.getElementById('md-perfil-streak').textContent = this.usuario.streak;
             document.getElementById('md-avatar-erro').textContent = '';
+
+            // Cartão de patente: mesmas funções que já pintam o botão flutuante
+            // e o guia de postos, então nome/ícone da patente batem em todo canto.
+            const patenteTitulo = (typeof getRankTitle === 'function') ? getRankTitle(nivel) : 'Recruta';
+            const patenteIcone = (typeof getRankIcon === 'function') ? getRankIcon(nivel) : '⛵';
+            const elTitulo = document.getElementById('md-perfil-patente-titulo');
+            const elIcone = document.getElementById('md-perfil-patente-icone');
+            if (elTitulo) elTitulo.textContent = patenteTitulo;
+            if (elIcone) elIcone.textContent = patenteIcone;
+            this.renderAvatarTierRing(nivel);
+
+            // Progresso até a próxima patente (não confundir com XP do próximo
+            // nível: aqui é quantos NÍVEIS faltam pra virar outro posto).
+            const proxima = this.proximaPatente(nivel);
+            const elProxima = document.getElementById('md-perfil-proxima-patente');
+            const elProximaBarra = document.getElementById('md-perfil-proxima-fill');
+            if (elProxima && elProximaBarra) {
+                if (proxima) {
+                    elProxima.textContent = `⚓ Faltam ${proxima.niveisFaltando} ${proxima.niveisFaltando === 1 ? 'nível' : 'níveis'} para ${proxima.titulo}`;
+                    const percentual = Math.max(6, 100 - (proxima.niveisFaltando / proxima.faixaTotal) * 100);
+                    elProximaBarra.style.width = percentual + '%';
+                } else {
+                    elProxima.textContent = '🏅 Você atingiu o posto mais alto da Armada!';
+                    elProximaBarra.style.width = '100%';
+                }
+            }
+
             document.getElementById('md-perfil-overlay').classList.add('md-show');
+        },
+
+        // Descobre a próxima patente andando nível a nível a partir do atual,
+        // até o título mudar (evita duplicar a tabela de níveis em dois lugares).
+        proximaPatente(nivelAtual) {
+            if (typeof getRankTitle !== 'function') return null;
+            const tituloAtual = getRankTitle(nivelAtual);
+            const inicioFaixa = nivelAtual;
+            for (let nivel = nivelAtual + 1; nivel <= 120; nivel++) {
+                const titulo = getRankTitle(nivel);
+                if (titulo !== tituloAtual) {
+                    return { titulo, nivel, niveisFaltando: nivel - nivelAtual, faixaTotal: Math.max(1, nivel - inicioFaixa) };
+                }
+            }
+            return null; // já está no posto mais alto previsto
+        },
+
+        // Anel ao redor do avatar muda de liga (bronze/prata/ouro/platina)
+        // conforme a faixa de patente — mesma leitura visual do ⚓ do ícone.
+        renderAvatarTierRing(nivel) {
+            const wrap = document.querySelector('#md-perfil-overlay .md-avatar-wrap');
+            if (!wrap) return;
+            wrap.classList.remove('md-tier-bronze', 'md-tier-prata', 'md-tier-ouro', 'md-tier-platina');
+            if (nivel >= 60) wrap.classList.add('md-tier-platina');
+            else if (nivel >= 40) wrap.classList.add('md-tier-ouro');
+            else if (nivel >= 20) wrap.classList.add('md-tier-prata');
+            else wrap.classList.add('md-tier-bronze');
         },
 
         // ---------- Login / Registro / Logout ----------
@@ -20917,6 +21218,9 @@ setTimeout(() => {
         },
 
         async logout() {
+            if (!confirm('Sair da conta? Seu progresso já está salvo com segurança nela. Ao sair, o progresso salvo neste aparelho é zerado (evita duplicar XP criando outra conta).')) {
+                return;
+            }
             try { await authFetch(`${API}/logout`, { method: 'POST' }); } catch (e) {}
             mdLimparToken();
             this.logado = false;
@@ -20924,6 +21228,13 @@ setTimeout(() => {
             this.renderUserbar();
             this.fecharModal('md-perfil-overlay');
             this.pararChat();
+            // Importante: zera o progresso local (localStorage) para que ele
+            // não seja "herdado" por uma nova conta criada em seguida no
+            // mesmo navegador — veja userProgress.resetProgress() para detalhes.
+            if (typeof userProgress !== 'undefined' && typeof userProgress.resetProgress === 'function') {
+                userProgress.resetProgress();
+                if (typeof updateFloatingButton === 'function') updateFloatingButton();
+            }
         },
 
         // ---------- Progresso (XP/Nível) integrado ao quiz existente ----------
@@ -20994,6 +21305,7 @@ setTimeout(() => {
 
         // ---------- Ranking ----------
         async abrirRanking() {
+            this.fecharTodosOverlays();
             document.getElementById('md-ranking-overlay').classList.add('md-show');
             const lista = document.getElementById('md-ranking-lista');
             lista.innerHTML = '<div class="md-rank-vazio">Carregando...</div>';
@@ -21109,6 +21421,18 @@ setTimeout(() => {
 
         // Verifica mensagens novas do chat de tempos em tempos mesmo fechado
         setInterval(() => { if (!MarujoConta.chatAberto) MarujoConta.carregarMensagens(false); }, 15000);
+
+        // Clicar no fundo escurecido (fora do cartão) ou apertar Esc também
+        // fecha o modal aberto — reforço pro "×", que dependia só do clique
+        // exato no botão.
+        document.querySelectorAll('.md-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) overlay.classList.remove('md-show');
+            });
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') MarujoConta.fecharTodosOverlays();
+        });
     });
 
     // Poll inicial de chat "fechado" pra já mostrar badge de não lidas
