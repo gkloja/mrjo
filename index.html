@@ -3696,6 +3696,60 @@ audio::-webkit-media-controls-mute-button {
             </div>
         </div>
     </nav>
+
+<!-- Top 3 do Ranking da Tripulação -->
+<div class="md-top3-bar" id="md-top3-bar">
+    <div class="md-top3-titulo">🏆 Top 3 da Tripulação</div>
+    <div class="md-top3-lista" id="md-top3-lista">
+        <div class="md-top3-vazio">Carregando ranking...</div>
+    </div>
+    <button class="md-top3-vertodos" onclick="MarujoConta.abrirRanking()">Ver ranking completo »</button>
+</div>
+<style>
+.md-top3-bar {
+    max-width: 720px; margin: 10px auto; padding: 10px 14px;
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(8,22,42,0.55); backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,204,0,0.22); border-radius: 999px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+.md-top3-titulo {
+    color: #ffcc00; font-family: 'Cinzel', serif; font-weight: 700; font-size: 11.5px;
+    letter-spacing: 0.03em; white-space: nowrap; flex-shrink: 0;
+    display: flex; align-items: center; gap: 4px;
+}
+.md-top3-lista { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; overflow: hidden; }
+.md-top3-item {
+    display: flex; align-items: center; gap: 6px; min-width: 0;
+    padding: 3px 10px 3px 3px; border-radius: 999px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    transition: transform .15s ease, background .15s ease;
+}
+.md-top3-item:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); }
+.md-top3-item.ouro { order: 1; border-color: rgba(255,215,0,0.5); background: linear-gradient(90deg, rgba(255,215,0,0.14), rgba(255,255,255,0.02)); }
+.md-top3-item.prata { order: 2; border-color: rgba(192,192,192,0.4); }
+.md-top3-item.bronze { order: 3; border-color: rgba(205,127,50,0.4); }
+.md-top3-medalha { font-size: 13px; line-height: 1; flex-shrink: 0; }
+.md-top3-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 1.5px solid rgba(255,204,0,0.45); flex-shrink: 0; }
+.md-top3-info { min-width: 0; line-height: 1.2; }
+.md-top3-nome { color: #fff; font-size: 11.5px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 90px; }
+.md-top3-xp { color: #ffcc00; font-size: 9.5px; font-weight: 600; opacity: 0.85; }
+.md-top3-vazio { color: #7a9ccc; font-size: 11.5px; padding: 2px 0; }
+.md-top3-vertodos {
+    flex-shrink: 0; background: transparent; border: 1px solid rgba(122,156,204,0.35);
+    color: #a8c7fa; font-size: 10.5px; font-weight: 600; cursor: pointer;
+    padding: 5px 10px; border-radius: 999px; white-space: nowrap; transition: all .15s ease;
+}
+.md-top3-vertodos:hover { border-color: #ffcc00; color: #ffcc00; }
+@media (max-width: 640px) {
+    .md-top3-bar { border-radius: 16px; flex-wrap: wrap; justify-content: center; padding: 10px 12px; }
+    .md-top3-titulo { width: 100%; justify-content: center; margin-bottom: 2px; }
+    .md-top3-lista { justify-content: center; flex-wrap: wrap; }
+    .md-top3-nome { max-width: 70px; }
+    .md-top3-vertodos { width: 100%; }
+}
+</style>
+
 <!-- ===== SEÇÃO DE NOTÍCIAS MILITARES COM MINIMIZAR TOTAL E COMPARTILHAMENTO ===== -->
 
 <!-- NOTIFICAÇÃO DE LEVEL UP PREMIUM -->
@@ -5323,6 +5377,12 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
 
 /* Container */
 .floating-chat-container {
+    /* Desativado: este widget do Tulho (IA) ficava sobreposto ao botão de
+       perfil (#md-profile-fab), já que os dois usam bottom:20/right:20.
+       O Tulho foi unificado à aba "🤖 Tulho IA" do chat da tripulação
+       (#md-chat-panel), então este balão avulso só duplicava a função e
+       poluía o canto da tela. */
+    display: none !important;
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -7776,7 +7836,13 @@ setInterval(() => {
     justify-content: center;
     color: #0066cc;
     font-size: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(255,204,0,0.35);
+    animation: cerimonialIconPulse 2.6s ease-in-out infinite;
+}
+
+@keyframes cerimonialIconPulse {
+    0%, 100% { box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 0 0 3px rgba(255,204,0,0.35); }
+    50% { box-shadow: 0 4px 16px rgba(0,0,0,0.25), 0 0 0 6px rgba(255,204,0,0.15); }
 }
 
 .cerimonial-text h3 {
@@ -7784,6 +7850,23 @@ setInterval(() => {
     margin: 0;
     font-size: 1.3rem;
     font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cerimonial-date-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: rgba(255,204,0,0.18);
+    border: 1px solid rgba(255,204,0,0.5);
+    color: #ffcc00;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
 }
 
 .cerimonial-text p {
@@ -7964,10 +8047,11 @@ setInterval(() => {
 
 /* Conteúdo do Quiz */
 .quiz-content {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 12px;
-    padding: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+    border-radius: 18px;
+    padding: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
 .quiz-section {
@@ -7997,23 +8081,27 @@ setInterval(() => {
 }
 
 .question-number {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     background: linear-gradient(135deg, #0066cc, #004a99);
-    border-radius: 10px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: 1.05rem;
+    box-shadow: 0 4px 12px rgba(0,102,204,0.35);
+    flex-shrink: 0;
 }
 
 .question-text {
     color: white;
-    font-size: 1.2rem;
-    line-height: 1.4;
+    font-size: 1.12rem;
+    line-height: 1.45;
     margin: 0;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 }
 
 .question-hint {
@@ -8031,53 +8119,57 @@ setInterval(() => {
 }
 
 .quiz-option {
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 13px;
+    padding: 13px 16px;
     color: var(--text-secondary);
-    font-size: 1rem;
+    font-size: 0.97rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 13px;
 }
 
 .quiz-option:hover:not(.selected) {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 204, 0, 0.3);
+    transform: translateX(3px);
 }
 
 .quiz-option.selected {
     border-color: #0066cc;
-    background: rgba(0, 102, 204, 0.1);
+    background: rgba(0, 102, 204, 0.14);
     color: white;
+    box-shadow: 0 4px 14px rgba(0,102,204,0.25);
 }
 
 .quiz-option.correct {
     border-color: #38a169;
-    background: rgba(56, 161, 105, 0.1);
+    background: rgba(56, 161, 105, 0.14);
     color: white;
+    box-shadow: 0 4px 14px rgba(56,161,105,0.25);
 }
 
 .quiz-option.incorrect {
     border-color: #e53e3e;
-    background: rgba(229, 62, 62, 0.1);
+    background: rgba(229, 62, 62, 0.14);
     color: white;
 }
 
 .option-letter {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
+    font-size: 0.85rem;
     flex-shrink: 0;
+    transition: all 0.2s ease;
 }
 
 .quiz-option.selected .option-letter {
@@ -8107,17 +8199,18 @@ setInterval(() => {
 
 .quiz-btn {
     flex: 1;
-    padding: 15px;
-    border-radius: 10px;
-    font-size: 1rem;
-    font-weight: 600;
+    padding: 13px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
+    letter-spacing: 0.01em;
 }
 
 .quiz-btn.primary {
@@ -8127,13 +8220,13 @@ setInterval(() => {
 
 .quiz-btn.primary:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(0, 102, 204, 0.4);
+    box-shadow: 0 6px 18px rgba(0, 102, 204, 0.4);
 }
 
 .quiz-btn.secondary {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     color: var(--text-secondary);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
 }
 
 .quiz-btn.secondary:hover {
@@ -9263,7 +9356,7 @@ setInterval(() => {
                 <i class="fas fa-anchor"></i>
             </div>
             <div class="cerimonial-text">
-                <h3>Cerimonial do Dia</h3>
+                <h3>Cerimonial do Dia <span class="cerimonial-date-badge" id="cerimonialDateBadge"></span></h3>
                 <p>Treine seu conhecimento naval</p>
             </div>
         </div>
@@ -15166,6 +15259,13 @@ function showAllQuestions() {
 function openCerimonialDia() {
     const container = document.getElementById('cerimonialDiaContainer');
     container.classList.add('active');
+
+    const badgeEl = document.getElementById('cerimonialDateBadge');
+    if (badgeEl) {
+        const hoje = new Date();
+        const txt = hoje.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'short' });
+        badgeEl.textContent = txt.charAt(0).toUpperCase() + txt.slice(1);
+    }
     
     // Resetar quiz se for um novo dia
     if (userProgress.hasNewQuiz()) {
@@ -20737,21 +20837,17 @@ setTimeout(() => {
 
 /* ---------- Chat da comunidade ---------- */
 #md-chat-fab {
-    position: fixed; bottom: 20px; left: 16px; z-index: 98000;
-    width: 56px; height: 56px; border-radius: 50%;
+    position: fixed; bottom: 18px; left: 16px; z-index: 98000;
+    width: 50px; height: 50px; border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, #1281e0, var(--primary-dark,#004d99));
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 10px 26px rgba(0,102,204,0.5), 0 0 0 1px rgba(0,0,0,0.2);
-    cursor: pointer; border: 2px solid var(--accent,#ffcc00);
-    font-size: 24px;
-    transition: transform .2s ease;
+    box-shadow: 0 8px 20px rgba(0,102,204,0.45), 0 0 0 1px rgba(0,0,0,0.15);
+    cursor: pointer; border: 1.5px solid var(--accent,#ffcc00);
+    font-size: 20px;
+    transition: transform .2s ease, box-shadow .2s ease;
 }
-#md-chat-fab:hover { transform: translateY(-2px) scale(1.04); }
+#md-chat-fab:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 10px 24px rgba(0,102,204,0.55); }
 #md-chat-fab:active { transform: scale(0.94); }
-@media (prefers-reduced-motion: no-preference) {
-    #md-chat-fab { animation: mdBob 3.2s ease-in-out infinite; }
-}
-@keyframes mdBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 #md-chat-fab .md-chat-badge {
     position: absolute; top: -4px; right: -4px; background: #ff4d4d; color: #fff;
     font-size: 10px; font-weight: 700; border-radius: 50%; min-width: 18px; height: 18px;
@@ -20767,6 +20863,55 @@ setTimeout(() => {
     box-shadow: 0 20px 55px rgba(0,0,0,0.6);
 }
 #md-chat-panel.md-show { display: flex; animation: mdRise .25s ease; }
+
+/* Botão de perfil flutuante — ocupa o lugar do antigo botão do Tulho */
+#md-profile-fab {
+    position: fixed; bottom: 18px; right: 18px; z-index: 98000;
+    width: 50px; height: 50px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--md-brass-light,#ffe17a), var(--md-brass,#c99a1e) 60%, #6b4f1f 100%);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4), 0 0 0 1.5px rgba(255,204,0,0.5);
+    cursor: pointer; overflow: hidden; font-size: 21px;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+#md-profile-fab:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 10px 24px rgba(0,0,0,0.5); }
+#md-profile-fab:active { transform: scale(0.94); }
+#md-profile-fab-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+/* Abas do chat unificado */
+.md-chat-tabs { display: flex; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
+.md-chat-tab {
+    flex: 1; background: transparent; border: none; color: var(--text-muted,#7a9ccc);
+    font-size: 12.5px; font-weight: 700; padding: 8px 4px; cursor: pointer;
+    font-family: 'Cinzel', serif; letter-spacing: 0.02em;
+    border-bottom: 2px solid transparent;
+}
+.md-chat-tab.active { color: var(--accent,#ffcc00); border-bottom-color: var(--accent,#ffcc00); }
+.md-chat-body-ia { display: flex; }
+
+/* Mensagens do Tulho (IA) dentro do chat, com estilo bem distinto das da tripulação */
+.md-chat-msg-ia { align-self: flex-start; max-width: 88%; }
+.md-chat-msg-ia .md-chat-autor { color: var(--accent,#ffcc00); font-weight: 700; }
+.md-bolha-ia {
+    background: linear-gradient(135deg, rgba(0,153,255,0.22), rgba(0,60,120,0.35));
+    border: 1px solid rgba(0,180,255,0.4);
+    border-radius: 12px; padding: 8px 10px; font-size: 13px; line-height: 1.4;
+}
+.md-chat-msg.md-mine-ia .md-chat-bolha { background: linear-gradient(135deg, rgba(0,153,255,0.3), rgba(0,60,120,0.45)); border: 1px solid rgba(0,180,255,0.5); }
+.md-chat-msg-row { display: flex; gap: 7px; align-items: flex-start; }
+.md-chat-msg-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; flex-shrink: 0; margin-top: 2px; border: 1px solid rgba(255,204,0,0.35); }
+
+/* Toggle "Chamar Tulho" */
+.md-chat-footer-wrap { display: flex; flex-direction: column; gap: 4px; border-top: 1px solid rgba(255,255,255,0.08); }
+.md-chat-ia-toggle {
+    font-size: 11px; color: var(--text-muted,#7a9ccc); display: flex; align-items: center; gap: 5px;
+    padding: 5px 10px 0 10px; cursor: pointer; user-select: none;
+}
+.md-chat-ia-toggle input { accent-color: var(--accent,#ffcc00); }
+#md-chat-footer-ia { display: none; border-top: 1px solid rgba(255,255,255,0.08); }
+
+/* O antigo widget fullscreen do Tulho foi unificado ao chat da tripulação */
+.floating-chat-container, .chat-panel, .chat-panel.show { display: none !important; }
 .md-chat-header {
     padding: 13px 14px; background: linear-gradient(135deg, rgba(0,102,204,0.22), rgba(0,102,204,0.06));
     border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -20803,6 +20948,91 @@ setTimeout(() => {
 .md-chat-login-aviso { padding: 11px 12px; font-size: 12px; color: var(--text-secondary,#a8c7fa); text-align: center; border-top: 1px solid rgba(255,255,255,0.08); }
 .md-chat-login-aviso a { color: var(--accent,#ffcc00); cursor: pointer; font-weight: 700; }
 .md-chat-login-aviso a:hover { text-decoration: underline; }
+
+/* Ajuste da aba (agora com 3) + badge de mensagens privadas não lidas */
+.md-chat-tab { font-size: 10.5px; padding: 8px 2px; position: relative; }
+.md-dm-badge {
+    position: absolute; top: 2px; right: 6px; background: #ff4d4d; color: #fff;
+    font-size: 9px; font-weight: 700; border-radius: 50%; min-width: 15px; height: 15px;
+    display: flex; align-items: center; justify-content: center; padding: 0 2px;
+}
+
+/* Nome/avatar clicáveis nas mensagens da tripulação -> abrem DM */
+.md-chat-msg-avatar, .md-chat-msg .md-chat-autor { cursor: pointer; }
+.md-chat-msg .md-chat-autor:hover { text-decoration: underline; }
+
+/* Menções destacadas dentro das mensagens */
+.md-mencao { color: var(--accent,#ffcc00); font-weight: 700; background: rgba(255,204,0,0.12); padding: 0 3px; border-radius: 4px; }
+
+/* Dropdown de autocompletar menção no campo de digitação */
+.md-mencao-dropdown {
+    display: none; max-height: 130px; overflow-y: auto; margin: 0 10px;
+    background: rgba(10,30,55,0.97); border: 1px solid rgba(255,204,0,0.3); border-radius: 10px;
+}
+.md-mencao-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; cursor: pointer; font-size: 12.5px; color: #fff; }
+.md-mencao-item:hover, .md-mencao-item.ativo { background: rgba(255,204,0,0.12); }
+.md-mencao-item img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+
+/* Reações rápidas em cada mensagem */
+.md-msg-reacoes-wrap { display: flex; align-items: center; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+.md-chat-msg.md-mine .md-msg-reacoes-wrap { justify-content: flex-end; }
+.md-reagir-btn {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 999px;
+    font-size: 11px; padding: 1px 7px; cursor: pointer; color: var(--text-muted,#7a9ccc); line-height: 1.6;
+}
+.md-reagir-btn:hover { border-color: rgba(255,204,0,0.4); color: var(--accent,#ffcc00); }
+.md-reacao-chip {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px;
+    font-size: 11px; padding: 1px 7px; cursor: pointer; color: #fff; display: inline-flex; gap: 3px; align-items: center;
+    transition: transform .12s ease;
+}
+.md-reacao-chip:hover { transform: translateY(-1px); }
+.md-reacao-chip.minha { border-color: var(--accent,#ffcc00); background: rgba(255,204,0,0.14); }
+.md-emoji-picker {
+    display: none; gap: 4px; background: rgba(10,30,55,0.98); border: 1px solid rgba(255,204,0,0.3);
+    border-radius: 999px; padding: 4px 6px; margin-top: 4px; width: fit-content;
+}
+.md-emoji-picker.md-show { display: flex; animation: mdRise .15s ease; }
+.md-emoji-picker span { font-size: 15px; cursor: pointer; padding: 1px 3px; border-radius: 6px; transition: transform .1s ease; }
+.md-emoji-picker span:hover { transform: scale(1.25); }
+
+/* Aba de mensagens privadas: busca + lista de conversas */
+.md-dm-lista { padding: 10px 12px; }
+.md-dm-buscar-wrap { position: relative; margin-bottom: 8px; }
+#md-dm-buscar-input {
+    width: 100%; padding: 8px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.05); color: #fff; font-size: 12.5px; box-sizing: border-box;
+}
+#md-dm-buscar-input:focus { outline: none; border-color: var(--accent,#ffcc00); }
+.md-dm-buscar-resultados {
+    position: absolute; top: 36px; left: 0; right: 0; z-index: 5; max-height: 160px; overflow-y: auto;
+    background: rgba(10,30,55,0.98); border: 1px solid rgba(255,204,0,0.3); border-radius: 10px; display: none;
+}
+.md-dm-buscar-resultados.md-show { display: block; }
+.md-dm-conversa-item {
+    display: flex; align-items: center; gap: 9px; padding: 9px 6px; cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.md-dm-conversa-item:hover { background: rgba(255,255,255,0.04); }
+.md-dm-conversa-item img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,204,0,0.3); flex-shrink: 0; }
+.md-dm-conversa-info { flex: 1; min-width: 0; }
+.md-dm-conversa-nome { font-size: 12.5px; font-weight: 700; color: #fff; }
+.md-dm-conversa-prev { font-size: 11px; color: var(--text-muted,#7a9ccc); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.md-dm-conversa-nao-lidas {
+    background: var(--accent,#ffcc00); color: #0a1929; font-size: 10px; font-weight: 700;
+    border-radius: 50%; min-width: 17px; height: 17px; display: flex; align-items: center; justify-content: center;
+}
+
+/* Thread de conversa privada aberta */
+.md-dm-thread { padding: 0 !important; }
+.md-dm-thread-header {
+    display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;
+}
+.md-dm-voltar { background: none; border: none; color: var(--accent,#ffcc00); font-size: 20px; cursor: pointer; padding: 0 4px; }
+.md-dm-thread-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,204,0,0.35); }
+#md-dm-thread-nome { font-size: 12.5px; font-weight: 700; color: #fff; }
+.md-dm-thread-msgs { flex: 1; overflow-y: auto; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
 </style>
 
 <!-- Modal de Login / Criar conta -->
@@ -20890,25 +21120,72 @@ setTimeout(() => {
     </div>
 </div>
 
-<!-- Chat da comunidade -->
+<!-- Chat unificado: Tripulação + Tulho IA -->
 <div id="md-chat-fab" onclick="MarujoConta.toggleChat()">
     💬
     <span class="md-chat-badge" id="md-chat-badge"></span>
 </div>
+<!-- Botão de perfil flutuante, no lugar do antigo botão do Tulho -->
+<div id="md-profile-fab" onclick="MarujoConta.onFloatingAvatarClick()" title="Meu perfil">
+    <img id="md-profile-fab-img" src="" alt="Perfil" style="display:none;">
+    <span id="md-profile-fab-fallback">⚓</span>
+</div>
 <div id="md-chat-panel">
     <div class="md-chat-header">
-        <span>💬 Chat da Tripulação</span>
+        <span id="md-chat-header-title">💬 Chat da Tripulação</span>
         <button onclick="MarujoConta.toggleChat()">&times;</button>
+    </div>
+    <div class="md-chat-tabs">
+        <button class="md-chat-tab active" id="md-tab-btn-crew" onclick="MDChat.switchTab('crew')">⚓ Tripulação</button>
+        <button class="md-chat-tab" id="md-tab-btn-ia" onclick="MDChat.switchTab('ia')">🤖 Tulho IA</button>
+        <button class="md-chat-tab" id="md-tab-btn-dm" onclick="MDChat.switchTab('dm')">✉️ Privado<span class="md-dm-badge" id="md-dm-badge" style="display:none"></span></button>
     </div>
     <div class="md-chat-body" id="md-chat-body">
         <div class="md-chat-vazio">Nenhuma mensagem ainda. Seja o primeiro a falar! ⚓</div>
     </div>
-    <div class="md-chat-footer" id="md-chat-footer-logado" style="display:none">
-        <input type="text" id="md-chat-input" placeholder="Escreva algo..." maxlength="300" onkeydown="if(event.key==='Enter')MarujoConta.enviarMensagem()">
-        <button onclick="MarujoConta.enviarMensagem()">➤</button>
+    <div class="md-chat-body md-chat-body-ia" id="md-chat-body-ia" style="display:none">
+        <div class="md-chat-msg-ia">
+            <div class="md-chat-autor">🤖 Tulho</div>
+            <div class="md-chat-bolha md-bolha-ia">Olá, marujo! Pergunte sobre bandeiras, salvas, honras navais ou qualquer dúvida de cerimonial. Isso fica só entre nós dois — se quiser que a tripulação toda veja a resposta, use a aba Tripulação e marque a caixinha "🤖 Chamar Tulho".</div>
+        </div>
+    </div>
+    <!-- Lista de conversas privadas -->
+    <div class="md-chat-body md-dm-lista" id="md-dm-lista" style="display:none">
+        <div class="md-dm-buscar-wrap">
+            <input type="text" id="md-dm-buscar-input" placeholder="Buscar tripulante..." oninput="MDChat.buscarTripulantes(this.value)">
+            <div class="md-dm-buscar-resultados" id="md-dm-buscar-resultados"></div>
+        </div>
+        <div id="md-dm-conversas-lista"><div class="md-chat-vazio">Carregando conversas...</div></div>
+    </div>
+    <!-- Conversa privada aberta -->
+    <div class="md-chat-body md-dm-thread" id="md-dm-thread" style="display:none">
+        <div class="md-dm-thread-header">
+            <button class="md-dm-voltar" onclick="MDChat.voltarParaListaDM()">‹</button>
+            <img id="md-dm-thread-avatar" class="md-dm-thread-avatar" src="" alt="">
+            <span id="md-dm-thread-nome"></span>
+        </div>
+        <div class="md-dm-thread-msgs" id="md-dm-thread-msgs"></div>
+    </div>
+    <div class="md-chat-footer-wrap" id="md-chat-footer-logado" style="display:none">
+        <div class="md-mencao-dropdown" id="md-mencao-dropdown" style="display:none"></div>
+        <label class="md-chat-ia-toggle" title="A resposta do Tulho aparece para toda a tripulação">
+            <input type="checkbox" id="md-chamar-tulho"> 🤖 Chamar Tulho
+        </label>
+        <div class="md-chat-footer">
+            <input type="text" id="md-chat-input" placeholder="Escreva algo... (use @ pra marcar alguém)" maxlength="300" autocomplete="off" oninput="MDChat.aoDigitarMencao(this)" onkeydown="if(event.key==='Enter')MarujoConta.enviarMensagem()">
+            <button onclick="MarujoConta.enviarMensagem()">➤</button>
+        </div>
     </div>
     <div class="md-chat-login-aviso" id="md-chat-login-aviso">
         <a onclick="MarujoConta.abrirAuth()">Entre ou crie uma conta</a> para participar do chat.
+    </div>
+    <div class="md-chat-footer" id="md-chat-footer-ia">
+        <input type="text" id="md-chat-ia-input" placeholder="Pergunte ao Tulho..." maxlength="300" onkeydown="if(event.key==='Enter')MDChat.perguntarIA()">
+        <button onclick="MDChat.perguntarIA()">➤</button>
+    </div>
+    <div class="md-chat-footer" id="md-dm-footer" style="display:none">
+        <input type="text" id="md-dm-input" placeholder="Escreva uma mensagem privada..." maxlength="300" onkeydown="if(event.key==='Enter')MDChat.enviarDM()">
+        <button onclick="MDChat.enviarDM()">➤</button>
     </div>
 </div>
 
@@ -21032,6 +21309,19 @@ setTimeout(() => {
                 container.title = 'Entrar / criar conta';
                 img.style.display = 'none';
                 anchor.style.display = 'block';
+            }
+            const fabImg = document.getElementById('md-profile-fab-img');
+            const fabFallback = document.getElementById('md-profile-fab-fallback');
+            if (fabImg && fabFallback) {
+                if (this.logado && this.usuario) {
+                    fabImg.src = this.avatarUrl(this.usuario);
+                    fabImg.onerror = () => { fabImg.src = this.avatarFallback(this.usuario.nome); };
+                    fabImg.style.display = 'block';
+                    fabFallback.style.display = 'none';
+                } else {
+                    fabImg.style.display = 'none';
+                    fabFallback.style.display = 'flex';
+                }
             }
         },
         onFloatingAvatarClick() {
@@ -21304,6 +21594,31 @@ setTimeout(() => {
         },
 
         // ---------- Ranking ----------
+        async carregarTop3() {
+            const lista = document.getElementById('md-top3-lista');
+            if (!lista) return;
+            try {
+                const r = await authFetch(`${API}/ranking`);
+                const data = await r.json();
+                if (!data.ok || !data.ranking.length) {
+                    lista.innerHTML = '<div class="md-top3-vazio">Ainda não há ninguém no ranking. Seja o primeiro! ⚓</div>';
+                    return;
+                }
+                const medalhas = ['ouro', 'prata', 'bronze'];
+                const icones = ['🥇', '🥈', '🥉'];
+                lista.innerHTML = data.ranking.slice(0, 3).map((u, i) => `
+                    <div class="md-top3-item ${medalhas[i]}" onclick="MDChat.abrirDMComUsuario('${u.id}', '${this.escapeHtml(u.nome).replace(/'/g, "\\'")}')" title="Conversar com ${this.escapeHtml(u.nome)}">
+                        <span class="md-top3-medalha">${icones[i]}</span>
+                        <img class="md-top3-avatar" src="${this.avatarUrl(u)}" onerror="this.src='${this.avatarFallback(u.nome)}'">
+                        <div class="md-top3-info">
+                            <div class="md-top3-nome">${this.escapeHtml(u.nome)}</div>
+                            <div class="md-top3-xp">${u.pontosTotais} XP</div>
+                        </div>
+                    </div>`).join('');
+            } catch (e) {
+                lista.innerHTML = '<div class="md-top3-vazio">Erro ao carregar o ranking.</div>';
+            }
+        },
         async abrirRanking() {
             this.fecharTodosOverlays();
             document.getElementById('md-ranking-overlay').classList.add('md-show');
@@ -21338,17 +21653,18 @@ setTimeout(() => {
                 </div>`;
         },
 
-        // ---------- Chat ----------
-        toggleChat() {
+        // ---------- Chat (Tripulação + Tulho IA, unificados) ----------
+        IA_MARK: '\u{1F916}TULHO_IA\u{1F916}', // marcador invisível ao usuário, usado só pra estilizar
+        toggleChat(forcarAberto) {
             const painel = document.getElementById('md-chat-panel');
-            this.chatAberto = !this.chatAberto;
+            this.chatAberto = forcarAberto === true ? true : !this.chatAberto;
             painel.classList.toggle('md-show', this.chatAberto);
             document.getElementById('md-chat-footer-logado').style.display = this.logado ? 'flex' : 'none';
             document.getElementById('md-chat-login-aviso').style.display = this.logado ? 'none' : 'block';
             if (this.chatAberto) {
                 document.getElementById('md-chat-badge').style.display = 'none';
                 this.carregarMensagens(true);
-                this.chatIntervalo = setInterval(() => this.carregarMensagens(false), 4000);
+                if (!this.chatIntervalo) this.chatIntervalo = setInterval(() => this.carregarMensagens(false), 4000);
             } else {
                 this.pararChat();
             }
@@ -21370,11 +21686,29 @@ setTimeout(() => {
                 data.mensagens.forEach(m => {
                     this.chatDesde = Math.max(this.chatDesde, m.ts);
                     const mine = this.usuario && m.userId === this.usuario.id;
+                    const ehTulho = typeof m.texto === 'string' && m.texto.startsWith(this.IA_MARK);
+                    const textoLimpo = ehTulho ? m.texto.slice(this.IA_MARK.length) : m.texto;
                     const div = document.createElement('div');
-                    div.className = 'md-chat-msg' + (mine ? ' md-mine' : '');
+                    div.className = 'md-chat-msg' + (mine ? ' md-mine' : '') + (ehTulho ? ' md-chat-msg-ia' : '');
+
+                    const nomeExibido = ehTulho ? '🤖 Tulho (respondendo à tripulação)' : this.escapeHtml(m.nome);
+                    const avatarSrc = ehTulho ? 'imagens/logo.png' : this.avatarUrl({ nome: m.nome, avatar: m.avatar });
+                    const bolhaClasse = ehTulho ? 'md-chat-bolha md-bolha-ia' : 'md-chat-bolha';
+                    const textoHtml = window.MDChat ? window.MDChat.destacarMencoes(this.escapeHtml(textoLimpo)) : this.escapeHtml(textoLimpo);
+                    const meuId = this.usuario ? this.usuario.id : null;
+                    const reacoesHtml = (!ehTulho && window.MDChat) ? window.MDChat.renderReacoes(m.id, m.reacoes, meuId) : '';
+                    const abrirDM = (!ehTulho && !mine) ? `onclick="MDChat.abrirDMComUsuario('${m.userId}','${this.escapeHtml(m.nome).replace(/'/g, "\\'")}','${(m.avatar || '').replace(/'/g, "\\'")}')"` : '';
+
+                    div.id = `md-msg-${m.id}`;
                     div.innerHTML = `
-                        <div class="md-chat-autor">${this.escapeHtml(m.nome)}</div>
-                        <div class="md-chat-bolha">${this.escapeHtml(m.texto)}</div>`;
+                        <div class="md-chat-msg-row">
+                            <img class="md-chat-msg-avatar" src="${avatarSrc}" onerror="this.src='${this.avatarFallback(m.nome)}'" ${abrirDM} title="${!ehTulho && !mine ? 'Conversar em privado' : ''}">
+                            <div style="flex:1;min-width:0">
+                                <div class="md-chat-autor" ${abrirDM}>${nomeExibido}</div>
+                                <div class="${bolhaClasse}">${textoHtml}</div>
+                                <div class="md-reacoes-container">${reacoesHtml}</div>
+                            </div>
+                        </div>`;
                     corpo.appendChild(div);
                 });
 
@@ -21393,23 +21727,95 @@ setTimeout(() => {
             const input = document.getElementById('md-chat-input');
             const texto = input.value.trim();
             if (!texto) return;
+            const chamarTulho = document.getElementById('md-chamar-tulho')?.checked;
             input.value = '';
+            const ok = await this.publicarNoChat(texto);
+            if (ok && chamarTulho && window.MDChat) window.MDChat.responderNoChatDaTripulacao(texto);
+        },
+        // Extraído de enviarMensagem pra poder ser reusado também pela
+        // resposta automática do Tulho no chat da tripulação.
+        async publicarNoChat(texto) {
             try {
                 const r = await authFetch(`${API}/chat`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ texto })
                 });
                 const data = await r.json();
-                if (!data.ok) { alert(data.erro || 'Erro ao enviar mensagem.'); return; }
+                if (!data.ok) { alert(data.erro || 'Erro ao enviar mensagem.'); return false; }
                 this.carregarMensagens(true);
+                return true;
             } catch (e) {
                 alert('Não foi possível enviar a mensagem.');
+                return false;
+            }
+        },
+
+        // ---------- Reações ----------
+        async reagirMensagem(mensagemId, emoji) {
+            try {
+                const r = await authFetch(`${API}/chat/reagir`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensagemId, emoji })
+                });
+                return await r.json();
+            } catch (e) {
+                console.warn('[MarujoConta] Falha ao reagir:', e);
+                return { ok: false };
+            }
+        },
+
+        // ---------- Busca de tripulantes (menções e DM) ----------
+        async buscarTripulantes(q) {
+            try {
+                const r = await authFetch(`${API}/usuarios/buscar?q=${encodeURIComponent(q || '')}`);
+                const data = await r.json();
+                return data.ok ? data.usuarios : [];
+            } catch (e) {
+                console.warn('[MarujoConta] Falha ao buscar tripulantes:', e);
+                return [];
+            }
+        },
+
+        // ---------- Mensagens privadas (DM) ----------
+        async carregarConversasDM() {
+            try {
+                const r = await authFetch(`${API}/dm/conversas`);
+                const data = await r.json();
+                return data.ok ? data.conversas : [];
+            } catch (e) {
+                console.warn('[MarujoConta] Falha ao carregar conversas privadas:', e);
+                return [];
+            }
+        },
+        async carregarHistoricoDM(outroId, desde) {
+            try {
+                const r = await authFetch(`${API}/dm/${outroId}?desde=${desde || 0}`);
+                const data = await r.json();
+                return data.ok ? data.mensagens : [];
+            } catch (e) {
+                console.warn('[MarujoConta] Falha ao carregar conversa privada:', e);
+                return [];
+            }
+        },
+        async enviarDM(destinatarioId, texto) {
+            try {
+                const r = await authFetch(`${API}/dm`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ destinatarioId, texto })
+                });
+                return await r.json();
+            } catch (e) {
+                console.warn('[MarujoConta] Falha ao enviar mensagem privada:', e);
+                return { ok: false, erro: 'Não foi possível enviar a mensagem.' };
             }
         }
     };
 
     document.addEventListener('DOMContentLoaded', () => {
         MarujoConta.init();
+
+        // Top 3 no topo do site
+        MarujoConta.carregarTop3?.();
 
         const inputAvatar = document.getElementById('md-avatar-input');
         if (inputAvatar) {
@@ -21440,6 +21846,306 @@ setTimeout(() => {
 
     window.MarujoConta = MarujoConta;
 })();
+</script>
+
+<script>
+// ---------- MDChat: aba "Tulho IA" dentro do chat unificado ----------
+// Reaproveita o motor de respostas do assistente Tulho (já existente na
+// página) sem precisar reabrir o widget antigo em tela cheia — o texto
+// aparece dentro do mesmo painel do chat da tripulação, só que numa aba
+// separada e privada (não vai pro chat compartilhado).
+window.MDChat = {
+    async obterRespostaTulho(pergunta) {
+        if (!window.assistente) return 'O Tulho está indisponível agora. Tente novamente em instantes.';
+        try {
+            const resposta = await window.assistente.tentarAPIs(pergunta);
+            if (resposta && resposta.sucesso) return resposta.texto;
+        } catch (e) { /* cai no fallback local abaixo */ }
+        return window.assistente.getFallbackResponse(pergunta);
+    },
+
+    EMOJIS_REACAO: ['⚓', '👍', '😂', '😮', '❤️', '🫡'],
+    dmUsuarioAtual: null,
+    dmDesde: 0,
+    dmPollInterval: null,
+    dmBuscaTimeout: null,
+    mencaoTimeout: null,
+    mencaoResultados: [],
+
+    switchTab(aba) {
+        const crewBody = document.getElementById('md-chat-body');
+        const iaBody = document.getElementById('md-chat-body-ia');
+        const dmLista = document.getElementById('md-dm-lista');
+        const dmThread = document.getElementById('md-dm-thread');
+        const crewFooterLogado = document.getElementById('md-chat-footer-logado');
+        const crewLoginAviso = document.getElementById('md-chat-login-aviso');
+        const iaFooter = document.getElementById('md-chat-footer-ia');
+        const dmFooter = document.getElementById('md-dm-footer');
+        const btnCrew = document.getElementById('md-tab-btn-crew');
+        const btnIa = document.getElementById('md-tab-btn-ia');
+        const btnDm = document.getElementById('md-tab-btn-dm');
+        const titulo = document.getElementById('md-chat-header-title');
+
+        const logado = window.MarujoConta && window.MarujoConta.logado;
+
+        // Sai da aba DM: para o polling da conversa aberta.
+        if (this.dmPollInterval) { clearInterval(this.dmPollInterval); this.dmPollInterval = null; }
+
+        [crewBody, iaBody, dmLista, dmThread].forEach(el => el.style.display = 'none');
+        [crewFooterLogado, crewLoginAviso, iaFooter, dmFooter].forEach(el => el.style.display = 'none');
+        [btnCrew, btnIa, btnDm].forEach(b => b.classList.remove('active'));
+
+        if (aba === 'ia') {
+            iaBody.style.display = 'flex';
+            iaFooter.style.display = 'flex';
+            btnIa.classList.add('active');
+            titulo.textContent = '🤖 Tulho IA (conversa privada)';
+        } else if (aba === 'dm') {
+            btnDm.classList.add('active');
+            if (!logado) {
+                crewLoginAviso.style.display = 'block';
+                titulo.textContent = '✉️ Mensagens privadas';
+            } else if (this.dmUsuarioAtual) {
+                this.abrirThreadDM(this.dmUsuarioAtual.id, this.dmUsuarioAtual.nome, this.dmUsuarioAtual.avatar, true);
+            } else {
+                dmLista.style.display = 'flex';
+                titulo.textContent = '✉️ Mensagens privadas';
+                this.carregarConversasDM();
+            }
+        } else {
+            crewBody.style.display = 'flex';
+            crewFooterLogado.style.display = logado ? 'flex' : 'none';
+            crewLoginAviso.style.display = logado ? 'none' : 'block';
+            btnCrew.classList.add('active');
+            titulo.textContent = '💬 Chat da Tripulação';
+        }
+    },
+
+    async perguntarIA() {
+        const input = document.getElementById('md-chat-ia-input');
+        const pergunta = input.value.trim();
+        if (!pergunta) return;
+        input.value = '';
+        const corpo = document.getElementById('md-chat-body-ia');
+
+        const minha = document.createElement('div');
+        minha.className = 'md-chat-msg md-mine';
+        minha.innerHTML = `<div class="md-chat-bolha">${this.escapeHtml(pergunta)}</div>`;
+        corpo.appendChild(minha);
+        corpo.scrollTop = corpo.scrollHeight;
+
+        const resposta = await this.obterRespostaTulho(pergunta);
+
+        const div = document.createElement('div');
+        div.className = 'md-chat-msg-ia';
+        div.innerHTML = `
+            <div class="md-chat-autor">🤖 Tulho</div>
+            <div class="md-chat-bolha md-bolha-ia">${this.escapeHtml(resposta)}</div>`;
+        corpo.appendChild(div);
+        corpo.scrollTop = corpo.scrollHeight;
+    },
+
+    // Chamado quando alguém marca "🤖 Chamar Tulho" no chat da tripulação:
+    // gera a resposta e publica ela no MESMO chat compartilhado, marcada
+    // com um prefixo que todo mundo renderiza como bolha do Tulho.
+    async responderNoChatDaTripulacao(pergunta) {
+        const resposta = await this.obterRespostaTulho(pergunta);
+        window.MarujoConta.publicarNoChat(window.MarujoConta.IA_MARK + resposta);
+    },
+
+    // ==================== REAÇÕES ====================
+    renderReacoes(msgId, reacoes, meuId) {
+        const chips = Object.entries(reacoes || {})
+            .filter(([, ids]) => ids && ids.length)
+            .map(([emoji, ids]) => {
+                const minha = meuId && ids.includes(meuId);
+                return `<span class="md-reacao-chip${minha ? ' minha' : ''}" onclick="MDChat.reagir('${msgId}','${emoji}')">${emoji} ${ids.length}</span>`;
+            }).join('');
+        const picker = this.EMOJIS_REACAO.map(e => `<span onclick="MDChat.reagir('${msgId}','${e}')">${e}</span>`).join('');
+        return `<div class="md-msg-reacoes-wrap">${chips}<span class="md-reagir-btn" onclick="MDChat.toggleEmojiPicker('${msgId}')">😊+</span></div>
+                <div class="md-emoji-picker" id="md-picker-${msgId}">${picker}</div>`;
+    },
+
+    toggleEmojiPicker(msgId) {
+        if (window.MarujoConta && !window.MarujoConta.logado) return window.MarujoConta.abrirAuth();
+        document.querySelectorAll('.md-emoji-picker.md-show').forEach(el => {
+            if (el.id !== `md-picker-${msgId}`) el.classList.remove('md-show');
+        });
+        const picker = document.getElementById(`md-picker-${msgId}`);
+        if (picker) picker.classList.toggle('md-show');
+    },
+
+    async reagir(msgId, emoji) {
+        if (!window.MarujoConta || !window.MarujoConta.logado) return window.MarujoConta.abrirAuth();
+        const picker = document.getElementById(`md-picker-${msgId}`);
+        if (picker) picker.classList.remove('md-show');
+        const data = await window.MarujoConta.reagirMensagem(msgId, emoji);
+        if (!data.ok) return;
+        const wrap = document.getElementById(`md-msg-${msgId}`);
+        if (wrap) {
+            const container = wrap.querySelector('.md-reacoes-container');
+            if (container) container.innerHTML = this.renderReacoes(msgId, data.reacoes, window.MarujoConta.usuario?.id);
+        }
+    },
+
+    // ==================== MENÇÕES ====================
+    destacarMencoes(textoEscapado) {
+        return textoEscapado.replace(/@([\p{L}0-9_]{2,20})/gu, '<span class="md-mencao">@$1</span>');
+    },
+
+    aoDigitarMencao(input) {
+        clearTimeout(this.mencaoTimeout);
+        const dropdown = document.getElementById('md-mencao-dropdown');
+        const valor = input.value;
+        const cursor = input.selectionStart;
+        const antesDoCursor = valor.slice(0, cursor);
+        const match = antesDoCursor.match(/@([\p{L}0-9_]{0,20})$/u);
+
+        if (!match) { dropdown.style.display = 'none'; return; }
+
+        this.mencaoTimeout = setTimeout(async () => {
+            const usuarios = await window.MarujoConta.buscarTripulantes(match[1]);
+            this.mencaoResultados = usuarios;
+            if (!usuarios.length) { dropdown.style.display = 'none'; return; }
+            dropdown.innerHTML = usuarios.map(u => `
+                <div class="md-mencao-item" onclick="MDChat.selecionarMencao('${u.nome.replace(/'/g, "\\'")}')">
+                    <img src="${window.MarujoConta.avatarUrl(u)}" onerror="this.src='${window.MarujoConta.avatarFallback(u.nome)}'">
+                    <span>${window.MarujoConta.escapeHtml(u.nome)}</span>
+                </div>`).join('');
+            dropdown.style.display = 'block';
+        }, 200);
+    },
+
+    selecionarMencao(nome) {
+        const input = document.getElementById('md-chat-input');
+        const token = nome.replace(/\s+/g, '');
+        input.value = input.value.replace(/@([\p{L}0-9_]{0,20})$/u, `@${token} `);
+        document.getElementById('md-mencao-dropdown').style.display = 'none';
+        input.focus();
+    },
+
+    // ==================== MENSAGENS PRIVADAS ====================
+    async abrirDMComUsuario(id, nome, avatar) {
+        if (!window.MarujoConta || !window.MarujoConta.logado) return window.MarujoConta.abrirAuth();
+        window.MarujoConta.toggleChat(true);
+        this.switchTab('dm');
+        await this.abrirThreadDM(id, nome, avatar);
+    },
+
+    async carregarConversasDM() {
+        const lista = document.getElementById('md-dm-conversas-lista');
+        lista.innerHTML = '<div class="md-chat-vazio">Carregando conversas...</div>';
+        const conversas = await window.MarujoConta.carregarConversasDM();
+
+        const totalNaoLidas = conversas.reduce((soma, c) => soma + (c.naoLidas || 0), 0);
+        const badgeFab = document.getElementById('md-dm-badge');
+        if (badgeFab) {
+            badgeFab.style.display = totalNaoLidas ? 'flex' : 'none';
+            badgeFab.textContent = totalNaoLidas;
+        }
+
+        if (!conversas.length) {
+            lista.innerHTML = '<div class="md-chat-vazio">Nenhuma conversa ainda. Busque um tripulante acima pra mandar a primeira mensagem! ✉️</div>';
+            return;
+        }
+        lista.innerHTML = conversas.map(c => `
+            <div class="md-dm-conversa-item" onclick="MDChat.abrirThreadDM('${c.usuario.id}','${c.usuario.nome.replace(/'/g, "\\'")}','${(c.usuario.avatar || '').replace(/'/g, "\\'")}')">
+                <img src="${window.MarujoConta.avatarUrl(c.usuario)}" onerror="this.src='${window.MarujoConta.avatarFallback(c.usuario.nome)}'">
+                <div class="md-dm-conversa-info">
+                    <div class="md-dm-conversa-nome">${window.MarujoConta.escapeHtml(c.usuario.nome)}</div>
+                    <div class="md-dm-conversa-prev">${c.minhaEnviada ? 'Você: ' : ''}${window.MarujoConta.escapeHtml(c.ultimaMensagem)}</div>
+                </div>
+                ${c.naoLidas ? `<span class="md-dm-conversa-nao-lidas">${c.naoLidas}</span>` : ''}
+            </div>`).join('');
+    },
+
+    buscarTripulantesDebounce: null,
+    buscarTripulantes(q) {
+        clearTimeout(this.buscarTripulantesDebounce);
+        const resultados = document.getElementById('md-dm-buscar-resultados');
+        if (!q || !q.trim()) { resultados.classList.remove('md-show'); return; }
+        this.buscarTripulantesDebounce = setTimeout(async () => {
+            const usuarios = await window.MarujoConta.buscarTripulantes(q);
+            if (!usuarios.length) { resultados.classList.remove('md-show'); return; }
+            resultados.innerHTML = usuarios.map(u => `
+                <div class="md-dm-conversa-item" onclick="MDChat.abrirThreadDM('${u.id}','${u.nome.replace(/'/g, "\\'")}','${(u.avatar || '').replace(/'/g, "\\'")}'); document.getElementById('md-dm-buscar-input').value=''; document.getElementById('md-dm-buscar-resultados').classList.remove('md-show');">
+                    <img src="${window.MarujoConta.avatarUrl(u)}" onerror="this.src='${window.MarujoConta.avatarFallback(u.nome)}'">
+                    <div class="md-dm-conversa-info"><div class="md-dm-conversa-nome">${window.MarujoConta.escapeHtml(u.nome)}</div></div>
+                </div>`).join('');
+            resultados.classList.add('md-show');
+        }, 250);
+    },
+
+    async abrirThreadDM(id, nome, avatar) {
+        if (this.dmPollInterval) { clearInterval(this.dmPollInterval); this.dmPollInterval = null; }
+        this.dmUsuarioAtual = { id, nome, avatar };
+        this.dmDesde = 0;
+
+        document.getElementById('md-dm-lista').style.display = 'none';
+        document.getElementById('md-dm-thread').style.display = 'flex';
+        document.getElementById('md-chat-footer-logado').style.display = 'none';
+        document.getElementById('md-chat-login-aviso').style.display = 'none';
+        document.getElementById('md-dm-footer').style.display = 'flex';
+        document.getElementById('md-chat-header-title').textContent = '✉️ Mensagens privadas';
+        document.getElementById('md-dm-thread-nome').textContent = nome;
+        document.getElementById('md-dm-thread-avatar').src = window.MarujoConta.avatarUrl({ nome, avatar });
+
+        document.getElementById('md-dm-thread-msgs').innerHTML = '<div class="md-chat-vazio">Carregando conversa...</div>';
+        const mensagens = await window.MarujoConta.carregarHistoricoDM(id, 0);
+        this.renderDMMensagens(mensagens, false);
+
+        this.dmPollInterval = setInterval(async () => {
+            const novas = await window.MarujoConta.carregarHistoricoDM(id, this.dmDesde);
+            if (novas.length) this.renderDMMensagens(novas, true);
+        }, 8000);
+    },
+
+    renderDMMensagens(mensagens, append) {
+        const corpo = document.getElementById('md-dm-thread-msgs');
+        if (!append) corpo.innerHTML = '';
+        else if (!mensagens.length) return;
+
+        if (!mensagens.length && !append) {
+            corpo.innerHTML = '<div class="md-chat-vazio">Nenhuma mensagem ainda. Diga oi! 👋</div>';
+        }
+
+        const meuId = window.MarujoConta.usuario?.id;
+        mensagens.forEach(m => {
+            this.dmDesde = Math.max(this.dmDesde, m.ts);
+            const mine = m.de === meuId;
+            const div = document.createElement('div');
+            div.className = 'md-chat-msg' + (mine ? ' md-mine' : '');
+            div.innerHTML = `<div class="md-chat-bolha">${window.MarujoConta.escapeHtml(m.texto)}</div>`;
+            corpo.appendChild(div);
+        });
+        corpo.scrollTop = corpo.scrollHeight;
+    },
+
+    voltarParaListaDM() {
+        if (this.dmPollInterval) { clearInterval(this.dmPollInterval); this.dmPollInterval = null; }
+        this.dmUsuarioAtual = null;
+        document.getElementById('md-dm-thread').style.display = 'none';
+        document.getElementById('md-dm-footer').style.display = 'none';
+        document.getElementById('md-dm-lista').style.display = 'flex';
+        document.getElementById('md-chat-header-title').textContent = '✉️ Mensagens privadas';
+        this.carregarConversasDM();
+    },
+
+    async enviarDM() {
+        if (!this.dmUsuarioAtual) return;
+        const input = document.getElementById('md-dm-input');
+        const texto = input.value.trim();
+        if (!texto) return;
+        input.value = '';
+        const data = await window.MarujoConta.enviarDM(this.dmUsuarioAtual.id, texto);
+        if (!data.ok) { alert(data.erro || 'Erro ao enviar mensagem.'); return; }
+        this.renderDMMensagens([data.mensagem], true);
+    },
+
+    escapeHtml(str) {
+        return window.MarujoConta ? window.MarujoConta.escapeHtml(str) : str;
+    }
+};
 </script>
 
 </body>
