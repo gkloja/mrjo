@@ -9313,14 +9313,10 @@ setInterval(() => {
 </div>
 <button class="cerimonial-floating-btn" id="openCerimonialBtn">
     <!-- Ícone Principal com Badge de Nível -->
-    <div class="btn-icon-container">
-        <i class="fas fa-anchor"></i>
+    <div class="btn-icon-container" id="btnIconContainer" onclick="event.stopPropagation(); MarujoConta.onFloatingAvatarClick();" title="Meu perfil">
+        <i class="fas fa-anchor" id="floatingAnchorIcon"></i>
+        <img id="floatingAvatarImg" src="" alt="Perfil" style="display:none;">
         <div class="level-badge" id="floatingLevelBadge">1</div>
-        <!-- Acesso ao perfil/login direto pelo botão flutuante -->
-        <div class="floating-avatar-badge" id="floatingAvatarBadge" onclick="event.stopPropagation(); MarujoConta.onFloatingAvatarClick();" title="Meu perfil">
-            <img id="floatingAvatarImg" src="" alt="" style="display:none;">
-            <i class="fas fa-user" id="floatingAvatarIcon"></i>
-        </div>
     </div>
     
     <!-- Informação de XP e Patente -->
@@ -9482,35 +9478,20 @@ setInterval(() => {
     width: fit-content;
 }
 
-/* Badge de perfil/login no botão flutuante */
-.floating-avatar-badge {
-    position: absolute;
-    bottom: -4px;
-    right: -4px;
-    width: 20px;
-    height: 20px;
+/* Botão de perfil/login no ícone principal do flutuante — mostra a foto do
+   usuário quando logado, ou a âncora (com aviso pra criar conta) quando visitante */
+.btn-icon-container img#floatingAvatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     border-radius: 50%;
-    background: #0a1e3a;
-    border: 2px solid #ffd700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
-    transition: transform 0.2s ease;
 }
-.floating-avatar-badge:hover { transform: scale(1.15); }
-.floating-avatar-badge img { width: 100%; height: 100%; object-fit: cover; }
-.floating-avatar-badge i { color: #ffd700; font-size: 0.65rem; }
-.floating-avatar-badge.md-logado { border-color: #4ade80; }
-.floating-avatar-badge.md-convidado {
-    border-style: dashed;
+.btn-icon-container.md-convidado {
     animation: avatarPulseConvite 2s infinite;
 }
 @keyframes avatarPulseConvite {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0.6); }
-    50% { box-shadow: 0 0 0 5px rgba(255,215,0,0); }
+    0%, 100% { box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4); }
+    50% { box-shadow: 0 4px 16px rgba(255, 215, 0, 0.9); }
 }
 
 /* Status */
@@ -20703,7 +20684,29 @@ setTimeout(() => {
     // necessário pra falar com o backend real (br2.bronxyshost.com:4009).
     const API_BASE = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
     const API = `${API_BASE}/api/marujo`;
-    const FETCH_OPTS = { credentials: 'include' }; // necessário pra sessão/cookie de login atravessar o proxy
+    const FETCH_OPTS = { credentials: 'include' }; // mantido por compatibilidade (sessão), mas o token é quem garante o login
+
+    // O cookie de sessão pode não sobreviver ao proxy (navegador trata como
+    // cross-site e bloqueia cookie de terceiro). Por isso o login guarda um
+    // token aqui e ele vai em toda chamada no header "x-md-token" — isso
+    // sempre funciona, independente de política de cookie do navegador.
+    const MD_TOKEN_KEY = 'md_token';
+    function mdSalvarToken(token) {
+        if (token) localStorage.setItem(MD_TOKEN_KEY, token);
+    }
+    function mdLimparToken() {
+        localStorage.removeItem(MD_TOKEN_KEY);
+    }
+    function mdToken() {
+        return localStorage.getItem(MD_TOKEN_KEY) || '';
+    }
+    // Wrapper de fetch que sempre manda o token (quando existir) além do cookie.
+    async function authFetch(url, opts = {}) {
+        const token = mdToken();
+        const headers = { ...(opts.headers || {}) };
+        if (token) headers['x-md-token'] = token;
+        return fetch(url, { ...FETCH_OPTS, ...opts, headers });
+    }
 
     const MarujoConta = {
         logado: false,
@@ -20714,7 +20717,7 @@ setTimeout(() => {
 
         async init() {
             try {
-                const r = await fetch(`${API}/eu`, FETCH_OPTS);
+                const r = await authFetch(`${API}/eu`);
                 const data = await r.json();
                 this.logado = !!data.logado;
                 this.usuario = data.usuario || null;
@@ -20751,27 +20754,25 @@ setTimeout(() => {
             this.renderFloatingAvatarBadge();
         },
 
-        // Espelha o estado de login no botão flutuante (mesmo lugar do quiz/rank),
-        // pra dar acesso ao perfil sem depender só do botão do cabeçalho.
+        // Espelha o estado de login no ícone principal do botão flutuante:
+        // mostra a foto do usuário (em vez da âncora) quando logado.
         renderFloatingAvatarBadge() {
-            const badge = document.getElementById('floatingAvatarBadge');
-            if (!badge) return;
+            const container = document.getElementById('btnIconContainer');
+            if (!container) return;
             const img = document.getElementById('floatingAvatarImg');
-            const icon = document.getElementById('floatingAvatarIcon');
+            const anchor = document.getElementById('floatingAnchorIcon');
             if (this.logado && this.usuario) {
-                badge.classList.add('md-logado');
-                badge.classList.remove('md-convidado');
-                badge.title = this.usuario.nome;
+                container.classList.remove('md-convidado');
+                container.title = this.usuario.nome + ' — ver perfil';
                 img.src = this.avatarUrl(this.usuario);
                 img.onerror = () => { img.src = this.avatarFallback(this.usuario.nome); };
                 img.style.display = 'block';
-                icon.style.display = 'none';
+                anchor.style.display = 'none';
             } else {
-                badge.classList.add('md-convidado');
-                badge.classList.remove('md-logado');
-                badge.title = 'Entrar / criar conta';
+                container.classList.add('md-convidado');
+                container.title = 'Entrar / criar conta';
                 img.style.display = 'none';
-                icon.style.display = 'block';
+                anchor.style.display = 'block';
             }
         },
         onFloatingAvatarClick() {
@@ -20844,18 +20845,21 @@ setTimeout(() => {
             if (!nome || !senha) { erroEl.textContent = 'Preencha nome e senha.'; return; }
 
             try {
-                const r = await fetch(`${API}/login`, {
-                    ...FETCH_OPTS,
+                const r = await authFetch(`${API}/login`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nome, senha })
                 });
                 const data = await r.json();
                 if (!data.ok) { erroEl.textContent = data.erro || 'Erro ao entrar.'; return; }
+                mdSalvarToken(data.token);
                 this.logado = true;
                 this.usuario = data.usuario;
                 this.renderUserbar();
                 this.fecharAuth();
                 this.aplicarProgressoDoServidor();
+                // Se o progresso local (jogado como visitante) for maior que o da
+                // conta, sobe ele também — assim a patente (ex.: Sargento) não some.
+                this.sincronizarProgresso();
             } catch (e) {
                 erroEl.textContent = 'Não foi possível conectar ao servidor.';
             }
@@ -20869,13 +20873,13 @@ setTimeout(() => {
             if (!nome || !senha) { erroEl.textContent = 'Preencha nome e senha.'; return; }
 
             try {
-                const r = await fetch(`${API}/registrar`, {
-                    ...FETCH_OPTS,
+                const r = await authFetch(`${API}/registrar`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nome, senha })
                 });
                 const data = await r.json();
                 if (!data.ok) { erroEl.textContent = data.erro || 'Erro ao criar conta.'; return; }
+                mdSalvarToken(data.token);
                 this.logado = true;
                 this.usuario = data.usuario;
                 this.renderUserbar();
@@ -20888,7 +20892,8 @@ setTimeout(() => {
         },
 
         async logout() {
-            try { await fetch(`${API}/logout`, { ...FETCH_OPTS, method: 'POST' }); } catch (e) {}
+            try { await authFetch(`${API}/logout`, { method: 'POST' }); } catch (e) {}
+            mdLimparToken();
             this.logado = false;
             this.usuario = null;
             this.renderUserbar();
@@ -20924,8 +20929,7 @@ setTimeout(() => {
         async sincronizarProgresso() {
             if (!this.logado || typeof userProgress === 'undefined') return;
             try {
-                const r = await fetch(`${API}/sincronizar`, {
-                    ...FETCH_OPTS,
+                const r = await authFetch(`${API}/sincronizar`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         xp: userProgress.xp,
@@ -20952,7 +20956,7 @@ setTimeout(() => {
             const formData = new FormData();
             formData.append('avatar', file);
             try {
-                const r = await fetch(`${API}/avatar`, { ...FETCH_OPTS, method: 'POST', body: formData });
+                const r = await authFetch(`${API}/avatar`, { method: 'POST', body: formData });
                 const data = await r.json();
                 if (!data.ok) { erroEl.textContent = data.erro || 'Erro ao enviar foto.'; return; }
                 this.usuario.avatar = data.avatar;
@@ -20969,7 +20973,7 @@ setTimeout(() => {
             const lista = document.getElementById('md-ranking-lista');
             lista.innerHTML = '<div class="md-rank-vazio">Carregando...</div>';
             try {
-                const r = await fetch(`${API}/ranking`, FETCH_OPTS);
+                const r = await authFetch(`${API}/ranking`);
                 const data = await r.json();
                 if (!data.ok || !data.ranking.length) {
                     lista.innerHTML = '<div class="md-rank-vazio">Ainda não há ninguém no ranking. Seja o primeiro! ⚓</div>';
@@ -21019,7 +21023,7 @@ setTimeout(() => {
         },
         async carregarMensagens(scrollAoFim) {
             try {
-                const r = await fetch(`${API}/chat?desde=${this.chatDesde}`, FETCH_OPTS);
+                const r = await authFetch(`${API}/chat?desde=${this.chatDesde}`);
                 const data = await r.json();
                 if (!data.ok || !data.mensagens.length) return;
 
@@ -21054,8 +21058,7 @@ setTimeout(() => {
             if (!texto) return;
             input.value = '';
             try {
-                const r = await fetch(`${API}/chat`, {
-                    ...FETCH_OPTS,
+                const r = await authFetch(`${API}/chat`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ texto })
                 });
