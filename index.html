@@ -9316,6 +9316,11 @@ setInterval(() => {
     <div class="btn-icon-container">
         <i class="fas fa-anchor"></i>
         <div class="level-badge" id="floatingLevelBadge">1</div>
+        <!-- Acesso ao perfil/login direto pelo botão flutuante -->
+        <div class="floating-avatar-badge" id="floatingAvatarBadge" onclick="event.stopPropagation(); MarujoConta.onFloatingAvatarClick();" title="Meu perfil">
+            <img id="floatingAvatarImg" src="" alt="" style="display:none;">
+            <i class="fas fa-user" id="floatingAvatarIcon"></i>
+        </div>
     </div>
     
     <!-- Informação de XP e Patente -->
@@ -9463,11 +9468,49 @@ setInterval(() => {
 }
 
 .rank-display {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #a0aec0;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #0a1e3a;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
+    background: linear-gradient(135deg, #ffd700, #ffaa00);
+    padding: 2px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 2px;
+    box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
+    width: fit-content;
+}
+
+/* Badge de perfil/login no botão flutuante */
+.floating-avatar-badge {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #0a1e3a;
+    border: 2px solid #ffd700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease;
+}
+.floating-avatar-badge:hover { transform: scale(1.15); }
+.floating-avatar-badge img { width: 100%; height: 100%; object-fit: cover; }
+.floating-avatar-badge i { color: #ffd700; font-size: 0.65rem; }
+.floating-avatar-badge.md-logado { border-color: #4ade80; }
+.floating-avatar-badge.md-convidado {
+    border-style: dashed;
+    animation: avatarPulseConvite 2s infinite;
+}
+@keyframes avatarPulseConvite {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0.6); }
+    50% { box-shadow: 0 0 0 5px rgba(255,215,0,0); }
 }
 
 /* Status */
@@ -20705,6 +20748,35 @@ setTimeout(() => {
                 bar.innerHTML = `<span>⚓ Entrar</span>`;
                 bar.onclick = () => this.abrirAuth();
             }
+            this.renderFloatingAvatarBadge();
+        },
+
+        // Espelha o estado de login no botão flutuante (mesmo lugar do quiz/rank),
+        // pra dar acesso ao perfil sem depender só do botão do cabeçalho.
+        renderFloatingAvatarBadge() {
+            const badge = document.getElementById('floatingAvatarBadge');
+            if (!badge) return;
+            const img = document.getElementById('floatingAvatarImg');
+            const icon = document.getElementById('floatingAvatarIcon');
+            if (this.logado && this.usuario) {
+                badge.classList.add('md-logado');
+                badge.classList.remove('md-convidado');
+                badge.title = this.usuario.nome;
+                img.src = this.avatarUrl(this.usuario);
+                img.onerror = () => { img.src = this.avatarFallback(this.usuario.nome); };
+                img.style.display = 'block';
+                icon.style.display = 'none';
+            } else {
+                badge.classList.add('md-convidado');
+                badge.classList.remove('md-logado');
+                badge.title = 'Entrar / criar conta';
+                img.style.display = 'none';
+                icon.style.display = 'block';
+            }
+        },
+        onFloatingAvatarClick() {
+            if (this.logado) this.abrirPerfil();
+            else this.abrirAuth();
         },
 
         avatarUrl(usuario) {
