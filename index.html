@@ -4868,6 +4868,102 @@ audio::-webkit-media-controls-mute-button {
     margin: 20px 0;
     justify-content: center;
 }
+
+/* ===== MODO CLARO — RADAR DE NOTÍCIAS =====
+   Esta seção define suas próprias variáveis (--navy, --text, --text-dim...)
+   fixas para o modo escuro, por isso o tema claro nunca chegava até aqui.
+   Os overrides abaixo recolorem card a card, sem mexer nas variáveis
+   originais (que também servem de cor de texto sobre o dourado). */
+html[data-theme="light"] .military-news-section {
+    background: linear-gradient(145deg, #ffffff, #eef3f9);
+    border-color: rgba(255,204,0,0.5);
+    box-shadow: 0 20px 40px rgba(10,25,50,0.1);
+}
+
+html[data-theme="light"] .news-title-container h2,
+html[data-theme="light"] .news-title a,
+html[data-theme="light"] .stat-item span,
+html[data-theme="light"] .news-time {
+    color: var(--text-primary);
+}
+
+html[data-theme="light"] .news-update-status,
+html[data-theme="light"] .news-description,
+html[data-theme="light"] .news-source,
+html[data-theme="light"] .stat-item,
+html[data-theme="light"] .view-btn {
+    color: var(--text-secondary);
+}
+
+html[data-theme="light"] .update-time {
+    background: rgba(10,41,80,0.06);
+    border-color: rgba(0,51,102,0.2);
+}
+
+html[data-theme="light"] .view-controls {
+    background: rgba(10,41,80,0.05);
+    border-color: rgba(0,51,102,0.15);
+}
+
+html[data-theme="light"] .view-btn:hover {
+    background: rgba(0,102,204,0.1);
+    color: var(--primary);
+}
+
+html[data-theme="light"] .filter-btn {
+    background: rgba(10,41,80,0.05);
+    border-color: rgba(0,51,102,0.15);
+    color: var(--text-secondary);
+}
+
+html[data-theme="light"] .filter-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--gold);
+}
+
+html[data-theme="light"] .news-card,
+html[data-theme="light"] .news-skeleton {
+    background: linear-gradient(145deg, #ffffff, #f3f7fc);
+    border-color: rgba(0,51,102,0.12);
+    box-shadow: 0 10px 30px rgba(10,25,50,0.08);
+}
+
+html[data-theme="light"] .skeleton-image,
+html[data-theme="light"] .skeleton-line {
+    background: linear-gradient(90deg, rgba(10,41,80,0.04) 25%, rgba(255,204,0,0.08) 50%, rgba(10,41,80,0.04) 75%);
+    background-size: 200% 100%;
+}
+
+html[data-theme="light"] .news-time {
+    background: rgba(255,255,255,0.85);
+    border-color: rgba(255,204,0,0.6);
+}
+
+html[data-theme="light"] .news-footer {
+    border-top-color: rgba(0,51,102,0.15);
+}
+
+html[data-theme="light"] .news-stats-bar {
+    border-top-color: rgba(0,51,102,0.15);
+}
+
+html[data-theme="light"] .news-error {
+    background: rgba(248,113,113,0.08);
+}
+
+html[data-theme="light"] .news-toast {
+    background: #ffffff;
+    color: var(--text-primary);
+    box-shadow: 0 5px 15px rgba(10,25,50,0.15);
+}
+
+html[data-theme="light"] .news-modal-content {
+    background: linear-gradient(145deg, #ffffff, #eef3f9);
+}
+
+html[data-theme="light"] .news-modal-close {
+    background: #ffffff;
+}
 </style>
 
 <script>
@@ -8114,6 +8210,24 @@ setInterval(() => {
     font-size: 0.9rem;
 }
 
+.cerimonial-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 1;
+    flex-shrink: 0;
+}
+
+/* Variante pequena do botão de tema, para caber ao lado do "X" no
+   cabeçalho azul do Cerimonial do Dia (que permanece azul nos dois
+   temas, assim como o cabeçalho principal do site). */
+.theme-toggle-btn-sm {
+    width: 36px;
+    height: 36px;
+    font-size: 0.95rem;
+    border-color: rgba(255,255,255,0.5);
+}
+
 .cerimonial-close {
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.3);
@@ -9599,9 +9713,12 @@ setInterval(() => {
                 <p>Treine seu conhecimento naval</p>
             </div>
         </div>
-        <button class="cerimonial-close" id="closeCerimonialBtn">
-            <i class="fas fa-times"></i>
-        </button>
+        <div class="cerimonial-header-actions">
+            <button class="theme-toggle-btn theme-toggle-btn-sm" id="themeToggleBtnCerimonial" title="Alternar modo claro/escuro" onclick="MDTheme.toggle()">🌙</button>
+            <button class="cerimonial-close" id="closeCerimonialBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
     </div>
     
     <div class="cerimonial-content" id="cerimonialContent">
@@ -21159,6 +21276,39 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 }
 .md-chat-header span { color: var(--accent,#ffcc00); }
 .md-chat-header button { background: none; border: none; color: var(--text-secondary,#a8c7fa); font-size: 18px; cursor: pointer; }
+
+/* Widget "quem está online" no cabeçalho do chat */
+.md-chat-header-actions { display: flex; align-items: center; gap: 8px; }
+.md-online-wrap { position: relative; }
+.md-online-badge {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--md-tint-008); border: 1px solid var(--md-tint-015);
+    color: var(--text-secondary,#a8c7fa); border-radius: 20px;
+    padding: 3px 9px; font-size: 11.5px; font-weight: 700; cursor: pointer;
+    font-family: 'Cinzel', serif; letter-spacing: 0.01em;
+}
+.md-online-dot {
+    width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    background: #4ade80; box-shadow: 0 0 6px rgba(74,222,128,0.7);
+    animation: pulse 1.5s infinite;
+}
+.md-online-dropdown {
+    display: none; position: absolute; top: calc(100% + 8px); right: 0;
+    width: 200px; max-height: 220px; overflow-y: auto;
+    background: linear-gradient(170deg, var(--md-hull-2), var(--md-deep));
+    border: 1px solid rgba(255,204,0,0.3); border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5); padding: 8px; z-index: 99000;
+}
+.md-online-dropdown.md-show { display: block; animation: mdRise .2s ease; }
+.md-online-dropdown-title {
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--text-muted,#7a9ccc); padding: 2px 6px 6px 6px;
+}
+.md-online-item { display: flex; align-items: center; gap: 8px; padding: 6px; border-radius: 8px; }
+.md-online-item:hover { background: var(--md-tint-006); }
+.md-online-item img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.md-online-item span { font-size: 12.5px; color: var(--text-primary,#fff); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.md-online-vazio { font-size: 12px; color: var(--text-muted,#7a9ccc); padding: 6px; text-align: center; }
 .md-chat-body { flex: 1; overflow-y: auto; padding: 12px 12px; display: flex; flex-direction: column; gap: 9px; }
 .md-chat-body::-webkit-scrollbar { width: 5px; }
 .md-chat-body::-webkit-scrollbar-thumb { background: rgba(255,204,0,0.3); border-radius: 3px; }
@@ -21373,7 +21523,21 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 <div id="md-chat-panel">
     <div class="md-chat-header">
         <span id="md-chat-header-title">💬 Chat da Tripulação</span>
-        <button onclick="MarujoConta.toggleChat()">&times;</button>
+        <div class="md-chat-header-actions">
+            <div class="md-online-wrap" id="md-online-wrap">
+                <button class="md-online-badge" onclick="MDOnline.toggleDropdown()" title="Ver quem está online">
+                    <span class="md-online-dot"></span>
+                    <span id="md-online-count">0</span>
+                </button>
+                <div class="md-online-dropdown" id="md-online-dropdown">
+                    <div class="md-online-dropdown-title">Online agora</div>
+                    <div class="md-online-lista" id="md-online-lista">
+                        <div class="md-online-vazio">Ninguém por aqui agora.</div>
+                    </div>
+                </div>
+            </div>
+            <button onclick="MarujoConta.toggleChat()">&times;</button>
+        </div>
     </div>
     <div class="md-chat-tabs">
         <button class="md-chat-tab active" id="md-tab-btn-crew" onclick="MDChat.switchTab('crew')">⚓ Tripulação</button>
@@ -21710,6 +21874,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
                 // Se o progresso local (jogado como visitante) for maior que o da
                 // conta, sobe ele também — assim a patente (ex.: Sargento) não some.
                 this.sincronizarProgresso();
+                window.MDOnline?.ping();
             } catch (e) {
                 erroEl.textContent = 'Não foi possível conectar ao servidor.';
             }
@@ -21736,6 +21901,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
                 this.fecharAuth();
                 // Conta nova: envia o progresso local (se já tinha jogado como visitante)
                 this.sincronizarProgresso();
+                window.MDOnline?.ping();
             } catch (e) {
                 erroEl.textContent = 'Não foi possível conectar ao servidor.';
             }
@@ -21752,6 +21918,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
             this.renderUserbar();
             this.fecharModal('md-perfil-overlay');
             this.pararChat();
+            window.MDOnline?.atualizarLista();
             // Importante: zera o progresso local (localStorage) para que ele
             // não seja "herdado" por uma nova conta criada em seguida no
             // mesmo navegador — veja userProgress.resetProgress() para detalhes.
@@ -22074,10 +22241,16 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 
     // ===== MODO CLARO / ESCURO =====
     const MDTheme = {
+        _syncButtons(tema) {
+            // Todos os botões de alternância (cabeçalho + Cerimonial do Dia)
+            // ficam sincronizados, não importa qual deles foi clicado.
+            document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+                btn.textContent = tema === 'light' ? '☀️' : '🌙';
+            });
+        },
         init() {
-            const btn = document.getElementById('themeToggleBtn');
             const atual = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-            if (btn) btn.textContent = atual === 'light' ? '☀️' : '🌙';
+            this._syncButtons(atual);
         },
         toggle() {
             const html = document.documentElement;
@@ -22086,15 +22259,84 @@ if (honrasTable && cerimonialData.honrasPortalo) {
             if (novo === 'light') html.setAttribute('data-theme', 'light');
             else html.removeAttribute('data-theme');
             try { localStorage.setItem('md-theme', novo); } catch (e) {}
-            const btn = document.getElementById('themeToggleBtn');
-            if (btn) btn.textContent = novo === 'light' ? '☀️' : '🌙';
+            this._syncButtons(novo);
         }
     };
     window.MDTheme = MDTheme;
 
+    // ===== QUEM ESTÁ ONLINE =====
+    // Manda um "sinal de vida" pro backend a cada 20s (só quando logado) e
+    // busca a lista de quem está online a cada 20s (todo mundo pode ver,
+    // não precisa estar logado). O backend considera offline quem passar
+    // 45s sem mandar sinal — por isso o intervalo do ping é bem menor.
+    const MDOnline = {
+        pingIntervalo: null,
+        listaIntervalo: null,
+
+        init() {
+            this.atualizarLista();
+            this.ping();
+            this.listaIntervalo = setInterval(() => this.atualizarLista(), 20000);
+            this.pingIntervalo = setInterval(() => this.ping(), 20000);
+
+            document.addEventListener('click', (e) => {
+                const wrap = document.getElementById('md-online-wrap');
+                const dropdown = document.getElementById('md-online-dropdown');
+                if (wrap && dropdown && !wrap.contains(e.target)) {
+                    dropdown.classList.remove('md-show');
+                }
+            });
+        },
+
+        async ping() {
+            if (!window.MarujoConta || !MarujoConta.logado) return;
+            try { await authFetch(`${API}/presenca`, { method: 'POST' }); }
+            catch (e) { /* silencioso: presença não é crítica */ }
+        },
+
+        async atualizarLista() {
+            try {
+                const r = await fetch(`${API}/online`);
+                const data = await r.json();
+                if (!data.ok) return;
+                this.renderBadge(data.total);
+                this.renderLista(data.usuarios || []);
+            } catch (e) {
+                console.warn('[MDOnline] Falha ao buscar quem está online:', e);
+            }
+        },
+
+        renderBadge(total) {
+            const el = document.getElementById('md-online-count');
+            if (el) el.textContent = total;
+        },
+
+        renderLista(usuarios) {
+            const lista = document.getElementById('md-online-lista');
+            if (!lista) return;
+            if (!usuarios.length) {
+                lista.innerHTML = '<div class="md-online-vazio">Ninguém por aqui agora.</div>';
+                return;
+            }
+            lista.innerHTML = usuarios.map(u => `
+                <div class="md-online-item">
+                    <img src="${MarujoConta.avatarUrl(u)}" onerror="this.src='${MarujoConta.avatarFallback(u.nome)}'">
+                    <span>${MarujoConta.escapeHtml(u.nome)}</span>
+                </div>
+            `).join('');
+        },
+
+        toggleDropdown() {
+            const dropdown = document.getElementById('md-online-dropdown');
+            if (dropdown) dropdown.classList.toggle('md-show');
+        }
+    };
+    window.MDOnline = MDOnline;
+
     document.addEventListener('DOMContentLoaded', () => {
         MDTheme.init();
         MarujoConta.init();
+        MDOnline.init();
 
         // Top 3 no topo do site
         MarujoConta.carregarTop3?.();
