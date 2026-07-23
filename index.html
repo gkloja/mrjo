@@ -21856,12 +21856,15 @@ setTimeout(() => {
 // separada e privada (não vai pro chat compartilhado).
 window.MDChat = {
     async obterRespostaTulho(pergunta) {
-        if (!window.assistente) return 'O Tulho está indisponível agora. Tente novamente em instantes.';
+      
         try {
             const resposta = await window.assistente.tentarAPIs(pergunta);
             if (resposta && resposta.sucesso) return resposta.texto;
-        } catch (e) { /* cai no fallback local abaixo */ }
-        return window.assistente.getFallbackResponse(pergunta);
+        } catch (e) { /* cai no fallback local abaixo */ 
+          
+          return window.assistente.getFallbackResponse(pergunta);
+        }
+        
     },
 
     EMOJIS_REACAO: ['⚓', '👍', '😂', '😮', '❤️', '🫡'],
