@@ -4691,7 +4691,6 @@ const NewsSystem = {
                 this.filteredNoticias = this.noticias;
                 this.updateStats(data);
                 this.renderNews();
-                 
                 
                 // Mostrar botão "Ver Mais" se houver mais notícias
                 this.toggleLoadMoreButton();
@@ -20388,7 +20387,7 @@ setTimeout(() => {
     const versao = "1.0.3";
     const data = new Date().toLocaleDateString("pt-BR");
     
-  
+    
 }, 1500);
 });
 // Adicionar eventos de áudio para atualizar o player fixo
@@ -20890,6 +20889,13 @@ setTimeout(() => {
     border: 1px solid rgba(0,180,255,0.4);
     border-radius: 12px; padding: 8px 10px; font-size: 13px; line-height: 1.4;
 }
+
+/* Formatação simples dentro das bolhas de chat: **negrito**, ~tachado~,
+   "aspas em destaque" e linhas iniciadas com "> " viram citação */
+.md-chat-bolha strong.md-chat-negrito { color: var(--accent,#ffcc00); font-weight: 800; }
+.md-chat-bolha del { opacity: 0.65; text-decoration-color: rgba(255,255,255,0.6); }
+.md-chat-bolha .md-chat-citacao { display: block; border-left: 3px solid var(--accent,#ffcc00); padding-left: 8px; margin: 4px 0; color: var(--text-secondary,#a8c7fa); font-style: italic; }
+.md-chat-bolha .md-chat-aspas { color: var(--accent,#ffcc00); font-style: italic; }
 .md-chat-msg.md-mine-ia .md-chat-bolha { background: linear-gradient(135deg, rgba(0,153,255,0.3), rgba(0,60,120,0.45)); border: 1px solid rgba(0,180,255,0.5); }
 .md-chat-msg-row { display: flex; gap: 7px; align-items: flex-start; }
 .md-chat-msg-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; flex-shrink: 0; margin-top: 2px; border: 1px solid rgba(255,204,0,0.35); }
@@ -21324,6 +21330,17 @@ setTimeout(() => {
             return d.innerHTML;
         },
 
+        // Aplica formatação leve em texto JÁ ESCAPADO (sempre chamar depois do escapeHtml):
+        // **negrito**, ~tachado~, "aspas em destaque" e linhas "> citação".
+        formatarMarkdown(textoEscapado) {
+            return textoEscapado
+                .replace(/(^|\n)&gt;\s?(.*)/g, '$1<span class="md-chat-citacao">$2</span>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong class="md-chat-negrito">$1</strong>')
+                .replace(/~([^~\n]+)~/g, '<del>$1</del>')
+                .replace(/"([^"\n]+)"/g, '<span class="md-chat-aspas">&ldquo;$1&rdquo;</span>')
+                .replace(/\n/g, '<br>');
+        },
+
         // ---------- Modais ----------
         // Todas as janelas (login/registro, perfil, ranking) compartilham a
         // classe .md-overlay. Antes, abrir uma de dentro da outra (ex.: "Ver
@@ -21670,7 +21687,8 @@ setTimeout(() => {
                     const nomeExibido = ehTulho ? '🤖 Tulho (respondendo à tripulação)' : this.escapeHtml(m.nome);
                     const avatarSrc = ehTulho ? 'imagens/logo.png' : this.avatarUrl({ nome: m.nome, avatar: m.avatar });
                     const bolhaClasse = ehTulho ? 'md-chat-bolha md-bolha-ia' : 'md-chat-bolha';
-                    const textoHtml = window.MDChat ? window.MDChat.destacarMencoes(this.escapeHtml(textoLimpo)) : this.escapeHtml(textoLimpo);
+                    const escapadoFormatado = this.formatarMarkdown(this.escapeHtml(textoLimpo));
+                    const textoHtml = window.MDChat ? window.MDChat.destacarMencoes(escapadoFormatado) : escapadoFormatado;
                     const meuId = this.usuario ? this.usuario.id : null;
                     const reacoesHtml = (!ehTulho && window.MDChat) ? window.MDChat.renderReacoes(m.id, m.reacoes, meuId) : '';
                     const abrirDM = (!ehTulho && !mine) ? `onclick="MDChat.abrirDMComUsuario('${m.userId}','${this.escapeHtml(m.nome).replace(/'/g, "\\'")}','${(m.avatar || '').replace(/'/g, "\\'")}')"` : '';
@@ -21916,7 +21934,7 @@ window.MDChat = {
         div.className = 'md-chat-msg-ia';
         div.innerHTML = `
             <div class="md-chat-autor">🤖 Tulho</div>
-            <div class="md-chat-bolha md-bolha-ia">${this.escapeHtml(resposta)}</div>`;
+            <div class="md-chat-bolha md-bolha-ia">${this.formatarMarkdown(this.escapeHtml(resposta))}</div>`;
         corpo.appendChild(div);
         corpo.scrollTop = corpo.scrollHeight;
     },
@@ -22091,7 +22109,7 @@ window.MDChat = {
             const mine = m.de === meuId;
             const div = document.createElement('div');
             div.className = 'md-chat-msg' + (mine ? ' md-mine' : '');
-            div.innerHTML = `<div class="md-chat-bolha">${window.MarujoConta.escapeHtml(m.texto)}</div>`;
+            div.innerHTML = `<div class="md-chat-bolha">${window.MarujoConta.formatarMarkdown(window.MarujoConta.escapeHtml(m.texto))}</div>`;
             corpo.appendChild(div);
         });
         corpo.scrollTop = corpo.scrollHeight;
