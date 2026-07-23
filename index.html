@@ -4692,6 +4692,7 @@ const NewsSystem = {
                 this.updateStats(data);
                 this.renderNews();
                 
+                
                 // Mostrar botão "Ver Mais" se houver mais notícias
                 this.toggleLoadMoreButton();
             } else {
@@ -20382,13 +20383,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
         });
     }, 100);
     
-    // Mensagem de boas-vindas
-setTimeout(() => {
-    const versao = "1.0.3";
-    const data = new Date().toLocaleDateString("pt-BR");
     
-    
-}, 1500);
 });
 // Adicionar eventos de áudio para atualizar o player fixo
 
@@ -21934,7 +21929,7 @@ window.MDChat = {
         div.className = 'md-chat-msg-ia';
         div.innerHTML = `
             <div class="md-chat-autor">🤖 Tulho</div>
-            <div class="md-chat-bolha md-bolha-ia">${this.formatarMarkdown(this.escapeHtml(resposta))}</div>`;
+            <div class="md-chat-bolha md-bolha-ia">${window.MarujoConta.formatarMarkdown(this.escapeHtml(resposta))}</div>`;
         corpo.appendChild(div);
         corpo.scrollTop = corpo.scrollHeight;
     },
