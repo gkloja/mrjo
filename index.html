@@ -20710,7 +20710,25 @@ setTimeout(() => {
         const token = mdToken();
         let finalUrl = url;
         if (token) {
-            finalUrl += (finalUrl.includes('?') ? '&' : '?') + 'md_token=' + encodeURIComponent(token);
+            // BUG CORRIGIDO: a URL final é sempre algo como
+            //   https://worker.../?url=http://br2...:4009/api/marujo/chat
+            // ou seja, ela JÁ tem um "?" (o do proxy). O código antigo checava
+            // `finalUrl.includes('?')` contra a string INTEIRA, via sempre
+            // achava um "?" (o do proxy) e concluía que devia usar "&" — isso
+            // criava um SEGUNDO parâmetro solto (?url=...&md_token=...) em vez
+            // de anexar o token dentro do valor de "url". O Worker só repassa
+            // pra frente o que está dentro de "url", então o md_token se
+            // perdia e o backend nunca via o token: era isso que fazia o
+            // envio de mensagem (e a sincronização de XP/avatar) dizer "não
+            // está logado" mesmo com o login feito.
+            // A checagem certa é: a URL "interna" (a parte depois de "url=")
+            // já tem query própria (ex.: "?desde=0")? Só aí usamos "&";
+            // senão usamos "?" — e sempre colado ao final da string inteira,
+            // pra continuar fazendo parte do valor de "url".
+            const idxUrlParam = finalUrl.indexOf('?url=');
+            const innerUrl = idxUrlParam !== -1 ? finalUrl.slice(idxUrlParam + 5) : finalUrl;
+            const innerJaTemQuery = innerUrl.includes('?');
+            finalUrl += (innerJaTemQuery ? '&' : '?') + 'md_token=' + encodeURIComponent(token);
         }
         return fetch(finalUrl, { ...FETCH_OPTS, ...opts });
     }
