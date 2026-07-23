@@ -4691,7 +4691,7 @@ const NewsSystem = {
                 this.filteredNoticias = this.noticias;
                 this.updateStats(data);
                 this.renderNews();
-                
+                 
                 
                 // Mostrar botão "Ver Mais" se houver mais notícias
                 this.toggleLoadMoreButton();
@@ -5974,7 +5974,7 @@ class AssistenteNavalChat {
     
     async testConnection() {
         try {
-            const response = await fetch(`https://orange-hill-2e61.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009/teste-ia?pergunta=teste`, {
+            const response = await fetch(`${this.API_BASE}/teste-ia?pergunta=teste`, {
                 method: 'GET',
                 mode: 'cors',
                 headers: { 'Accept': 'application/json' }
@@ -6074,7 +6074,7 @@ class AssistenteNavalChat {
         // 1. Tenta API principal direto
         try {
             const resposta = await this.chamarComTimeout(
-                `https://orange-hill-2e61.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009/teste-ia?pergunta=${encodeURIComponent(pergunta)}&userId=${this.userId}`
+                `${this.API_BASE}/teste-ia?pergunta=${encodeURIComponent(pergunta)}&userId=${this.userId}`
             );
             if (resposta) return { sucesso: true, texto: resposta, fonte: 'IA Online' };
         } catch (e) {
@@ -6250,6 +6250,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!document.getElementById('chatPanel')) return;
     
     assistente = new AssistenteNavalChat();
+    // Expõe em window: o painel "Tulho IA" (MDChat, em outro <script>) só
+    // enxerga window.assistente — como "assistente" foi declarado com let,
+    // ele não vira propriedade de window sozinho, e o chat sempre caía no
+    // fallback "O Tulho está indisponível agora", mesmo com a IA online.
+    window.assistente = assistente;
     
     // Funções globais
     window.toggleChat = function() {
@@ -9406,21 +9411,9 @@ setInterval(() => {
 </div>
 <div class="cerimonial-floating-btn" id="openCerimonialBtn" role="button" tabindex="0" aria-label="Responder o quiz do dia">
 
-    <!-- ZONA 1: Perfil (avatar + nível) — clique aqui SEMPRE abre o perfil -->
-    <div class="fab-zone fab-zone-profile" id="fabZoneProfile" onclick="event.stopPropagation(); MarujoConta.onFloatingAvatarClick();" title="Meu perfil" role="button" tabindex="0" aria-label="Abrir meu perfil">
-        <div class="btn-icon-container" id="btnIconContainer">
-            <i class="fas fa-anchor" id="floatingAnchorIcon"></i>
-            <img id="floatingAvatarImg" src="" alt="Perfil" style="display:none;">
-            <div class="level-badge" id="floatingLevelBadge">1</div>
-        </div>
-        <span class="fab-zone-label">Perfil</span>
-    </div>
-
-    <!-- Divisória: separa visualmente "ver perfil" de "responder quiz" -->
-    <div class="fab-divider" aria-hidden="true"></div>
-
-    <!-- ZONA 2: Quiz do dia — clique aqui SEMPRE abre o quiz -->
-    <div class="fab-zone fab-zone-quiz" id="fabZoneQuiz" title="Responder o quiz do dia">
+    <!-- Zona de perfil removida: o botão flutuante de perfil (#md-profile-fab)
+         já cobre essa função, então este botão agora só abre o quiz do dia. -->
+    <div class="fab-zone fab-zone-quiz fab-zone-quiz-full" id="fabZoneQuiz" title="Responder o quiz do dia">
         <div class="btn-info">
             <div class="xp-display">
                 <span class="xp-current" id="floatingXP">0</span>
@@ -9548,6 +9541,9 @@ setInterval(() => {
     padding: 4px 8px 4px 0;
     cursor: pointer;
     border-radius: 30px;
+}
+.fab-zone-quiz-full {
+    padding: 4px 8px 4px 14px;
 }
 .fab-zone-quiz:hover {
     background: rgba(255, 215, 0, 0.06);
@@ -20392,6 +20388,7 @@ setTimeout(() => {
     const versao = "1.0.3";
     const data = new Date().toLocaleDateString("pt-BR");
     
+  
 }, 1500);
 });
 // Adicionar eventos de áudio para atualizar o player fixo
@@ -21289,23 +21286,6 @@ setTimeout(() => {
         // Espelha o estado de login no ícone principal do botão flutuante:
         // mostra a foto do usuário (em vez da âncora) quando logado.
         renderFloatingAvatarBadge() {
-            const container = document.getElementById('btnIconContainer');
-            if (!container) return;
-            const img = document.getElementById('floatingAvatarImg');
-            const anchor = document.getElementById('floatingAnchorIcon');
-            if (this.logado && this.usuario) {
-                container.classList.remove('md-convidado');
-                container.title = this.usuario.nome + ' — ver perfil';
-                img.src = this.avatarUrl(this.usuario);
-                img.onerror = () => { img.src = this.avatarFallback(this.usuario.nome); };
-                img.style.display = 'block';
-                anchor.style.display = 'none';
-            } else {
-                container.classList.add('md-convidado');
-                container.title = 'Entrar / criar conta';
-                img.style.display = 'none';
-                anchor.style.display = 'block';
-            }
             const fabImg = document.getElementById('md-profile-fab-img');
             const fabFallback = document.getElementById('md-profile-fab-fallback');
             if (fabImg && fabFallback) {
@@ -21852,15 +21832,12 @@ setTimeout(() => {
 // separada e privada (não vai pro chat compartilhado).
 window.MDChat = {
     async obterRespostaTulho(pergunta) {
-      
+        if (!window.assistente) return 'O Tulho está indisponível agora. Tente novamente em instantes.';
         try {
             const resposta = await window.assistente.tentarAPIs(pergunta);
             if (resposta && resposta.sucesso) return resposta.texto;
-        } catch (e) { /* cai no fallback local abaixo */ 
-          
-          return window.assistente.getFallbackResponse(pergunta);
-        }
-        
+        } catch (e) { /* cai no fallback local abaixo */ }
+        return window.assistente.getFallbackResponse(pergunta);
     },
 
     EMOJIS_REACAO: ['⚓', '👍', '😂', '😮', '❤️', '🫡'],
@@ -22149,6 +22126,111 @@ window.MDChat = {
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
 
 
 
