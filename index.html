@@ -3580,21 +3580,10 @@ audio::-webkit-media-controls-mute-button {
     to { transform: scaleX(0); }
 }
 
-/* Modo claro */
-@media (prefers-color-scheme: light) {
-    :root {
-        --bg-dark: rgba(245, 250, 255, 0.95);
-        --text-primary: #0A0F1E;
-        --text-secondary: rgba(0, 0, 0, 0.5);
-    }
-    
-    .level-old {
-        color: rgba(0, 0, 0, 0.2);
-    }
-    
-    .progress-track {
-        background: rgba(0, 0, 0, 0.05);
-    }
+/* Site sempre em tema escuro: evita que o navegador/celular
+   force cores de modo claro (texto escuro em fundo escuro) */
+:root {
+    color-scheme: dark;
 }
 /* COLE ISSO NO FINAL DO SEU CSS */
 .notification-wrapper {
