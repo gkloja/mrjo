@@ -1226,6 +1226,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: 14px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -3649,7 +3651,9 @@ audio::-webkit-media-controls-mute-button {
                 <div class="subtitle">Cerimonial da Marinha</div>
             </div>
         </div>
-        
+
+        <!-- Conta do usuário -->
+        <div id="md-userbar"></div>
     </div>
 </header>
       <!-- Navegação fixa: rolagem suave até cada seção, todas visíveis na página -->
@@ -5857,7 +5861,7 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
 // ===== CONFIGURAÇÕES PARA PRODUÇÃO =====
 const CONFIG = {
     // API principal - tenta primeiro
-    API_BASE: 'https://orange-hill-2e61.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009',
+    API_BASE: 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009',
     
     // Fallbacks caso a principal falhe
     FALLBACK_APIS: [
@@ -20162,7 +20166,7 @@ setTimeout(() => {
     <script>
     (function () {
         var STORAGE_KEY = 'marujoDigital_appDownloaded';
-        var DELAY_MS = 150000; // tempo até o modal aparecer (3 minutos = 180000ms)
+        var DELAY_MS = 15000; // tempo até o modal aparecer (3 minutos = 180000ms)
 
         var overlay = document.getElementById('appLockOverlay');
         var title = document.getElementById('appLockTitle');
@@ -20295,35 +20299,45 @@ setTimeout(() => {
     border-radius: 3px;
 }
 
-/* ---------- Chip de usuário (topo) ---------- */
+/* ---------- Botão de conta — vive dentro do cabeçalho, no espaço
+   que o layout já reservava ao lado do logo (justify-content: space-between) ---------- */
 #md-userbar {
-    position: fixed;
-    top: 12px;
-    right: 12px;
-    z-index: 99000;
     display: flex;
     align-items: center;
-    gap: 9px;
-    background: linear-gradient(160deg, rgba(13,42,68,0.95), rgba(5,18,35,0.95));
-    border: 1px solid var(--md-rivet);
+    gap: 10px;
+    flex-shrink: 0;
+    padding: 7px 16px 7px 7px;
     border-radius: 999px;
-    padding: 6px 16px 6px 6px;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
-    backdrop-filter: blur(8px);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,204,0,0.3);
+    backdrop-filter: blur(6px);
     cursor: pointer;
+    color: var(--text-primary,#fff);
     font-size: 13px;
-    color: var(--text-primary, #fff);
-    transition: transform .2s ease, box-shadow .2s ease;
+    transition: background .2s ease, border-color .2s ease, transform .2s ease;
 }
-#md-userbar:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(0,0,0,0.5); }
-#md-userbar img.md-avatar-mini { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent, #ffcc00); box-shadow: 0 0 0 1px rgba(0,0,0,0.4); }
-#md-userbar .md-userbar-info { display: flex; flex-direction: column; line-height: 1.15; }
-#md-userbar .md-userbar-nome { font-weight: 600; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-#md-userbar .md-userbar-nivel { font-size: 11px; color: var(--accent, #ffcc00); }
+#md-userbar:hover { background: rgba(255,255,255,0.1); border-color: var(--accent,#ffcc00); transform: translateY(-1px); }
+#md-userbar:active { transform: translateY(0); }
+#md-userbar img.md-avatar-mini { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent,#ffcc00); flex-shrink: 0; }
+#md-userbar .md-userbar-info { display: flex; flex-direction: column; line-height: 1.25; text-align: left; }
+#md-userbar .md-userbar-nome { font-weight: 700; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#md-userbar .md-userbar-nivel { font-size: 11px; color: var(--accent,#ffcc00); }
 #md-userbar.md-guest {
-    padding: 8px 18px 8px 14px;
-    background: linear-gradient(135deg, var(--primary,#0066cc), var(--primary-dark,#004d99));
-    font-weight: 600;
+    padding: 11px 22px;
+    background: linear-gradient(135deg, var(--accent,#ffcc00), #ffb300);
+    border: none;
+    color: #051223;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow: 0 6px 18px rgba(255,204,0,0.35);
+}
+#md-userbar.md-guest:hover { box-shadow: 0 8px 22px rgba(255,204,0,0.5); transform: translateY(-2px); }
+
+@media (max-width: 768px) {
+    #md-userbar { padding: 5px; gap: 0; }
+    #md-userbar .md-userbar-info { display: none; }
+    #md-userbar img.md-avatar-mini { width: 40px; height: 40px; }
+    #md-userbar.md-guest { padding: 9px 16px; font-size: 12px; }
 }
 
 /* ---------- Overlay / Modais ---------- */
@@ -20395,9 +20409,9 @@ setTimeout(() => {
     transition: all .2s ease;
 }
 .md-tab-btn.md-active {
-    background: linear-gradient(135deg, var(--primary,#0066cc), var(--primary-dark,#004d99));
-    color: #fff;
-    box-shadow: 0 4px 14px rgba(0,102,204,0.45);
+    background: linear-gradient(135deg, var(--accent,#ffcc00), #ffe680);
+    color: #051223;
+    box-shadow: 0 4px 14px rgba(255,204,0,0.4);
 }
 
 .md-field { margin-bottom: 13px; }
@@ -20540,14 +20554,7 @@ setTimeout(() => {
 .md-chat-login-aviso { padding: 11px 12px; font-size: 12px; color: var(--text-secondary,#a8c7fa); text-align: center; border-top: 1px solid rgba(255,255,255,0.08); }
 .md-chat-login-aviso a { color: var(--accent,#ffcc00); cursor: pointer; font-weight: 700; }
 .md-chat-login-aviso a:hover { text-decoration: underline; }
-
-@media (max-width: 480px) {
-    #md-userbar .md-userbar-nome { max-width: 70px; }
-}
 </style>
-
-<!-- Chip de usuário -->
-<div id="md-userbar"></div>
 
 <!-- Modal de Login / Criar conta -->
 <div class="md-overlay" id="md-auth-overlay">
@@ -20695,7 +20702,7 @@ setTimeout(() => {
                 bar.onclick = () => this.abrirPerfil();
             } else {
                 bar.classList.add('md-guest');
-                bar.innerHTML = `<span>⚓ Entrar / Criar conta</span>`;
+                bar.innerHTML = `<span>⚓ Entrar</span>`;
                 bar.onclick = () => this.abrirAuth();
             }
         },
