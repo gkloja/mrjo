@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <script>
+        (function() {
+            try {
+                var t = localStorage.getItem('md-theme');
+                if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+            } catch (e) {}
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="google-adsense-account" content="ca-pub-2351298778216089">
@@ -34,7 +42,6 @@
     <!-- CORES DO TEMA -->
     <meta name="theme-color" content="#003366">
     <meta name="msapplication-TileColor" content="#003366">
-    <meta name="color-scheme" content="dark">
 
     <!-- OPEN GRAPH (WhatsApp / Facebook / Instagram) -->
     <meta property="og:type" content="website">
@@ -141,44 +148,252 @@
         --bg-dark: #0a1929;
         --bg-darker: #051223;
         --text-primary: #ffffff;
-        --text-secondary: #d3e2ff;
-        --text-muted: #a9c3e8;
-        color-scheme: dark;
+        --text-secondary: #a8c7fa;
+        --text-muted: #7a9ccc;
+        --transition-theme: background-color .25s ease, color .25s ease, border-color .25s ease;
     }
+
+    /* ===== MODO CLARO ===== */
+    html[data-theme="light"] {
+        --bg-dark: #eef3f9;
+        --bg-darker: #f7f9fc;
+        --text-primary: #0a1929;
+        --text-secondary: #2a4d7a;
+        --text-muted: #56708f;
+        /* Módulo Marujo Digital (chat, ranking, perfil): a "casca do navio"
+           deixa de ser sempre escura e passa a clarear junto com o resto. */
+        --md-deep: #ffffff;
+        --md-hull: #eef3f9;
+        --md-hull-2: #e4ecf6;
+        --md-tint-002: rgba(10,41,80,0.03);
+        --md-tint-0045: rgba(10,41,80,0.045);
+        --md-tint-005: rgba(10,41,80,0.05);
+        --md-tint-006: rgba(10,41,80,0.06);
+        --md-tint-007: rgba(10,41,80,0.07);
+        --md-tint-008: rgba(10,41,80,0.08);
+        --md-tint-01: rgba(10,41,80,0.1);
+        --md-tint-012: rgba(10,41,80,0.12);
+        --md-tint-014: rgba(10,41,80,0.14);
+        --md-tint-015: rgba(10,41,80,0.16);
+    }
+    html[data-theme="light"] body {
+        background-image:
+            radial-gradient(circle at 20% 30%, rgba(0, 102, 204, 0.06) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(255, 204, 0, 0.05) 0%, transparent 50%);
+    }
+    html[data-theme="light"] .app-lock-card,
+    html[data-theme="light"] .md-modal {
+        background: linear-gradient(160deg, #ffffff, #eef3f9);
+        border-color: rgba(0,51,102,0.15);
+    }
+    body, .md-modal, .app-lock-card {
+        transition: var(--transition-theme);
+    }
+
+    /* Cards de conteúdo (Bandeiras, Insígnias, Sinais, Protocolos, Apitos)
+       tinham fundo azul-marinho fixo, mesmo no modo claro — por isso o
+       tema claro parecia "remendado". Agora eles também clareiam. */
+    html[data-theme="light"] .content-card {
+        background: linear-gradient(145deg, #ffffff, #f3f7fc);
+        border-color: rgba(0,51,102,0.12);
+        box-shadow: 0 10px 30px rgba(10,25,50,0.08), 0 0 0 1px rgba(0,51,102,0.05);
+    }
+    /* Texto dentro dos cards passa a usar a cor de tema (escura no claro),
+       exceto ícones/selos com fundo colorido, que continuam com texto claro. */
+    html[data-theme="light"] .content-card,
+    html[data-theme="light"] .content-card :not(.card-icon):not(.flag-preview):not(.flag-preview *) {
+        color: var(--text-primary);
+    }
+    html[data-theme="light"] .card-subtitle,
+    html[data-theme="light"] .info-label,
+    html[data-theme="light"] .content-card small {
+        color: var(--text-secondary);
+    }
+    /* Sub-blocos com fundo translúcido claro sobre o card escuro viravam
+       quase invisíveis sobre um card agora claro — passam a um contraste
+       sutil escuro sobre claro. */
+    html[data-theme="light"] .flag-card,
+    html[data-theme="light"] .news-card,
+    html[data-theme="light"] .stat-card,
+    html[data-theme="light"] .extra-card,
+    html[data-theme="light"] .preview-card,
+    html[data-theme="light"] .info-item,
+    html[data-theme="light"] .radio-info-card {
+        background: rgba(10,41,80,0.05);
+        border-color: rgba(10,41,80,0.1);
+    }
+    html[data-theme="light"] .flag-card:hover,
+    html[data-theme="light"] .news-card:hover,
+    html[data-theme="light"] .stat-card:hover,
+    html[data-theme="light"] .extra-card:hover,
+    html[data-theme="light"] .preview-card:hover {
+        background: rgba(10,41,80,0.08);
+    }
+
+    /* O cabeçalho misturava a variável clara do fundo com um azul-marinho
+       fixo, criando um gradiente feio (quase branco → azul escuro). Ele
+       passa a ser um azul-marinho sólido e consistente nos dois temas,
+       como uma barra de marca (assim como muitos apps mantêm a barra
+       superior colorida mesmo no modo claro). */
+    html[data-theme="light"] .navy-header {
+        background: linear-gradient(135deg, #062c4d 0%, #001a33 100%);
+    }
+    html[data-theme="light"] .navy-nav {
+        background: rgba(255,255,255,0.85);
+        border-bottom-color: rgba(0,51,102,0.1);
+    }
+    html[data-theme="light"] .nav-link {
+        background: rgba(10,41,80,0.05);
+    }
+    html[data-theme="light"] .nav-link:hover {
+        color: var(--text-primary);
+        background: rgba(10,41,80,0.1);
+        border-color: rgba(10,41,80,0.15);
+    }
+
+    /* Painel flutuante "Cerimonial do Dia" (quiz, XP, configurações) —
+       antes ficava sempre escuro, agora acompanha o tema. */
+    html[data-theme="light"] .cerimonial-dia-container {
+        background: linear-gradient(145deg, #ffffff, #eef3f9);
+        border-color: rgba(255,204,0,0.5);
+        box-shadow: 0 10px 40px rgba(10,25,50,0.18), 0 0 0 1px rgba(255,204,0,0.15);
+    }
+    html[data-theme="light"] .cerimonial-dia-container,
+    html[data-theme="light"] .cerimonial-dia-container :not(.rank-icon):not(.streak-count):not(.streak-count *) {
+        color: var(--text-primary);
+    }
+    html[data-theme="light"] .cerimonial-dia-container .user-status {
+        background: rgba(255,204,0,0.12);
+        border-color: rgba(255,204,0,0.3);
+    }
+
+    /* Módulo de conta, chat e ranking: os "tons de casco escuro" agora
+       usam variáveis (definidas lá em cima) e clareiam automaticamente.
+       Só alguns textos ficaram com branco fixo — corrigidos aqui. */
+    html[data-theme="light"] #md-userbar,
+    html[data-theme="light"] .md-rank-item,
+    html[data-theme="light"] .md-top3-bar,
+    html[data-theme="light"] .md-top3-item,
+    html[data-theme="light"] #md-chat-panel,
+    html[data-theme="light"] .md-field input,
+    html[data-theme="light"] .md-chat-footer input,
+    html[data-theme="light"] .md-mencao-item,
+    html[data-theme="light"] .md-reacao-chip,
+    html[data-theme="light"] #md-dm-buscar-input,
+    html[data-theme="light"] .md-dm-conversa-nome,
+    html[data-theme="light"] #md-dm-thread-nome,
+    html[data-theme="light"] .md-chat-msg .md-chat-bolha {
+        color: var(--text-primary);
+    }
+    html[data-theme="light"] .md-top3-bar {
+        background: rgba(255,255,255,0.7);
+        border-color: rgba(0,51,102,0.15);
+    }
+    html[data-theme="light"] .md-top3-vazio { color: var(--text-muted); }
+    html[data-theme="light"] .md-chat-msg.md-mine .md-chat-bolha,
+    html[data-theme="light"] .md-chat-msg.md-mine-ia .md-chat-bolha,
+    html[data-theme="light"] .md-btn-primary,
+    html[data-theme="light"] #md-userbar.md-guest {
+        color: #fff;
+    }
+
+    /* Alguns textos/fundos foram escritos direto no HTML (style="..."),
+       o que nenhuma classe consegue sobrescrever normalmente — por isso
+       o !important aqui, só dentro do modo claro. */
+    html[data-theme="light"] [style*="color: white"]:not([style*="background: #e53e3e"]):not([style*="background: #f59e0b"]),
+    html[data-theme="light"] [style*="color:white"]:not([style*="background: #e53e3e"]):not([style*="background: #f59e0b"]),
+    html[data-theme="light"] [style*="color: #fff"],
+    html[data-theme="light"] [style*="color:#fff"] {
+        color: var(--text-primary) !important;
+    }
+    html[data-theme="light"] [style*="background: rgba(255,255,255,0"],
+    html[data-theme="light"] [style*="background:rgba(255,255,255,0"] {
+        background: rgba(10,41,80,0.06) !important;
+        border-color: rgba(10,41,80,0.15) !important;
+    }
+
+    /* Agrupa o botão de tema e a conta do usuário no canto do cabeçalho,
+       lado a lado — nada fica flutuando por cima do conteúdo da página. */
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    /* Botão de alternância de tema — agora vive dentro do cabeçalho
+       (rola junto com a página) em vez de flutuar fixo por cima de tudo. */
+    .theme-toggle-btn {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid var(--accent);
+        background: linear-gradient(135deg, #0066cc, #004a99);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.05rem;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        transition: transform 0.15s ease, background 0.25s ease;
+        touch-action: manipulation;
+    }
+    .theme-toggle-btn:hover { transform: translateY(-1px); }
+    .theme-toggle-btn:active { transform: scale(0.9); }
+    html[data-theme="light"] .theme-toggle-btn {
+        background: linear-gradient(135deg, #ffcc00, #ffb300);
+        color: #05203a;
+    }
+    @media (max-width: 768px) {
+        .theme-toggle-btn { width: 36px; height: 36px; font-size: 0.95rem; }
+    }
+
+    /* ===== RESPOSTA MAIS RÁPIDA/CONFIÁVEL PARA BOTÕES ===== */
+    button, .md-btn-primary, .md-btn-secondary, .md-btn-ghost, .app-lock-btn, .download-promo-btn, .md-avatar-edit {
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+    button:active, .md-btn-primary:active, .md-btn-secondary:active, .md-btn-ghost:active, .app-lock-btn:active {
+        transform: scale(0.96);
+        opacity: 0.9;
+    }
+    button:disabled, .md-btn-primary:disabled, .md-btn-secondary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* ===== LOADING DE UPLOAD DE FOTO (AVATAR) ===== */
+    .md-avatar-wrap { position: relative; }
+    .md-avatar-loading {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: rgba(5, 18, 35, 0.65);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+    }
+    .md-avatar-loading.show { display: flex; }
+    .md-avatar-spinner {
+        width: 26px;
+        height: 26px;
+        border: 3px solid rgba(255,255,255,0.3);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: md-avatar-spin 0.7s linear infinite;
+    }
+    @keyframes md-avatar-spin { to { transform: rotate(360deg); } }
     
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
-    }
-
-    /* ===== FIX GLOBAL: campos de formulário (registro, login, chat, busca)
-       nunca podem ficar com texto escuro em celulares. Alguns navegadores
-       mobile (principalmente com preenchimento automático / autofill e
-       modo escuro do sistema) ignoram a cor definida no CSS e pintam o
-       texto digitado de preto sobre fundo escuro, deixando ilegível. ===== */
-    input, textarea, select {
-        color-scheme: dark;
-    }
-    input, textarea {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: 16px; /* evita zoom automático no iOS e melhora legibilidade */
-    }
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    input:-webkit-autofill:active,
-    textarea:-webkit-autofill,
-    textarea:-webkit-autofill:hover,
-    textarea:-webkit-autofill:focus {
-        -webkit-text-fill-color: #ffffff !important;
-        -webkit-box-shadow: 0 0 0px 1000px #0a1929 inset !important;
-        box-shadow: 0 0 0px 1000px #0a1929 inset !important;
-        caret-color: #ffffff !important;
-        transition: background-color 9999s ease-in-out 0s;
     }
 
     html {
@@ -3179,8 +3394,6 @@ audio::-webkit-media-controls-mute-button {
 </head>
 <body>
   
-
-
 <!-- NOTIFICAÇÃO DE LEVEL UP - DESIGN ELEGANTE -->
 <div class="notification-wrapper">
     <div class="level-notification" id="levelNotification">
@@ -3671,8 +3884,11 @@ audio::-webkit-media-controls-mute-button {
             </div>
         </div>
 
-        <!-- Conta do usuário -->
-        <div id="md-userbar"></div>
+        <!-- Conta do usuário + alternância de tema -->
+        <div class="header-actions">
+            <button class="theme-toggle-btn" id="themeToggleBtn" title="Alternar modo claro/escuro" onclick="MDTheme.toggle()">🌙</button>
+            <div id="md-userbar"></div>
+        </div>
     </div>
 </header>
       <!-- Navegação fixa: rolagem suave até cada seção, todas visíveis na página -->
@@ -3753,7 +3969,7 @@ audio::-webkit-media-controls-mute-button {
 .md-top3-info { min-width: 0; line-height: 1.2; }
 .md-top3-nome { color: #fff; font-size: 11.5px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 90px; }
 .md-top3-xp { color: #ffcc00; font-size: 9.5px; font-weight: 600; opacity: 0.85; }
-.md-top3-vazio { color: #a9c3e8; font-size: 11.5px; padding: 2px 0; }
+.md-top3-vazio { color: #7a9ccc; font-size: 11.5px; padding: 2px 0; }
 .md-top3-vertodos {
     flex-shrink: 0; background: transparent; border: 1px solid rgba(122,156,204,0.35);
     color: #a8c7fa; font-size: 10.5px; font-weight: 600; cursor: pointer;
@@ -5729,7 +5945,7 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
 }
 
 .chat-input::placeholder {
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.3);
 }
 
 .input-actions {
@@ -5739,7 +5955,7 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
 }
 
 .char-count {
-    color: rgba(255,255,255,0.55);
+    color: rgba(255,255,255,0.4);
     font-size: 0.65rem;
 }
 
@@ -7624,7 +7840,7 @@ setInterval(() => {
 }
 
 #searchFonoclama::placeholder {
-    color: rgba(255,255,255,0.65);
+    color: rgba(255,255,255,0.5);
 }
 
 /* Índice rápido - scroll horizontal no celular */
@@ -7898,13 +8114,6 @@ setInterval(() => {
     font-size: 0.9rem;
 }
 
-.cerimonial-header-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    z-index: 1;
-}
-
 .cerimonial-close {
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.3);
@@ -7919,37 +8128,11 @@ setInterval(() => {
     justify-content: center;
     transition: all 0.3s ease;
     z-index: 1;
-    flex-shrink: 0;
 }
 
 .cerimonial-close:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: rotate(90deg);
-}
-
-#mdThemeToggleBtn:hover {
-    transform: rotate(0deg) scale(1.08);
-}
-
-/* ===== MODO CLARO (alternado pelo botão no Cerimonial do Dia) =====
-   Em vez de reescrever cada cor do site (são milhares de linhas de CSS),
-   invertemos a luminosidade da página inteira e corrigimos o matiz, e
-   "desinvertermos" imagens/ícones para eles não ficarem com cores estranhas. */
-html {
-    transition: filter 0.25s ease;
-}
-
-html.md-modo-claro {
-    filter: invert(1) hue-rotate(180deg);
-    background: #051223;
-}
-
-html.md-modo-claro img,
-html.md-modo-claro video,
-html.md-modo-claro picture,
-html.md-modo-claro iframe,
-html.md-modo-claro .app-lock-icon img {
-    filter: invert(1) hue-rotate(180deg);
 }
 
 /* Conteúdo do Cerimonial */
@@ -9416,14 +9599,9 @@ html.md-modo-claro .app-lock-icon img {
                 <p>Treine seu conhecimento naval</p>
             </div>
         </div>
-        <div class="cerimonial-header-actions">
-            <button class="cerimonial-close" id="mdThemeToggleBtn" onclick="MDTema.alternar()" title="Alternar modo claro/escuro" aria-label="Alternar modo claro/escuro">
-                <i class="fas fa-sun" id="mdThemeToggleIcon"></i>
-            </button>
-            <button class="cerimonial-close" id="closeCerimonialBtn">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
+        <button class="cerimonial-close" id="closeCerimonialBtn">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
     
     <div class="cerimonial-content" id="cerimonialContent">
@@ -20627,6 +20805,16 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     --md-hull: #0a2038;
     --md-hull-2: #0d2a44;
     --md-rivet: rgba(255,204,0,0.35);
+    --md-tint-002: rgba(255,255,255,0.02);
+    --md-tint-0045: rgba(255,255,255,0.045);
+    --md-tint-005: rgba(255,255,255,0.05);
+    --md-tint-006: rgba(255,255,255,0.06);
+    --md-tint-007: rgba(255,255,255,0.07);
+    --md-tint-008: rgba(255,255,255,0.08);
+    --md-tint-01: rgba(255,255,255,0.1);
+    --md-tint-012: rgba(255,255,255,0.12);
+    --md-tint-014: rgba(255,255,255,0.14);
+    --md-tint-015: rgba(255,255,255,0.15);
 }
 
 /* Rótulos/eyebrows com fonte de placa naval */
@@ -20655,7 +20843,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     flex-shrink: 0;
     padding: 7px 16px 7px 7px;
     border-radius: 999px;
-    background: rgba(255,255,255,0.05);
+    background: var(--md-tint-005);
     border: 1px solid rgba(255,204,0,0.3);
     backdrop-filter: blur(6px);
     cursor: pointer;
@@ -20663,7 +20851,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     font-size: 13px;
     transition: background .2s ease, border-color .2s ease, transform .2s ease;
 }
-#md-userbar:hover { background: rgba(255,255,255,0.1); border-color: var(--accent,#ffcc00); transform: translateY(-1px); }
+#md-userbar:hover { background: var(--md-tint-01); border-color: var(--accent,#ffcc00); transform: translateY(-1px); }
 #md-userbar:active { transform: translateY(0); }
 #md-userbar img.md-avatar-mini { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent,#ffcc00); flex-shrink: 0; }
 #md-userbar .md-userbar-info { display: flex; flex-direction: column; line-height: 1.25; text-align: left; }
@@ -20709,7 +20897,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     padding: 26px 22px 22px;
     max-height: 88vh;
     overflow-y: auto;
-    box-shadow: 0 24px 70px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.05);
+    box-shadow: 0 24px 70px rgba(0,0,0,0.65), inset 0 1px 0 var(--md-tint-005);
     color: var(--text-primary, #fff);
     position: relative;
     animation: mdRise .35s cubic-bezier(.2,.8,.2,1);
@@ -20749,7 +20937,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 .md-tabs {
     display: flex; gap: 4px; margin-bottom: 18px;
     background: rgba(0,0,0,0.25); padding: 4px; border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid var(--md-tint-006);
 }
 .md-tab-btn {
     flex: 1; padding: 9px; border-radius: 9px; border: 1px solid transparent;
@@ -20768,7 +20956,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 .md-field label { display: block; font-size: 11.5px; color: var(--text-secondary,#a8c7fa); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
 .md-field input {
     width: 100%; padding: 12px 14px; border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.045);
+    border: 1px solid var(--md-tint-014); background: var(--md-tint-0045);
     color: #fff; font-size: 14px;
     transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
 }
@@ -20783,7 +20971,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     width: 100%; padding: 13px; border-radius: 11px; border: none;
     background: linear-gradient(135deg, var(--primary,#0066cc), var(--primary-dark,#004d99));
     color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 6px;
-    box-shadow: 0 8px 20px rgba(0,102,204,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+    box-shadow: 0 8px 20px rgba(0,102,204,0.35), inset 0 1px 0 var(--md-tint-015);
     transition: transform .15s ease, box-shadow .15s ease;
     letter-spacing: 0.02em;
 }
@@ -20792,7 +20980,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 .md-btn-primary:disabled { opacity: 0.55; cursor: wait; transform: none; }
 .md-btn-ghost {
     width: 100%; padding: 10px; border-radius: 10px; margin-top: 8px;
-    background: none; border: 1px solid rgba(255,255,255,0.14); color: var(--text-secondary,#a8c7fa);
+    background: none; border: 1px solid var(--md-tint-014); color: var(--text-secondary,#a8c7fa);
     font-size: 12.5px; cursor: pointer; transition: border-color .15s ease, color .15s ease;
 }
 .md-btn-ghost:hover { border-color: rgba(255,204,0,0.4); color: var(--accent,#ffcc00); }
@@ -20850,7 +21038,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 .md-perfil-proxima { margin-top: 16px; margin-bottom: 4px; }
 .md-perfil-proxima-track {
     width: 100%; height: 7px; border-radius: 20px; overflow: hidden;
-    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.06);
+    background: var(--md-tint-008); border: 1px solid var(--md-tint-006);
 }
 .md-perfil-proxima-fill {
     height: 100%; width: 0%; border-radius: 20px;
@@ -20865,10 +21053,10 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 /* ---------- Ranking ---------- */
 .md-rank-item {
     display: flex; align-items: center; gap: 10px; padding: 10px 10px; border-radius: 11px;
-    margin-bottom: 5px; background: rgba(255,255,255,0.02); border: 1px solid transparent;
+    margin-bottom: 5px; background: var(--md-tint-002); border: 1px solid transparent;
     transition: background .15s ease;
 }
-.md-rank-item:hover { background: rgba(255,255,255,0.05); }
+.md-rank-item:hover { background: var(--md-tint-005); }
 .md-rank-item.md-me { background: rgba(255,204,0,0.1); border-color: rgba(255,204,0,0.3); }
 .md-rank-pos { width: 24px; text-align: center; font-weight: 700; color: var(--text-secondary,#a8c7fa); font-size: 13px; font-family: 'Cinzel', serif; }
 .md-rank-item:nth-child(1) .md-rank-pos { color: #ffd700; }
@@ -20923,7 +21111,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 #md-profile-fab-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
 /* Abas do chat unificado */
-.md-chat-tabs { display: flex; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
+.md-chat-tabs { display: flex; border-bottom: 1px solid var(--md-tint-008); flex-shrink: 0; }
 .md-chat-tab {
     flex: 1; background: transparent; border: none; color: var(--text-muted,#7a9ccc);
     font-size: 12.5px; font-weight: 700; padding: 8px 4px; cursor: pointer;
@@ -20953,19 +21141,19 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 .md-chat-msg-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; flex-shrink: 0; margin-top: 2px; border: 1px solid rgba(255,204,0,0.35); }
 
 /* Toggle "Chamar Tulho" */
-.md-chat-footer-wrap { display: flex; flex-direction: column; gap: 4px; border-top: 1px solid rgba(255,255,255,0.08); }
+.md-chat-footer-wrap { display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--md-tint-008); }
 .md-chat-ia-toggle {
     font-size: 11px; color: var(--text-muted,#7a9ccc); display: flex; align-items: center; gap: 5px;
     padding: 5px 10px 0 10px; cursor: pointer; user-select: none;
 }
 .md-chat-ia-toggle input { accent-color: var(--accent,#ffcc00); }
-#md-chat-footer-ia { display: none; border-top: 1px solid rgba(255,255,255,0.08); }
+#md-chat-footer-ia { display: none; border-top: 1px solid var(--md-tint-008); }
 
 /* O antigo widget fullscreen do Tulho foi unificado ao chat da tripulação */
 .floating-chat-container, .chat-panel, .chat-panel.show { display: none !important; }
 .md-chat-header {
     padding: 13px 14px; background: linear-gradient(135deg, rgba(0,102,204,0.22), rgba(0,102,204,0.06));
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid var(--md-tint-008);
     display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; font-weight: 700;
     font-family: 'Cinzel', serif; letter-spacing: 0.02em;
 }
@@ -20976,14 +21164,14 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 .md-chat-body::-webkit-scrollbar-thumb { background: rgba(255,204,0,0.3); border-radius: 3px; }
 .md-chat-msg { max-width: 85%; }
 .md-chat-msg .md-chat-autor { font-size: 10.5px; color: var(--accent,#ffcc00); margin-bottom: 3px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
-.md-chat-msg .md-chat-bolha { background: rgba(255,255,255,0.07); padding: 8px 11px; border-radius: 12px 12px 12px 3px; font-size: 13px; word-break: break-word; }
+.md-chat-msg .md-chat-bolha { background: var(--md-tint-007); padding: 8px 11px; border-radius: 12px 12px 12px 3px; font-size: 13px; word-break: break-word; }
 .md-chat-msg.md-mine { align-self: flex-end; }
 .md-chat-msg.md-mine .md-chat-bolha { background: linear-gradient(135deg, var(--primary,#0066cc), var(--primary-dark,#004d99)); border-radius: 12px 12px 3px 12px; }
 .md-chat-msg.md-mine .md-chat-autor { text-align: right; }
-.md-chat-footer { padding: 10px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; gap: 8px; }
+.md-chat-footer { padding: 10px; border-top: 1px solid var(--md-tint-008); display: flex; gap: 8px; }
 .md-chat-footer input {
-    flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.14);
-    background: rgba(255,255,255,0.05); color: #fff; font-size: 13px;
+    flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid var(--md-tint-014);
+    background: var(--md-tint-005); color: #fff; font-size: 13px;
     transition: border-color .15s ease;
 }
 .md-chat-footer input:focus { outline: none; border-color: var(--accent,#ffcc00); }
@@ -20996,7 +21184,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 }
 .md-chat-footer button:hover { transform: scale(1.06); }
 .md-chat-vazio, .md-rank-vazio { text-align: center; color: var(--text-muted,#7a9ccc); font-size: 12.5px; padding: 24px 10px; line-height: 1.5; }
-.md-chat-login-aviso { padding: 11px 12px; font-size: 12px; color: var(--text-secondary,#a8c7fa); text-align: center; border-top: 1px solid rgba(255,255,255,0.08); }
+.md-chat-login-aviso { padding: 11px 12px; font-size: 12px; color: var(--text-secondary,#a8c7fa); text-align: center; border-top: 1px solid var(--md-tint-008); }
 .md-chat-login-aviso a { color: var(--accent,#ffcc00); cursor: pointer; font-weight: 700; }
 .md-chat-login-aviso a:hover { text-decoration: underline; }
 
@@ -21028,12 +21216,12 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 .md-msg-reacoes-wrap { display: flex; align-items: center; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
 .md-chat-msg.md-mine .md-msg-reacoes-wrap { justify-content: flex-end; }
 .md-reagir-btn {
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 999px;
+    background: var(--md-tint-006); border: 1px solid var(--md-tint-01); border-radius: 999px;
     font-size: 11px; padding: 1px 7px; cursor: pointer; color: var(--text-muted,#7a9ccc); line-height: 1.6;
 }
 .md-reagir-btn:hover { border-color: rgba(255,204,0,0.4); color: var(--accent,#ffcc00); }
 .md-reacao-chip {
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px;
+    background: var(--md-tint-006); border: 1px solid var(--md-tint-012); border-radius: 999px;
     font-size: 11px; padding: 1px 7px; cursor: pointer; color: #fff; display: inline-flex; gap: 3px; align-items: center;
     transition: transform .12s ease;
 }
@@ -21051,8 +21239,8 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 .md-dm-lista { padding: 10px 12px; }
 .md-dm-buscar-wrap { position: relative; margin-bottom: 8px; }
 #md-dm-buscar-input {
-    width: 100%; padding: 8px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.14);
-    background: rgba(255,255,255,0.05); color: #fff; font-size: 12.5px; box-sizing: border-box;
+    width: 100%; padding: 8px 12px; border-radius: 20px; border: 1px solid var(--md-tint-014);
+    background: var(--md-tint-005); color: #fff; font-size: 12.5px; box-sizing: border-box;
 }
 #md-dm-buscar-input:focus { outline: none; border-color: var(--accent,#ffcc00); }
 .md-dm-buscar-resultados {
@@ -21062,7 +21250,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 .md-dm-buscar-resultados.md-show { display: block; }
 .md-dm-conversa-item {
     display: flex; align-items: center; gap: 9px; padding: 9px 6px; cursor: pointer;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid var(--md-tint-006);
 }
 .md-dm-conversa-item:hover { background: rgba(255,255,255,0.04); }
 .md-dm-conversa-item img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,204,0,0.3); flex-shrink: 0; }
@@ -21078,7 +21266,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 .md-dm-thread { padding: 0 !important; }
 .md-dm-thread-header {
     display: flex; align-items: center; gap: 8px; padding: 9px 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;
+    border-bottom: 1px solid var(--md-tint-008); flex-shrink: 0;
 }
 .md-dm-voltar { background: none; border: none; color: var(--accent,#ffcc00); font-size: 20px; cursor: pointer; padding: 0 4px; }
 .md-dm-thread-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,204,0,0.35); }
@@ -21134,6 +21322,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
         <div class="md-perfil-header">
             <div class="md-avatar-wrap">
                 <img id="md-perfil-avatar" src="" alt="Avatar">
+                <div class="md-avatar-loading" id="md-avatar-loading"><div class="md-avatar-spinner"></div></div>
                 <label class="md-avatar-edit" title="Trocar foto">
                     ✎
                     <input type="file" id="md-avatar-input" accept="image/*" style="display:none">
@@ -21623,7 +21812,11 @@ if (honrasTable && cerimonialData.honrasPortalo) {
         // ---------- Avatar ----------
         async trocarAvatar(file) {
             const erroEl = document.getElementById('md-avatar-erro');
+            const loadingEl = document.getElementById('md-avatar-loading');
+            const inputEl = document.getElementById('md-avatar-input');
             erroEl.textContent = '';
+            if (loadingEl) loadingEl.classList.add('show');
+            if (inputEl) inputEl.disabled = true;
             const formData = new FormData();
             formData.append('avatar', file);
             try {
@@ -21635,6 +21828,9 @@ if (honrasTable && cerimonialData.honrasPortalo) {
                 this.renderUserbar();
             } catch (e) {
                 erroEl.textContent = 'Não foi possível enviar a imagem.';
+            } finally {
+                if (loadingEl) loadingEl.classList.remove('show');
+                if (inputEl) { inputEl.disabled = false; inputEl.value = ''; }
             }
         },
 
@@ -21667,8 +21863,27 @@ if (honrasTable && cerimonialData.honrasPortalo) {
         async abrirRanking() {
             this.fecharTodosOverlays();
             document.getElementById('md-ranking-overlay').classList.add('md-show');
+            await this._carregarRankingCompleto(true);
+            // Atualiza o ranking completo sozinho enquanto o modal estiver
+            // aberto, sem precisar fechar e abrir de novo para ver mudanças.
+            if (!this.rankingIntervalo) {
+                this.rankingIntervalo = setInterval(() => {
+                    const aberto = document.getElementById('md-ranking-overlay')?.classList.contains('md-show');
+                    if (aberto) this._carregarRankingCompleto(false);
+                    else this.pararRanking();
+                }, 20000);
+            }
+        },
+        pararRanking() {
+            if (this.rankingIntervalo) {
+                clearInterval(this.rankingIntervalo);
+                this.rankingIntervalo = null;
+            }
+        },
+        async _carregarRankingCompleto(mostrarCarregando) {
             const lista = document.getElementById('md-ranking-lista');
-            lista.innerHTML = '<div class="md-rank-vazio">Carregando...</div>';
+            if (!lista) return;
+            if (mostrarCarregando) lista.innerHTML = '<div class="md-rank-vazio">Carregando...</div>';
             try {
                 const r = await authFetch(`${API}/ranking`);
                 const data = await r.json();
@@ -21681,7 +21896,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
                     lista.innerHTML += `<hr style="border-color:rgba(255,255,255,0.1);margin:8px 0">` + this.renderRankItem(data.minhaPosicao);
                 }
             } catch (e) {
-                lista.innerHTML = '<div class="md-rank-vazio">Erro ao carregar o ranking.</div>';
+                if (mostrarCarregando) lista.innerHTML = '<div class="md-rank-vazio">Erro ao carregar o ranking.</div>';
             }
         },
         renderRankItem(u) {
@@ -21718,10 +21933,6 @@ if (honrasTable && cerimonialData.honrasPortalo) {
             this.chatAberto = false;
             if (this.chatIntervalo) clearInterval(this.chatIntervalo);
             this.chatIntervalo = null;
-            // Sempre volta pra aba principal e encerra qualquer polling de DM
-            // pendente, pra evitar que o painel reabra "travado" numa
-            // conversa privada antiga ou com o chat da tripulação escondido.
-            if (window.MDChat) window.MDChat.switchTab('crew');
         },
         async carregarMensagens(scrollAoFim) {
             try {
@@ -21734,7 +21945,6 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 
                 data.mensagens.forEach(m => {
                     this.chatDesde = Math.max(this.chatDesde, m.ts);
-                    if (document.getElementById(`md-msg-${m.id}`)) return; // já renderizada, evita duplicar
                     const mine = this.usuario && m.userId === this.usuario.id;
                     const ehTulho = typeof m.texto === 'string' && m.texto.startsWith(this.IA_MARK);
                     const textoLimpo = ehTulho ? m.texto.slice(this.IA_MARK.length) : m.texto;
@@ -21862,7 +22072,28 @@ if (honrasTable && cerimonialData.honrasPortalo) {
         }
     };
 
+    // ===== MODO CLARO / ESCURO =====
+    const MDTheme = {
+        init() {
+            const btn = document.getElementById('themeToggleBtn');
+            const atual = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            if (btn) btn.textContent = atual === 'light' ? '☀️' : '🌙';
+        },
+        toggle() {
+            const html = document.documentElement;
+            const atual = html.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            const novo = atual === 'light' ? 'dark' : 'light';
+            if (novo === 'light') html.setAttribute('data-theme', 'light');
+            else html.removeAttribute('data-theme');
+            try { localStorage.setItem('md-theme', novo); } catch (e) {}
+            const btn = document.getElementById('themeToggleBtn');
+            if (btn) btn.textContent = novo === 'light' ? '☀️' : '🌙';
+        }
+    };
+    window.MDTheme = MDTheme;
+
     document.addEventListener('DOMContentLoaded', () => {
+        MDTheme.init();
         MarujoConta.init();
 
         // Top 3 no topo do site
@@ -21878,6 +22109,9 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 
         // Verifica mensagens novas do chat de tempos em tempos mesmo fechado
         setInterval(() => { if (!MarujoConta.chatAberto) MarujoConta.carregarMensagens(false); }, 15000);
+
+        // Mantém o "Top 3 da Tripulação" sempre atualizado, sem precisar recarregar a página
+        setInterval(() => MarujoConta.carregarTop3?.(), 30000);
 
         // Clicar no fundo escurecido (fora do cartão) ou apertar Esc também
         // fecha o modal aberto — reforço pro "×", que dependia só do clique
@@ -22199,33 +22433,6 @@ window.MDChat = {
 };
 </script>
 
-<!-- ===== Alternância de modo claro/escuro (botão no Cerimonial do Dia) ===== -->
-<script>
-const MDTema = {
-    CHAVE: 'md-modo-claro',
-
-    aplicar(claro) {
-        document.documentElement.classList.toggle('md-modo-claro', claro);
-        const icone = document.getElementById('mdThemeToggleIcon');
-        const botao = document.getElementById('mdThemeToggleBtn');
-        if (icone) icone.className = claro ? 'fas fa-moon' : 'fas fa-sun';
-        if (botao) botao.title = claro ? 'Voltar para o modo escuro' : 'Ativar o modo claro';
-    },
-
-    alternar() {
-        const claro = !document.documentElement.classList.contains('md-modo-claro');
-        localStorage.setItem(this.CHAVE, claro ? '1' : '0');
-        this.aplicar(claro);
-    },
-
-    iniciar() {
-        this.aplicar(localStorage.getItem(this.CHAVE) === '1');
-    }
-};
-
-document.addEventListener('DOMContentLoaded', () => MDTema.iniciar());
-</script>
-
 </body>
 </html>
 
@@ -22242,6 +22449,197 @@ document.addEventListener('DOMContentLoaded', () => MDTema.iniciar());
 
  
 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
 
 
 
