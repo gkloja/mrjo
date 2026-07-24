@@ -23212,10 +23212,21 @@ img.md-avatar-vip {
             const painel = document.getElementById('md-chat-panel');
             this.chatAberto = forcarAberto === true ? true : !this.chatAberto;
             painel.classList.toggle('md-show', this.chatAberto);
-            document.getElementById('md-chat-footer-logado').style.display = this.logado ? 'flex' : 'none';
-            document.getElementById('md-chat-login-aviso').style.display = this.logado ? 'none' : 'block';
             if (this.chatAberto) {
                 document.getElementById('md-chat-badge').style.display = 'none';
+                // 🐞 CORRIGIDO: antes, reabrir o painel sempre forçava a caixa
+                // de resposta da Tripulação de volta a "flex", mesmo se a aba
+                // ativa antes de fechar era a "Tulho IA" — como o switchTab()
+                // não era chamado de novo, a caixa do Tulho continuava visível
+                // por baixo, e o resultado eram DUAS caixas de resposta na
+                // tela ao mesmo tempo. Agora simplesmente re-sincronizamos com
+                // a última aba usada (Tripulação por padrão, na primeira vez).
+                if (window.MDChat) {
+                    window.MDChat.switchTab(window.MDChat.abaAtual || 'crew');
+                } else {
+                    document.getElementById('md-chat-footer-logado').style.display = this.logado ? 'flex' : 'none';
+                    document.getElementById('md-chat-login-aviso').style.display = this.logado ? 'none' : 'block';
+                }
                 this.carregarMensagens(true);
                 if (!this.chatIntervalo) this.chatIntervalo = setInterval(() => this.carregarMensagens(false), 4000);
             } else {
@@ -23535,10 +23546,10 @@ img.md-avatar-vip {
     // Planos e rota batem com o backend real (PLANOS_VIP / POST /api/vip/gerar-pix).
     const MDVip = {
         PLANOS: [
-            { id: 'mensal', nome: 'VIP Mensal', dias: 30,  valor: 1.90,  destaque: false,
+            { id: 'mensal', nome: 'VIP Mensal', dias: 30,  valor: 14.90,  destaque: false,
               beneficios: ['Sem anúncios', 'Até 100 perguntas por dia', 'Design/moldura exclusiva na foto de perfil', 'Selo ⭐ VIP no menu', 'Prioridade nas respostas'] },
-            { id: 'anual',  nome: 'VIP Anual',  dias: 365, valor: 10.90, destaque: true,
-              beneficios: ['Sem anúncios', 'Até 100 perguntas por dia', 'Design/moldura exclusiva na foto de perfil', 'Selo ⭐ VIP no menu', 'Prioridade nas respostas', '2 meses de desconto'] },
+            { id: 'anual',  nome: 'VIP Anual',  dias: 365, valor: 99.90, destaque: true,
+              beneficios: ['Sem anúncios', 'Até 100 perguntas por dia', 'Design/moldura exclusiva na foto de perfil', 'Selo ⭐ VIP no menu', 'Prioridade nas respostas'] },
         ],
 
         transacaoAtual: null,
@@ -23750,7 +23761,24 @@ img.md-avatar-vip {
                 const r = await authFetch(`${API_BASE}/api/tulho/consumir`, { method: 'POST' });
                 const data = await r.json();
                 if (!r.ok) {
-                    return { permitido: false, erro: data.erro || 'Limite diário de perguntas ao Tulho atingido. Volte amanhã ou assine o VIP! ⭐', ...data };
+                    // 🐞 CORRIGIDO: antes, QUALQUER resposta de erro aqui (401 de
+                    // sessão expirada, bloqueio geral de tráfego, erro 500, etc.)
+                    // caía no mesmo texto padrão de "limite diário do Tulho" —
+                    // por isso VIP via a mensagem de limite sem nunca ter
+                    // realmente estourado a cota. Agora só usamos esse texto
+                    // quando o erro É de fato a cota diária (rota /api/tulho/
+                    // consumir respondendo 429 com permitido:false); qualquer
+                    // outro erro mostra a mensagem real do servidor, ou um aviso
+                    // genérico de "tente de novo", nunca a mensagem de limite.
+                    if (r.status === 429 && data && data.permitido === false && !data.limiteGeralApi) {
+                        return { permitido: false, erro: data.erro || 'Você atingiu o limite diário de perguntas ao Tulho. Volte amanhã ou assine o VIP! ⭐', ...data };
+                    }
+                    return {
+                        permitido: false,
+                        erro: (data && data.erro) || (data && data.error) || 'Não foi possível falar com o Tulho agora. Tente de novo em instantes.',
+                        limiteDiario: false,
+                        ...data
+                    };
                 }
                 return data;
             } catch (e) {
@@ -23783,6 +23811,10 @@ window.MDChat = {
     },
 
     EMOJIS_REACAO: ['⚓', '👍', '😂', '😮', '❤️', '🫡'],
+    // Guarda qual aba do chat (crew/ia/dm) está ativa, pra podermos
+    // restaurá-la corretamente quando o painel é reaberto (ver toggleChat
+    // em MarujoConta) em vez de sempre voltar pro chat da Tripulação.
+    abaAtual: 'crew',
     dmUsuarioAtual: null,
     dmDesde: 0,
     dmPollInterval: null,
@@ -23791,6 +23823,7 @@ window.MDChat = {
     mencaoResultados: [],
 
     switchTab(aba) {
+        this.abaAtual = aba;
         const crewBody = document.getElementById('md-chat-body');
         const iaBody = document.getElementById('md-chat-body-ia');
         const dmLista = document.getElementById('md-dm-lista');
