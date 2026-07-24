@@ -254,17 +254,36 @@
     /* Painel flutuante "Cerimonial do Dia" (quiz, XP, configurações) —
        antes ficava sempre escuro, agora acompanha o tema. */
     html[data-theme="light"] .cerimonial-dia-container {
-        background: linear-gradient(145deg, #ffffff, #eef3f9);
-        border-color: rgba(255,204,0,0.5);
-        box-shadow: 0 10px 40px rgba(10,25,50,0.18), 0 0 0 1px rgba(255,204,0,0.15);
+        background: radial-gradient(circle at 15% 0%, rgba(201,161,59,0.08), transparent 40%),
+            linear-gradient(145deg, #fbf6e8, #f1e8cd);
+        border-color: #a9812f;
+        box-shadow: 0 18px 45px rgba(10,25,50,0.18), 0 0 0 1px rgba(201,161,59,0.25),
+            inset 0 0 0 6px rgba(251,246,232,0.6), inset 0 0 0 7px rgba(169,129,47,0.35);
     }
     html[data-theme="light"] .cerimonial-dia-container,
     html[data-theme="light"] .cerimonial-dia-container :not(.rank-icon):not(.streak-count):not(.streak-count *) {
         color: var(--text-primary);
     }
     html[data-theme="light"] .cerimonial-dia-container .user-status {
-        background: rgba(255,204,0,0.12);
-        border-color: rgba(255,204,0,0.3);
+        background: linear-gradient(160deg, rgba(169,129,47,0.12), rgba(169,129,47,0.04));
+        border-color: rgba(169,129,47,0.35);
+    }
+    html[data-theme="light"] .cerimonial-text p,
+    html[data-theme="light"] .rank-info p {
+        color: var(--text-secondary);
+    }
+    html[data-theme="light"] .quiz-content {
+        background: linear-gradient(160deg, rgba(10,41,80,0.03), rgba(10,41,80,0.01));
+        border-color: rgba(10,41,80,0.08);
+    }
+    html[data-theme="light"] .quiz-option {
+        background: rgba(10,41,80,0.025);
+        border-color: rgba(10,41,80,0.1);
+        border-left-color: rgba(10,41,80,0.1);
+    }
+    html[data-theme="light"] .quiz-option:hover:not(.selected) {
+        background: rgba(10,41,80,0.05);
+        border-left-color: #a9812f;
     }
 
     /* Módulo de conta, chat e ranking: os "tons de casco escuro" agora
@@ -348,6 +367,26 @@
     }
     @media (max-width: 768px) {
         .theme-toggle-btn { width: 36px; height: 36px; font-size: 0.95rem; }
+    }
+
+    /* Contador "quem está online" no topo do site (mesmo componente do
+       chat, só que sempre visível no cabeçalho, mesmo pra visitante). */
+    .md-online-wrap-header { flex-shrink: 0; }
+    .md-online-badge-header {
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+    .md-online-label { opacity: 0.85; font-weight: 600; }
+    .md-online-wrap-header .md-online-dropdown {
+        top: calc(100% + 10px);
+        left: 0;
+        right: auto;
+    }
+    @media (max-width: 768px) {
+        .md-online-label { display: none; }
+        .md-online-badge-header { padding: 6px 9px; }
+        .md-online-wrap-header .md-online-dropdown { left: auto; right: 0; }
     }
 
     /* ===== RESPOSTA MAIS RÁPIDA/CONFIÁVEL PARA BOTÕES ===== */
@@ -3886,6 +3925,19 @@ audio::-webkit-media-controls-mute-button {
 
         <!-- Conta do usuário + alternância de tema -->
         <div class="header-actions">
+            <div class="md-online-wrap md-online-wrap-header" id="md-online-wrap-header">
+                <button class="md-online-badge md-online-badge-header" onclick="MDOnline.toggleDropdown('header')" title="Ver quem está online">
+                    <span class="md-online-dot"></span>
+                    <span id="md-online-count-header">0</span>
+                    <span class="md-online-label">online</span>
+                </button>
+                <div class="md-online-dropdown" id="md-online-dropdown-header">
+                    <div class="md-online-dropdown-title">Online agora</div>
+                    <div class="md-online-lista" id="md-online-lista-header">
+                        <div class="md-online-vazio">Ninguém por aqui agora.</div>
+                    </div>
+                </div>
+            </div>
             <button class="theme-toggle-btn" id="themeToggleBtn" title="Alternar modo claro/escuro" onclick="MDTheme.toggle()">🌙</button>
             <div id="md-userbar"></div>
         </div>
@@ -8095,18 +8147,30 @@ setInterval(() => {
 <style>
 /* SEÇÃO DO CERIMONIAL DO DIA */
 .cerimonial-dia-container {
+    --brass: #c9a13b;
+    --brass-hi: #e8c76b;
+    --brass-dim: #8a6b28;
+    --hull-1: #060f1c;
+    --hull-2: #0d2038;
+    --parchment: #efe4c8;
+    --naval-success: #4f9d6c;
+    --naval-danger: #b8503f;
     position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     width: 95%;
     max-width: 500px;
-    background: linear-gradient(145deg, #051223, #0a1929);
-    border-radius: 20px;
-    border: 2px solid #ffcc00;
-    box-shadow: 
-        0 10px 40px rgba(0, 0, 0, 0.6),
-        0 0 0 1px rgba(255, 204, 0, 0.2);
+    background:
+        radial-gradient(circle at 15% 0%, rgba(232,199,107,0.06), transparent 40%),
+        linear-gradient(145deg, var(--hull-1), var(--hull-2));
+    border-radius: 14px;
+    border: 1px solid var(--brass-dim);
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.65),
+        0 0 0 1px rgba(201, 161, 59, 0.25),
+        inset 0 0 0 6px rgba(6, 15, 28, 0.35),
+        inset 0 0 0 7px rgba(201, 161, 59, 0.35);
     z-index: 1000;
     padding: 0;
     overflow: hidden;
@@ -8131,16 +8195,17 @@ setInterval(() => {
 
 /* Cabeçalho do Cerimonial */
 .cerimonial-header {
-    background: linear-gradient(135deg, #004a77, #0066cc);
-    padding: 20px;
+    background: linear-gradient(135deg, #0d2f4d, #1c4b73);
+    padding: 20px 20px 22px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 2px solid #ffcc00;
+    border-bottom: 1px solid rgba(201,161,59,0.6);
     position: relative;
     overflow: hidden;
 }
 
+/* Textura discreta de convés, no lugar do brilho diagonal genérico */
 .cerimonial-header::before {
     content: '';
     position: absolute;
@@ -8148,10 +8213,24 @@ setInterval(() => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
-        linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.1) 50%, transparent 55%),
-        linear-gradient(135deg, transparent 45%, rgba(255, 255, 255, 0.1) 50%, transparent 55%);
-    background-size: 15px 15px;
+    background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 2px, transparent 2px 26px);
+    opacity: 0.5;
+}
+
+/* Costura de cordame ao longo da base do cabeçalho */
+.cerimonial-header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 6px;
+    background-image: repeating-linear-gradient(135deg, var(--brass, #c9a13b) 0 3px, transparent 3px 6px),
+        repeating-linear-gradient(45deg, var(--brass, #c9a13b) 0 3px, transparent 3px 6px);
+    background-size: 10px 3px;
+    background-position: 0 0, 0 3px;
+    opacity: 0.85;
 }
 
 .cerimonial-title {
@@ -8161,30 +8240,35 @@ setInterval(() => {
     z-index: 1;
 }
 
+/* Selo/plaqueta de bússola em vez do quadrado com sombra genérica */
 .cerimonial-icon {
-    width: 50px;
-    height: 50px;
-    background: white;
-    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    background: radial-gradient(circle at 35% 30%, var(--parchment, #efe4c8), #cbb87f 78%);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #0066cc;
-    font-size: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(255,204,0,0.35);
+    color: #0d2038;
+    font-size: 1.3rem;
+    border: 2px solid var(--brass-hi, #e8c76b);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 0 0 4px rgba(201, 161, 59, 0.18), inset 0 1px 2px rgba(255,255,255,0.6);
     animation: cerimonialIconPulse 2.6s ease-in-out infinite;
+    flex-shrink: 0;
 }
 
 @keyframes cerimonialIconPulse {
-    0%, 100% { box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 0 0 3px rgba(255,204,0,0.35); }
-    50% { box-shadow: 0 4px 16px rgba(0,0,0,0.25), 0 0 0 6px rgba(255,204,0,0.15); }
+    0%, 100% { box-shadow: 0 4px 12px rgba(0,0,0,0.35), 0 0 0 4px rgba(201, 161, 59, 0.18), inset 0 1px 2px rgba(255,255,255,0.6); }
+    50% { box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 7px rgba(201, 161, 59, 0.08), inset 0 1px 2px rgba(255,255,255,0.6); }
 }
 
 .cerimonial-text h3 {
-    color: white;
+    color: #f5efdd;
     margin: 0;
-    font-size: 1.3rem;
+    font-size: 1.22rem;
+    font-family: 'Cinzel', serif;
     font-weight: 700;
+    letter-spacing: 0.02em;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -8192,22 +8276,24 @@ setInterval(() => {
 }
 
 .cerimonial-date-badge {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    background: rgba(255,204,0,0.18);
-    border: 1px solid rgba(255,204,0,0.5);
-    color: #ffcc00;
-    padding: 2px 8px;
-    border-radius: 20px;
+    letter-spacing: 0.06em;
+    background: rgba(201, 161, 59, 0.16);
+    border: 1px solid rgba(201, 161, 59, 0.55);
+    color: #e8c76b;
+    padding: 2px 9px;
+    border-radius: 3px;
     white-space: nowrap;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .cerimonial-text p {
     color: #a8c7fa;
-    margin: 5px 0 0 0;
-    font-size: 0.9rem;
+    margin: 4px 0 0 0;
+    font-size: 0.85rem;
+    letter-spacing: 0.01em;
 }
 
 .cerimonial-header-actions {
@@ -8258,11 +8344,12 @@ setInterval(() => {
 
 /* Status do Usuário */
 .user-status {
-    background: rgba(255, 204, 0, 0.1);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 25px;
-    border: 1px solid rgba(255, 204, 0, 0.2);
+    background: linear-gradient(160deg, rgba(201,161,59,0.09), rgba(201,161,59,0.03));
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 22px;
+    border: 1px solid rgba(201, 161, 59, 0.28);
+    border-left: 3px solid var(--brass, #c9a13b);
 }
 
 .status-header {
@@ -8279,28 +8366,33 @@ setInterval(() => {
 }
 
 .rank-icon {
-    width: 45px;
-    height: 45px;
-    background: linear-gradient(135deg, #0066cc, #004a99);
+    width: 44px;
+    height: 44px;
+    background: radial-gradient(circle at 32% 28%, #e8c76b, #8a6b28 85%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 1.2rem;
-    border: 2px solid #ffcc00;
+    color: #0d2038;
+    font-size: 1.1rem;
+    border: 2px solid #0d2038;
+    box-shadow: 0 0 0 2px rgba(201,161,59,0.5), 0 3px 8px rgba(0,0,0,0.35);
+    flex-shrink: 0;
 }
 
 .rank-info h4 {
-    color: white;
-    margin: 0 0 5px 0;
-    font-size: 1.1rem;
+    color: #f5efdd;
+    margin: 0 0 3px 0;
+    font-size: 1.02rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
 }
 
 .rank-info p {
     color: var(--text-secondary);
     margin: 0;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
 }
 
 .status-streak {
@@ -8308,13 +8400,16 @@ setInterval(() => {
 }
 
 .streak-count {
-    display: inline-block;
-    background: #ff6b6b;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #b8503f, #8a3629);
+    color: #f5efdd;
+    padding: 7px 14px;
+    border-radius: 4px;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
+    border: 1px solid rgba(232,199,107,0.35);
     animation: pulseStreak 2s infinite;
 }
 
@@ -8343,17 +8438,18 @@ setInterval(() => {
 }
 
 .xp-bar {
-    height: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+    height: 10px;
+    background: rgba(0,0,0,0.35);
+    border-radius: 5px;
     overflow: hidden;
     position: relative;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,161,59,0.15);
 }
 
 .xp-progress {
     height: 100%;
-    background: linear-gradient(90deg, #ffcc00, #ffaa00);
-    border-radius: 6px;
+    background: linear-gradient(90deg, #a9812f, #e8c76b);
+    border-radius: 5px;
     transition: width 1s ease;
     position: relative;
     overflow: hidden;
@@ -8398,10 +8494,58 @@ setInterval(() => {
     opacity: 1;
 }
 
+/* Progresso do cerimonial de hoje: uma bolinha por questão, mostrando de
+   relance quais já foram respondidas (certas/erradas), qual é a atual e
+   quantas ainda faltam — sem precisar abrir a tela da questão pra saber. */
+.daily-progress {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-top: 18px;
+    padding-top: 11px;
+    position: relative;
+    flex-wrap: wrap;
+}
+/* O "cabo" (halyard) de onde as bandeirolas de sinal ficam penduradas —
+   cada questão vira uma bandeirola içada, do mesmo jeito que um sinal
+   naval real: hasteada (respondida certo), arriada (errada) ou no
+   guardim, prestes a subir (atual). */
+.daily-progress::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 1px;
+    right: 1px;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--brass-dim, #8a6b28) 0 5px, transparent 5px 9px);
+    opacity: 0.9;
+}
+.daily-progress-dot {
+    width: 13px;
+    height: 16px;
+    background: rgba(255,255,255,0.16);
+    clip-path: polygon(0 0, 100% 0, 100% 52%, 50% 100%, 0 52%);
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+.daily-progress-dot.correct {
+    background: var(--naval-success, #4f9d6c);
+}
+.daily-progress-dot.wrong {
+    background: var(--naval-danger, #b8503f);
+}
+.daily-progress-dot.current {
+    background: var(--brass, #c9a13b);
+    filter: drop-shadow(0 0 5px rgba(201, 161, 59, 0.85));
+    transform: scale(1.2) translateY(-2px);
+}
+html[data-theme="light"] .daily-progress-dot {
+    background: rgba(10,41,80,0.18);
+}
+
 /* Conteúdo do Quiz */
 .quiz-content {
     background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
-    border-radius: 18px;
+    border-radius: 12px;
     padding: 22px;
     border: 1px solid rgba(255, 255, 255, 0.09);
     box-shadow: 0 12px 30px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.04);
@@ -8434,24 +8578,26 @@ setInterval(() => {
 }
 
 .question-number {
-    width: 38px;
-    height: 38px;
-    background: linear-gradient(135deg, #0066cc, #004a99);
-    border-radius: 12px;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #1c4b73, #0d2f4d);
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: #e8c76b;
+    font-family: 'Cinzel', serif;
     font-weight: 700;
-    font-size: 1.05rem;
-    box-shadow: 0 4px 12px rgba(0,102,204,0.35);
+    font-size: 1rem;
+    border: 1px solid rgba(201,161,59,0.5);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
     flex-shrink: 0;
 }
 
 .question-text {
-    color: white;
-    font-size: 1.12rem;
-    line-height: 1.45;
+    color: #f5efdd;
+    font-size: 1.1rem;
+    line-height: 1.48;
     margin: 0;
     font-weight: 600;
     letter-spacing: 0.01em;
@@ -8472,9 +8618,10 @@ setInterval(() => {
 }
 
 .quiz-option {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1.5px solid rgba(255, 255, 255, 0.08);
-    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 3px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
     padding: 13px 16px;
     color: var(--text-secondary);
     font-size: 0.97rem;
@@ -8486,57 +8633,58 @@ setInterval(() => {
 }
 
 .quiz-option:hover:not(.selected) {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 204, 0, 0.3);
+    background: rgba(255, 255, 255, 0.06);
+    border-left-color: #c9a13b;
     transform: translateX(3px);
 }
 
 .quiz-option.selected {
-    border-color: #0066cc;
-    background: rgba(0, 102, 204, 0.14);
+    border-color: #1c4b73;
+    background: rgba(28, 75, 115, 0.14);
     color: white;
-    box-shadow: 0 4px 14px rgba(0,102,204,0.25);
+    box-shadow: 0 4px 14px rgba(28, 75, 115, 0.25);
 }
 
 .quiz-option.correct {
-    border-color: #38a169;
-    background: rgba(56, 161, 105, 0.14);
+    border-color: #4f9d6c;
+    background: rgba(79, 157, 108, 0.14);
     color: white;
-    box-shadow: 0 4px 14px rgba(56,161,105,0.25);
+    box-shadow: 0 4px 14px rgba(79, 157, 108, 0.25);
 }
 
 .quiz-option.incorrect {
-    border-color: #e53e3e;
-    background: rgba(229, 62, 62, 0.14);
+    border-color: #b8503f;
+    background: rgba(184, 80, 63, 0.14);
     color: white;
 }
 
 .option-letter {
-    width: 26px;
-    height: 26px;
-    border-radius: 8px;
+    width: 25px;
+    height: 25px;
+    border-radius: 5px;
     background: rgba(255, 255, 255, 0.08);
+    font-family: 'Cinzel', serif;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     flex-shrink: 0;
     transition: all 0.2s ease;
 }
 
 .quiz-option.selected .option-letter {
-    background: #0066cc;
+    background: #1c4b73;
     color: white;
 }
 
 .quiz-option.correct .option-letter {
-    background: #38a169;
+    background: #4f9d6c;
     color: white;
 }
 
 .quiz-option.incorrect .option-letter {
-    background: #e53e3e;
+    background: #b8503f;
     color: white;
 }
 
@@ -8553,9 +8701,10 @@ setInterval(() => {
 .quiz-btn {
     flex: 1;
     padding: 13px;
-    border-radius: 12px;
-    font-size: 0.95rem;
+    border-radius: 7px;
+    font-size: 0.9rem;
     font-weight: 700;
+    text-transform: uppercase;
     cursor: pointer;
     transition: all 0.2s ease;
     border: none;
@@ -8563,17 +8712,19 @@ setInterval(() => {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.04em;
 }
 
 .quiz-btn.primary {
-    background: linear-gradient(135deg, #0066cc, #004a99);
-    color: white;
+    background: linear-gradient(135deg, #1c4b73, #0d2f4d);
+    color: #f5efdd;
+    border: 1px solid rgba(201,161,59,0.4);
 }
 
 .quiz-btn.primary:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0, 102, 204, 0.4);
+    box-shadow: 0 6px 18px rgba(28, 75, 115, 0.4);
+    border-color: #c9a13b;
 }
 
 .quiz-btn.secondary {
@@ -8584,7 +8735,7 @@ setInterval(() => {
 
 .quiz-btn.secondary:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: #ffcc00;
+    border-color: #c9a13b;
     color: white;
 }
 
@@ -8602,7 +8753,7 @@ setInterval(() => {
 .result-icon {
     width: 80px;
     height: 80px;
-    background: linear-gradient(135deg, #38a169, #2f855a);
+    background: linear-gradient(135deg, #4f9d6c, #35704a);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -8614,7 +8765,7 @@ setInterval(() => {
 }
 
 .result-icon.fail {
-    background: linear-gradient(135deg, #e53e3e, #c53030);
+    background: linear-gradient(135deg, #b8503f, #8a3629);
 }
 
 @keyframes bounceIn {
@@ -8624,10 +8775,12 @@ setInterval(() => {
 }
 
 .result-title {
-    color: white;
-    font-size: 1.8rem;
+    color: #f5efdd;
+    font-size: 1.7rem;
     margin: 0 0 10px 0;
     font-weight: 700;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.01em;
 }
 
 .result-message {
@@ -8637,8 +8790,8 @@ setInterval(() => {
 }
 
 .xp-earned {
-    background: rgba(56, 161, 105, 0.2);
-    border: 2px solid #38a169;
+    background: rgba(79, 157, 108, 0.2);
+    border: 2px solid #4f9d6c;
     border-radius: 12px;
     padding: 20px;
     margin: 30px 0;
@@ -8654,13 +8807,13 @@ setInterval(() => {
     right: 0;
     bottom: 0;
     background: 
-        linear-gradient(45deg, transparent 45%, rgba(56, 161, 105, 0.1) 50%, transparent 55%),
-        linear-gradient(135deg, transparent 45%, rgba(56, 161, 105, 0.1) 50%, transparent 55%);
+        linear-gradient(45deg, transparent 45%, rgba(79, 157, 108, 0.1) 50%, transparent 55%),
+        linear-gradient(135deg, transparent 45%, rgba(79, 157, 108, 0.1) 50%, transparent 55%);
     background-size: 10px 10px;
 }
 
 .xp-earned-label {
-    color: #9ae6b4;
+    color: #bfe3cc;
     font-size: 0.9rem;
     margin-bottom: 10px;
     display: block;
@@ -8694,7 +8847,7 @@ setInterval(() => {
 }
 
 .stat-value {
-    color: #ffcc00;
+    color: #c9a13b;
     font-size: 1.5rem;
     font-weight: 700;
     display: block;
@@ -8712,7 +8865,7 @@ setInterval(() => {
     position: fixed;
     top: 100px;
     right: 20px;
-    background: linear-gradient(135deg, #38a169, #2f855a);
+    background: linear-gradient(135deg, #4f9d6c, #35704a);
     color: white;
     padding: 20px 25px;
     border-radius: 15px;
@@ -8723,7 +8876,7 @@ setInterval(() => {
     gap: 15px;
     animation: slideInRight 0.5s ease;
     max-width: 350px;
-    border-left: 5px solid #ffcc00;
+    border-left: 5px solid #c9a13b;
 }
 
 .reward-notification.show {
@@ -8732,7 +8885,7 @@ setInterval(() => {
 
 .reward-notification i {
     font-size: 2rem;
-    color: #ffcc00;
+    color: #c9a13b;
 }
 
 .reward-content h4 {
@@ -8761,9 +8914,9 @@ setInterval(() => {
 .journey-progress {
     margin: 30px 0;
     padding: 20px;
-    background: rgba(255, 204, 0, 0.05);
+    background: rgba(201, 161, 59, 0.05);
     border-radius: 12px;
-    border: 1px solid rgba(255, 204, 0, 0.2);
+    border: 1px solid rgba(201, 161, 59, 0.2);
 }
 
 .journey-title {
@@ -8813,21 +8966,21 @@ setInterval(() => {
 }
 
 .step-circle.completed {
-    background: linear-gradient(135deg, #0066cc, #004a99);
+    background: linear-gradient(135deg, #1c4b73, #0d2f4d);
     color: white;
-    border-color: #ffcc00;
+    border-color: #c9a13b;
 }
 
 .step-circle.current {
-    background: linear-gradient(135deg, #ffcc00, #ffaa00);
-    color: #003366;
-    border-color: #ffcc00;
+    background: linear-gradient(135deg, #c9a13b, #a9812f);
+    color: #0d2038;
+    border-color: #c9a13b;
     animation: pulseCurrent 2s infinite;
 }
 
 @keyframes pulseCurrent {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(255, 204, 0, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201, 161, 59, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(201, 161, 59, 0); }
 }
 
 .step-label {
@@ -8862,23 +9015,24 @@ setInterval(() => {
 }
 
 .badge-icon {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    width: 58px;
+    height: 58px;
+    background: radial-gradient(circle at 33% 28%, #e8c76b, #8a6b28 82%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 8px;
-    color: white;
-    font-size: 1.5rem;
-    border: 2px solid var(--accent);
+    color: #0d2038;
+    font-size: 1.4rem;
+    border: 2px solid #0d2038;
+    box-shadow: 0 0 0 2px rgba(201,161,59,0.45), inset 0 1px 2px rgba(255,255,255,0.5);
     position: relative;
 }
 
 .badge-icon.locked {
-    background: linear-gradient(135deg, #718096, #4a5568);
-    border-color: #a0aec0;
+    background: linear-gradient(135deg, #4a5568, #2d3546);
+    box-shadow: 0 0 0 2px rgba(160,174,192,0.25);
     color: #a0aec0;
 }
 
@@ -8889,9 +9043,11 @@ setInterval(() => {
     right: -5px;
     width: 20px;
     height: 20px;
-    background: #38a169;
+    background: #4f9d6c;
+    border: 2px solid #0d2038;
     border-radius: 50%;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -8977,7 +9133,7 @@ setInterval(() => {
     position: fixed;
     top: 100px;
     right: 20px;
-    background: linear-gradient(135deg, #38a169, #2f855a);
+    background: linear-gradient(135deg, #4f9d6c, #35704a);
     color: white;
     padding: 20px 25px;
     border-radius: 15px;
@@ -8988,7 +9144,7 @@ setInterval(() => {
     gap: 15px;
     animation: slideInRight 0.5s ease;
     max-width: 350px;
-    border-left: 5px solid #ffcc00;
+    border-left: 5px solid #c9a13b;
 }
 
 .reward-notification.show {
@@ -8997,7 +9153,7 @@ setInterval(() => {
 
 .reward-notification i {
     font-size: 2rem;
-    color: #ffcc00;
+    color: #c9a13b;
 }
 
 .reward-content h4 {
@@ -9023,15 +9179,15 @@ setInterval(() => {
 }
 /* Configurações do Quiz */
 .quiz-settings {
-    background: rgba(255, 204, 0, 0.05);
+    background: rgba(201, 161, 59, 0.05);
     border-radius: 12px;
     padding: 20px;
     margin: 20px 0;
-    border: 1px solid rgba(255, 204, 0, 0.2);
+    border: 1px solid rgba(201, 161, 59, 0.2);
 }
 
 .settings-title {
-    color: #ffcc00;
+    color: #c9a13b;
     margin-bottom: 15px;
     display: flex;
     align-items: center;
@@ -9080,7 +9236,7 @@ setInterval(() => {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #0066cc;
+    background: #1c4b73;
     cursor: pointer;
     border: 2px solid white;
 }
@@ -9116,9 +9272,9 @@ setInterval(() => {
 }
 
 .category-btn.active {
-    background: #0066cc;
+    background: #1c4b73;
     color: white;
-    border-color: #0066cc;
+    border-color: #1c4b73;
 }
 
 /* Estatísticas Avançadas */
@@ -9140,7 +9296,7 @@ setInterval(() => {
 
 .stat-card:hover {
     transform: translateY(-3px);
-    border-color: rgba(0, 102, 204, 0.3);
+    border-color: rgba(28, 75, 115, 0.3);
 }
 
 .stat-value {
@@ -9198,7 +9354,7 @@ setInterval(() => {
 /* Modo desafio */
 .challenge-mode {
     background: linear-gradient(135deg, rgba(159, 122, 234, 0.1), rgba(159, 122, 234, 0.05));
-    border: 2px solid #9f7aea;
+    border: 2px solid #8a6b3f;
     border-radius: 12px;
     padding: 20px;
     margin: 20px 0;
@@ -9208,7 +9364,7 @@ setInterval(() => {
 .challenge-icon {
     width: 50px;
     height: 50px;
-    background: #9f7aea;
+    background: #8a6b3f;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -9232,11 +9388,11 @@ setInterval(() => {
 
 /* Tempo por questão (opcional) */
 .timer-container {
-    background: rgba(229, 62, 62, 0.1);
+    background: rgba(184, 80, 63, 0.1);
     border-radius: 10px;
     padding: 15px;
     margin: 15px 0;
-    border: 1px solid rgba(229, 62, 62, 0.3);
+    border: 1px solid rgba(184, 80, 63, 0.3);
     display: none;
 }
 
@@ -9252,7 +9408,7 @@ setInterval(() => {
 }
 
 .timer-label {
-    color: #e53e3e;
+    color: #b8503f;
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -9268,14 +9424,14 @@ setInterval(() => {
 
 .timer-bar {
     height: 6px;
-    background: rgba(229, 62, 62, 0.2);
+    background: rgba(184, 80, 63, 0.2);
     border-radius: 3px;
     overflow: hidden;
 }
 
 .timer-progress {
     height: 100%;
-    background: linear-gradient(90deg, #e53e3e, #fc8181);
+    background: linear-gradient(90deg, #b8503f, #fc8181);
     border-radius: 3px;
     transition: width 1s linear;
 }
@@ -9309,17 +9465,17 @@ setInterval(() => {
 }
 
 .extra-card:hover {
-    border-color: rgba(0, 102, 204, 0.3);
+    border-color: rgba(28, 75, 115, 0.3);
     transform: translateY(-3px);
 }
 
 .extra-card.completed {
-    border-color: #38a169;
-    background: rgba(56, 161, 105, 0.05);
+    border-color: #4f9d6c;
+    background: rgba(79, 157, 108, 0.05);
 }
 
 .extra-card.completed .extra-status {
-    color: #38a169;
+    color: #4f9d6c;
 }
 
 .extra-header {
@@ -9330,8 +9486,8 @@ setInterval(() => {
 }
 
 .extra-category {
-    background: rgba(0, 102, 204, 0.2);
-    color: #4299e1;
+    background: rgba(28, 75, 115, 0.2);
+    color: #3f7ea6;
     padding: 3px 10px;
     border-radius: 12px;
     font-size: 0.8rem;
@@ -9339,7 +9495,7 @@ setInterval(() => {
 }
 
 .extra-xp {
-    color: #ffcc00;
+    color: #c9a13b;
     font-weight: 700;
     font-size: 0.9rem;
 }
@@ -9363,10 +9519,10 @@ setInterval(() => {
 .more-questions-btn {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(135deg, rgba(0, 102, 204, 0.1), rgba(0, 102, 204, 0.05));
-    border: 2px dashed #0066cc;
+    background: linear-gradient(135deg, rgba(28, 75, 115, 0.1), rgba(28, 75, 115, 0.05));
+    border: 2px dashed #1c4b73;
     border-radius: 10px;
-    color: #4299e1;
+    color: #3f7ea6;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -9378,8 +9534,8 @@ setInterval(() => {
 }
 
 .more-questions-btn:hover {
-    background: linear-gradient(135deg, rgba(0, 102, 204, 0.2), rgba(0, 102, 204, 0.1));
-    border-color: #4299e1;
+    background: linear-gradient(135deg, rgba(28, 75, 115, 0.2), rgba(28, 75, 115, 0.1));
+    border-color: #3f7ea6;
 }
 
 /* Modal de recompensa expandida */
@@ -9403,12 +9559,13 @@ setInterval(() => {
 }
 
 .reward-modal-content {
-    background: linear-gradient(145deg, #051223, #0a1929);
-    border-radius: 20px;
-    padding: 30px;
+    background: linear-gradient(145deg, #060f1c, #0d2038);
+    border-radius: 14px;
+    padding: 32px 30px;
     max-width: 500px;
     width: 100%;
-    border: 3px solid #ffcc00;
+    border: 1px solid #c9a13b;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 0 0 5px #060f1c, inset 0 0 0 6px rgba(201,161,59,0.4);
     text-align: center;
     position: relative;
     animation: scaleUp 0.5s ease;
@@ -9422,13 +9579,13 @@ setInterval(() => {
 .reward-modal-icon {
     width: 100px;
     height: 100px;
-    background: linear-gradient(135deg, #ffcc00, #ffaa00);
+    background: linear-gradient(135deg, #c9a13b, #a9812f);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 20px;
-    color: #003366;
+    color: #0d2038;
     font-size: 3rem;
     animation: bounce 1s ease infinite;
 }
@@ -9439,10 +9596,12 @@ setInterval(() => {
 }
 
 .reward-modal-title {
-    color: white;
-    font-size: 2rem;
+    color: #f5efdd;
+    font-size: 1.9rem;
     margin: 0 0 15px 0;
-    font-weight: 800;
+    font-weight: 700;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.02em;
 }
 
 .reward-modal-subtitle {
@@ -9465,7 +9624,7 @@ setInterval(() => {
 }
 
 .reward-stat-value {
-    color: #ffcc00;
+    color: #c9a13b;
     font-size: 1.5rem;
     font-weight: 700;
     display: block;
@@ -9479,15 +9638,15 @@ setInterval(() => {
 }
 
 .reward-xp-total {
-    background: linear-gradient(135deg, rgba(56, 161, 105, 0.2), rgba(56, 161, 105, 0.1));
-    border: 2px solid #38a169;
+    background: linear-gradient(135deg, rgba(79, 157, 108, 0.2), rgba(79, 157, 108, 0.1));
+    border: 2px solid #4f9d6c;
     border-radius: 12px;
     padding: 20px;
     margin: 25px 0;
 }
 
 .reward-xp-total-label {
-    color: #9ae6b4;
+    color: #bfe3cc;
     font-size: 1rem;
     margin-bottom: 10px;
     display: block;
@@ -9529,8 +9688,8 @@ setInterval(() => {
 }
 
 .ranking-item.you {
-    background: rgba(0, 102, 204, 0.1);
-    border-color: #0066cc;
+    background: rgba(28, 75, 115, 0.1);
+    border-color: #1c4b73;
 }
 
 .rank-position {
@@ -9547,8 +9706,8 @@ setInterval(() => {
 }
 
 .rank-position.top-1 {
-    background: linear-gradient(135deg, #ffcc00, #ffaa00);
-    color: #003366;
+    background: linear-gradient(135deg, #c9a13b, #a9812f);
+    color: #0d2038;
 }
 
 .rank-position.top-2 {
@@ -9566,7 +9725,7 @@ setInterval(() => {
 }
 
 .rank-xp {
-    color: #ffcc00;
+    color: #c9a13b;
     font-weight: 700;
     font-size: 0.95rem;
 }
@@ -9590,7 +9749,7 @@ setInterval(() => {
 .review-icon {
     width: 50px;
     height: 50px;
-    background: #4299e1;
+    background: #3f7ea6;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -9628,9 +9787,9 @@ setInterval(() => {
 }
 
 .review-btn.active {
-    background: #4299e1;
+    background: #3f7ea6;
     color: white;
-    border-color: #4299e1;
+    border-color: #3f7ea6;
 }
 
 /* Ajustes responsivos */
@@ -9670,13 +9829,13 @@ setInterval(() => {
 }
 /* Adicione ao seu CSS existente */
 .quiz-restart-btn {
-    background: rgba(229, 62, 62, 0.1) !important;
-    color: #e53e3e !important;
-    border: 1px solid rgba(229, 62, 62, 0.3) !important;
+    background: rgba(184, 80, 63, 0.1) !important;
+    color: #b8503f !important;
+    border: 1px solid rgba(184, 80, 63, 0.3) !important;
 }
 
 .quiz-restart-btn:hover {
-    background: rgba(229, 62, 62, 0.2) !important;
+    background: rgba(184, 80, 63, 0.2) !important;
 }
 
 .question-status {
@@ -9688,8 +9847,8 @@ setInterval(() => {
 }
 
 .question-status.answered {
-    background: rgba(56, 161, 105, 0.2);
-    color: #38a169;
+    background: rgba(79, 157, 108, 0.2);
+    color: #4f9d6c;
 }
 
 .question-status.pending {
@@ -9804,9 +9963,9 @@ setInterval(() => {
     z-index: 9999;
     
     /* Design */
-    background: linear-gradient(135deg, #0a1e3a, #05152b);
-    border: 2px solid #ffd700;
-    border-radius: 50px;
+    background: linear-gradient(135deg, #0d2038, #05152b);
+    border: 1px solid #8a6b28;
+    border-radius: 16px;
     padding: 6px 14px 6px 8px;
     
     /* Flexbox */
@@ -9815,7 +9974,8 @@ setInterval(() => {
     gap: 0;
     
     /* Sombras */
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(217, 181, 74, 0.3),
+        inset 0 0 0 3px rgba(6,15,28,0.6), inset 0 0 0 4px rgba(201,161,59,0.25);
     
     /* Transição */
     transition: all 0.3s ease;
@@ -9835,12 +9995,12 @@ setInterval(() => {
 
 .cerimonial-floating-btn:hover {
     transform: translateX(-50%) translateY(-3px);
-    border-color: #ffed4a;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8), 0 0 0 2px rgba(255, 215, 0, 0.5);
+    border-color: #e8c76b;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8), 0 0 0 2px rgba(217, 181, 74, 0.5);
 }
 
 .cerimonial-floating-btn:focus-visible {
-    outline: 2px solid #ffed4a;
+    outline: 2px solid #e8c76b;
     outline-offset: 3px;
 }
 
@@ -9863,7 +10023,7 @@ setInterval(() => {
     cursor: pointer;
 }
 .fab-zone-profile:hover {
-    background: rgba(255, 215, 0, 0.1);
+    background: rgba(217, 181, 74, 0.1);
 }
 .fab-zone-profile:active {
     transform: scale(0.96);
@@ -9881,7 +10041,7 @@ setInterval(() => {
     width: 1px;
     align-self: stretch;
     margin: 10px 10px;
-    background: linear-gradient(to bottom, transparent, rgba(255, 215, 0, 0.35), transparent);
+    background: linear-gradient(to bottom, transparent, rgba(217, 181, 74, 0.35), transparent);
     flex-shrink: 0;
 }
 
@@ -9897,11 +10057,11 @@ setInterval(() => {
     padding: 4px 8px 4px 14px;
 }
 .fab-zone-quiz:hover {
-    background: rgba(255, 215, 0, 0.06);
+    background: rgba(217, 181, 74, 0.06);
 }
 .fab-zone-quiz:hover .fab-cta {
-    background: linear-gradient(135deg, #ffed4a, #ffcc00);
-    box-shadow: 0 3px 10px rgba(255, 215, 0, 0.5);
+    background: linear-gradient(135deg, #e8c76b, #c9a13b);
+    box-shadow: 0 3px 10px rgba(217, 181, 74, 0.5);
 }
 .fab-zone-quiz:active {
     transform: scale(0.98);
@@ -9912,9 +10072,9 @@ setInterval(() => {
     display: flex;
     align-items: center;
     gap: 5px;
-    background: rgba(255, 215, 0, 0.15);
-    border: 1px solid rgba(255, 215, 0, 0.5);
-    color: #ffd700;
+    background: rgba(217, 181, 74, 0.15);
+    border: 1px solid rgba(217, 181, 74, 0.5);
+    color: #d9b54a;
     font-weight: 800;
     font-size: 0.72rem;
     text-transform: uppercase;
@@ -9925,7 +10085,7 @@ setInterval(() => {
     flex-shrink: 0;
 }
 .fab-zone-quiz:hover .fab-cta {
-    color: #0a1e3a;
+    color: #0d2038;
 }
 .fab-cta i {
     font-size: 0.65rem;
@@ -9940,20 +10100,21 @@ setInterval(() => {
     position: relative;
     width: 42px;
     height: 42px;
-    background: linear-gradient(145deg, #ffd700, #ffaa00);
+    background: linear-gradient(145deg, #d9b54a, #a9812f);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #0a1e3a;
+    color: #0d2038;
     font-size: 1.3rem;
-    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);
+    border: 1px solid #0d2038;
+    box-shadow: 0 4px 10px rgba(217, 181, 74, 0.4), 0 0 0 2px rgba(217,181,74,0.35);
     flex-shrink: 0;
     transition: transform .15s ease, box-shadow .15s ease;
 }
 .btn-icon-container:hover {
     transform: scale(1.08);
-    box-shadow: 0 4px 14px rgba(255, 215, 0, 0.65), 0 0 0 3px rgba(255, 215, 0, 0.25);
+    box-shadow: 0 4px 14px rgba(217, 181, 74, 0.65), 0 0 0 3px rgba(217, 181, 74, 0.25);
 }
 
 /* Badge de Nível — puramente decorativo: nunca deve "roubar" o clique da
@@ -9993,7 +10154,7 @@ setInterval(() => {
 }
 
 .xp-current {
-    color: #ffd700;
+    color: #d9b54a;
     font-weight: 700;
     font-size: 1.1rem;
 }
@@ -10018,15 +10179,15 @@ setInterval(() => {
 .rank-display {
     font-size: 0.95rem;
     font-weight: 800;
-    color: #0a1e3a;
+    color: #0d2038;
     text-transform: uppercase;
     letter-spacing: 0.4px;
-    background: linear-gradient(135deg, #ffd700, #ffaa00);
+    background: linear-gradient(135deg, #d9b54a, #a9812f);
     padding: 2px 10px;
     border-radius: 20px;
     display: inline-block;
     margin-top: 2px;
-    box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 2px 6px rgba(217, 181, 74, 0.4);
     width: fit-content;
 }
 
@@ -10042,8 +10203,8 @@ setInterval(() => {
     animation: avatarPulseConvite 2s infinite;
 }
 @keyframes avatarPulseConvite {
-    0%, 100% { box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4); }
-    50% { box-shadow: 0 4px 16px rgba(255, 215, 0, 0.9); }
+    0%, 100% { box-shadow: 0 4px 10px rgba(217, 181, 74, 0.4); }
+    50% { box-shadow: 0 4px 16px rgba(217, 181, 74, 0.9); }
 }
 
 /* Status */
@@ -10061,7 +10222,7 @@ setInterval(() => {
     background: rgba(255, 255, 255, 0.1);
     padding: 4px 10px;
     border-radius: 30px;
-    border: 1px solid rgba(255, 215, 0, 0.3);
+    border: 1px solid rgba(217, 181, 74, 0.3);
 }
 
 .streak-badge i {
@@ -10098,7 +10259,7 @@ setInterval(() => {
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #ffd700, #ffaa00);
+    background: linear-gradient(90deg, #d9b54a, #a9812f);
     transition: width 0.5s ease;
 }
 
@@ -15630,12 +15791,21 @@ function openCerimonialDia() {
     
     // Se já respondeu algumas questões hoje, restaurar o progresso
     if (userProgress.todayQuestions.length > 0 && !userProgress.hasNewQuiz()) {
-        // Encontrar última questão respondida
-        const lastAnsweredIndex = userProgress.todayQuestions.findIndex(q => q.answered);
-        if (lastAnsweredIndex >= 0) {
-            currentQuestionIndex = lastAnsweredIndex + 1;
-            
-            // Calcular score e XP acumulados
+        // BUG CORRIGIDO: usava findIndex() (acha a PRIMEIRA respondida) para
+        // decidir em qual questão continuar — então, ao responder 2 ou mais
+        // questões, fechar e reabrir o painel voltava sempre pra questão 2,
+        // "desfazendo" visualmente o progresso já feito. O que importa é
+        // quantas foram respondidas (elas são sempre respondidas em ordem).
+        const respondidas = userProgress.todayQuestions.filter(q => q.answered).length;
+        if (respondidas > 0) {
+            currentQuestionIndex = respondidas;
+
+            // Recalcular score e XP acumulados a partir do zero sempre —
+            // antes esses valores eram somados de novo a cada reabertura do
+            // painel (sem zerar primeiro), inflando o placar a cada vez que
+            // o usuário fechava e abria o Cerimonial do Dia na mesma visita.
+            score = 0;
+            totalXP = 0;
             userProgress.todayQuestions.forEach((q, index) => {
                 if (q.answered && q.correct && index < dailyQuestions.length) {
                     const question = dailyQuestions[index];
@@ -15986,6 +16156,18 @@ function showUserStatus() {
                     </div>
                 </div>
             </div>
+
+            ${dailyQuestions.length > 0 ? `
+            <div class="daily-progress" title="Progresso do cerimonial de hoje">
+                ${dailyQuestions.map((q, i) => {
+                    const registro = userProgress.todayQuestions[i];
+                    let estado = 'pending';
+                    if (registro && registro.answered) estado = registro.correct ? 'correct' : 'wrong';
+                    else if (i === currentQuestionIndex) estado = 'current';
+                    return `<span class="daily-progress-dot ${estado}"></span>`;
+                }).join('')}
+            </div>
+            ` : ''}
         </div>
         
         ${hasCompletedToday ? showQuizResults() : showWelcomeScreen()}
@@ -16534,13 +16716,15 @@ function checkAnswer() {
 
 function completeCerimonial() {
     userProgress.updateStreak();
-    
-    // Marcar questões como respondidas
-    userProgress.todayQuestions = dailyQuestions.map(q => ({
-        id: q.id,
-        answered: true,
-        correct: q.correct
-    }));
+
+    // BUG CORRIGIDO: aqui o código sobrescrevia userProgress.todayQuestions
+    // inteiro com `{ id, answered: true, correct: q.correct }` — só que
+    // "q.correct" é a LETRA da alternativa certa da pergunta (ex.: "b"),
+    // e não um true/false de "o usuário acertou". Isso apagava o histórico
+    // real (respondida certa/errada, o que foi selecionado) que já vinha
+    // sendo salvo corretamente, questão a questão, em showResultScreen().
+    // Basta marcar que o dia foi concluído — os registros por questão já
+    // estão certos e não precisam ser recriados aqui.
     userProgress.answeredToday = true;
     userProgress.saveProgress();
     
@@ -16559,12 +16743,13 @@ function showRewardModal() {
     
     // Atualizar conquistas
     checkAchievements();
-    
-    // Salvar as questões respondidas hoje
-    userProgress.todayQuestions = dailyQuestions.map(q => ({
-        id: q.id,
-        answered: true
-    }));
+
+    // BUG CORRIGIDO: este bloco sobrescrevia userProgress.todayQuestions de
+    // novo (a segunda vez na mesma jogada, depois de completeCerimonial()),
+    // desta vez removendo até o campo "correct" — sobrava só {id, answered}.
+    // O histórico por questão (acertou/errou, o que foi marcado) já está
+    // salvo corretamente desde showResultScreen(); só precisamos garantir
+    // que o dia ficou marcado como concluído.
     userProgress.answeredToday = true;
     userProgress.saveProgress();
     
@@ -22280,11 +22465,16 @@ if (honrasTable && cerimonialData.honrasPortalo) {
             this.pingIntervalo = setInterval(() => this.ping(), 20000);
 
             document.addEventListener('click', (e) => {
-                const wrap = document.getElementById('md-online-wrap');
-                const dropdown = document.getElementById('md-online-dropdown');
-                if (wrap && dropdown && !wrap.contains(e.target)) {
-                    dropdown.classList.remove('md-show');
-                }
+                [
+                    ['md-online-wrap', 'md-online-dropdown'],
+                    ['md-online-wrap-header', 'md-online-dropdown-header']
+                ].forEach(([wrapId, dropdownId]) => {
+                    const wrap = document.getElementById(wrapId);
+                    const dropdown = document.getElementById(dropdownId);
+                    if (wrap && dropdown && !wrap.contains(e.target)) {
+                        dropdown.classList.remove('md-show');
+                    }
+                });
             });
         },
 
@@ -22307,27 +22497,30 @@ if (honrasTable && cerimonialData.honrasPortalo) {
         },
 
         renderBadge(total) {
-            const el = document.getElementById('md-online-count');
-            if (el) el.textContent = total;
+            ['md-online-count', 'md-online-count-header'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = total;
+            });
         },
 
         renderLista(usuarios) {
-            const lista = document.getElementById('md-online-lista');
-            if (!lista) return;
-            if (!usuarios.length) {
-                lista.innerHTML = '<div class="md-online-vazio">Ninguém por aqui agora.</div>';
-                return;
-            }
-            lista.innerHTML = usuarios.map(u => `
-                <div class="md-online-item">
-                    <img src="${MarujoConta.avatarUrl(u)}" onerror="this.src='${MarujoConta.avatarFallback(u.nome)}'">
-                    <span>${MarujoConta.escapeHtml(u.nome)}</span>
-                </div>
-            `).join('');
+            const html = !usuarios.length
+                ? '<div class="md-online-vazio">Ninguém por aqui agora.</div>'
+                : usuarios.map(u => `
+                    <div class="md-online-item">
+                        <img src="${MarujoConta.avatarUrl(u)}" onerror="this.src='${MarujoConta.avatarFallback(u.nome)}'">
+                        <span>${MarujoConta.escapeHtml(u.nome)}</span>
+                    </div>
+                `).join('');
+            ['md-online-lista', 'md-online-lista-header'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = html;
+            });
         },
 
-        toggleDropdown() {
-            const dropdown = document.getElementById('md-online-dropdown');
+        toggleDropdown(which) {
+            const dropdownId = which === 'header' ? 'md-online-dropdown-header' : 'md-online-dropdown';
+            const dropdown = document.getElementById(dropdownId);
             if (dropdown) dropdown.classList.toggle('md-show');
         }
     };
