@@ -378,6 +378,43 @@
         font-size: 0.8rem;
     }
     .md-online-label { opacity: 0.85; font-weight: 600; }
+    .md-online-wrap-header { display: flex; align-items: center; gap: 6px; }
+    /* Avatares de quem está online, visíveis direto ao lado do contador —
+       sem precisar clicar para ver quem são. */
+    .md-online-avatars-header {
+        display: flex;
+        align-items: center;
+        padding-left: 4px;
+    }
+    .md-online-avatars-header img {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--bg-dark, #0a1929);
+        margin-left: -8px;
+        box-shadow: 0 0 0 1px rgba(255,204,0,0.4);
+        background: var(--bg-darker, #051223);
+    }
+    .md-online-avatars-header img:first-child { margin-left: 0; }
+    .md-online-avatars-mais {
+        margin-left: -8px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--primary-dark, #004d99);
+        border: 2px solid var(--bg-dark, #0a1929);
+        color: #fff;
+        font-size: 0.62rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    @media (max-width: 768px) {
+        .md-online-avatars-header img,
+        .md-online-avatars-mais { width: 20px; height: 20px; }
+    }
     .md-online-wrap-header .md-online-dropdown {
         top: calc(100% + 10px);
         left: 0;
@@ -3931,6 +3968,7 @@ audio::-webkit-media-controls-mute-button {
                     <span id="md-online-count-header">0</span>
                     <span class="md-online-label">online</span>
                 </button>
+                <div class="md-online-avatars-header" id="md-online-avatars-header"></div>
                 <div class="md-online-dropdown" id="md-online-dropdown-header">
                     <div class="md-online-dropdown-title">Online agora</div>
                     <div class="md-online-lista" id="md-online-lista-header">
@@ -3939,7 +3977,7 @@ audio::-webkit-media-controls-mute-button {
                 </div>
             </div>
             <button class="theme-toggle-btn" id="themeToggleBtn" title="Alternar modo claro/escuro" onclick="MDTheme.toggle()">🌙</button>
-            <div id="md-userbar"></div>
+            <div id="md-userbar" style="display:none;"></div>
         </div>
     </div>
 </header>
@@ -3974,6 +4012,11 @@ audio::-webkit-media-controls-mute-button {
             <div class="nav-item">
                 <a href="#apitos" class="nav-link" onclick="showSection('apitos', event)">
                     <i class="fas fa-volume-up"></i> Apitos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#musica" class="nav-link" onclick="event.preventDefault(); toggleMusicPanel(true);">
+                    <i class="fas fa-music"></i> Música
                 </a>
             </div>
             <div class="nav-item">
@@ -7529,6 +7572,171 @@ setInterval(() => {
 </section>
         
 <!-- Na área de conteúdo -->
+<style>
+/* ===== Seção de Música (buscar, ouvir e baixar) ===== */
+.md-music-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 6px 6px 6px 14px;
+    margin-bottom: 14px;
+}
+html[data-theme="light"] .md-music-search-bar {
+    background: rgba(10,41,80,0.05);
+    border-color: rgba(10,41,80,0.15);
+}
+.md-music-search-bar i.fa-search { color: var(--text-muted); font-size: 13px; }
+.md-music-search-bar input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    padding: 10px 0;
+}
+.md-music-search-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+.md-music-search-btn:hover { filter: brightness(1.1); }
+.md-music-search-btn:disabled { background: #555; cursor: not-allowed; opacity: 0.7; }
+
+.md-music-status {
+    margin-top: -4px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    font-weight: 600;
+    display: none;
+    align-items: center;
+    gap: 8px;
+}
+.md-music-status.show { display: flex; }
+.md-music-status.loading { color: var(--text-muted); }
+.md-music-status.error { color: #ff6b6b; }
+.md-music-status.success { color: #4ade80; }
+.md-music-spinner {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid rgba(255,204,0,0.25);
+    border-top-color: var(--accent);
+    animation: mdMusicSpin 0.7s linear infinite;
+    display: inline-block;
+}
+@keyframes mdMusicSpin { to { transform: rotate(360deg); } }
+
+.md-music-result-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    animation: mdMusicFadeIn 0.35s ease;
+}
+html[data-theme="light"] .md-music-result-card {
+    background: rgba(10,41,80,0.05);
+    border-color: rgba(10,41,80,0.12);
+}
+@keyframes mdMusicFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.md-music-result-thumb {
+    width: 64px; height: 64px; border-radius: 10px; object-fit: cover;
+    flex-shrink: 0; border: 2px solid var(--accent);
+}
+.md-music-result-info { flex: 1; min-width: 0; }
+.md-music-result-title {
+    font-weight: 700; font-size: 14px; margin-bottom: 4px; color: var(--text-primary);
+    overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+.md-music-result-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+.md-music-result-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.md-music-btn-ouvir, .md-music-btn-baixar {
+    border: none; border-radius: 10px; padding: 8px 14px; font-size: 12px; font-weight: 700;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    text-decoration: none; transition: 0.2s;
+}
+.md-music-btn-ouvir { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+.md-music-btn-ouvir.playing { background: var(--accent); color: #0a1929; }
+.md-music-btn-ouvir.loading, .md-music-btn-ouvir:disabled { background: #6b7280; cursor: wait; opacity: 0.85; }
+.md-music-btn-baixar {
+    background: rgba(255,255,255,0.06); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.15);
+}
+html[data-theme="light"] .md-music-btn-baixar { background: rgba(10,41,80,0.06); border-color: rgba(10,41,80,0.15); color: var(--text-primary); }
+.md-music-btn-baixar.loading { background: #6b7280; color: white; pointer-events: none; }
+
+.md-music-history-clear { font-size: 11px; color: var(--text-muted); cursor: pointer; margin-left: auto; text-decoration: underline; }
+
+.md-music-player-bar {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: 78px;
+    width: calc(100% - 32px); max-width: 680px;
+    background: linear-gradient(145deg, rgba(10,25,41,0.97), rgba(5,18,35,0.97));
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px; padding: 10px 14px;
+    display: none; align-items: center; gap: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    z-index: 850;
+}
+html[data-theme="light"] .md-music-player-bar {
+    background: linear-gradient(160deg, #ffffff, #eef3f9);
+    border-color: rgba(0,51,102,0.15);
+}
+.md-music-player-bar.show { display: flex; }
+.md-music-player-thumb { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+.md-music-player-info { flex: 1; min-width: 0; }
+.md-music-player-title {
+    font-size: 12px; font-weight: 700; color: var(--text-primary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;
+}
+.md-music-player-progress-row { display: flex; align-items: center; gap: 6px; }
+.md-music-player-time { font-size: 10px; color: var(--text-muted); min-width: 28px; }
+.md-music-player-seek {
+    flex: 1; height: 3px; -webkit-appearance: none; background: rgba(255,255,255,0.15);
+    border-radius: 2px; cursor: pointer; outline: none;
+}
+html[data-theme="light"] .md-music-player-seek { background: rgba(10,41,80,0.15); }
+.md-music-player-seek::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 11px; height: 11px; border-radius: 50%;
+    background: var(--accent); cursor: pointer;
+}
+.md-music-player-playbtn {
+    width: 38px; height: 38px; border-radius: 50%; border: none;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; cursor: pointer; font-size: 15px; display: flex;
+    align-items: center; justify-content: center; flex-shrink: 0; transition: 0.2s;
+}
+.md-music-player-playbtn:hover { filter: brightness(1.1); }
+.md-music-player-volume { display: none; align-items: center; gap: 6px; width: 80px; }
+.md-music-player-volume i { font-size: 11px; color: var(--text-muted); }
+.md-music-player-volume input {
+    flex: 1; height: 3px; -webkit-appearance: none; background: rgba(255,255,255,0.15);
+    border-radius: 2px; cursor: pointer; outline: none;
+}
+html[data-theme="light"] .md-music-player-volume input { background: rgba(10,41,80,0.15); }
+.md-music-player-volume input::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 11px; height: 11px; border-radius: 50%;
+    background: var(--accent); cursor: pointer;
+}
+@media (min-width: 640px) { .md-music-player-volume { display: flex; } }
+
+#radioAudioPlayer { display: none; }
+</style>
 <section id="apitos" class="content-section">
     <div class="content-card mobile-card">
         <div class="card-header">
@@ -7545,6 +7753,10 @@ setInterval(() => {
         </div>
     </div>
 </section>
+
+<!-- A seção de Música virou um botão flutuante (ver #music-fab-panel perto dos outros
+     botões flutuantes, próximo ao final do body) para não competir por espaço no meio
+     do conteúdo do cerimonial. -->
         <!-- Informações Gerais do PDF -->
         <section id="protocolos" class="content-section">
         <div class="content-card">
@@ -8156,11 +8368,11 @@ setInterval(() => {
     --naval-success: #4f9d6c;
     --naval-danger: #b8503f;
     position: fixed;
-    bottom: 20px;
+    bottom: 96px; /* acima da barra de botões flutuantes (chat/música/perfil), evita sobreposição */
     left: 50%;
     transform: translateX(-50%);
     width: 95%;
-    max-width: 500px;
+    max-width: 620px; /* mais largo/maior, como pedido */
     background:
         radial-gradient(circle at 15% 0%, rgba(232,199,107,0.06), transparent 40%),
         linear-gradient(145deg, var(--hull-1), var(--hull-2));
@@ -8171,7 +8383,7 @@ setInterval(() => {
         0 0 0 1px rgba(201, 161, 59, 0.25),
         inset 0 0 0 6px rgba(6, 15, 28, 0.35),
         inset 0 0 0 7px rgba(201, 161, 59, 0.35);
-    z-index: 1000;
+    z-index: 5000; /* fica acima do conteúdo normal, mas abaixo de painéis/modais (98000+) */
     padding: 0;
     overflow: hidden;
     display: none;
@@ -8242,15 +8454,15 @@ setInterval(() => {
 
 /* Selo/plaqueta de bússola em vez do quadrado com sombra genérica */
 .cerimonial-icon {
-    width: 48px;
-    height: 48px;
+    width: 56px;
+    height: 56px;
     background: radial-gradient(circle at 35% 30%, var(--parchment, #efe4c8), #cbb87f 78%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #0d2038;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     border: 2px solid var(--brass-hi, #e8c76b);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 0 0 4px rgba(201, 161, 59, 0.18), inset 0 1px 2px rgba(255,255,255,0.6);
     animation: cerimonialIconPulse 2.6s ease-in-out infinite;
@@ -8265,7 +8477,7 @@ setInterval(() => {
 .cerimonial-text h3 {
     color: #f5efdd;
     margin: 0;
-    font-size: 1.22rem;
+    font-size: 1.4rem;
     font-family: 'Cinzel', serif;
     font-weight: 700;
     letter-spacing: 0.02em;
@@ -8337,8 +8549,8 @@ setInterval(() => {
 
 /* Conteúdo do Cerimonial */
 .cerimonial-content {
-    padding: 25px;
-    max-height: 60vh;
+    padding: 28px;
+    max-height: 65vh;
     overflow-y: auto;
 }
 
@@ -9066,8 +9278,8 @@ html[data-theme="light"] .daily-progress-dot {
 /* Responsividade */
 @media (max-width: 768px) {
     .cerimonial-dia-container {
-        width: 90%;
-        bottom: 10px;
+        width: 92%;
+        bottom: 92px; /* deixa livre a faixa dos botões flutuantes (chat/música/perfil) no rodapé */
     }
     
     .cerimonial-content {
@@ -9111,9 +9323,9 @@ html[data-theme="light"] .daily-progress-dot {
     }
     
     .cerimonial-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2rem;
+        width: 48px;
+        height: 48px;
+        font-size: 1.3rem;
     }
     
     .quiz-buttons {
@@ -17105,107 +17317,137 @@ function updateCerimonialBadge() {
 }
 
 // Função expandida com MUITAS patentes - versão completa
-// ======================
-// PATENTE COMPLETA
-// ======================
 function getRankTitle(level) {
-    if (level >= 100) return "Almirante";
-    if (level >= 90) return "Almirante de Esquadra";
-    if (level >= 80) return "Vice-Almirante";
-    if (level >= 70) return "Contra-Almirante";
-
-    if (level >= 60) return "Capitão de Mar e Guerra";
-    if (level >= 50) return "Capitão de Fragata";
-    if (level >= 40) return "Capitão de Corveta";
-
-    if (level >= 35) return "Capitão-Tenente";
-    if (level >= 30) return "Primeiro-Tenente";
-    if (level >= 25) return "Segundo-Tenente";
-    if (level >= 20) return "Guarda-Marinha";
-    if (level >= 15) return "Aspirante";
-
-    if (level >= 12) return "Suboficial";
-    if (level >= 10) return "Primeiro-Sargento";
-    if (level >= 8) return "Segundo-Sargento";
-    if (level >= 6) return "Terceiro-Sargento";
-    if (level >= 4) return "Cabo";
-    if (level >= 2) return "Marinheiro";
-    if (level >= 1) return "Grumete";
-
-    return "Recruta";
+    // ALTOS COMANDOS E ALMIRANTADOS (níveis 50+)
+    if (level >= 100) return "Almirante da Armada";              // Lenda viva
+    if (level >= 90) return "Grande Almirante";                  // Posto histórico
+    if (level >= 80) return "Almirante-Mor";                     // Autoridade máxima
+    if (level >= 70) return "Almirante-Chefe do Estado-Maior";   // Comando estratégico
+    if (level >= 60) return "Almirante do Atlântico Sul";        // Comando de teatro
+    if (level >= 55) return "Almirante de Esquadra Especial";    // Posto de exceção
+    if (level >= 50) return "Almirante de Esquadra Sênior";      // Alta distinção
+    
+    // ALMIRANTES E OFICIAIS GERAIS (níveis 30-49)
+    if (level >= 45) return "Almirante de Esquadra";
+    if (level >= 40) return "Almirante de Frota";
+    if (level >= 35) return "Almirante de Divisão";
+    if (level >= 32) return "Vice-Almirante Sênior";
+    if (level >= 30) return "Vice-Almirante";
+    
+    // OFICIAIS SUPERIORES - ALTOS POSTOS (níveis 20-29)
+    if (level >= 28) return "Contra-Almirante Sênior";
+    if (level >= 26) return "Contra-Almirante";
+    if (level >= 24) return "Comodoro";                           // Posto histórico
+    if (level >= 22) return "Capitão de Mar e Guerra Sênior";
+    if (level >= 20) return "Capitão de Mar e Guerra";
+    
+    // OFICIAIS SUPERIORES - POSTOS INTERMEDIÁRIOS (níveis 15-19)
+    if (level >= 19) return "Capitão de Fragata Sênior";
+    if (level >= 18) return "Capitão de Fragata";
+    if (level >= 17) return "Capitão de Corveta Sênior";
+    if (level >= 16) return "Capitão de Corveta";
+    if (level >= 15) return "Capitão Tenente Sênior";
+    
+    // OFICIAIS INTERMEDIÁRIOS (níveis 10-14)
+    if (level >= 14) return "Capitão Tenente";
+    if (level >= 13) return "Primeiro Tenente Sênior";
+    if (level >= 12) return "Primeiro Tenente";
+    if (level >= 11) return "Segundo Tenente Sênior";
+    if (level >= 10) return "Segundo Tenente";
+    
+    // OFICIAIS SUBALTERNOS (níveis 5-9)
+    if (level >= 9) return "Guarda-Marinha Sênior";
+    if (level >= 8) return "Guarda-Marinha";
+    if (level >= 7) return "Aspirante Sênior";
+    if (level >= 6) return "Aspirante";
+    if (level >= 5) return "Suboficial Sênior";
+    
+    // PRAÇAS E GRADUAÇÕES (níveis 1-4)
+    if (level >= 4) return "Suboficial";
+    if (level >= 3) return "Sargento Sênior";
+    if (level >= 2) return "Sargento";
+    if (level >= 1) return "Marinheiro";
+    return "Recruta";  // Nível 0
 }
 
-// ======================
-// VERSÃO COMPACTA
-// ======================
+// Versão compacta para o botão flutuante (abreviada)
 function getCompactRankTitle(level) {
-    if (level >= 100) return "Alm.";
-    if (level >= 90) return "Alm. Esq.";
-    if (level >= 80) return "V. Alm.";
-    if (level >= 70) return "C. Alm.";
-
-    if (level >= 60) return "CMG";
-    if (level >= 50) return "CF";
-    if (level >= 40) return "CC";
-
-    if (level >= 35) return "CT";
-    if (level >= 30) return "1º Ten.";
-    if (level >= 25) return "2º Ten.";
-    if (level >= 20) return "GM";
-    if (level >= 15) return "Asp.";
-
-    if (level >= 12) return "Subof.";
-    if (level >= 10) return "1º Sgt.";
-    if (level >= 8) return "2º Sgt.";
-    if (level >= 6) return "3º Sgt.";
-    if (level >= 4) return "Cabo";
-    if (level >= 2) return "Mar.";
-    if (level >= 1) return "Grum.";
-
-    return "Rec.";
+    // ALTOS COMANDOS
+    if (level >= 100) return "Alm. Armada";
+    if (level >= 90) return "Gr. Alm.";
+    if (level >= 80) return "Alm. Mor";
+    if (level >= 70) return "Alm. CEMA";
+    if (level >= 60) return "Alm. AS";
+    if (level >= 55) return "Alm. Esp.";
+    if (level >= 50) return "Alm. Esq.";
+    
+    // ALMIRANTES
+    if (level >= 45) return "Alm. Esq.";
+    if (level >= 40) return "Alm. Frota";
+    if (level >= 35) return "Alm. Div.";
+    if (level >= 32) return "V. Alm.";
+    if (level >= 30) return "V. Alm.";
+    
+    // OFICIAIS SUPERIORES
+    if (level >= 28) return "C. Alm.";
+    if (level >= 26) return "C. Alm.";
+    if (level >= 24) return "Comodoro";
+    if (level >= 22) return "CMG";
+    if (level >= 20) return "CMG";
+    
+    // OFICIAIS INTERMEDIÁRIOS
+    if (level >= 18) return "CF";
+    if (level >= 16) return "CC";
+    if (level >= 14) return "CT";
+    if (level >= 12) return "1° Ten.";
+    if (level >= 10) return "2° Ten.";
+    
+    // OFICIAIS SUBALTERNOS
+    if (level >= 8) return "GM";
+    if (level >= 6) return "Asp.";
+    if (level >= 4) return "Subof.";
+    if (level >= 2) return "Sarg.";
+    return "Mar.";
 }
 
-// ======================
-// ÍCONES
-// ======================
+// Versão com ícones/emojis para feedback visual (opcional)
 function getRankIcon(level) {
-    if (level >= 90) return "⭐⭐⭐⭐⭐";
-    if (level >= 70) return "⭐⭐⭐⭐";
-    if (level >= 50) return "⭐⭐⭐";
-    if (level >= 30) return "⭐⭐";
-    if (level >= 10) return "⭐";
-    return "⚓";
+    if (level >= 80) return "⚓⚓⚓⚓⚓";  // 5 âncoras - Alto comando
+    if (level >= 60) return "⚓⚓⚓⚓";    // 4 âncoras - Almirantes
+    if (level >= 40) return "⚓⚓⚓";      // 3 âncoras - Oficiais superiores
+    if (level >= 20) return "⚓⚓";        // 2 âncoras - Oficiais
+    if (level >= 10) return "⚓";          // 1 âncora - Praças
+    return "⛵";                           // Barco a vela - Recruta
 }
 
-// ======================
-// DESCRIÇÕES
-// ======================
+// Função para descrição detalhada do posto (tooltip/hover)
 function getRankDescription(level) {
-    if (level >= 100) return "Posto mais elevado da Marinha do Brasil.";
-    if (level >= 90) return "Comanda grandes forças navais e exerce funções estratégicas.";
-    if (level >= 80) return "Oficial-general responsável por grandes comandos.";
-    if (level >= 70) return "Primeiro posto do oficialato-general.";
-
-    if (level >= 60) return "Comandante de grandes navios ou organizações militares.";
-    if (level >= 50) return "Comanda fragatas e exerce funções de Estado-Maior.";
-    if (level >= 40) return "Comanda corvetas e organizações militares.";
-
-    if (level >= 35) return "Oficial experiente preparado para o comando.";
-    if (level >= 30) return "Oficial intermediário da Marinha.";
-    if (level >= 25) return "Primeiros anos da carreira de oficial.";
-    if (level >= 20) return "Última etapa de formação antes do oficialato.";
-    if (level >= 15) return "Militar em preparação para tornar-se oficial.";
-
-    if (level >= 12) return "Praça mais graduada da Marinha.";
-    if (level >= 10) return "Sargento com ampla experiência e liderança.";
-    if (level >= 8) return "Sargento responsável por equipes e instrução.";
-    if (level >= 6) return "Primeira graduação de sargento.";
-    if (level >= 4) return "Praça graduada responsável por pequenas equipes.";
-    if (level >= 2) return "Militar especializado nas atividades operacionais.";
-    if (level >= 1) return "Militar em início de carreira.";
-
-    return "Recém-ingressado na Marinha.";
+    if (level >= 100) return "O mais alto posto naval, concedido apenas a grandes estrategistas.";
+    if (level >= 90) return "Posto histórico de comando máximo da Armada.";
+    if (level >= 80) return "Autoridade máxima em tempos de guerra.";
+    if (level >= 70) return "Chefe do Estado-Maior da Armada.";
+    if (level >= 60) return "Comandante das forças navais do Atlântico Sul.";
+    if (level >= 55) return "Posto especial para méritos extraordinários.";
+    if (level >= 50) return "O mais alto posto da hierarquia regular.";
+    if (level >= 45) return "Comanda esquadras inteiras da Marinha.";
+    if (level >= 40) return "Responsável por frotas de combate.";
+    if (level >= 35) return "Comanda divisões navais estratégicas.";
+    if (level >= 30) return "Oficial general de alta patente.";
+    if (level >= 26) return "Primeiro posto de oficial general.";
+    if (level >= 24) return "Posto histórico de comando.";
+    if (level >= 20) return "Comandante de navios de grande porte.";
+    if (level >= 18) return "Comandante de fragatas e navios médios.";
+    if (level >= 16) return "Comandante de corvetas e navios menores.";
+    if (level >= 14) return "Oficial sênior em navios de porte.";
+    if (level >= 12) return "Oficial subalterno experiente.";
+    if (level >= 10) return "Oficial subalterno em início de carreira.";
+    if (level >= 8) return "Oficial em fase de especialização.";
+    if (level >= 6) return "Oficial em formação.";
+    if (level >= 4) return "Praça especialista graduada.";
+    if (level >= 2) return "Praça graduada com experiência.";
+    return "Praça em treinamento básico.";
 }
+
 // Função para cor do posto (para UI)
 function getRankColor(level) {
     if (level >= 80) return "#FFD700";  // Ouro puro - Altíssimo comando
@@ -18555,7 +18797,9 @@ case 'insignias':
 case 'apitos':
     loadApitosSection();
     break;
-
+case 'musica':
+    carregarMusicaSection();
+    break;
 
     }
     } catch (e) {
@@ -21426,6 +21670,47 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 #md-profile-fab:active { transform: scale(0.94); }
 #md-profile-fab-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
+/* Botão flutuante de Música — fica empilhado acima do botão de perfil, no
+   canto direito, para não competir com o botão central do Cerimonial do Dia. */
+#music-fab {
+    position: fixed; bottom: 86px; right: 18px; z-index: 98000;
+    width: 50px; height: 50px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #b06cf7, #6a3093 70%);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 20px rgba(90,30,150,0.45), 0 0 0 1px rgba(0,0,0,0.15);
+    cursor: pointer; border: 1.5px solid var(--accent,#ffcc00);
+    font-size: 19px; color: #fff;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+#music-fab:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 10px 24px rgba(90,30,150,0.6); }
+#music-fab:active { transform: scale(0.94); }
+
+#music-fab-panel {
+    position: fixed; bottom: 144px; right: 16px; z-index: 98500;
+    width: 340px; max-width: calc(100vw - 32px); max-height: 55vh;
+    background: linear-gradient(170deg, var(--md-hull-2,#0d2038), var(--md-deep,#051223));
+    border: 1px solid rgba(255,204,0,0.3); border-radius: var(--md-radius, 14px);
+    display: none; flex-direction: column; overflow: hidden;
+    box-shadow: 0 20px 55px rgba(0,0,0,0.6);
+}
+#music-fab-panel.md-show { display: flex; animation: mdRise .25s ease; }
+.music-fab-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; font-weight: 700; color: #f5efdd;
+    background: linear-gradient(135deg, #6a3093, #4a1f6b);
+    border-bottom: 1px solid rgba(255,204,0,0.25); flex-shrink: 0;
+}
+.music-fab-close {
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 50%; width: 30px; height: 30px; color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+}
+.music-fab-body { padding: 16px; overflow-y: auto; }
+
+@media (max-width: 480px) {
+    #music-fab-panel { width: calc(100vw - 24px); right: 12px; }
+}
+
 /* Abas do chat unificado */
 .md-chat-tabs { display: flex; border-bottom: 1px solid var(--md-tint-008); flex-shrink: 0; }
 .md-chat-tab {
@@ -21718,6 +22003,56 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 <div id="md-profile-fab" onclick="MarujoConta.onFloatingAvatarClick()" title="Meu perfil">
     <img id="md-profile-fab-img" src="" alt="Perfil" style="display:none;">
     <span id="md-profile-fab-fallback">⚓</span>
+</div>
+
+<!-- Botão flutuante de Música: busca, ouve e baixa, sem ocupar espaço fixo na página -->
+<div id="music-fab" onclick="toggleMusicPanel()" title="Buscar música">
+    <i class="fas fa-music"></i>
+</div>
+<div id="music-fab-panel">
+    <div class="music-fab-header">
+        <span><i class="fas fa-music"></i> Buscar Música</span>
+        <button class="music-fab-close" onclick="toggleMusicPanel(false)" aria-label="Fechar">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="music-fab-body">
+        <div class="card-subtitle" style="margin-bottom:12px;">Digite o nome da música ou artista e escolha o que quer ouvir</div>
+
+        <div class="md-music-search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" id="musicSearchInput" placeholder="Ex: Anitta - Envolver" maxlength="80"
+                onkeydown="if(event.key === 'Enter'){ event.preventDefault(); buscarMusica(); }">
+            <button class="md-music-search-btn" id="musicSearchBtn" onclick="buscarMusica()">
+                <i class="fas fa-search"></i> Buscar
+            </button>
+        </div>
+        <div id="musicSearchStatus" class="md-music-status"></div>
+
+        <div id="musicResultCard" class="md-music-result-card" style="display:none;">
+            <img id="musicResultThumb" class="md-music-result-thumb" src="" alt="">
+            <div class="md-music-result-info">
+                <div id="musicResultTitle" class="md-music-result-title">—</div>
+                <div id="musicResultMeta" class="md-music-result-meta">—</div>
+                <div class="md-music-result-actions">
+                    <button class="md-music-btn-ouvir" id="musicBtnOuvir" onclick="tocarResultadoAtual()">
+                        <i class="fas fa-play"></i> Ouvir agora
+                    </button>
+                    <a class="md-music-btn-baixar" id="musicBtnBaixar" href="#" download target="_blank" rel="noopener" onclick="mostrarDownloadCarregando(this)">
+                        <i class="fas fa-download"></i> Baixar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="musicHistorySection" style="display:none; margin-top: 24px;">
+            <h3 class="section-title" style="display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-clock-rotate-left"></i> Pesquisas recentes
+                <span class="md-music-history-clear" onclick="limparHistoricoMusica()">limpar</span>
+            </h3>
+            <div id="musicHistoryList"></div>
+        </div>
+    </div>
 </div>
 <div id="md-chat-panel">
     <div class="md-chat-header">
@@ -22530,6 +22865,21 @@ if (honrasTable && cerimonialData.honrasPortalo) {
                 const el = document.getElementById(id);
                 if (el) el.innerHTML = html;
             });
+
+            // Avatares visíveis direto no cabeçalho, ao lado do contador —
+            // sem precisar clicar para ver quem está online.
+            const avatarsEl = document.getElementById('md-online-avatars-header');
+            if (avatarsEl) {
+                const MAX_AVATARES = 5;
+                const visiveis = usuarios.slice(0, MAX_AVATARES);
+                let htmlAvatares = visiveis.map(u => `
+                    <img src="${MarujoConta.avatarUrl(u)}" onerror="this.src='${MarujoConta.avatarFallback(u.nome)}'" title="${MarujoConta.escapeHtml(u.nome)}" alt="${MarujoConta.escapeHtml(u.nome)}">
+                `).join('');
+                if (usuarios.length > MAX_AVATARES) {
+                    htmlAvatares += `<span class="md-online-avatars-mais">+${usuarios.length - MAX_AVATARES}</span>`;
+                }
+                avatarsEl.innerHTML = htmlAvatares;
+            }
         },
 
         toggleDropdown(which) {
@@ -22880,6 +23230,323 @@ window.MDChat = {
         return window.MarujoConta ? window.MarujoConta.escapeHtml(str) : str;
     }
 };
+</script>
+
+<!-- Mini-player fixo da seção Música -->
+<div class="md-music-player-bar" id="musicPlayerBar">
+    <img id="musicPlayerThumb" class="md-music-player-thumb" src="" alt="">
+    <div class="md-music-player-info">
+        <div id="musicPlayerTitle" class="md-music-player-title">—</div>
+        <div class="md-music-player-progress-row">
+            <span id="musicPlayerTime" class="md-music-player-time">0:00</span>
+            <input type="range" id="musicPlayerSeek" class="md-music-player-seek" min="0" max="100" value="0" oninput="seekMusica(this.value)">
+            <span id="musicPlayerDuration" class="md-music-player-time">0:00</span>
+        </div>
+    </div>
+    <button class="md-music-player-playbtn" id="musicPlayerPlayBtn" onclick="toggleMusicaPlay()"><i class="fas fa-play"></i></button>
+    <div class="md-music-player-volume">
+        <i class="fas fa-volume-up"></i>
+        <input type="range" id="musicPlayerVolumeSlider" min="0" max="100" value="80" oninput="changeMusicaVolume(this.value)">
+    </div>
+</div>
+<audio id="radioAudioPlayer" preload="none"></audio>
+
+<script>
+// ==================== BUSCA E PLAYER DE MÚSICA (mesma lógica/endpoint /play do Fabi Bot) ====================
+
+const MD_MUSIC_HISTORY_KEY = 'marujodigital_music_history';
+const MD_MUSIC_GUEST_KEY = 'marujodigital_music_guest_id';
+let musicaAtual = null;       // { title, thumb, download, source }
+let musicaBuscando = false;
+let isMusicPlaying = false;
+
+function getMusicUserId() {
+    // Identificador exigido pela API /play
+    return (window.MarujoConta && window.MarujoConta.usuario && window.MarujoConta.usuario.id) || 'site';
+}
+
+function getMusicUserNome() {
+    // Nome/identificador de quem está pedindo, exigido pela API (mín. 3 caracteres)
+    const nome = (window.MarujoConta && window.MarujoConta.usuario && window.MarujoConta.usuario.nome) || '';
+    if (nome && nome.length >= 3) return nome;
+
+    let guestId = localStorage.getItem(MD_MUSIC_GUEST_KEY);
+    if (!guestId) {
+        guestId = 'marujo_' + Math.random().toString(36).substring(2, 9);
+        localStorage.setItem(MD_MUSIC_GUEST_KEY, guestId);
+    }
+    return guestId;
+}
+
+function getMusicHistory() {
+    try {
+        return JSON.parse(localStorage.getItem(MD_MUSIC_HISTORY_KEY) || '[]');
+    } catch { return []; }
+}
+
+function salvarNoHistoricoMusica(item) {
+    let historico = getMusicHistory().filter(h => h.download !== item.download);
+    historico.unshift({ ...item, timestamp: Date.now() });
+    historico = historico.slice(0, 8);
+    localStorage.setItem(MD_MUSIC_HISTORY_KEY, JSON.stringify(historico));
+    renderMusicHistory();
+}
+
+function limparHistoricoMusica() {
+    localStorage.removeItem(MD_MUSIC_HISTORY_KEY);
+    renderMusicHistory();
+}
+
+function renderMusicHistory() {
+    const section = document.getElementById('musicHistorySection');
+    const container = document.getElementById('musicHistoryList');
+    if (!section || !container) return;
+
+    const historico = getMusicHistory();
+    if (historico.length === 0) { section.style.display = 'none'; return; }
+
+    section.style.display = 'block';
+    container.innerHTML = historico.map((item, idx) => `
+        <div class="md-music-result-card" style="cursor:pointer; margin-bottom:10px;" onclick='tocarHistoricoMusica(${idx})'>
+            <img class="md-music-result-thumb" style="width:48px;height:48px;" src="${item.thumb || ''}" alt=""
+                 onerror="this.src='https://cdn-icons-png.flaticon.com/512/2965/2965874.png'">
+            <div class="md-music-result-info">
+                <div class="md-music-result-title" style="font-size:13px;">${item.title}</div>
+                <div class="md-music-result-meta">${(item.source && item.source.video) || 'Música'} · toque para ouvir de novo</div>
+            </div>
+            <i class="fas fa-play" style="color: var(--accent); font-size: 14px;"></i>
+        </div>
+    `).join('');
+}
+
+function tocarHistoricoMusica(idx) {
+    const item = getMusicHistory()[idx];
+    if (!item) return;
+    musicaAtual = item;
+    tocarResultadoAtual();
+}
+
+function setMusicStatus(msg, tipo) {
+    const el = document.getElementById('musicSearchStatus');
+    if (!el) return;
+    if (!msg) { el.className = 'md-music-status'; el.innerHTML = ''; return; }
+    el.className = `md-music-status show ${tipo || ''}`;
+    el.innerHTML = tipo === 'loading'
+        ? `<span class="md-music-spinner"></span> ${msg}`
+        : msg;
+}
+
+async function buscarMusica() {
+    if (musicaBuscando) return;
+    const input = document.getElementById('musicSearchInput');
+    const btn = document.getElementById('musicSearchBtn');
+    const query = (input?.value || '').trim();
+
+    if (query.length < 2) {
+        setMusicStatus('⚠️ Digite o nome de uma música ou artista.', 'error');
+        return;
+    }
+
+    musicaBuscando = true;
+    if (btn) { btn.disabled = true; }
+    setMusicStatus('Procurando a melhor versão da sua música...', 'loading');
+    document.getElementById('musicResultCard').style.display = 'none';
+
+    try {
+        const resp = await fetch('https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009/play', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                query,
+                userId: getMusicUserId(),
+                User: getMusicUserNome()
+            })
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok || !data.success) {
+            const mensagens = {
+                RATE_LIMIT_EXCEDIDO: '⏳ Você já tem uma busca em andamento. Aguarde ela terminar.',
+                QUERY_INVALIDA: '⚠️ Informe o nome da música corretamente.',
+                FALHA: data.message || '😕 Não encontramos essa música agora. Tente outro nome.'
+            };
+            setMusicStatus(mensagens[data.error] || data.message || '😕 Não foi possível buscar a música agora.', 'error');
+            return;
+        }
+
+        musicaAtual = {
+            title: data.title,
+            thumb: data.thumb,
+            download: data.download,
+            source: data.source
+        };
+
+        document.getElementById('musicResultThumb').src = data.thumb || '';
+        document.getElementById('musicResultTitle').textContent = data.title || 'Música encontrada';
+        document.getElementById('musicResultMeta').textContent =
+            `${(data.source && data.source.video) || 'Busca'} → ${(data.source && data.source.audio) || 'áudio'} · ${(data.stats && data.stats.total_time) || '?'}s`;
+        document.getElementById('musicBtnBaixar').href = data.download;
+        document.getElementById('musicResultCard').style.display = 'flex';
+        setOuvirBtnEstado('padrao');
+
+        setMusicStatus('✅ Música encontrada! Escolha "Ouvir agora" para tocar.', 'success');
+        salvarNoHistoricoMusica(musicaAtual);
+    } catch (err) {
+        console.error('Erro ao buscar música:', err);
+        setMusicStatus('❌ Falha de conexão. Tente novamente em instantes.', 'error');
+    } finally {
+        musicaBuscando = false;
+        if (btn) { btn.disabled = false; }
+    }
+}
+
+function mostrarDownloadCarregando(el) {
+    if (!el || el.classList.contains('loading') || !el.getAttribute('href') || el.getAttribute('href') === '#') return;
+    const htmlOriginal = el.innerHTML;
+    el.classList.add('loading');
+    el.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Baixando...';
+    setTimeout(() => {
+        el.classList.remove('loading');
+        el.innerHTML = htmlOriginal;
+    }, 4000);
+}
+
+function setOuvirBtnEstado(estado) {
+    // estado: 'carregando' | 'tocando' | 'padrao'
+    const btn = document.getElementById('musicBtnOuvir');
+    if (!btn) return;
+    btn.classList.remove('loading', 'playing');
+    btn.disabled = false;
+    if (estado === 'carregando') {
+        btn.disabled = true;
+        btn.classList.add('loading');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
+    } else if (estado === 'tocando') {
+        btn.classList.add('playing');
+        btn.innerHTML = '<i class="fas fa-pause"></i> Tocando';
+    } else {
+        btn.innerHTML = '<i class="fas fa-play"></i> Ouvir agora';
+    }
+}
+
+function tocarResultadoAtual() {
+    if (!musicaAtual) return;
+    const audio = document.getElementById('radioAudioPlayer');
+    if (!audio) return;
+
+    setOuvirBtnEstado('carregando');
+
+    audio.src = musicaAtual.download;
+    audio.load();
+    audio.play().catch(() => {
+        setOuvirBtnEstado('padrao');
+    });
+
+    document.getElementById('musicPlayerThumb').src = musicaAtual.thumb || '';
+    document.getElementById('musicPlayerTitle').textContent = musicaAtual.title || 'Tocando agora';
+    document.getElementById('musicPlayerBar').classList.add('show');
+}
+
+function toggleMusicaPlay() {
+    const audio = document.getElementById('radioAudioPlayer');
+    if (!audio || !audio.src) return;
+    if (isMusicPlaying) {
+        audio.pause();
+    } else {
+        const playBtn = document.getElementById('musicPlayerPlayBtn');
+        if (playBtn) playBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        audio.play().catch(() => {
+            if (playBtn) playBtn.innerHTML = '<i class="fas fa-play"></i>';
+        });
+    }
+}
+
+function changeMusicaVolume(v) {
+    const audio = document.getElementById('radioAudioPlayer');
+    if (audio) audio.volume = v / 100;
+}
+
+function seekMusica(percent) {
+    const audio = document.getElementById('radioAudioPlayer');
+    if (audio && audio.duration) audio.currentTime = (percent / 100) * audio.duration;
+}
+
+function formatarTempoMusica(segundos) {
+    if (!isFinite(segundos)) return '0:00';
+    const m = Math.floor(segundos / 60);
+    const s = Math.floor(segundos % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+}
+
+let mdMusicPlayerInicializado = false;
+function initMusicPlayer() {
+    if (mdMusicPlayerInicializado) return;
+    const audio = document.getElementById('radioAudioPlayer');
+    if (!audio) return;
+    mdMusicPlayerInicializado = true;
+
+    audio.volume = 0.8;
+
+    audio.addEventListener('waiting', () => {
+        setOuvirBtnEstado('carregando');
+        const playBtn = document.getElementById('musicPlayerPlayBtn');
+        if (playBtn) playBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    });
+    audio.addEventListener('playing', () => {
+        isMusicPlaying = true;
+        setOuvirBtnEstado('tocando');
+        const playBtn = document.getElementById('musicPlayerPlayBtn');
+        if (playBtn) playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    });
+    audio.addEventListener('pause', () => {
+        isMusicPlaying = false;
+        const playBtn = document.getElementById('musicPlayerPlayBtn');
+        if (playBtn) playBtn.innerHTML = '<i class="fas fa-play"></i>';
+        setOuvirBtnEstado('padrao');
+    });
+    audio.addEventListener('ended', () => {
+        setOuvirBtnEstado('padrao');
+    });
+    audio.addEventListener('timeupdate', () => {
+        if (!audio.duration) return;
+        const seek = document.getElementById('musicPlayerSeek');
+        if (seek) seek.value = (audio.currentTime / audio.duration) * 100;
+        const timeEl = document.getElementById('musicPlayerTime');
+        if (timeEl) timeEl.textContent = formatarTempoMusica(audio.currentTime);
+        const durEl = document.getElementById('musicPlayerDuration');
+        if (durEl) durEl.textContent = formatarTempoMusica(audio.duration);
+    });
+    audio.addEventListener('error', () => {
+        setOuvirBtnEstado('padrao');
+        const playBtn = document.getElementById('musicPlayerPlayBtn');
+        if (playBtn) playBtn.innerHTML = '<i class="fas fa-play"></i>';
+        setMusicStatus('⚠️ Não foi possível reproduzir esse link. Busque novamente.', 'error');
+    });
+}
+
+function carregarMusicaSection() {
+    initMusicPlayer();
+    renderMusicHistory();
+    document.getElementById('musicSearchInput')?.focus();
+}
+
+// Abre/fecha o painel flutuante de música. Chamar sem argumento alterna o estado atual;
+// passar true/false força abrir ou fechar.
+function toggleMusicPanel(force) {
+    const panel = document.getElementById('music-fab-panel');
+    if (!panel) return;
+    const isOpen = panel.classList.contains('md-show');
+    const shouldOpen = (typeof force === 'boolean') ? force : !isOpen;
+
+    panel.classList.toggle('md-show', shouldOpen);
+
+    if (shouldOpen) {
+        carregarMusicaSection();
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        document.querySelector('.nav-link[href="#musica"]')?.classList.add('active');
+    }
+}
 </script>
 
 </body>
