@@ -131,6 +131,18 @@
     
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089"
      crossorigin="anonymous"></script>
+    <script>
+    // Anúncios "âncora" (barra fixa embaixo) e "vinheta" (tela cheia) do AdSense
+    // ficam por cima do conteúdo com z-index altíssimo e são a causa mais comum
+    // de "preciso clicar 2x pra funcionar" — o primeiro toque acerta o anúncio
+    // invisível/transparente, não o botão. Aqui desligamos só esses dois formatos,
+    // os outros anúncios (in-feed, in-article, display normal) continuam ativos.
+    (window.adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-2351298778216089",
+        enable_page_level_ads: true,
+        overlays: { bottom: false }
+    });
+    </script>
 
     
     <!-- Font Awesome -->
@@ -23351,7 +23363,7 @@ let isMusicPlaying = false;
 
 function getMusicUserId() {
     // Identificador exigido pela API /play
-    return (window.MarujoConta && window.MarujoConta.usuario && window.MarujoConta.usuario.id) || 'site';
+    return 'site';
 }
 
 function getMusicUserNome() {
