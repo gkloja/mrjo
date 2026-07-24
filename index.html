@@ -15633,7 +15633,23 @@ function showNotification(message) {
 }
 
 function playSound(type) {
-    // Implementação básica de som
+    // Sons reais de apito para acerto/erro do quiz. Se o arquivo não
+    // carregar por algum motivo, cai no beep sintetizado como reserva.
+    if (type === 'correct' || type === 'wrong') {
+        const src = type === 'correct' ? './Apitos/vitória_1.mp3' : './Apitos/falha_1.mp3';
+        try {
+            const efeito = new Audio(src);
+            efeito.play().catch(() => playSoundSintetizado(type));
+            return;
+        } catch (e) {
+            // segue para o fallback sintetizado abaixo
+        }
+    }
+    playSoundSintetizado(type);
+}
+
+function playSoundSintetizado(type) {
+    // Implementação básica de som (fallback sintetizado)
     try {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         let frequency = 440;
@@ -15874,6 +15890,16 @@ function showResultScreen(isCorrect, xpEarned) {
     const isLastQuestion = currentQuestionIndex === dailyQuestions.length - 1;
     
     // Salvar o resultado da questão atual
+    // BUG CORRIGIDO: getDailyQuestions() já cria um "placeholder" para cada
+    // questão do dia (com answered: false) assim que o quiz é aberto — ou
+    // seja, quando o usuário responde a questão, o objeto em
+    // todayQuestions[currentQuestionIndex] JÁ EXISTIA, e o código caía
+    // sempre no ramo "else" abaixo, que nunca marcava answered: true.
+    // Resultado: se a pessoa saísse do Cerimonial antes de clicar em
+    // "Próxima Questão", a resposta não contava como respondida ao
+    // reabrir. Agora o answered: true é sempre marcado aqui, no momento
+    // em que o resultado aparece — que é quando a resposta realmente
+    // deve ser considerada salva, não quando avança para a próxima.
     if (!userProgress.todayQuestions[currentQuestionIndex]) {
         userProgress.todayQuestions[currentQuestionIndex] = {
             id: question.id,
@@ -15882,6 +15908,7 @@ function showResultScreen(isCorrect, xpEarned) {
             selected: selectedAnswer
         };
     } else {
+        userProgress.todayQuestions[currentQuestionIndex].answered = true;
         userProgress.todayQuestions[currentQuestionIndex].correct = isCorrect;
         userProgress.todayQuestions[currentQuestionIndex].selected = selectedAnswer;
     }
