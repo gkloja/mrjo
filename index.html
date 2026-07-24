@@ -14,13 +14,13 @@
     <meta name="google-adsense-account" content="ca-pub-2351298778216089">
 
     <!-- TÍTULO SEO (58 caracteres | alto CTR) -->
-    <title>Bizu do Marujo Digital | Cerimonial Bizurado da Marinha</title>
+    <title>Marujo Digital | Bizu, Antiguidade e Tripulação da Marinha</title>
 
     <!-- META DESCRIPTION (154 caracteres) -->
-    <meta name="description" content="Bizu Bizurado do Marujo Digital sobre o Cerimonial da Marinha do Brasil: bandeiras, sinais navais, protocolos, insígnias e toques de apito.">
+    <meta name="description" content="O bizu do marujo: bizu bizurado do Cerimonial da Marinha, consultas de antiguidade por turma, ranking, chat e comunidade da tripulação em um só lugar.">
 
     <!-- KEYWORDS (intenção + branding) -->
-    <meta name="keywords" content="Marujo Digital, Cerimonial Bizurado, Bizu, Bizu do marujo, Marujo Bizurado, Fonoclama, Cerimonial da Marinha, Marujo, Bizu Marinha, Bandeiras Navais, Sinais CIS ATP, Protocolo Naval, Insígnias Marinha, Toques de Apito">
+    <meta name="keywords" content="Marujo Digital, Cerimonial Bizurado, Bizu, Bizu do marujo, Marujo Bizurado, Fonoclama, Cerimonial da Marinha, Marujo, Bizu Marinha, Bandeiras Navais, Sinais CIS ATP, Protocolo Naval, Insígnias Marinha, Toques de Apito, Antiguidade Naval, Turma PAPA, Consulta NIP">
 
     <!-- Autor e Indexação -->
     <meta name="author" content="D4LEK">
@@ -47,18 +47,18 @@
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="Marujo Digital">
-    <meta property="og:title" content="Bizu do Marujo Digital | Cerimonial Bizurado da Marinha">
-    <meta property="og:description" content="Bizu completo sobre o Cerimonial da Marinha do Brasil, Todos os toques de apitos, Falas no fonoclama, Bandeiras, Sinais CIS e ATP, Procedimentos e notícias!">
+    <meta property="og:title" content="Marujo Digital | Os Bizu estão aqui!">
+    <meta property="og:description" content="Bizu completo do Cerimonial da Marinha, consulta de antiguidade por turma (NIP e nomes), ranking, chat, comunidade e muito mais. Tudo em um só lugar!">
     <meta property="og:url" content="https://marujodigital.onrender.com/">
     <meta property="og:image" content="https://marujodigital.onrender.com/imagens/logo.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Marujo Digital - Bizu do Cerimonial da Marinha">
+    <meta property="og:image:alt" content="Marujo Digital - Bizu, Antiguidade e Comunidade da Marinha">
 
     <!-- TWITTER CARD -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Bizu do Marujo Digital | Cerimonial da Marinha">
-    <meta name="twitter:description" content="O Bizu bizurado do cerimonial naval brasileiro.">
+    <meta name="twitter:title" content="Marujo Digital | Bizu e Antiguidade da Marinha">
+    <meta name="twitter:description" content="Bizu bizurado, consulta de antiguidade por turma e comunidade naval, tudo em um só lugar.">
     <meta name="twitter:image" content="https://marujodigital.onrender.com/imagens/logo.png">
 
     <!-- HREFLANG -->
@@ -75,9 +75,9 @@
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "Marujo Digital",
-        "alternateName": "Bizu do Marujo Digital – Cerimonial Bizurado da Marinha",
+        "alternateName": "Marujo Digital – Bizu, Antiguidade e Tripulação da Marinha",
         "url": "https://marujodigital.onrender.com",
-        "description": "Bizu educativo e bizurado sobre o Cerimonial da Marinha do Brasil",
+        "description": "Bizu educativo sobre o Cerimonial da Marinha do Brasil, consulta de antiguidade por turma e comunidade da tripulação",
         "inLanguage": "pt-BR",
         "isAccessibleForFree": true,
         "educationalUse": ["Military Training", "Naval Ceremonial", "Formal Protocol"],
@@ -2286,6 +2286,85 @@ audio::-webkit-media-controls-mute-button {
         position: relative;
         overflow: hidden;
     }
+
+    /* Grade de Turmas (seção Antiguidade) */
+    .turmas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .turma-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 22px 18px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .turma-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(255, 204, 0, 0.15);
+        border-color: rgba(255, 204, 0, 0.35);
+    }
+
+    .turma-card-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        color: #0a1929;
+        background: linear-gradient(135deg, var(--accent), #e6b800);
+        margin-bottom: 4px;
+    }
+
+    .turma-card-nome {
+        font-weight: 700;
+        color: var(--text-primary);
+        font-size: 1.05rem;
+    }
+
+    .turma-card-ano {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .turma-card-badge {
+        margin-top: 6px;
+        font-size: 0.75rem;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(0, 102, 204, 0.2);
+        color: var(--text-secondary);
+        letter-spacing: 0.03em;
+    }
+
+    .turma-card.em-breve {
+        opacity: 0.55;
+        cursor: default;
+    }
+
+    .turma-card.em-breve:hover {
+        transform: none;
+        box-shadow: none;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .turma-card.em-breve .turma-card-icon {
+        background: linear-gradient(135deg, #4a5a70, #33404f);
+        color: #cfd8e3;
+    }
     /* Adicione ao CSS existente */
 .flag-preview.barroso {
     background: linear-gradient(135deg, #8b0000, #b22222);
@@ -3968,7 +4047,7 @@ audio::-webkit-media-controls-mute-button {
             <!-- Texto -->
             <div class="logo-text">
                 <h1>Marujo Digital</h1>
-                <div class="subtitle">Cerimonial da Marinha</div>
+                <div class="subtitle"> Os Bizu estão aqui!</div>
             </div>
         </div>
 
@@ -4024,6 +4103,11 @@ audio::-webkit-media-controls-mute-button {
             <div class="nav-item">
                 <a href="#apitos" class="nav-link" onclick="showSection('apitos', event)">
                     <i class="fas fa-volume-up"></i> Apitos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#antiguidade" class="nav-link" onclick="showSection('antiguidade', event)">
+                    <i class="fas fa-medal"></i> Antiguidade
                 </a>
             </div>
             <div class="nav-item">
@@ -7603,6 +7687,72 @@ setInterval(() => {
 <!-- A seção de Música virou música ambiente automática (ver #ambient-music-btn perto dos outros
      botões flutuantes, próximo ao final do body) para não competir por espaço no meio
      do conteúdo do cerimonial. -->
+
+        <!-- NOVA SEÇÃO: ANTIGUIDADE - SELETOR DE TURMAS -->
+        <section id="antiguidade" class="content-section">
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Consulta de Antiguidade</h2>
+                        <div class="card-subtitle">Escolha a turma para ver a lista de formandos e comparar antiguidade</div>
+                    </div>
+                </div>
+
+                <div class="turmas-grid" id="turmasGrid">
+                    <!-- Cards de turma são renderizados via JavaScript -->
+                </div>
+            </div>
+        </section>
+        <script>
+        // Lista de turmas com consulta de antiguidade disponível.
+        // Para adicionar uma nova turma no futuro, basta incluir um novo
+        // objeto aqui (disponivel: true e a url da página da turma).
+        const turmasAntiguidade = [
+            {
+                nome: 'Turma PAPA',
+                ano: '2023',
+                url: 'turma-papa-2023.html',
+                disponivel: true
+            },
+            {
+                nome: 'Novas turmas',
+                ano: 'Em breve',
+                url: null,
+                disponivel: false
+            }
+        ];
+
+        function renderTurmasAntiguidade() {
+            const grid = document.getElementById('turmasGrid');
+            if (!grid) return;
+
+            grid.innerHTML = turmasAntiguidade.map(turma => {
+                const icone = turma.disponivel ? 'fa-medal' : 'fa-hourglass-half';
+                if (turma.disponivel) {
+                    return `
+                        <a class="turma-card" href="${turma.url}">
+                            <div class="turma-card-icon"><i class="fas ${icone}"></i></div>
+                            <div class="turma-card-nome">${turma.nome}</div>
+                            <div class="turma-card-ano">${turma.ano}</div>
+                            <div class="turma-card-badge">Ver antiguidade</div>
+                        </a>`;
+                }
+                return `
+                    <div class="turma-card em-breve">
+                        <div class="turma-card-icon"><i class="fas ${icone}"></i></div>
+                        <div class="turma-card-nome">${turma.nome}</div>
+                        <div class="turma-card-ano">${turma.ano}</div>
+                        <div class="turma-card-badge">Em breve</div>
+                    </div>`;
+            }).join('');
+        }
+
+        renderTurmasAntiguidade();
+        </script>
+
         <!-- Informações Gerais do PDF -->
         <section id="protocolos" class="content-section">
         <div class="content-card">
@@ -21306,6 +21456,56 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 }
 .md-modal p.md-sub { font-size: 13px; color: var(--text-secondary,#a8c7fa); margin-bottom: 18px; line-height: 1.5; }
 
+/* ---------- VIP ---------- */
+.md-vip-planos { display: flex; flex-direction: column; gap: 12px; margin: 6px 0 4px; }
+.md-vip-plano {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    border: 1px solid var(--md-tint-014,rgba(255,255,255,0.14)); border-radius: 12px;
+    padding: 14px 16px; cursor: pointer; background: var(--md-tint-005,rgba(255,255,255,0.05));
+    transition: border-color .15s, transform .15s;
+}
+.md-vip-plano:hover { border-color: var(--accent,#ffcc00); transform: translateY(-1px); }
+.md-vip-plano.md-vip-destaque { border-color: var(--accent,#ffcc00); position: relative; }
+.md-vip-plano.md-vip-destaque::after {
+    content: 'MAIS ESCOLHIDO'; position: absolute; top: -9px; right: 12px; background: var(--accent,#ffcc00);
+    color: #1a1a1a; font-size: 9px; font-weight: 800; letter-spacing: .04em; padding: 2px 8px; border-radius: 6px;
+}
+.md-vip-plano-nome { font-weight: 700; font-size: 15px; }
+.md-vip-plano-desc { font-size: 12px; color: var(--text-secondary,#a8c7fa); margin-top: 2px; }
+.md-vip-plano-preco { font-weight: 800; font-size: 17px; color: var(--accent,#ffcc00); white-space: nowrap; }
+.md-vip-plano-preco small { display: block; font-weight: 500; font-size: 10px; color: var(--text-secondary,#a8c7fa); }
+.md-vip-beneficios { list-style: none; padding: 0; margin: 0 0 16px; font-size: 13px; }
+.md-vip-beneficios li { padding: 5px 0; display: flex; gap: 8px; align-items: flex-start; }
+.md-vip-beneficios li::before { content: '✓'; color: var(--accent,#ffcc00); font-weight: 800; }
+
+.md-vip-pix-box { text-align: center; }
+.md-vip-pix-box img { width: 200px; height: 200px; border-radius: 10px; background: #fff; padding: 8px; margin: 4px auto 14px; display: block; }
+.md-vip-copia-wrap {
+    display: flex; gap: 6px; align-items: stretch; margin-bottom: 14px;
+}
+.md-vip-copia-wrap input {
+    flex: 1; min-width: 0; font-size: 11px; padding: 10px; border-radius: 8px;
+    border: 1px solid var(--md-tint-014,rgba(255,255,255,0.14)); background: var(--md-tint-005,rgba(255,255,255,0.05));
+    color: inherit;
+}
+.md-vip-status-linha { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; color: var(--text-secondary,#a8c7fa); margin-bottom: 14px; }
+.md-vip-spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--md-tint-014,rgba(255,255,255,0.14)); border-top-color: var(--accent,#ffcc00); animation: md-vip-girar .8s linear infinite; }
+@keyframes md-vip-girar { to { transform: rotate(360deg); } }
+
+.md-vip-erro { color: #ff6b6b; font-size: 12px; text-align: center; min-height: 16px; margin-bottom: 8px; }
+
+.md-vip-badge {
+    display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 800;
+    color: #1a1a1a; background: var(--accent,#ffcc00); padding: 2px 7px; border-radius: 6px; margin-left: 6px;
+    vertical-align: middle; letter-spacing: .02em;
+}
+.md-vip-ativo-card {
+    text-align: center; padding: 10px 4px 4px;
+}
+.md-vip-ativo-selo { font-size: 34px; margin-bottom: 6px; }
+.md-vip-ativo-card p { font-size: 13px; color: var(--text-secondary,#a8c7fa); margin: 4px 0; }
+.md-vip-ativo-card b { color: var(--accent,#ffcc00); }
+
 .md-tabs {
     display: flex; gap: 4px; margin-bottom: 18px;
     background: rgba(0,0,0,0.25); padding: 4px; border-radius: 12px;
@@ -21767,6 +21967,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
         <div class="md-erro" id="md-avatar-erro"></div>
         <button class="md-btn-primary" onclick="MarujoConta.fecharModal('md-perfil-overlay'); openCerimonialDia();">⚓ Cerimonial do Dia</button>
         <button class="md-btn-secondary" onclick="MarujoConta.abrirRanking()">🏆 Ver ranking</button>
+        <button class="md-btn-secondary" onclick="MarujoConta.fecharModal('md-perfil-overlay'); MDVip.abrir();">⭐ Assinar VIP</button>
         <button class="md-btn-ghost" onclick="MarujoConta.logout()">Sair da conta</button>
     </div>
 </div>
@@ -21778,6 +21979,57 @@ if (honrasTable && cerimonialData.honrasPortalo) {
         <h2>🏆 Ranking da Tripulação</h2>
         <p class="md-sub">Top marujos por XP acumulado no Bizu.</p>
         <div id="md-ranking-lista"></div>
+    </div>
+</div>
+
+<!-- Modal VIP -->
+<div class="md-overlay" id="md-vip-overlay">
+    <div class="md-modal">
+        <button class="md-modal-close" onclick="MDVip.fechar()">&times;</button>
+
+        <!-- Tela 1: já é VIP -->
+        <div id="md-vip-tela-ativo" style="display:none">
+            <div class="md-vip-ativo-card">
+                <div class="md-vip-ativo-selo">⭐</div>
+                <h2 style="margin-bottom:2px">Você é VIP!</h2>
+                <p>Plano <b id="md-vip-ativo-plano">—</b></p>
+                <p>Válido até <b id="md-vip-ativo-validade">—</b></p>
+                <p><b id="md-vip-ativo-perguntas">0/100</b> perguntas ao Tulho hoje</p>
+            </div>
+            <button class="md-btn-secondary" onclick="MDVip.fechar()">Fechar</button>
+        </div>
+
+        <!-- Tela 2: escolha de plano -->
+        <div id="md-vip-tela-planos">
+            <h2>⭐ Torne-se VIP</h2>
+            <p class="md-sub">Desbloqueie o Tulho sem limites (até 100 perguntas/dia) e outros privilégios de tripulação.</p>
+            <ul class="md-vip-beneficios">
+                <li>100 perguntas por dia ao Tulho (IA)</li>
+                <li>Selo VIP no chat e no ranking</li>
+                <li>Prioridade nas novidades do Marujo Digital</li>
+            </ul>
+            <div class="md-vip-planos" id="md-vip-planos-lista"></div>
+            <div class="md-vip-erro" id="md-vip-erro-planos"></div>
+        </div>
+
+        <!-- Tela 3: pagamento PIX -->
+        <div id="md-vip-tela-pix" style="display:none">
+            <h2>Pagamento via PIX</h2>
+            <p class="md-sub"><span id="md-vip-pix-plano-nome">Plano</span> — <b id="md-vip-pix-valor">R$ 0,00</b></p>
+            <div class="md-vip-pix-box">
+                <img id="md-vip-pix-qr" src="" alt="QR Code PIX">
+                <div class="md-vip-copia-wrap">
+                    <input type="text" id="md-vip-pix-copiacola" readonly>
+                    <button class="md-btn-primary" style="padding:8px 12px" onclick="MDVip.copiarCodigo()">Copiar</button>
+                </div>
+                <div class="md-vip-status-linha">
+                    <div class="md-vip-spinner"></div>
+                    <span id="md-vip-status-texto">Aguardando pagamento...</span>
+                </div>
+            </div>
+            <div class="md-vip-erro" id="md-vip-erro-pix"></div>
+            <button class="md-btn-ghost" onclick="MDVip.voltarParaPlanos()">‹ Escolher outro plano</button>
+        </div>
     </div>
 </div>
 
@@ -21899,6 +22151,8 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     // necessário pra falar com o backend real (br2.bronxyshost.com:4009).
     const API_BASE = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
     const API = `${API_BASE}/api/marujo`;
+    // Rotas do sistema VIP (montadas em app.get('/api/vip/...') no backend).
+    const API_VIP = `${API_BASE}/api/vip`;
     const FETCH_OPTS = { credentials: 'include' }; // mantido por compatibilidade (sessão), mas o token é quem garante o login
 
     // O cookie de sessão pode não sobreviver ao proxy (navegador trata como
@@ -21982,10 +22236,11 @@ if (honrasTable && cerimonialData.honrasPortalo) {
                 bar.innerHTML = `
                     <img class="md-avatar-mini" src="${this.avatarUrl(this.usuario)}" onerror="this.src='${this.avatarFallback(this.usuario.nome)}'">
                     <div class="md-userbar-info">
-                        <span class="md-userbar-nome">${this.escapeHtml(this.usuario.nome)}</span>
+                        <span class="md-userbar-nome">${this.escapeHtml(this.usuario.nome)}<span class="md-vip-badge" id="md-userbar-vip-badge" style="display:none">⭐ VIP</span></span>
                         <span class="md-userbar-nivel">Nível ${this.usuario.level} · ${this.usuario.pontosTotais} XP</span>
                     </div>`;
                 bar.onclick = () => this.abrirPerfil();
+                if (window.MDVip) window.MDVip.atualizarSeloUserbar();
             } else {
                 bar.classList.add('md-guest');
                 bar.innerHTML = `<span>⚓ Entrar</span>`;
@@ -22790,6 +23045,203 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 
     // Poll inicial de chat "fechado" pra já mostrar badge de não lidas
     setTimeout(() => { if (typeof MarujoConta !== 'undefined') MarujoConta.carregarMensagens(false); }, 4000);
+
+    // ---------------------------------------------------------
+    // MDVip: assinatura VIP via PIX (planos, pagamento, status)
+    // ---------------------------------------------------------
+    // Planos e rota batem com o backend real (PLANOS_VIP / POST /api/vip/gerar-pix).
+    const MDVip = {
+        PLANOS: [
+            { id: 'mensal', nome: 'VIP Mensal', dias: 30,  valor: 14.90,  destaque: false,
+              beneficios: ['Sem anúncios', 'Até 100 perguntas por dia', 'Design/moldura exclusiva na foto de perfil', 'Selo ⭐ VIP no menu', 'Prioridade nas respostas'] },
+            { id: 'anual',  nome: 'VIP Anual',  dias: 365, valor: 119.90, destaque: true,
+              beneficios: ['Sem anúncios', 'Até 100 perguntas por dia', 'Design/moldura exclusiva na foto de perfil', 'Selo ⭐ VIP no menu', 'Prioridade nas respostas', '2 meses de desconto'] },
+        ],
+
+        transacaoAtual: null,
+        pollTimer: null,
+
+        // ---- abrir/fechar ----
+        async abrir() {
+            if (!window.MarujoConta || !MarujoConta.logado) {
+                return MarujoConta.abrirAuth();
+            }
+            MarujoConta.fecharTodosOverlays();
+            document.getElementById('md-vip-overlay').classList.add('md-show');
+
+            document.getElementById('md-vip-tela-ativo').style.display = 'none';
+            document.getElementById('md-vip-tela-pix').style.display = 'none';
+            document.getElementById('md-vip-tela-planos').style.display = 'none';
+            this.renderPlanos();
+
+            const status = await this.consultarMeuStatus();
+            if (status && status.vip) {
+                this.mostrarTelaAtivo(status);
+            } else {
+                document.getElementById('md-vip-tela-planos').style.display = '';
+            }
+        },
+        fechar() {
+            document.getElementById('md-vip-overlay').classList.remove('md-show');
+            this.pararPolling();
+        },
+        voltarParaPlanos() {
+            this.pararPolling();
+            document.getElementById('md-vip-tela-pix').style.display = 'none';
+            document.getElementById('md-vip-tela-planos').style.display = '';
+        },
+
+        // ---- planos ----
+        renderPlanos() {
+            const box = document.getElementById('md-vip-planos-lista');
+            box.innerHTML = this.PLANOS.map(p => `
+                <div class="md-vip-plano ${p.destaque ? 'md-vip-destaque' : ''}" onclick="MDVip.escolherPlano('${p.id}')">
+                    <div>
+                        <div class="md-vip-plano-nome">${p.nome}</div>
+                        <div class="md-vip-plano-desc">${p.dias} dias de VIP</div>
+                    </div>
+                    <div class="md-vip-plano-preco">R$ ${p.valor.toFixed(2).replace('.', ',')}
+                        <small>${(p.valor / p.dias).toFixed(2).replace('.', ',')}/dia</small>
+                    </div>
+                </div>
+            `).join('');
+        },
+
+        async escolherPlano(planoId) {
+            const plano = this.PLANOS.find(p => p.id === planoId);
+            if (!plano) return;
+
+            const erroEl = document.getElementById('md-vip-erro-planos');
+            erroEl.textContent = '';
+
+            try {
+                // Backend real: POST /api/vip/gerar-pix, body { plano: 'mensal' | 'anual' }
+                const r = await authFetch(`${API_VIP}/gerar-pix`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ plano: plano.id })
+                });
+                const data = await r.json();
+                if (!r.ok || !data.success) {
+                    erroEl.textContent = data.error || 'Não foi possível gerar o pagamento. Tente novamente.';
+                    return;
+                }
+
+                this.transacaoAtual = { id: data.transactionId, plano };
+                this.mostrarTelaPix(data, plano);
+                this.iniciarPolling(data.transactionId);
+
+            } catch (e) {
+                console.error('[MDVip] Erro ao criar pagamento:', e);
+                erroEl.textContent = 'Falha de conexão ao gerar o PIX. Tente novamente.';
+            }
+        },
+
+        mostrarTelaPix(data, plano) {
+            document.getElementById('md-vip-tela-planos').style.display = 'none';
+            document.getElementById('md-vip-tela-pix').style.display = '';
+            document.getElementById('md-vip-erro-pix').textContent = '';
+            document.getElementById('md-vip-status-texto').textContent = 'Aguardando pagamento...';
+
+            document.getElementById('md-vip-pix-plano-nome').textContent = `Plano ${plano.nome}`;
+            document.getElementById('md-vip-pix-valor').textContent = `R$ ${plano.valor.toFixed(2).replace('.', ',')}`;
+
+            const qr = document.getElementById('md-vip-pix-qr');
+            // Backend real devolve data.qrCode (imagem, base64 ou data:URI) e
+            // data.copyPaste (o código "copia e cola"). Se qrCode não vier como
+            // imagem pronta, gera o QR a partir do copia-e-cola como fallback.
+            if (data.qrCode && data.qrCode.startsWith('data:')) {
+                qr.src = data.qrCode;
+            } else if (data.qrCode) {
+                qr.src = `data:image/png;base64,${data.qrCode}`;
+            } else if (data.copyPaste) {
+                qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data.copyPaste)}`;
+            } else {
+                qr.src = '';
+            }
+
+            document.getElementById('md-vip-pix-copiacola').value = data.copyPaste || '';
+        },
+
+        copiarCodigo() {
+            const input = document.getElementById('md-vip-pix-copiacola');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            navigator.clipboard?.writeText(input.value).catch(() => document.execCommand('copy'));
+        },
+
+        // ---- polling do status (equivalente ao monitor do backend, do lado do cliente) ----
+        iniciarPolling(transactionId) {
+            this.pararPolling();
+            this.pollTimer = setInterval(() => this.checarStatusPagamento(transactionId), 5000);
+            this.checarStatusPagamento(transactionId);
+        },
+        pararPolling() {
+            if (this.pollTimer) clearInterval(this.pollTimer);
+            this.pollTimer = null;
+        },
+
+        async checarStatusPagamento(transactionId) {
+            try {
+                const r = await authFetch(`${API_VIP}/status/${transactionId}`);
+                const data = await r.json();
+                if (!data.success) return;
+
+                const textoEl = document.getElementById('md-vip-status-texto');
+                if (data.status === 'approved') {
+                    this.pararPolling();
+                    textoEl.textContent = '✅ Pagamento aprovado! Bem-vindo a bordo, VIP.';
+                    setTimeout(async () => {
+                        const status = await this.consultarMeuStatus();
+                        document.getElementById('md-vip-tela-pix').style.display = 'none';
+                        this.mostrarTelaAtivo(status);
+                    }, 1200);
+                } else if (data.status === 'expired' || data.status === 'rejected' || data.status === 'cancelled') {
+                    this.pararPolling();
+                    document.getElementById('md-vip-erro-pix').textContent =
+                        data.status === 'expired' ? 'O PIX expirou. Gere um novo pagamento.' : 'Pagamento não aprovado. Tente novamente.';
+                    textoEl.textContent = 'Pagamento não concluído.';
+                }
+                // se 'pending', só continua esperando o próximo ciclo do polling
+            } catch (e) {
+                console.warn('[MDVip] Erro ao checar status do pagamento:', e);
+            }
+        },
+
+        // ---- meu status VIP ----
+        async consultarMeuStatus() {
+            if (!window.MarujoConta || !MarujoConta.logado) return { vip: false };
+            try {
+                const r = await authFetch(`${API_VIP}/meu-status`);
+                if (!r.ok) return { vip: false };
+                return await r.json();
+            } catch (e) {
+                console.warn('[MDVip] Erro ao consultar meu-status:', e);
+                return { vip: false };
+            }
+        },
+
+        mostrarTelaAtivo(status) {
+            document.getElementById('md-vip-tela-planos').style.display = 'none';
+            document.getElementById('md-vip-tela-pix').style.display = 'none';
+            document.getElementById('md-vip-tela-ativo').style.display = '';
+            document.getElementById('md-vip-ativo-plano').textContent = status.plano || '—';
+            document.getElementById('md-vip-ativo-validade').textContent =
+                status.expiraEm ? new Date(status.expiraEm).toLocaleDateString('pt-BR') : '—';
+            document.getElementById('md-vip-ativo-perguntas').textContent =
+                `${status.perguntasHoje || 0}/${status.limitePerguntas || 100}`;
+        },
+
+        // Chama isso depois do login pra já mostrar (ou não) o selinho ⭐
+        // no userbar sem precisar abrir o modal.
+        async atualizarSeloUserbar() {
+            const badge = document.getElementById('md-userbar-vip-badge');
+            if (!badge) return;
+            const status = await this.consultarMeuStatus();
+            badge.style.display = status.vip ? '' : 'none';
+        }
+    };
+    window.MDVip = MDVip;
 
     window.MarujoConta = MarujoConta;
 })();
