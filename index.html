@@ -23163,6 +23163,70 @@ function toggleAmbientMusic() {
 document.addEventListener('DOMContentLoaded', iniciarMusicaAmbiente);
 </script>
 
+<script>
+// ==================== SOM DE CLIQUE NOS BOTÕES (estilo DDTank, gerado no código) ====================
+let cliqueAudioCtx = null;
+function getCliqueAudioCtx() {
+    if (!cliqueAudioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        cliqueAudioCtx = new AC();
+    }
+    if (cliqueAudioCtx.state === 'suspended') cliqueAudioCtx.resume();
+    return cliqueAudioCtx;
+}
+
+// Bipe curto e "saltitante" (sobe de frequência e some rápido), como os
+// cliques de menu de jogos tipo DDTank. Varia um pouco de tom a cada clique
+// pra não ficar repetitivo/robótico.
+function tocarSomDeClique() {
+    if (ambientMusicEstaMudo && ambientMusicEstaMudo()) return; // respeita o botão de mudo do site
+    const ctx = getCliqueAudioCtx();
+    if (!ctx) return;
+
+    const agora = ctx.currentTime;
+    const variacao = 0.9 + Math.random() * 0.25; // pequena variação de tom por clique
+
+    const osc = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const ganho = ctx.createGain();
+
+    osc.type = 'triangle';
+    osc2.type = 'sine';
+
+    osc.frequency.setValueAtTime(620 * variacao, agora);
+    osc.frequency.exponentialRampToValueAtTime(920 * variacao, agora + 0.05);
+
+    osc2.frequency.setValueAtTime(1240 * variacao, agora);
+    osc2.frequency.exponentialRampToValueAtTime(1840 * variacao, agora + 0.05);
+
+    ganho.gain.setValueAtTime(0.0001, agora);
+    ganho.gain.exponentialRampToValueAtTime(0.22, agora + 0.012);
+    ganho.gain.exponentialRampToValueAtTime(0.0001, agora + 0.13);
+
+    osc.connect(ganho);
+    osc2.connect(ganho);
+    ganho.connect(ctx.destination);
+
+    osc.start(agora);
+    osc2.start(agora);
+    osc.stop(agora + 0.14);
+    osc2.stop(agora + 0.14);
+}
+
+// Delega num único listener no documento: toca o som pra qualquer clique em
+// botão, link, item de menu ou elemento com onclick — sem precisar mexer
+// em cada botão do site um por um.
+const SELETOR_ELEMENTOS_COM_SOM =
+    'button, a, .nav-link, [onclick], input[type="submit"], input[type="button"]';
+
+document.addEventListener('click', function(e) {
+    const alvo = e.target.closest(SELETOR_ELEMENTOS_COM_SOM);
+    if (!alvo || alvo.disabled) return;
+    tocarSomDeClique();
+}, true);
+</script>
+
 </body>
 </html>
 
