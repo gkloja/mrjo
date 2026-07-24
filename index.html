@@ -15285,6 +15285,14 @@ const userProgress = {
     level: localStorage.getItem('marujo_level') ? parseInt(localStorage.getItem('marujo_level')) : 1,
     streak: localStorage.getItem('marujo_streak') ? parseInt(localStorage.getItem('marujo_streak')) : 0,
     lastPlay: localStorage.getItem('marujo_lastPlay') ? new Date(localStorage.getItem('marujo_lastPlay')) : null,
+    // Data (toDateString) em que as questões de HOJE foram geradas/começadas.
+    // Separado de "lastPlay" de propósito: lastPlay só é atualizado quando o
+    // usuário TERMINA o cerimonial do dia (ver updateStreak(), chamado em
+    // completeCerimonial()). Se hasNewQuiz() dependesse de lastPlay, ao
+    // fechar e reabrir o painel no MEIO do quiz (ex.: 3/5 respondidas, sem
+    // ainda ter terminado), lastPlay ainda seria de ontem (ou nulo) e
+    // hasNewQuiz() acharia que é um novo dia, apagando o progresso já feito.
+    lastQuizDate: localStorage.getItem('marujo_lastQuizDate') || null,
     answeredToday: localStorage.getItem('marujo_answeredToday') === 'true',
     achievements: localStorage.getItem('marujo_achievements') ? JSON.parse(localStorage.getItem('marujo_achievements')) : {},
     
@@ -15378,6 +15386,7 @@ const userProgress = {
         localStorage.setItem('marujo_level', this.level);
         localStorage.setItem('marujo_streak', this.streak);
         localStorage.setItem('marujo_lastPlay', this.lastPlay);
+        localStorage.setItem('marujo_lastQuizDate', this.lastQuizDate);
         localStorage.setItem('marujo_answeredToday', this.answeredToday);
         localStorage.setItem('marujo_achievements', JSON.stringify(this.achievements));
         localStorage.setItem('marujo_settings', JSON.stringify(this.settings));
@@ -15398,6 +15407,7 @@ const userProgress = {
         this.level = 1;
         this.streak = 0;
         this.lastPlay = null;
+        this.lastQuizDate = null;
         this.answeredToday = false;
         this.achievements = {};
         this.stats = {
@@ -15422,14 +15432,9 @@ const userProgress = {
     },
     
     hasNewQuiz() {
-        if (!this.lastPlay) return true;
-        
-        const lastPlayDate = new Date(this.lastPlay);
-        const today = new Date();
-        
-        return lastPlayDate.getDate() !== today.getDate() || 
-               lastPlayDate.getMonth() !== today.getMonth() || 
-               lastPlayDate.getFullYear() !== today.getFullYear();
+        if (!this.lastQuizDate) return true;
+
+        return this.lastQuizDate !== new Date().toDateString();
     },
     
 getDailyQuestions() {
@@ -15447,6 +15452,12 @@ getDailyQuestions() {
         this.todayQuestions = [];
         this.answeredToday = false;
     }
+
+    // Marca que o quiz de hoje já foi gerado/iniciado. É isso que
+    // hasNewQuiz() passa a consultar — assim, fechar e reabrir o painel
+    // no meio do quiz (antes de terminar as 5 questões) não é mais
+    // confundido com "começou um dia novo".
+    this.lastQuizDate = new Date().toDateString();
     
     // Filtrar questões pelas categorias selecionadas
     let availableQuestions = quizDatabase.filter(q => 
