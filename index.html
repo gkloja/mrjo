@@ -1359,6 +1359,35 @@
     white-space: nowrap;
 }
 
+/* Solfejo do toque (ex.: "LAA MII LAAA") — mostrado em estilo "partitura",
+   monoespaçado, para ficar fácil de ler e memorizar a cadência do apito. */
+.apito-card-solfejo {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: rgba(255, 204, 0, 0.06);
+    border: 1px solid rgba(255, 204, 0, 0.25);
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+}
+
+.apito-card-solfejo i {
+    color: #ffcc00;
+    font-size: 0.8rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.apito-card-solfejo span {
+    font-family: 'Courier New', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #e8c76b;
+    line-height: 1.5;
+}
+
 /* Controles menores */
 .apito-controls-mobile {
     display: flex;
@@ -4142,7 +4171,12 @@ audio::-webkit-media-controls-mute-button {
     <nav class="navy-nav" id="mainNav">
         <div class="nav-menu">
             <div class="nav-item">
-                <a href="#bandeiras" class="nav-link active" onclick="showSection('bandeiras', event)">
+                <a href="#sinais" class="nav-link active" onclick="showSection('sinais', event)">
+                    <i class="fas fa-signal"></i> Sinais
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#bandeiras" class="nav-link" onclick="showSection('bandeiras', event)">
                     <i class="fas fa-flag"></i> Bandeiras
                 </a>
             </div>
@@ -4152,8 +4186,8 @@ audio::-webkit-media-controls-mute-button {
                 </a>
             </div>
             <div class="nav-item">
-                <a href="#sinais" class="nav-link" onclick="showSection('sinais', event)">
-                    <i class="fas fa-signal"></i> Sinais
+                <a href="#apitos" class="nav-link" onclick="showSection('apitos', event)">
+                    <i class="fas fa-volume-up"></i> Apitos
                 </a>
             </div>
             <div class="nav-item">
@@ -4162,18 +4196,13 @@ audio::-webkit-media-controls-mute-button {
                 </a>
             </div>
             <div class="nav-item">
-                <a href="#protocolos" class="nav-link" onclick="showSection('protocolos', event)">
-                    <i class="fas fa-book-open"></i> Protocolos
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="#apitos" class="nav-link" onclick="showSection('apitos', event)">
-                    <i class="fas fa-volume-up"></i> Apitos
-                </a>
-            </div>
-            <div class="nav-item">
                 <a href="#antiguidade" class="nav-link" onclick="showSection('antiguidade', event)">
                     <i class="fas fa-medal"></i> Antiguidade
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#protocolos" class="nav-link" onclick="showSection('protocolos', event)">
+                    <i class="fas fa-book-open"></i> Protocolos
                 </a>
             </div>
             <div class="nav-item">
@@ -7653,8 +7682,26 @@ setInterval(() => {
     <!-- Conteúdo Principal -->
     <main class="main-content" id="mainContent">
         
-        <!-- Seção Bandeiras (Ativa por padrão) -->
-        <section id="bandeiras" class="content-section active">
+        <!-- Seção Sinais (Ativa por padrão) -->
+        <section id="sinais" class="content-section active">
+            <div class="content-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-signal"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Códigos de Sinais</h2>
+                        <div class="card-subtitle">CIS e ATP</div>
+                    </div>
+                </div>
+                <div id="signalsContent">
+                    <!-- Conteúdo carregado dinamicamente -->
+                </div>
+            </div>
+        </section>
+
+        
+        <section id="bandeiras" class="content-section">
             <div class="content-card">
                 <div class="card-header">
                     <div class="card-icon">
@@ -7676,6 +7723,7 @@ setInterval(() => {
                 </div>
             </div>
         </section>
+
         
         <!-- Outras seções (inicialmente ocultas) -->
         <section id="insignias" class="content-section">
@@ -7694,24 +7742,31 @@ setInterval(() => {
                 </div>
             </div>
         </section>
+
         
-        <section id="sinais" class="content-section">
-            <div class="content-card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-signal"></i>
-                    </div>
-                    <div>
-                        <h2 class="card-title">Códigos de Sinais</h2>
-                        <div class="card-subtitle">CIS e ATP</div>
-                    </div>
-                </div>
-                <div id="signalsContent">
-                    <!-- Conteúdo carregado dinamicamente -->
-                </div>
+<!-- Na área de conteúdo -->
+<style>
+/* ===== Música ambiente (toca sozinha em loop, com botão de silenciar) ===== */
+#ambientMusicPlayer { display: none; }
+</style>
+<section id="apitos" class="content-section">
+    <div class="content-card mobile-card">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="fas fa-bullhorn"></i>
             </div>
-        </section>
-        
+            <div>
+                <h2 class="card-title">Apitos Marinheiros</h2>
+                <div class="card-subtitle">Toques e Sinais Sonoros</div>
+            </div>
+        </div>
+        <div id="apitosContent">
+            <!-- Conteúdo será carregado via JavaScript -->
+        </div>
+    </div>
+</section>
+
+
         <!-- NOVA SEÇÃO: FONOCLAMA - FALAS PADRONIZADAS -->
 <section id="fonoclama" class="content-section">
     <div class="content-card">
@@ -7750,33 +7805,8 @@ setInterval(() => {
         </div>
     </div>
 </section>
+
         
-<!-- Na área de conteúdo -->
-<style>
-/* ===== Música ambiente (toca sozinha em loop, com botão de silenciar) ===== */
-#ambientMusicPlayer { display: none; }
-</style>
-<section id="apitos" class="content-section">
-    <div class="content-card mobile-card">
-        <div class="card-header">
-            <div class="card-icon">
-                <i class="fas fa-bullhorn"></i>
-            </div>
-            <div>
-                <h2 class="card-title">Apitos Marinheiros</h2>
-                <div class="card-subtitle">Toques e Sinais Sonoros</div>
-            </div>
-        </div>
-        <div id="apitosContent">
-            <!-- Conteúdo será carregado via JavaScript -->
-        </div>
-    </div>
-</section>
-
-<!-- A seção de Música virou música ambiente automática (ver #ambient-music-btn perto dos outros
-     botões flutuantes, próximo ao final do body) para não competir por espaço no meio
-     do conteúdo do cerimonial. -->
-
         <!-- NOVA SEÇÃO: ANTIGUIDADE - SELETOR DE TURMAS -->
         <section id="antiguidade" class="content-section">
             <div class="content-card">
@@ -7842,7 +7872,8 @@ setInterval(() => {
         renderTurmasAntiguidade();
         </script>
 
-        <!-- Informações Gerais do PDF -->
+
+                <!-- Informações Gerais do PDF -->
         <section id="protocolos" class="content-section">
         <div class="content-card">
             <div class="card-header">
@@ -17713,76 +17744,99 @@ const apitosData = {
     continencia: [
         { 
             nome: "Presidente da República", 
+            solfejo: `Indo a bordo: RAA RIIII RAAAA (chamada) + LAA MII LAA MI (7x)
+Passando ao largo: LAA MII LAA MI (7x) e 7 vivas`,
             audio: "./Apitos/presrep.mp3",
             download: "./Apitos/presrep.zip"
         },
         { 
             nome: "Comandante da Marinha", 
+            solfejo: `Indo a bordo: RAAA RIIIIII RAAAAAA (chamada) + LAAA MIII LAAA MI (4x) e LAAA MIII LAAA MI LAAAA (p/ encerrar)
+Passando ao largo: LAAA MIII LAAA MI (4x) e LAAA MIII LAAA MI LAAAA (p/ encerrar)`,
             audio: "./Apitos/cm.mp3",
             download: "./Apitos/cm.zip"
         },
         { 
             nome: "Autoridade que vence salvas de 19 tiros", 
+            solfejo: `Indo a bordo: RAAA RIIIIII RAAAAAA (chamada) + LAAA MIII LAAA MI (5x)
+Passando ao largo: LAAA MIII LAAA MI (5x)`,
             audio: "./Apitos/vencesalva.mp3",
             download: "./Apitos/vencesalva.zip"
         },
         { 
             nome: "Chefe do Estado Maior da Armada", 
+            solfejo: `Indo a bordo: RAA RIIII RAAAA ## (chamada) + LA LAAAA LAAAA LA MI ## LA LAAAA MI (3x)
+Passando ao largo: LA LAAAA LAAAA LA MI ## LA LAAAA MI (3x)`,
             audio: "./Apitos/cema_0.mp3",
             download: "./Apitos/cema.zip"
         },
         { 
             nome: "Comandante de Operações Navais", 
+            solfejo: `Indo a bordo: RAA RIIII RAAAA ## (chamada) + LA LAAAA LAAAA LA MI ## LA LAAAA MI (3x)
+Passando ao largo: LA LAAAA LAAAA LA MI ## LA LAAAA MI (3x)`,
             audio: "./Apitos/comopnav.mp3",
             download: "./Apitos/comopnav.zip"
         },
         { 
             nome: "Comandante-em-Chefe da Esquadra", 
+            solfejo: `Indo a bordo: RAA RIIII RAAAA ## (chamada) + LAA LAA LAA MI ## LAAA LAAAA MI (3x)
+Passando ao largo: LAA LAA LAA MI ## LAAA LAAAA MI (3x)`,
             audio: "./Apitos/comemch.mp3",
             download: "./Apitos/comemch.zip"
         },
         { 
             nome: "Oficial General Comandante de Força", 
+            solfejo: `Indo a bordo: RAA RIIII RAAAA ## (chamada) + LAA LAA LAA MI LA MI (3x)`,
             audio: "./Apitos/ofgeneralcomtedeforca.mp3",
             download: "./Apitos/ofgeneralcomtedeforca.zip"
         },
         { 
             nome: "Oficial General Comandante", 
+            solfejo: `No próprio: RAA RIIII RAAAA ## (chamada) + LAAAA LAAAA LAAAA LA MI LA ## LAAAA MI (3x)`,
             audio: "./Apitos/ofgeneralcomandante_0.mp3",
             download: "./Apitos/ofgeneralcomandante.zip"
         },
         { 
             nome: "Oficial General", 
+            solfejo: `Indo a bordo: RAA RIIII RAAAA ## (chamada) + LAAAA LAAAA LA MI # LAA MI (3x)
+Passando ao largo: LAAAA LAAAA LA MI # LAA MI (3x)`,
             audio: "./Apitos/ofgeneral_0.mp3",
             download: "./Apitos/ofgeneral.zip"
         },
         { 
             nome: "Oficial Superior Comandante de Força", 
+            solfejo: `Indo a bordo: RA RI RA ## (chamada) + LAA LAA LAA MI LA MI (2x)
+Passando ao largo: LAA LAA LAA MI LA MI (2x)`,
             audio: "./Apitos/ofsupcomteforca.mp3",
             download: "./Apitos/ofsupcomteforca.zip"
         },
         { 
             nome: "Oficial Superior", 
+            solfejo: `RA RI RA # (chamada) + LA MI LAA MI ### LA MI LA # LAAAA MI`,
             audio: "./Apitos/ofsuppresenca.mp3",
             download: "./Apitos/ofsuppresenca.zip"
         },
         { 
             nome: "Imediato", 
+            solfejo: `RA RI RA ### (chamada) + MI LA #### LAAA MI (2x)`,
             audio: "./Apitos/imediato.mp3",
             download: "./Apitos/imediato.zip"
         },
         { 
             nome: "Oficial Intermediário Comandante", 
+            solfejo: `No próprio: RA RI RA # (chamada) + LAA RII ## LAA RIII RIIII ## LAA RIII # LAAAA`,
             audio: "./Apitos/ofintermediariocomte.mp3",
             download: "./Apitos/ofintermediariocomte.zip"
         },
         { 
             nome: "Oficial Intermediário", 
+            solfejo: `RA RI RA # (chamada) + LA MI ### LAAA MI # MI LA LAAAA MI`,
             audio: "./Apitos/ofintermediario.mp3",
             download: "./Apitos/ofintermediario.zip"
         },
         { 
             nome: "Oficial Subalterno", 
+            solfejo: `RA RI RA # (chamada) + LAAA MI #### LA MI (2x)`,
             audio: "./Apitos/ofsubalterno.mp3",
             download: "./Apitos/ofsubalterno.zip"
         }
@@ -17790,261 +17844,313 @@ const apitosData = {
     rotina: [
         { 
             nome: "Acelerar", 
+            solfejo: `LA MI MII MI LAA ## LA MI MI MI LAA ## LA MI MI MI LA ## LAA MI MII MI LAA`,
             audio: "./Apitos/acelerar.mp3",
             download: "./Apitos/acelerar.zip"
         },
         { 
             nome: "Alvorada (Faxina)", 
+            solfejo: `LA MI LA MIIII LAAA ## LA MII (5x) e LA MII LAAAA (p/ encerrar)`,
             audio: "./Apitos/alvorada.mp3",
             download: "./Apitos/alvorada.zip"
         },
         { 
             nome: "Arejamento de Andainas", 
+            solfejo: `LA MI LA MIIII LAAAA # LA MI LA MII LAA LAA LAAAA`,
             audio: "./Apitos/arejamentodeandainas.mp3",
             download: "./Apitos/arejamentodeandainas.zip"
         },
         { 
             nome: "Baldeação", 
+            solfejo: `LAA LAA LAA MII MII MIII MIII MII MI LAA ###### LAA LAA LAA MII MII MIII MIII MI MI LAA #### LAAA MII ## LAA LAAAA MII #### LA MI LA LAAAA MII #### LAA LAA LAA LAA MII LAA MII LAA MII MII LAA MII LAA LAAAA MII LA MII LA MII LA MII LAMII LA MII LA MII LAAAA MII LAA MII LAAA LAAAA MII MII`,
             audio: "./Apitos/baldeacao.mp3",
             download: "./Apitos/baldeacao.zip"
         },
         { 
             nome: "Banho de Água Doce para a Guarnição", 
+            solfejo: `LAA MII LAA MII RAAAAA`,
             audio: "./Apitos/banhodeaguadoceparaaguarnicao.mp3",
             download: "./Apitos/banhodeaguadoceparaaguarnicao_0.zip"
         },
         { 
             nome: "Banho de Mar", 
+            solfejo: `LAA MII LAA MII RAAAA LAAA LAAA MIII LAAA LAA`,
             audio: "./Apitos/banhodemar.mp3",
             download: "./Apitos/banhodemar_0.zip"
         },
         { 
             nome: "Banho de Sol e Ducha", 
+            solfejo: `LAA MII LAA MII RAAAA LAAA LAAA MIII LAA MII LAAA LAAAA`,
             audio: "./Apitos/banhodesoleducha.mp3",
             download: "./Apitos/banhodesoleducha.zip"
         },
         { 
             nome: "Boys ao Portaló", 
+            solfejo: `RAAA RIII RAAA`,
             audio: "./Apitos/boysaoportalo.mp3",
             download: "./Apitos/boysaoportalo.zip"
         },
         { 
             nome: "Chamada de Oficiais", 
+            solfejo: `RAA RIII RAA ###### LAAA MI ## LAAA MI ## LAAA MI LAAAA MI LA`,
             audio: "./Apitos/chamadadeoficiais.mp3",
             download: "./Apitos/chamadadeoficiais.zip"
         },
         { 
             nome: "Chegar ao Local de Ordem", 
+            solfejo: `LA MII (5x) e LA MII LAAAA (p/ encerrar)`,
             audio: "./Apitos/chegaraolocaldeordem.mp3",
             download: "./Apitos/chegaraolocaldeordem.zip"
         },
         { 
             nome: "Cobrir Armamento e Holofotes", 
+            solfejo: `LA LA LA LA LA LA MI LA MI LA MI LA LAAA LAA # LAAAA LAA LAA LAA MII LAA LAA LAAAA`,
             audio: "./Apitos/cobrirarmamentoeholofotes.mp3",
             download: "./Apitos/descobrirarmamentoeholofotes.zip"
         },
         { 
             nome: "Continência à Bandeira com Corneta", 
+            solfejo: `Mesmo toque da Continência à Bandeira (LAA MII LAAA, 6x, e LAA MII LAAA MI p/ encerrar), tocado na corneta`,
             audio: "./Apitos/continenciaabandeiracomcorneta.mp3",
             download: "./Apitos/continenciaabandeiracomcorneta.zip"
         },
         { 
             nome: "Continência à Bandeira", 
+            solfejo: `LAA MII LAAA (6x) e LAA MII LAAA MI (p/ encerrar)`,
             audio: "./Apitos/continenciaabandeira.mp3",
             download: "./Apitos/continenciaabandeira.zip"
         },
         { 
             nome: "Continência entre navios", 
+            solfejo: `RIII RII ## RI ######### RI RII`,
             audio: "./Apitos/continenciaentrenavios.mp3",
             download: "./Apitos/continenciaentrenavios.zip"
         },
         { 
             nome: "Contramestre", 
+            solfejo: `LA MIII MI`,
             audio: "./Apitos/contramestre.mp3",
             download: "./Apitos/contramestre.zip"
         },
         { 
             nome: "Cumprir Condições de Fechamento do Material", 
+            solfejo: `MI LAA LAA MII LAA MII ## LAAA LAAA MIIII ## LA LA LA LA MI LA MI LA MI LA LA LA LA LA LA LA LAAAA`,
             audio: "./Apitos/cumprircondicoesdefechamentodomaterial.mp3",
             download: "./Apitos/cumprircondicoesdefechamentodomaterial.zip"
         },
         { 
             nome: "Descobrir Armamento e Holofotes", 
+            solfejo: `LA LA LA LA LA LA MI LA MI LA MI LA LAAA LAAA # LAAAAA LA MII LAMII LA MII LA MII MIII MIII MII LAAAA`,
             audio: "./Apitos/descobrirarmamentoeholofotes.mp3",
             download: "./Apitos/descobrirarmamentoeholofotes.zip"
         },
         { 
             nome: "Detalhe Especial para o Mar (DEM)", 
+            solfejo: `LAA MII LAA MIII LAAAA ## LAA MII LAA MIII LA MII LA MII LA MII LA MII LA MII LA MII LAAA #### LA LA LA LA MI LA MI LA MI LA MI LA LA LA LA LA LAAAA LAAA MII ## LAA LAAAA MII # LA MI LAA ## LAAAA MII RAAAA LA MII MII MII MII MII LA ###### LA LAAAA`,
             audio: "./Apitos/detalheespecialparaomar.mp3",
             download: "./Apitos/detalheespecialparaomar.zip"
         },
         { 
             nome: "Faina ou Manobra", 
+            solfejo: `LA MI LA MIIII LAA # LA MI LA MIIII LA MII (5x) LA MII LAAAA (p/ encerrar)`,
             audio: "./Apitos/fainaoumanobra.mp3",
             download: "./Apitos/fainaoumanobra.zip"
         },
         { 
             nome: "Formar Companhia, Pelotão ou Contingente de Desembarque", 
+            solfejo: `LAAA MII LAAA MII MII LAAA LAAAAAAA MII ## LAA LAA LAA LAA MI LA MI LA MI LA LA MI #### LA MII LA MII LAMII LA MII LA MII LA MII LAAAA`,
             audio: "./Apitos/formarcompanhiapelotaooucontingentededesembarque.mp3",
             download: "./Apitos/formarcompanhiapelotaooucontingentededesembarque.zip"
         },
         { 
             nome: "Formar Divisões", 
+            solfejo: `LAAAA MII ## LAAA LAAAA MII ## LAA LAA LAA LAA MII LAA MII LAA MII LAA MII LAAA LAAAA MII #### LA MI LA LAAA MII #### MI LAA MI LAA MI LAA LAAAA LAAAA`,
             audio: "./Apitos/formardivisoes.mp3",
             download: "./Apitos/formardivisoes.zip"
         },
         { 
             nome: "Formar para o Cerimonial à Bandeira", 
+            solfejo: `LAA LAA LAA MII MII MI LAAAAA LA LAAAA MIIII ## LAA LAA LAA MII MII MI LAAAAA LA LAAAA LAAAA MIIII LAAA LA MII LA MII LA MII LA MII LA MII LA MII LAAAA`,
             audio: "./Apitos/formarparaocerimonialabandeira.mp3",
             download: "./Apitos/formarparaocerimonialabandeira.zip"
         },
         { 
             nome: "Formar Serviço", 
+            solfejo: `LA MII LAA MIII LAAAA LAAA MII ## LAA LAAAA MII #### LA MI LAA LAAAA MII LA MII LA MII LA MII LA MII LA MII LA MII LAAAA`,
             audio: "./Apitos/formarservico.mp3",
             download: "./Apitos/formarservico.zip"
         },
         { 
             nome: "Inspeção de Material", 
+            solfejo: `LAAA MII ###### LAA LAAAA MII # LA MI LAA LAAAA MII #### LAA LAA MII LAA MII LAAA LAAA MII LAA MII MII LAAA LAAAA`,
             audio: "./Apitos/inspecaodematerial.mp3",
             download: "./Apitos/inspecaodematerial.zip"
         },
         { 
             nome: "Inspeção de Rancho", 
+            solfejo: `LA MI LA MIIII LAAAA ## LA MI RAA LA MII LA MII LAMII RAAA`,
             audio: "./Apitos/inspecaoderancho.mp3",
             download: "./Apitos/inspecaoderancho.zip"
         },
         { 
             nome: "Inspeção", 
+            solfejo: `LA MII LA MIIII LAA ### LAA LAA LAA MII MII MI LAAAAA LAA LAAAA ## LAAA MII #### LA LAAA MII #### LA MII LA MII LAAAA`,
             audio: "./Apitos/inspecao.mp3",
             download: "./Apitos/inspecao.zip"
         },
         { 
             nome: "Licenciados Formar", 
+            solfejo: `LAA LAA LAA MII MII MI LAAAA LAAA LAAAA #### LA MI LAA LAAAA MII ### LA MII LA MII LA MII LA MII LA MII LA MII LAAAA`,
             audio: "./Apitos/licenciadosformar.mp3",
             download: "./Apitos/licenciadosformar.zip"
         },
         { 
             nome: "Mestre D' Armas", 
+            solfejo: `LA MI RAAA LA MIII LA`,
             audio: "./Apitos/mestredarmas.mp3",
             download: "./Apitos/mestredarmas.zip"
         },
         { 
             nome: "Mostra de Pessoal", 
+            solfejo: `LAAA MII ##### LAA LAAAA MII # LA MI LAA LAAAA MII #### LAA LAA MII LAA MII LAAA LAAAA MII LA MII LA MII LA MII LA MII LA MII LA MII LAAAA`,
             audio: "./Apitos/mostradepessoal.mp3",
             download: "./Apitos/mostradepessoal.zip"
         },
         { 
             nome: "Mostra de Uniforme", 
+            solfejo: `LAAA MII #### LAA LAAAA MII # LA MI LAA LAAAA MII #### LAA LAA MII LAA MII LAAA LAAAA MII LAA LAA MII LAA MII ## LAAAAA`,
             audio: "./Apitos/mostradeuniforme.mp3",
             download: "./Apitos/mostradeuniforme.zip"
         },
         { 
             nome: "Parada (Reunir Geral)", 
+            solfejo: `LA LA LA MI MI MI LAAA LAA LAAAAA MIII LA ### LA LA LA MI MI MI LAAAAA LA LAAA LA MII LA MII LA MII LA MII LA MII LA MII LAAAA`,
             audio: "./Apitos/parada.mp3",
             download: "./Apitos/parada.zip"
         },
         { 
             nome: "Posto de Suspender e Fundear", 
+            solfejo: `LAA MII LAA MIIII LAA ## LA MI LA MIIII LA MII LA MII LAMII LA MII LA MII LA MII LAAAA LA MIII MII MII MII MII MIII LAA #### LAA LAA LAA MI LAA LAA LAA MI LAA LAA LAA MI LAAAA LAAA MII ##### LA LAAAA MII ##### LA MI LAA LAAAA MII LA MII LA MII LA MII LA MII LA MII LA MII LAAAA`,
             audio: "./Apitos/postodesuspenderefundear.mp3",
             download: "./Apitos/postodesuspenderefundear.zip"
         },
         { 
             nome: "Postos de Abandono", 
+            solfejo: `LA LA LA LA MI LA MI LA MI LA MI LA LA LA LAAA LA MIIII MI`,
             audio: "./Apitos/postosdeabandono.mp3",
             download: "./Apitos/postosdeabandono.zip"
         },
         { 
             nome: "Postos de Colisão", 
+            solfejo: `LA MI LA MIIII LAA ## LA MI LA MIIII LAAA ## LAAA MI LA LA LAAA MI LA LA LA LAA MI MI MI LA RAAA`,
             audio: "./Apitos/postosdecolisao.mp3",
             download: "./Apitos/postosdecolisao.zip"
         },
         { 
             nome: "Postos de Combate", 
+            solfejo: `LA MI LA MIIII LAA ## LA MI LA MIIII LAAAA LAAA MI LAA # LAA MI LAA # LAA MI LAA # LA LA LA LAAA`,
             audio: "./Apitos/postosdecombate.mp3",
             download: "./Apitos/postosdecombate.zip"
         },
         { 
             nome: "Postos de Continência", 
+            solfejo: `LAA LAA LAA MII MII MI LAAAAA LA LAAAAAA LAAAA MIIII LAAAA MI ###### LA MII LAMII LAMII LAMII LAMII LA MII LAAAA`,
             audio: "./Apitos/postosdecontinencia.mp3",
             download: "./Apitos/postosdecontinencia.zip"
         },
         { 
             nome: "Postos de Incêndio", 
+            solfejo: `LAAA MIII LA MIIII # LAAA MIII LA MIIII # LAAA MIII LA MIIII`,
             audio: "./Apitos/postosdeincendio.mp3",
             download: "./Apitos/Postos%20de%20Inc%C3%AAndio.zip"
         },
         { 
             nome: "Postos de Vôo", 
+            solfejo: `LA MI LA MIIII LAA ## LA MI LA MIIII LAAAA LA LA LA LA LA LA MIIII LAAAA LA LA LA LA LA LA MIIII LAA LA LA LA LA LA MII LA MII LA MII LA MII LA MII LA MII LAAAA`,
             audio: "./Apitos/postosdevoo.mp3",
             download: "./Apitos/postosdevoo.zip"
         },
         { 
             nome: "Quarto de Folga", 
+            solfejo: `LAA LAA LAA MII MII MI LAAAAAAA LAAAA LA MIIII LAA`,
             audio: "./Apitos/quartodefolga.mp3",
             download: "./Apitos/quartodefolga.zip"
         },
         { 
             nome: "Quarto de Retém", 
+            solfejo: `LAA LAA MII MII MI LAAAAAAA LAAAA`,
             audio: "./Apitos/quartoderetem.mp3",
             download: "./Apitos/quartoderetem.zip"
         },
         { 
             nome: "Quarto de Serviço", 
+            solfejo: `LAA LAA LAA MII MII MI LAAA LAAAA LAAAA LA MIIIII`,
             audio: "./Apitos/quartodeservico.mp3",
             download: "./Apitos/quartodeservico.zip"
         },
         { 
             nome: "Rancho para Serviço", 
+            solfejo: `LAAAA MI ## LAAAA ## LA LA LA LA MI LA MI LA MI LA LA LA LA LA LA LAAA LA MIIIIII`,
             audio: "./Apitos/ranchoparaservico.mp3",
             download: "./Apitos/ranchoparaservico.zip"
         },
         { 
             nome: "Rancho", 
+            solfejo: `LAAA MI ## LAAAA LA LA LA LA LA LA MI LA MI LA MI LA MI LAA LAA LAA LAA LAA LAAAA`,
             audio: "./Apitos/rancho.mp3",
             download: "./Apitos/rancho.zip"
         },
         { 
             nome: "Recolher Andainas", 
+            solfejo: `LA MI LA MIIII LAAAA # LA MI LA MII LA LA RAAA`,
             audio: "./Apitos/recolherandainas.mp3",
             download: "./Apitos/recolherandainas.zip"
         },
         { 
             nome: "Render Rancheiro", 
+            solfejo: `LA MI LAAA LA MII LA MII LA MII LAAAA LAAA LAAA LAAA LAAA`,
             audio: "./Apitos/renderrancheiro.mp3",
             download: "./Apitos/renderrancheiro.zip"
         },
         { 
             nome: "Render Serviço", 
+            solfejo: `LAA MII LAA MIII LAAAA ## LAA LAAAA MII ########## LA MI LAA LAAAA MII #### LA MII MII MII LA MII MII MII LAAAA`,
             audio: "./Apitos/renderservico.mp3",
             download: "./Apitos/renderservico.zip"
         },
         { 
             nome: "Revista Médica", 
+            solfejo: `LA MI LA # LA MI LAA LAAAA LA MI LAA LAA LA MI LAA LAA LA MII LA MII LA MII LA MI LA MII LAA`,
             audio: "./Apitos/revistamedica.mp3",
             download: "./Apitos/revistamedica.zip"
         },
         { 
             nome: "Silêncio", 
+            solfejo: `LA MIII MI # LA LA LA LA LA LA LA LA LA LA LA LA LA LA LA LA LA MI LA LA LA MI LA LA LA MI LA LA LA MI LA LA LA MI LA # LA LA LA LA LA LA LA LA LA LA LAAA MI`,
             audio: "./Apitos/silencio.mp3",
             download: "./Apitos/silencio.zip"
         },
         { 
             nome: "Todos ao Vergueiro", 
+            solfejo: `LA MI LA MIIII LAA # LA MI LA MIIII LA MII LA MII LA MII LA MII LA MII LAAAA LA LA LA LA LA LA MI LA MI LA MI LA MI LA LA LA LA LA LAAA ### LAAA MII ##### LA LAAAAA MII ### LA MI LAA LAAAA MII LA MIIII`,
             audio: "./Apitos/todosaovergueiro.mp3",
             download: "./Apitos/todosaovergueiro.zip"
         },
         { 
             nome: "Uniforme", 
+            solfejo: `LAA LAA MII LAA MII ## RAAAA`,
             audio: "./Apitos/uniforme.mp3",
             download: "./Apitos/uniforme.zip"
         },
         { 
             nome: "Varrer e Arrumar o Navio", 
+            solfejo: `LAAAAAA LAA LAA LAA MII MII MIII MIII MII MI LAA ###### LAA LAA LAA MII MII MIII MIII MI MI LAA #### LAAA MII LAA LAAAA MII ### LA MI LAA LAAAA MII #### LA MII LA MII LA MII LA MII LA MII LAAAA`,
             audio: "./Apitos/varrerearrumaronavio.mp3",
             download: "./Apitos/varrerearrumaronavio.zip"
         },
         { 
             nome: "Volta", 
+            solfejo: `LA LA LA LA LA LA MI LA LA LA LA LAAAA`,
             audio: "./Apitos/volta.mp3",
             download: "./Apitos/volta.zip"
         }
@@ -19129,6 +19235,13 @@ function loadApitosGrid(category = 'all', searchTerm = '') {
                         ${isContinencia ? 'Continência' : 'Rotina'}
                     </span>
                 </div>
+                
+                ${apito.solfejo ? `
+                <div class="apito-card-solfejo">
+                    <i class="fas fa-music"></i>
+                    <span>${apito.solfejo.replace(/\n/g, '<br>')}</span>
+                </div>
+                ` : ''}
                 
                 <audio id="${audioId}" preload="none" style="display: none;">
                     <source src="${apito.audio}" type="audio/mpeg">
