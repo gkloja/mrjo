@@ -17315,137 +17315,106 @@ function updateCerimonialBadge() {
         badge.style.display = 'none';
     }
 }
-
-// Função expandida com MUITAS patentes - versão completa
+// ======================
+// PATENTE COMPLETA
+// ======================
 function getRankTitle(level) {
-    // ALTOS COMANDOS E ALMIRANTADOS (níveis 50+)
-    if (level >= 100) return "Almirante da Armada";              // Lenda viva
-    if (level >= 90) return "Grande Almirante";                  // Posto histórico
-    if (level >= 80) return "Almirante-Mor";                     // Autoridade máxima
-    if (level >= 70) return "Almirante-Chefe do Estado-Maior";   // Comando estratégico
-    if (level >= 60) return "Almirante do Atlântico Sul";        // Comando de teatro
-    if (level >= 55) return "Almirante de Esquadra Especial";    // Posto de exceção
-    if (level >= 50) return "Almirante de Esquadra Sênior";      // Alta distinção
-    
-    // ALMIRANTES E OFICIAIS GERAIS (níveis 30-49)
-    if (level >= 45) return "Almirante de Esquadra";
-    if (level >= 40) return "Almirante de Frota";
-    if (level >= 35) return "Almirante de Divisão";
-    if (level >= 32) return "Vice-Almirante Sênior";
-    if (level >= 30) return "Vice-Almirante";
-    
-    // OFICIAIS SUPERIORES - ALTOS POSTOS (níveis 20-29)
-    if (level >= 28) return "Contra-Almirante Sênior";
-    if (level >= 26) return "Contra-Almirante";
-    if (level >= 24) return "Comodoro";                           // Posto histórico
-    if (level >= 22) return "Capitão de Mar e Guerra Sênior";
-    if (level >= 20) return "Capitão de Mar e Guerra";
-    
-    // OFICIAIS SUPERIORES - POSTOS INTERMEDIÁRIOS (níveis 15-19)
-    if (level >= 19) return "Capitão de Fragata Sênior";
-    if (level >= 18) return "Capitão de Fragata";
-    if (level >= 17) return "Capitão de Corveta Sênior";
-    if (level >= 16) return "Capitão de Corveta";
-    if (level >= 15) return "Capitão Tenente Sênior";
-    
-    // OFICIAIS INTERMEDIÁRIOS (níveis 10-14)
-    if (level >= 14) return "Capitão Tenente";
-    if (level >= 13) return "Primeiro Tenente Sênior";
-    if (level >= 12) return "Primeiro Tenente";
-    if (level >= 11) return "Segundo Tenente Sênior";
-    if (level >= 10) return "Segundo Tenente";
-    
-    // OFICIAIS SUBALTERNOS (níveis 5-9)
-    if (level >= 9) return "Guarda-Marinha Sênior";
-    if (level >= 8) return "Guarda-Marinha";
-    if (level >= 7) return "Aspirante Sênior";
-    if (level >= 6) return "Aspirante";
-    if (level >= 5) return "Suboficial Sênior";
-    
-    // PRAÇAS E GRADUAÇÕES (níveis 1-4)
-    if (level >= 4) return "Suboficial";
-    if (level >= 3) return "Sargento Sênior";
-    if (level >= 2) return "Sargento";
-    if (level >= 1) return "Marinheiro";
-    return "Recruta";  // Nível 0
+    if (level >= 100) return "Almirante";
+    if (level >= 90) return "Almirante de Esquadra";
+    if (level >= 80) return "Vice-Almirante";
+    if (level >= 70) return "Contra-Almirante";
+
+    if (level >= 60) return "Capitão de Mar e Guerra";
+    if (level >= 50) return "Capitão de Fragata";
+    if (level >= 40) return "Capitão de Corveta";
+
+    if (level >= 35) return "Capitão-Tenente";
+    if (level >= 30) return "Primeiro-Tenente";
+    if (level >= 25) return "Segundo-Tenente";
+    if (level >= 20) return "Guarda-Marinha";
+    if (level >= 15) return "Aspirante";
+
+    if (level >= 12) return "Suboficial";
+    if (level >= 10) return "Primeiro-Sargento";
+    if (level >= 8) return "Segundo-Sargento";
+    if (level >= 6) return "Terceiro-Sargento";
+    if (level >= 4) return "Cabo";
+    if (level >= 2) return "Marinheiro";
+    if (level >= 1) return "Grumete";
+
+    return "Recruta";
 }
 
-// Versão compacta para o botão flutuante (abreviada)
+// ======================
+// VERSÃO COMPACTA
+// ======================
 function getCompactRankTitle(level) {
-    // ALTOS COMANDOS
-    if (level >= 100) return "Alm. Armada";
-    if (level >= 90) return "Gr. Alm.";
-    if (level >= 80) return "Alm. Mor";
-    if (level >= 70) return "Alm. CEMA";
-    if (level >= 60) return "Alm. AS";
-    if (level >= 55) return "Alm. Esp.";
-    if (level >= 50) return "Alm. Esq.";
-    
-    // ALMIRANTES
-    if (level >= 45) return "Alm. Esq.";
-    if (level >= 40) return "Alm. Frota";
-    if (level >= 35) return "Alm. Div.";
-    if (level >= 32) return "V. Alm.";
-    if (level >= 30) return "V. Alm.";
-    
-    // OFICIAIS SUPERIORES
-    if (level >= 28) return "C. Alm.";
-    if (level >= 26) return "C. Alm.";
-    if (level >= 24) return "Comodoro";
-    if (level >= 22) return "CMG";
-    if (level >= 20) return "CMG";
-    
-    // OFICIAIS INTERMEDIÁRIOS
-    if (level >= 18) return "CF";
-    if (level >= 16) return "CC";
-    if (level >= 14) return "CT";
-    if (level >= 12) return "1° Ten.";
-    if (level >= 10) return "2° Ten.";
-    
-    // OFICIAIS SUBALTERNOS
-    if (level >= 8) return "GM";
-    if (level >= 6) return "Asp.";
-    if (level >= 4) return "Subof.";
-    if (level >= 2) return "Sarg.";
-    return "Mar.";
+    if (level >= 100) return "Alm.";
+    if (level >= 90) return "Alm. Esq.";
+    if (level >= 80) return "V. Alm.";
+    if (level >= 70) return "C. Alm.";
+
+    if (level >= 60) return "CMG";
+    if (level >= 50) return "CF";
+    if (level >= 40) return "CC";
+
+    if (level >= 35) return "CT";
+    if (level >= 30) return "1º Ten.";
+    if (level >= 25) return "2º Ten.";
+    if (level >= 20) return "GM";
+    if (level >= 15) return "Asp.";
+
+    if (level >= 12) return "Subof.";
+    if (level >= 10) return "1º Sgt.";
+    if (level >= 8) return "2º Sgt.";
+    if (level >= 6) return "3º Sgt.";
+    if (level >= 4) return "Cabo";
+    if (level >= 2) return "Mar.";
+    if (level >= 1) return "Grum.";
+
+    return "Rec.";
 }
 
-// Versão com ícones/emojis para feedback visual (opcional)
+// ======================
+// ÍCONES
+// ======================
 function getRankIcon(level) {
-    if (level >= 80) return "⚓⚓⚓⚓⚓";  // 5 âncoras - Alto comando
-    if (level >= 60) return "⚓⚓⚓⚓";    // 4 âncoras - Almirantes
-    if (level >= 40) return "⚓⚓⚓";      // 3 âncoras - Oficiais superiores
-    if (level >= 20) return "⚓⚓";        // 2 âncoras - Oficiais
-    if (level >= 10) return "⚓";          // 1 âncora - Praças
-    return "⛵";                           // Barco a vela - Recruta
+    if (level >= 90) return "⭐⭐⭐⭐⭐";
+    if (level >= 70) return "⭐⭐⭐⭐";
+    if (level >= 50) return "⭐⭐⭐";
+    if (level >= 30) return "⭐⭐";
+    if (level >= 10) return "⭐";
+    return "⚓";
 }
 
-// Função para descrição detalhada do posto (tooltip/hover)
+// ======================
+// DESCRIÇÕES
+// ======================
 function getRankDescription(level) {
-    if (level >= 100) return "O mais alto posto naval, concedido apenas a grandes estrategistas.";
-    if (level >= 90) return "Posto histórico de comando máximo da Armada.";
-    if (level >= 80) return "Autoridade máxima em tempos de guerra.";
-    if (level >= 70) return "Chefe do Estado-Maior da Armada.";
-    if (level >= 60) return "Comandante das forças navais do Atlântico Sul.";
-    if (level >= 55) return "Posto especial para méritos extraordinários.";
-    if (level >= 50) return "O mais alto posto da hierarquia regular.";
-    if (level >= 45) return "Comanda esquadras inteiras da Marinha.";
-    if (level >= 40) return "Responsável por frotas de combate.";
-    if (level >= 35) return "Comanda divisões navais estratégicas.";
-    if (level >= 30) return "Oficial general de alta patente.";
-    if (level >= 26) return "Primeiro posto de oficial general.";
-    if (level >= 24) return "Posto histórico de comando.";
-    if (level >= 20) return "Comandante de navios de grande porte.";
-    if (level >= 18) return "Comandante de fragatas e navios médios.";
-    if (level >= 16) return "Comandante de corvetas e navios menores.";
-    if (level >= 14) return "Oficial sênior em navios de porte.";
-    if (level >= 12) return "Oficial subalterno experiente.";
-    if (level >= 10) return "Oficial subalterno em início de carreira.";
-    if (level >= 8) return "Oficial em fase de especialização.";
-    if (level >= 6) return "Oficial em formação.";
-    if (level >= 4) return "Praça especialista graduada.";
-    if (level >= 2) return "Praça graduada com experiência.";
-    return "Praça em treinamento básico.";
+    if (level >= 100) return "Posto mais elevado da Marinha do Brasil.";
+    if (level >= 90) return "Comanda grandes forças navais e exerce funções estratégicas.";
+    if (level >= 80) return "Oficial-general responsável por grandes comandos.";
+    if (level >= 70) return "Primeiro posto do oficialato-general.";
+
+    if (level >= 60) return "Comandante de grandes navios ou organizações militares.";
+    if (level >= 50) return "Comanda fragatas e exerce funções de Estado-Maior.";
+    if (level >= 40) return "Comanda corvetas e organizações militares.";
+
+    if (level >= 35) return "Oficial experiente preparado para o comando.";
+    if (level >= 30) return "Oficial intermediário da Marinha.";
+    if (level >= 25) return "Primeiros anos da carreira de oficial.";
+    if (level >= 20) return "Última etapa de formação antes do oficialato.";
+    if (level >= 15) return "Militar em preparação para tornar-se oficial.";
+
+    if (level >= 12) return "Praça mais graduada da Marinha.";
+    if (level >= 10) return "Sargento com ampla experiência e liderança.";
+    if (level >= 8) return "Sargento responsável por equipes e instrução.";
+    if (level >= 6) return "Primeira graduação de sargento.";
+    if (level >= 4) return "Praça graduada responsável por pequenas equipes.";
+    if (level >= 2) return "Militar especializado nas atividades operacionais.";
+    if (level >= 1) return "Militar em início de carreira.";
+
+    return "Recém-ingressado na Marinha.";
 }
 
 // Função para cor do posto (para UI)
@@ -21994,6 +21963,29 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     </div>
 </div>
 
+<!-- Modal de perfil (somente leitura) de outro tripulante — aberto ao clicar
+     na foto de alguém no cabeçalho de online, no chat ou no ranking. -->
+<div class="md-overlay" id="md-verperfil-overlay">
+    <div class="md-modal">
+        <button class="md-modal-close" onclick="MarujoConta.fecharModal('md-verperfil-overlay')">&times;</button>
+        <div class="md-perfil-header">
+            <div class="md-avatar-wrap">
+                <img id="md-verperfil-avatar" src="" alt="Avatar">
+            </div>
+            <div class="md-perfil-nome" id="md-verperfil-nome"></div>
+            <div class="md-perfil-patente" id="md-verperfil-patente">
+                <span class="md-perfil-patente-icone" id="md-verperfil-patente-icone">⚓</span>
+                <span class="md-perfil-patente-titulo" id="md-verperfil-patente-titulo">Tripulante</span>
+            </div>
+        </div>
+        <div class="md-perfil-stats" id="md-verperfil-stats" style="justify-content:center">
+            <div><b id="md-verperfil-nivel">—</b>Nível</div>
+            <div><b id="md-verperfil-xp">—</b>XP</div>
+        </div>
+        <button class="md-btn-primary" id="md-verperfil-dm-btn" style="display:none;">💬 Conversar em privado</button>
+    </div>
+</div>
+
 <!-- Chat unificado: Tripulação + Tulho IA -->
 <div id="md-chat-fab" onclick="MarujoConta.toggleChat()">
     💬
@@ -22268,6 +22260,30 @@ if (honrasTable && cerimonialData.honrasPortalo) {
             d.textContent = t;
             return d.innerHTML;
         },
+        // Escapa valores para uso seguro dentro de atributos HTML (data-*),
+        // diferente de escapeHtml (que só é seguro para conteúdo de texto).
+        attrSafe(t) {
+            return String(t == null ? '' : t)
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        },
+        // Lê os data-* de um elemento clicado (avatar/nome de um tripulante) e
+        // abre o modal de perfil correspondente. Usado no cabeçalho de online,
+        // no chat e no ranking, para não precisar montar JSON dentro de onclick.
+        verPerfilFromEl(el) {
+            if (!el) return;
+            const ds = el.dataset || {};
+            this.verPerfil({
+                id: ds.uid || null,
+                nome: ds.nome || 'Marujo',
+                avatar: ds.avatar || '',
+                level: ds.nivel ? Number(ds.nivel) : null,
+                pontosTotais: ds.xp ? Number(ds.xp) : null
+            });
+        },
 
         // Aplica formatação leve em texto JÁ ESCAPADO (sempre chamar depois do escapeHtml):
         // **negrito**, ~tachado~, "aspas em destaque" e linhas "> citação".
@@ -22303,6 +22319,69 @@ if (honrasTable && cerimonialData.honrasPortalo) {
         },
         fecharModal(id) {
             document.getElementById(id).classList.remove('md-show');
+        },
+
+        // Abre o modal de perfil (somente leitura) de outro tripulante — usado
+        // ao clicar na foto de alguém no cabeçalho de online, no chat ou no
+        // ranking. Se for a própria pessoa, abre o perfil completo (editável).
+        verPerfil(usuario) {
+            if (!usuario) return;
+            if (this.logado && this.usuario && String(usuario.id) === String(this.usuario.id)) {
+                return this.abrirPerfil();
+            }
+            this.fecharTodosOverlays();
+
+            const nivel = (usuario.level != null) ? usuario.level : (usuario.nivel != null ? usuario.nivel : null);
+
+            const avatarEl = document.getElementById('md-verperfil-avatar');
+            avatarEl.src = this.avatarUrl(usuario);
+            avatarEl.onerror = () => { avatarEl.src = this.avatarFallback(usuario.nome); };
+            document.getElementById('md-verperfil-nome').textContent = usuario.nome || 'Marujo';
+
+            const elTitulo = document.getElementById('md-verperfil-patente-titulo');
+            const elIcone = document.getElementById('md-verperfil-patente-icone');
+            if (nivel != null && typeof getRankTitle === 'function') {
+                elTitulo.textContent = getRankTitle(nivel);
+                elIcone.textContent = (typeof getRankIcon === 'function') ? getRankIcon(nivel) : '⚓';
+            } else {
+                elTitulo.textContent = 'Tripulante';
+                elIcone.textContent = '⚓';
+            }
+
+            const wrap = document.querySelector('#md-verperfil-overlay .md-avatar-wrap');
+            if (wrap) {
+                wrap.classList.remove('md-tier-bronze', 'md-tier-prata', 'md-tier-ouro', 'md-tier-platina');
+                if (nivel != null) {
+                    if (nivel >= 60) wrap.classList.add('md-tier-platina');
+                    else if (nivel >= 40) wrap.classList.add('md-tier-ouro');
+                    else if (nivel >= 20) wrap.classList.add('md-tier-prata');
+                    else wrap.classList.add('md-tier-bronze');
+                }
+            }
+
+            const statsWrap = document.getElementById('md-verperfil-stats');
+            if (nivel != null || usuario.pontosTotais != null) {
+                statsWrap.style.display = 'flex';
+                document.getElementById('md-verperfil-nivel').textContent = nivel != null ? nivel : '—';
+                document.getElementById('md-verperfil-xp').textContent = usuario.pontosTotais != null ? usuario.pontosTotais : '—';
+            } else {
+                statsWrap.style.display = 'none';
+            }
+
+            const btnDM = document.getElementById('md-verperfil-dm-btn');
+            if (btnDM) {
+                if (this.logado && usuario.id) {
+                    btnDM.style.display = 'block';
+                    btnDM.onclick = () => {
+                        this.fecharModal('md-verperfil-overlay');
+                        if (window.MDChat) window.MDChat.abrirDMComUsuario(usuario.id, usuario.nome, usuario.avatar || '');
+                    };
+                } else {
+                    btnDM.style.display = 'none';
+                }
+            }
+
+            document.getElementById('md-verperfil-overlay').classList.add('md-show');
         },
         trocarAba(aba) {
             const isLogin = aba === 'login';
@@ -22605,7 +22684,9 @@ if (honrasTable && cerimonialData.honrasPortalo) {
             return `
                 <div class="md-rank-item ${souEu ? 'md-me' : ''}">
                     <div class="md-rank-pos">${u.posicao}º</div>
-                    <img class="md-rank-avatar" src="${this.avatarUrl(u)}" onerror="this.src='${this.avatarFallback(u.nome)}'">
+                    <img class="md-rank-avatar" style="cursor:pointer" src="${this.avatarUrl(u)}" onerror="this.src='${this.avatarFallback(u.nome)}'"
+                        data-uid="${this.attrSafe(u.id)}" data-nome="${this.attrSafe(u.nome)}" data-avatar="${this.attrSafe(u.avatar)}" data-nivel="${this.attrSafe(u.level)}" data-xp="${this.attrSafe(u.pontosTotais)}"
+                        onclick="MarujoConta.verPerfilFromEl(this)">
                     <div style="flex:1;overflow:hidden">
                         <div class="md-rank-nome">${this.escapeHtml(u.nome)}${souEu ? ' (você)' : ''}</div>
                         <div class="md-rank-nivel">Nível ${u.level}</div>
@@ -22660,11 +22741,16 @@ if (honrasTable && cerimonialData.honrasPortalo) {
                     const meuId = this.usuario ? this.usuario.id : null;
                     const reacoesHtml = (!ehTulho && window.MDChat) ? window.MDChat.renderReacoes(m.id, m.reacoes, meuId) : '';
                     const abrirDM = (!ehTulho && !mine) ? `onclick="MDChat.abrirDMComUsuario('${m.userId}','${this.escapeHtml(m.nome).replace(/'/g, "\\'")}','${(m.avatar || '').replace(/'/g, "\\'")}')"` : '';
+                    // A foto abre o perfil da pessoa; o nome continua abrindo a DM
+                    // (dois cliques diferentes, duas ações diferentes).
+                    const verPerfilAttr = !ehTulho
+                        ? `data-uid="${this.attrSafe(m.userId)}" data-nome="${this.attrSafe(m.nome)}" data-avatar="${this.attrSafe(m.avatar || '')}" onclick="MarujoConta.verPerfilFromEl(this)"`
+                        : '';
 
                     div.id = `md-msg-${m.id}`;
                     div.innerHTML = `
                         <div class="md-chat-msg-row">
-                            <img class="md-chat-msg-avatar" src="${avatarSrc}" onerror="this.src='${this.avatarFallback(m.nome)}'" ${abrirDM} title="${!ehTulho && !mine ? 'Conversar em privado' : ''}">
+                            <img class="md-chat-msg-avatar" src="${avatarSrc}" onerror="this.src='${this.avatarFallback(m.nome)}'" ${verPerfilAttr} title="${!ehTulho ? 'Ver perfil' : ''}">
                             <div style="flex:1;min-width:0">
                                 <div class="md-chat-autor" ${abrirDM}>${nomeExibido}</div>
                                 <div class="${bolhaClasse}">${textoHtml}</div>
@@ -22856,7 +22942,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
             const html = !usuarios.length
                 ? '<div class="md-online-vazio">Ninguém por aqui agora.</div>'
                 : usuarios.map(u => `
-                    <div class="md-online-item">
+                    <div class="md-online-item" style="cursor:pointer" data-uid="${MarujoConta.attrSafe(u.id)}" data-nome="${MarujoConta.attrSafe(u.nome)}" data-avatar="${MarujoConta.attrSafe(u.avatar)}" data-nivel="${MarujoConta.attrSafe(u.level)}" data-xp="${MarujoConta.attrSafe(u.pontosTotais)}" onclick="MarujoConta.verPerfilFromEl(this)">
                         <img src="${MarujoConta.avatarUrl(u)}" onerror="this.src='${MarujoConta.avatarFallback(u.nome)}'">
                         <span>${MarujoConta.escapeHtml(u.nome)}</span>
                     </div>
@@ -22867,13 +22953,16 @@ if (honrasTable && cerimonialData.honrasPortalo) {
             });
 
             // Avatares visíveis direto no cabeçalho, ao lado do contador —
-            // sem precisar clicar para ver quem está online.
+            // sem precisar clicar para ver quem está online. Clicar em cada
+            // um abre o perfil da pessoa.
             const avatarsEl = document.getElementById('md-online-avatars-header');
             if (avatarsEl) {
                 const MAX_AVATARES = 5;
                 const visiveis = usuarios.slice(0, MAX_AVATARES);
                 let htmlAvatares = visiveis.map(u => `
-                    <img src="${MarujoConta.avatarUrl(u)}" onerror="this.src='${MarujoConta.avatarFallback(u.nome)}'" title="${MarujoConta.escapeHtml(u.nome)}" alt="${MarujoConta.escapeHtml(u.nome)}">
+                    <img src="${MarujoConta.avatarUrl(u)}" onerror="this.src='${MarujoConta.avatarFallback(u.nome)}'" title="${MarujoConta.escapeHtml(u.nome)}" alt="${MarujoConta.escapeHtml(u.nome)}"
+                        data-uid="${MarujoConta.attrSafe(u.id)}" data-nome="${MarujoConta.attrSafe(u.nome)}" data-avatar="${MarujoConta.attrSafe(u.avatar)}" data-nivel="${MarujoConta.attrSafe(u.level)}" data-xp="${MarujoConta.attrSafe(u.pontosTotais)}"
+                        onclick="event.stopPropagation(); MarujoConta.verPerfilFromEl(this)">
                 `).join('');
                 if (usuarios.length > MAX_AVATARES) {
                     htmlAvatares += `<span class="md-online-avatars-mais">+${usuarios.length - MAX_AVATARES}</span>`;
