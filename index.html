@@ -4027,11 +4027,6 @@ audio::-webkit-media-controls-mute-button {
                 </a>
             </div>
             <div class="nav-item">
-                <a href="#musica" class="nav-link" onclick="event.preventDefault(); toggleMusicPanel(true);">
-                    <i class="fas fa-music"></i> Música
-                </a>
-            </div>
-            <div class="nav-item">
                 <a href="sobre.html" class="nav-link">
                     <i class="fas fa-info-circle"></i> Sobre
                 </a>
@@ -7585,169 +7580,8 @@ setInterval(() => {
         
 <!-- Na área de conteúdo -->
 <style>
-/* ===== Seção de Música (buscar, ouvir e baixar) ===== */
-.md-music-search-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 14px;
-    padding: 6px 6px 6px 14px;
-    margin-bottom: 14px;
-}
-html[data-theme="light"] .md-music-search-bar {
-    background: rgba(10,41,80,0.05);
-    border-color: rgba(10,41,80,0.15);
-}
-.md-music-search-bar i.fa-search { color: var(--text-muted); font-size: 13px; }
-.md-music-search-bar input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--text-primary);
-    font-size: 14px;
-    font-family: inherit;
-    padding: 10px 0;
-}
-.md-music-search-btn {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 18px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: 0.2s;
-    white-space: nowrap;
-}
-.md-music-search-btn:hover { filter: brightness(1.1); }
-.md-music-search-btn:disabled { background: #555; cursor: not-allowed; opacity: 0.7; }
-
-.md-music-status {
-    margin-top: -4px;
-    margin-bottom: 14px;
-    font-size: 12px;
-    font-weight: 600;
-    display: none;
-    align-items: center;
-    gap: 8px;
-}
-.md-music-status.show { display: flex; }
-.md-music-status.loading { color: var(--text-muted); }
-.md-music-status.error { color: #ff6b6b; }
-.md-music-status.success { color: #4ade80; }
-.md-music-spinner {
-    width: 14px; height: 14px; border-radius: 50%;
-    border: 2px solid rgba(255,204,0,0.25);
-    border-top-color: var(--accent);
-    animation: mdMusicSpin 0.7s linear infinite;
-    display: inline-block;
-}
-@keyframes mdMusicSpin { to { transform: rotate(360deg); } }
-
-.md-music-result-card {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 14px;
-    padding: 16px;
-    margin-bottom: 20px;
-    display: flex;
-    gap: 14px;
-    align-items: center;
-    animation: mdMusicFadeIn 0.35s ease;
-}
-html[data-theme="light"] .md-music-result-card {
-    background: rgba(10,41,80,0.05);
-    border-color: rgba(10,41,80,0.12);
-}
-@keyframes mdMusicFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-.md-music-result-thumb {
-    width: 64px; height: 64px; border-radius: 10px; object-fit: cover;
-    flex-shrink: 0; border: 2px solid var(--accent);
-}
-.md-music-result-info { flex: 1; min-width: 0; }
-.md-music-result-title {
-    font-weight: 700; font-size: 14px; margin-bottom: 4px; color: var(--text-primary);
-    overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
-    -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-}
-.md-music-result-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
-.md-music-result-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.md-music-btn-ouvir, .md-music-btn-baixar {
-    border: none; border-radius: 10px; padding: 8px 14px; font-size: 12px; font-weight: 700;
-    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
-    text-decoration: none; transition: 0.2s;
-}
-.md-music-btn-ouvir { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
-.md-music-btn-ouvir.playing { background: var(--accent); color: #0a1929; }
-.md-music-btn-ouvir.loading, .md-music-btn-ouvir:disabled { background: #6b7280; cursor: wait; opacity: 0.85; }
-.md-music-btn-baixar {
-    background: rgba(255,255,255,0.06); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.15);
-}
-html[data-theme="light"] .md-music-btn-baixar { background: rgba(10,41,80,0.06); border-color: rgba(10,41,80,0.15); color: var(--text-primary); }
-.md-music-btn-baixar.loading { background: #6b7280; color: white; pointer-events: none; }
-
-.md-music-history-clear { font-size: 11px; color: var(--text-muted); cursor: pointer; margin-left: auto; text-decoration: underline; }
-
-.md-music-player-bar {
-    position: fixed; left: 50%; transform: translateX(-50%); bottom: 78px;
-    width: calc(100% - 32px); max-width: 680px;
-    background: linear-gradient(145deg, rgba(10,25,41,0.97), rgba(5,18,35,0.97));
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 16px; padding: 10px 14px;
-    display: none; align-items: center; gap: 12px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-    z-index: 850;
-}
-html[data-theme="light"] .md-music-player-bar {
-    background: linear-gradient(160deg, #ffffff, #eef3f9);
-    border-color: rgba(0,51,102,0.15);
-}
-.md-music-player-bar.show { display: flex; }
-.md-music-player-thumb { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
-.md-music-player-info { flex: 1; min-width: 0; }
-.md-music-player-title {
-    font-size: 12px; font-weight: 700; color: var(--text-primary);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;
-}
-.md-music-player-progress-row { display: flex; align-items: center; gap: 6px; }
-.md-music-player-time { font-size: 10px; color: var(--text-muted); min-width: 28px; }
-.md-music-player-seek {
-    flex: 1; height: 3px; -webkit-appearance: none; background: rgba(255,255,255,0.15);
-    border-radius: 2px; cursor: pointer; outline: none;
-}
-html[data-theme="light"] .md-music-player-seek { background: rgba(10,41,80,0.15); }
-.md-music-player-seek::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 11px; height: 11px; border-radius: 50%;
-    background: var(--accent); cursor: pointer;
-}
-.md-music-player-playbtn {
-    width: 38px; height: 38px; border-radius: 50%; border: none;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white; cursor: pointer; font-size: 15px; display: flex;
-    align-items: center; justify-content: center; flex-shrink: 0; transition: 0.2s;
-}
-.md-music-player-playbtn:hover { filter: brightness(1.1); }
-.md-music-player-volume { display: none; align-items: center; gap: 6px; width: 80px; }
-.md-music-player-volume i { font-size: 11px; color: var(--text-muted); }
-.md-music-player-volume input {
-    flex: 1; height: 3px; -webkit-appearance: none; background: rgba(255,255,255,0.15);
-    border-radius: 2px; cursor: pointer; outline: none;
-}
-html[data-theme="light"] .md-music-player-volume input { background: rgba(10,41,80,0.15); }
-.md-music-player-volume input::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 11px; height: 11px; border-radius: 50%;
-    background: var(--accent); cursor: pointer;
-}
-@media (min-width: 640px) { .md-music-player-volume { display: flex; } }
-
-#radioAudioPlayer { display: none; }
+/* ===== Música ambiente (toca sozinha em loop, com botão de silenciar) ===== */
+#ambientMusicPlayer { display: none; }
 </style>
 <section id="apitos" class="content-section">
     <div class="content-card mobile-card">
@@ -7766,7 +7600,7 @@ html[data-theme="light"] .md-music-player-volume input { background: rgba(10,41,
     </div>
 </section>
 
-<!-- A seção de Música virou um botão flutuante (ver #music-fab-panel perto dos outros
+<!-- A seção de Música virou música ambiente automática (ver #ambient-music-btn perto dos outros
      botões flutuantes, próximo ao final do body) para não competir por espaço no meio
      do conteúdo do cerimonial. -->
         <!-- Informações Gerais do PDF -->
@@ -18778,9 +18612,6 @@ case 'insignias':
 case 'apitos':
     loadApitosSection();
     break;
-case 'musica':
-    carregarMusicaSection();
-    break;
 
     }
     } catch (e) {
@@ -21651,9 +21482,9 @@ if (honrasTable && cerimonialData.honrasPortalo) {
 #md-profile-fab:active { transform: scale(0.94); }
 #md-profile-fab-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
-/* Botão flutuante de Música — fica empilhado acima do botão de perfil, no
-   canto direito, para não competir com o botão central do Cerimonial do Dia. */
-#music-fab {
+/* Botão flutuante de música ambiente — mesma posição do antigo botão de
+   busca de música, agora só liga/desliga o som de fundo. */
+#ambient-music-btn {
     position: fixed; bottom: 86px; right: 18px; z-index: 98000;
     width: 50px; height: 50px; border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, #b06cf7, #6a3093 70%);
@@ -21663,34 +21494,9 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     font-size: 19px; color: #fff;
     transition: transform .2s ease, box-shadow .2s ease;
 }
-#music-fab:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 10px 24px rgba(90,30,150,0.6); }
-#music-fab:active { transform: scale(0.94); }
-
-#music-fab-panel {
-    position: fixed; bottom: 144px; right: 16px; z-index: 98500;
-    width: 340px; max-width: calc(100vw - 32px); max-height: 55vh;
-    background: linear-gradient(170deg, var(--md-hull-2,#0d2038), var(--md-deep,#051223));
-    border: 1px solid rgba(255,204,0,0.3); border-radius: var(--md-radius, 14px);
-    display: none; flex-direction: column; overflow: hidden;
-    box-shadow: 0 20px 55px rgba(0,0,0,0.6);
-}
-#music-fab-panel.md-show { display: flex; animation: mdRise .25s ease; }
-.music-fab-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 16px; font-weight: 700; color: #f5efdd;
-    background: linear-gradient(135deg, #6a3093, #4a1f6b);
-    border-bottom: 1px solid rgba(255,204,0,0.25); flex-shrink: 0;
-}
-.music-fab-close {
-    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 50%; width: 30px; height: 30px; color: #fff; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-}
-.music-fab-body { padding: 16px; overflow-y: auto; }
-
-@media (max-width: 480px) {
-    #music-fab-panel { width: calc(100vw - 24px); right: 12px; }
-}
+#ambient-music-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 10px 24px rgba(90,30,150,0.6); }
+#ambient-music-btn:active { transform: scale(0.94); }
+#ambient-music-btn.muted { background: radial-gradient(circle at 35% 30%, #8a8a8a, #4a4a4a 70%); }
 
 /* Abas do chat unificado */
 .md-chat-tabs { display: flex; border-bottom: 1px solid var(--md-tint-008); flex-shrink: 0; }
@@ -22009,54 +21815,10 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     <span id="md-profile-fab-fallback">⚓</span>
 </div>
 
-<!-- Botão flutuante de Música: busca, ouve e baixa, sem ocupar espaço fixo na página -->
-<div id="music-fab" onclick="toggleMusicPanel()" title="Buscar música">
-    <i class="fas fa-music"></i>
-</div>
-<div id="music-fab-panel">
-    <div class="music-fab-header">
-        <span><i class="fas fa-music"></i> Buscar Música</span>
-        <button class="music-fab-close" onclick="toggleMusicPanel(false)" aria-label="Fechar">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-    <div class="music-fab-body">
-        <div class="card-subtitle" style="margin-bottom:12px;">Digite o nome da música ou artista e escolha o que quer ouvir</div>
-
-        <div class="md-music-search-bar">
-            <i class="fas fa-search"></i>
-            <input type="text" id="musicSearchInput" placeholder="Ex: Anitta - Envolver" maxlength="80"
-                onkeydown="if(event.key === 'Enter'){ event.preventDefault(); buscarMusica(); }">
-            <button class="md-music-search-btn" id="musicSearchBtn" onclick="buscarMusica()">
-                <i class="fas fa-search"></i> Buscar
-            </button>
-        </div>
-        <div id="musicSearchStatus" class="md-music-status"></div>
-
-        <div id="musicResultCard" class="md-music-result-card" style="display:none;">
-            <img id="musicResultThumb" class="md-music-result-thumb" src="" alt="">
-            <div class="md-music-result-info">
-                <div id="musicResultTitle" class="md-music-result-title">—</div>
-                <div id="musicResultMeta" class="md-music-result-meta">—</div>
-                <div class="md-music-result-actions">
-                    <button class="md-music-btn-ouvir" id="musicBtnOuvir" onclick="tocarResultadoAtual()">
-                        <i class="fas fa-play"></i> Ouvir agora
-                    </button>
-                    <a class="md-music-btn-baixar" id="musicBtnBaixar" href="#" download target="_blank" rel="noopener" onclick="mostrarDownloadCarregando(this)">
-                        <i class="fas fa-download"></i> Baixar
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div id="musicHistorySection" style="display:none; margin-top: 24px;">
-            <h3 class="section-title" style="display:flex; align-items:center; gap:8px;">
-                <i class="fas fa-clock-rotate-left"></i> Pesquisas recentes
-                <span class="md-music-history-clear" onclick="limparHistoricoMusica()">limpar</span>
-            </h3>
-            <div id="musicHistoryList"></div>
-        </div>
-    </div>
+<!-- Música ambiente: toca sozinha em loop assim que a pessoa entra no site.
+     O botão flutuante só liga/desliga o som (mesma posição do antigo botão de busca). -->
+<div id="ambient-music-btn" onclick="toggleAmbientMusic()" title="Silenciar música">
+    <i class="fas fa-volume-up" id="ambientMusicIcon"></i>
 </div>
 <div id="md-chat-panel">
     <div class="md-chat-header">
@@ -23333,321 +23095,72 @@ window.MDChat = {
 };
 </script>
 
-<!-- Mini-player fixo da seção Música -->
-<div class="md-music-player-bar" id="musicPlayerBar">
-    <img id="musicPlayerThumb" class="md-music-player-thumb" src="" alt="">
-    <div class="md-music-player-info">
-        <div id="musicPlayerTitle" class="md-music-player-title">—</div>
-        <div class="md-music-player-progress-row">
-            <span id="musicPlayerTime" class="md-music-player-time">0:00</span>
-            <input type="range" id="musicPlayerSeek" class="md-music-player-seek" min="0" max="100" value="0" oninput="seekMusica(this.value)">
-            <span id="musicPlayerDuration" class="md-music-player-time">0:00</span>
-        </div>
-    </div>
-    <button class="md-music-player-playbtn" id="musicPlayerPlayBtn" onclick="toggleMusicaPlay()"><i class="fas fa-play"></i></button>
-    <div class="md-music-player-volume">
-        <i class="fas fa-volume-up"></i>
-        <input type="range" id="musicPlayerVolumeSlider" min="0" max="100" value="80" oninput="changeMusicaVolume(this.value)">
-    </div>
-</div>
-<audio id="radioAudioPlayer" preload="none"></audio>
+<!-- Música ambiente: toca sozinha, em loop, assim que a pessoa entra no site -->
+<audio id="ambientMusicPlayer" src="./Apitos/home.mp3" loop preload="auto"></audio>
 
 <script>
-// ==================== BUSCA E PLAYER DE MÚSICA (mesma lógica/endpoint /play do Fabi Bot) ====================
+// ==================== MÚSICA AMBIENTE (toca automático em loop, com botão de silenciar) ====================
+const AMBIENT_MUSIC_VOLUME = 0.35; // volume de "som ambiente", não muito alto
+const AMBIENT_MUTE_KEY = 'marujodigital_musica_mudo';
 
-const MD_MUSIC_HISTORY_KEY = 'marujodigital_music_history';
-const MD_MUSIC_GUEST_KEY = 'marujodigital_music_guest_id';
-let musicaAtual = null;       // { title, thumb, download, source }
-let musicaBuscando = false;
-let isMusicPlaying = false;
-
-function getMusicUserId() {
-    // Identificador exigido pela API /play
-    return 'site';
+function ambientMusicEstaMudo() {
+    return localStorage.getItem(AMBIENT_MUTE_KEY) === '1';
 }
 
-function getMusicUserNome() {
-    // Nome/identificador de quem está pedindo, exigido pela API (mín. 3 caracteres)
-    const nome = (window.MarujoConta && window.MarujoConta.usuario && window.MarujoConta.usuario.nome) || '';
-    if (nome && nome.length >= 3) return nome;
-
-    let guestId = localStorage.getItem(MD_MUSIC_GUEST_KEY);
-    if (!guestId) {
-        guestId = 'marujo_' + Math.random().toString(36).substring(2, 9);
-        localStorage.setItem(MD_MUSIC_GUEST_KEY, guestId);
+function atualizarIconeAmbientMusic(mudo) {
+    const icon = document.getElementById('ambientMusicIcon');
+    const btn = document.getElementById('ambient-music-btn');
+    if (icon) icon.className = mudo ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+    if (btn) {
+        btn.classList.toggle('muted', mudo);
+        btn.title = mudo ? 'Ativar música' : 'Silenciar música';
     }
-    return guestId;
 }
 
-function getMusicHistory() {
-    try {
-        return JSON.parse(localStorage.getItem(MD_MUSIC_HISTORY_KEY) || '[]');
-    } catch { return []; }
-}
+function iniciarMusicaAmbiente() {
+    const audio = document.getElementById('ambientMusicPlayer');
+    if (!audio) return;
+    audio.volume = AMBIENT_MUSIC_VOLUME;
 
-function salvarNoHistoricoMusica(item) {
-    let historico = getMusicHistory().filter(h => h.download !== item.download);
-    historico.unshift({ ...item, timestamp: Date.now() });
-    historico = historico.slice(0, 8);
-    localStorage.setItem(MD_MUSIC_HISTORY_KEY, JSON.stringify(historico));
-    renderMusicHistory();
-}
+    const mudo = ambientMusicEstaMudo();
+    audio.muted = mudo;
+    atualizarIconeAmbientMusic(mudo);
 
-function limparHistoricoMusica() {
-    localStorage.removeItem(MD_MUSIC_HISTORY_KEY);
-    renderMusicHistory();
-}
-
-function renderMusicHistory() {
-    const section = document.getElementById('musicHistorySection');
-    const container = document.getElementById('musicHistoryList');
-    if (!section || !container) return;
-
-    const historico = getMusicHistory();
-    if (historico.length === 0) { section.style.display = 'none'; return; }
-
-    section.style.display = 'block';
-    container.innerHTML = historico.map((item, idx) => `
-        <div class="md-music-result-card" style="cursor:pointer; margin-bottom:10px;" onclick='tocarHistoricoMusica(${idx})'>
-            <img class="md-music-result-thumb" style="width:48px;height:48px;" src="${item.thumb || ''}" alt=""
-                 onerror="this.src='https://cdn-icons-png.flaticon.com/512/2965/2965874.png'">
-            <div class="md-music-result-info">
-                <div class="md-music-result-title" style="font-size:13px;">${item.title}</div>
-                <div class="md-music-result-meta">${(item.source && item.source.video) || 'Música'} · toque para ouvir de novo</div>
-            </div>
-            <i class="fas fa-play" style="color: var(--accent); font-size: 14px;"></i>
-        </div>
-    `).join('');
-}
-
-function tocarHistoricoMusica(idx) {
-    const item = getMusicHistory()[idx];
-    if (!item) return;
-    musicaAtual = item;
-    tocarResultadoAtual();
-}
-
-function setMusicStatus(msg, tipo) {
-    const el = document.getElementById('musicSearchStatus');
-    if (!el) return;
-    if (!msg) { el.className = 'md-music-status'; el.innerHTML = ''; return; }
-    el.className = `md-music-status show ${tipo || ''}`;
-    el.innerHTML = tipo === 'loading'
-        ? `<span class="md-music-spinner"></span> ${msg}`
-        : msg;
-}
-
-async function buscarMusica() {
-    if (musicaBuscando) return;
-    const input = document.getElementById('musicSearchInput');
-    const btn = document.getElementById('musicSearchBtn');
-    const query = (input?.value || '').trim();
-
-    if (query.length < 2) {
-        setMusicStatus('⚠️ Digite o nome de uma música ou artista.', 'error');
-        return;
-    }
-
-    musicaBuscando = true;
-    if (btn) { btn.disabled = true; }
-    setMusicStatus('Procurando a melhor versão da sua música...', 'loading');
-    document.getElementById('musicResultCard').style.display = 'none';
-
-    try {
-        const resp = await fetch('https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009/play', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                query,
-                userId: getMusicUserId(),
-                User: getMusicUserNome()
-            })
-        });
-
-        const data = await resp.json();
-
-        if (!resp.ok || !data.success) {
-            const mensagens = {
-                RATE_LIMIT_EXCEDIDO: '⏳ Você já tem uma busca em andamento. Aguarde ela terminar.',
-                QUERY_INVALIDA: '⚠️ Informe o nome da música corretamente.',
-                FALHA: data.message || '😕 Não encontramos essa música agora. Tente outro nome.'
+    // Navegadores bloqueiam autoplay com som antes de qualquer interação do
+    // usuário na página. Tentamos tocar direto; se o navegador recusar,
+    // ficamos escutando o primeiro toque/clique/tecla pra iniciar o som.
+    const tentativa = audio.play();
+    if (tentativa && typeof tentativa.catch === 'function') {
+        tentativa.catch(() => {
+            const iniciarNoPrimeiroToque = () => {
+                audio.play().catch(() => {});
+                document.removeEventListener('click', iniciarNoPrimeiroToque);
+                document.removeEventListener('touchstart', iniciarNoPrimeiroToque);
+                document.removeEventListener('keydown', iniciarNoPrimeiroToque);
             };
-            setMusicStatus(mensagens[data.error] || data.message || '😕 Não foi possível buscar a música agora.', 'error');
-            return;
-        }
-
-        musicaAtual = {
-            title: data.title,
-            thumb: data.thumb,
-            download: data.download,
-            source: data.source
-        };
-
-        document.getElementById('musicResultThumb').src = data.thumb || '';
-        document.getElementById('musicResultTitle').textContent = data.title || 'Música encontrada';
-        document.getElementById('musicResultMeta').textContent =
-            `${(data.source && data.source.video) || 'Busca'} → ${(data.source && data.source.audio) || 'áudio'} · ${(data.stats && data.stats.total_time) || '?'}s`;
-        document.getElementById('musicBtnBaixar').href = data.download;
-        document.getElementById('musicResultCard').style.display = 'flex';
-        setOuvirBtnEstado('padrao');
-
-        setMusicStatus('✅ Música encontrada! Escolha "Ouvir agora" para tocar.', 'success');
-        salvarNoHistoricoMusica(musicaAtual);
-    } catch (err) {
-        console.error('Erro ao buscar música:', err);
-        setMusicStatus('❌ Falha de conexão. Tente novamente em instantes.', 'error');
-    } finally {
-        musicaBuscando = false;
-        if (btn) { btn.disabled = false; }
-    }
-}
-
-function mostrarDownloadCarregando(el) {
-    if (!el || el.classList.contains('loading') || !el.getAttribute('href') || el.getAttribute('href') === '#') return;
-    const htmlOriginal = el.innerHTML;
-    el.classList.add('loading');
-    el.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Baixando...';
-    setTimeout(() => {
-        el.classList.remove('loading');
-        el.innerHTML = htmlOriginal;
-    }, 4000);
-}
-
-function setOuvirBtnEstado(estado) {
-    // estado: 'carregando' | 'tocando' | 'padrao'
-    const btn = document.getElementById('musicBtnOuvir');
-    if (!btn) return;
-    btn.classList.remove('loading', 'playing');
-    btn.disabled = false;
-    if (estado === 'carregando') {
-        btn.disabled = true;
-        btn.classList.add('loading');
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
-    } else if (estado === 'tocando') {
-        btn.classList.add('playing');
-        btn.innerHTML = '<i class="fas fa-pause"></i> Tocando';
-    } else {
-        btn.innerHTML = '<i class="fas fa-play"></i> Ouvir agora';
-    }
-}
-
-function tocarResultadoAtual() {
-    if (!musicaAtual) return;
-    const audio = document.getElementById('radioAudioPlayer');
-    if (!audio) return;
-
-    setOuvirBtnEstado('carregando');
-
-    audio.src = musicaAtual.download;
-    audio.load();
-    audio.play().catch(() => {
-        setOuvirBtnEstado('padrao');
-    });
-
-    document.getElementById('musicPlayerThumb').src = musicaAtual.thumb || '';
-    document.getElementById('musicPlayerTitle').textContent = musicaAtual.title || 'Tocando agora';
-    document.getElementById('musicPlayerBar').classList.add('show');
-}
-
-function toggleMusicaPlay() {
-    const audio = document.getElementById('radioAudioPlayer');
-    if (!audio || !audio.src) return;
-    if (isMusicPlaying) {
-        audio.pause();
-    } else {
-        const playBtn = document.getElementById('musicPlayerPlayBtn');
-        if (playBtn) playBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-        audio.play().catch(() => {
-            if (playBtn) playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            document.addEventListener('click', iniciarNoPrimeiroToque, { once: true });
+            document.addEventListener('touchstart', iniciarNoPrimeiroToque, { once: true });
+            document.addEventListener('keydown', iniciarNoPrimeiroToque, { once: true });
         });
     }
 }
 
-function changeMusicaVolume(v) {
-    const audio = document.getElementById('radioAudioPlayer');
-    if (audio) audio.volume = v / 100;
-}
-
-function seekMusica(percent) {
-    const audio = document.getElementById('radioAudioPlayer');
-    if (audio && audio.duration) audio.currentTime = (percent / 100) * audio.duration;
-}
-
-function formatarTempoMusica(segundos) {
-    if (!isFinite(segundos)) return '0:00';
-    const m = Math.floor(segundos / 60);
-    const s = Math.floor(segundos % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-}
-
-let mdMusicPlayerInicializado = false;
-function initMusicPlayer() {
-    if (mdMusicPlayerInicializado) return;
-    const audio = document.getElementById('radioAudioPlayer');
+function toggleAmbientMusic() {
+    const audio = document.getElementById('ambientMusicPlayer');
     if (!audio) return;
-    mdMusicPlayerInicializado = true;
+    const novoEstadoMudo = !audio.muted;
+    audio.muted = novoEstadoMudo;
+    localStorage.setItem(AMBIENT_MUTE_KEY, novoEstadoMudo ? '1' : '0');
+    atualizarIconeAmbientMusic(novoEstadoMudo);
 
-    audio.volume = 0.8;
-
-    audio.addEventListener('waiting', () => {
-        setOuvirBtnEstado('carregando');
-        const playBtn = document.getElementById('musicPlayerPlayBtn');
-        if (playBtn) playBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    });
-    audio.addEventListener('playing', () => {
-        isMusicPlaying = true;
-        setOuvirBtnEstado('tocando');
-        const playBtn = document.getElementById('musicPlayerPlayBtn');
-        if (playBtn) playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-    });
-    audio.addEventListener('pause', () => {
-        isMusicPlaying = false;
-        const playBtn = document.getElementById('musicPlayerPlayBtn');
-        if (playBtn) playBtn.innerHTML = '<i class="fas fa-play"></i>';
-        setOuvirBtnEstado('padrao');
-    });
-    audio.addEventListener('ended', () => {
-        setOuvirBtnEstado('padrao');
-    });
-    audio.addEventListener('timeupdate', () => {
-        if (!audio.duration) return;
-        const seek = document.getElementById('musicPlayerSeek');
-        if (seek) seek.value = (audio.currentTime / audio.duration) * 100;
-        const timeEl = document.getElementById('musicPlayerTime');
-        if (timeEl) timeEl.textContent = formatarTempoMusica(audio.currentTime);
-        const durEl = document.getElementById('musicPlayerDuration');
-        if (durEl) durEl.textContent = formatarTempoMusica(audio.duration);
-    });
-    audio.addEventListener('error', () => {
-        setOuvirBtnEstado('padrao');
-        const playBtn = document.getElementById('musicPlayerPlayBtn');
-        if (playBtn) playBtn.innerHTML = '<i class="fas fa-play"></i>';
-        setMusicStatus('⚠️ Não foi possível reproduzir esse link. Busque novamente.', 'error');
-    });
-}
-
-function carregarMusicaSection() {
-    initMusicPlayer();
-    renderMusicHistory();
-    document.getElementById('musicSearchInput')?.focus();
-}
-
-// Abre/fecha o painel flutuante de música. Chamar sem argumento alterna o estado atual;
-// passar true/false força abrir ou fechar.
-function toggleMusicPanel(force) {
-    const panel = document.getElementById('music-fab-panel');
-    if (!panel) return;
-    const isOpen = panel.classList.contains('md-show');
-    const shouldOpen = (typeof force === 'boolean') ? force : !isOpen;
-
-    panel.classList.toggle('md-show', shouldOpen);
-
-    if (shouldOpen) {
-        carregarMusicaSection();
-        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-        document.querySelector('.nav-link[href="#musica"]')?.classList.add('active');
+    // Se a pessoa desmutar e o áudio ainda não tinha começado a tocar
+    // (por causa do bloqueio de autoplay), inicia agora.
+    if (!novoEstadoMudo && audio.paused) {
+        audio.play().catch(() => {});
     }
 }
+
+document.addEventListener('DOMContentLoaded', iniciarMusicaAmbiente);
 </script>
 
 </body>
