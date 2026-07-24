@@ -150,7 +150,30 @@
           integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
           crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
+    <script>
+      // ==================== CONFIGURAÇÃO ONESIGNAL ====================
+      // OneSignal: Serviço de Web Push Notifications (notificações no navegador)
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+      OneSignalDeferred.push(async function(OneSignal) {
+        // Inicializa o OneSignal com seu App ID
+        await OneSignal.init({
+          appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
+          // notifyButton desabilitado = você controla manualmente quando mostrar notificações
+          notifyButton: {
+            enable: false
+          }
+        });
+
+        // Registra o token do usuário para envio de notificações
+        if (typeof LibSignal !== "undefined") {
+          LibSignal.register();
+        }
+      });
+    </script>
+    
     
     <style>
     :root {
@@ -23052,9 +23075,9 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     // Planos e rota batem com o backend real (PLANOS_VIP / POST /api/vip/gerar-pix).
     const MDVip = {
         PLANOS: [
-            { id: 'mensal', nome: 'VIP Mensal', dias: 30,  valor: 14.90,  destaque: false,
+            { id: 'mensal', nome: 'VIP Mensal', dias: 30,  valor: 1.90,  destaque: false,
               beneficios: ['Sem anúncios', 'Até 100 perguntas por dia', 'Design/moldura exclusiva na foto de perfil', 'Selo ⭐ VIP no menu', 'Prioridade nas respostas'] },
-            { id: 'anual',  nome: 'VIP Anual',  dias: 365, valor: 119.90, destaque: true,
+            { id: 'anual',  nome: 'VIP Anual',  dias: 365, valor: 10.90, destaque: true,
               beneficios: ['Sem anúncios', 'Até 100 perguntas por dia', 'Design/moldura exclusiva na foto de perfil', 'Selo ⭐ VIP no menu', 'Prioridade nas respostas', '2 meses de desconto'] },
         ],
 

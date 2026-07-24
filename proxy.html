@@ -15,30 +15,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js"></script>
 
     <!-- OneSignal SDK -->
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
-    <script>
-      // ==================== CONFIGURAÇÃO ONESIGNAL ====================
-      // OneSignal: Serviço de Web Push Notifications (notificações no navegador)
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-      OneSignalDeferred.push(async function(OneSignal) {
-        // Inicializa o OneSignal com seu App ID
-        await OneSignal.init({
-          appId: "9b1da6f9-89a0-4fbd-8685-438ce87a6607",
-          // notifyButton desabilitado = você controla manualmente quando mostrar notificações
-          notifyButton: {
-            enable: false
-          }
-        });
-
-        // Registra o token do usuário para envio de notificações
-        if (typeof LibSignal !== "undefined") {
-          LibSignal.register();
-        }
-      });
-    </script>
-    
     <style>
         * {
             margin: 0;
