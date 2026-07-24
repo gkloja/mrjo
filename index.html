@@ -129,8 +129,6 @@
     }
     </script>
     
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089"
-     crossorigin="anonymous"></script>
     <script>
     // Anúncios "âncora" (barra fixa embaixo) e "vinheta" (tela cheia) do AdSense
     // ficam por cima do conteúdo com z-index altíssimo e são a causa mais comum
@@ -138,11 +136,15 @@
     // invisível/transparente, não o botão. Aqui desligamos só esses dois formatos,
     // os outros anúncios (in-feed, in-article, display normal) continuam ativos.
     //
-    // Assinantes VIP não veem anúncio nenhum: antes de habilitar os anúncios
-    // de nível de página, checa o status VIP do usuário logado (mesmo token
-    // e mesma rota /api/vip/meu-status usados no resto do site). Se a checagem
-    // falhar por qualquer motivo (usuário deslogado, erro de rede, etc.), o
-    // padrão é mostrar anúncio normalmente — só quem é VIP confirmado é isento.
+    // Assinantes VIP não veem anúncio nenhum: antes de qualquer coisa, checa o
+    // status VIP do usuário logado (mesmo token e mesma rota /api/vip/meu-status
+    // usados no resto do site). Se for VIP, a biblioteca do AdSense
+    // (adsbygoogle.js) NEM É CARREGADA — só desligar o push() não bastava,
+    // porque se a conta tiver "Auto ads" habilitado no painel do Google, o
+    // simples fato do script carregar já é suficiente pra exibir anúncio,
+    // independente da chamada de configuração feita aqui. Se a checagem falhar
+    // por qualquer motivo (usuário deslogado, erro de rede, etc.), o padrão é
+    // carregar o anúncio normalmente — só quem é VIP confirmado é isento.
     (async function () {
         const API_BASE_ADS = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
         let ehVip = false;
@@ -160,15 +162,22 @@
         }
 
         if (ehVip) {
-            console.log('[Ads] Usuário VIP: anúncios de página desativados.');
+            console.log('[Ads] Usuário VIP: biblioteca de anúncios nem foi carregada.');
             return;
         }
 
-        (window.adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-2351298778216089",
-            enable_page_level_ads: true,
-            overlays: { bottom: false }
-        });
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2351298778216089';
+        script.crossOrigin = 'anonymous';
+        script.onload = () => {
+            (window.adsbygoogle = window.adsbygoogle || []).push({
+                google_ad_client: "ca-pub-2351298778216089",
+                enable_page_level_ads: true,
+                overlays: { bottom: false }
+            });
+        };
+        document.head.appendChild(script);
     })();
     </script>
 
@@ -15539,6 +15548,14 @@ const quizDatabase = [
 ];
 
 // SISTEMA DE PROGRESSO ATUALIZADO
+
+// Limite de questões por dia do Cerimonial: 20 pra maruja/marujo comum,
+// 100 pra quem é VIP (é o mesmo "100 perguntas por dia" anunciado no
+// plano VIP — antes só valia pro chat com o Tulho, agora vale aqui também).
+function mdLimiteQuestoesPorDia() {
+    return (window.MarujoConta && MarujoConta.usuario && MarujoConta.usuario.vip) ? 100 : 20;
+}
+
 const userProgress = {
     xp: localStorage.getItem('marujo_xp') ? parseInt(localStorage.getItem('marujo_xp')) : 0,
     level: localStorage.getItem('marujo_level') ? parseInt(localStorage.getItem('marujo_level')) : 1,
@@ -16323,10 +16340,11 @@ function toggleDifficulty(difficulty) {
 function saveSettings() {
     // Obter valor do slider
     const questionsPerDay = parseInt(document.getElementById('questionsSlider').value);
-    
+    const limiteMax = mdLimiteQuestoesPorDia();
+
     // Validar valor
-    if (questionsPerDay < 1 || questionsPerDay > 20) {
-        showNotification('Escolha entre 1 e 20 questões por dia!');
+    if (questionsPerDay < 1 || questionsPerDay > limiteMax) {
+        showNotification(`Escolha entre 1 e ${limiteMax} questões por dia!`);
         return;
     }
     
@@ -16493,16 +16511,17 @@ function showUserStatus() {
                         <span class="setting-info">(${userProgress.settings.questionsPerDay} selecionadas)</span>
                     </label>
                     <div class="setting-control">
-                        <input type="range" min="1" max="20" value="${userProgress.settings.questionsPerDay}" 
+                        <input type="range" min="1" max="${mdLimiteQuestoesPorDia()}" value="${Math.min(userProgress.settings.questionsPerDay, mdLimiteQuestoesPorDia())}" 
                                class="questions-slider" id="questionsSlider"
                                oninput="updateQuestionsValue(this.value)">
                         <span class="questions-value" id="questionsValue">${userProgress.settings.questionsPerDay}</span>
                     </div>
                     <div class="slider-labels">
                         <span>1</span>
-                        <span>10</span>
-                        <span>20</span>
+                        <span>${Math.round(mdLimiteQuestoesPorDia() / 2)}</span>
+                        <span>${mdLimiteQuestoesPorDia()}</span>
                     </div>
+                    ${mdLimiteQuestoesPorDia() < 100 ? `<div class="setting-info" style="margin-top:4px">⭐ Assinantes VIP podem escolher até 100 questões por dia.</div>` : ''}
                 </div>
                 
                 <div class="setting-item">
@@ -21550,6 +21569,19 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     color: #1a1a1a; background: var(--accent,#ffcc00); padding: 2px 7px; border-radius: 6px; margin-left: 6px;
     vertical-align: middle; letter-spacing: .02em;
 }
+
+/* ---------- Selo visual VIP (foto + nome) usado em toda a plataforma ---------- */
+/* Moldura dourada com brilho na foto de perfil de quem é VIP. */
+img.md-avatar-vip {
+    border-color: var(--accent,#ffcc00) !important;
+    border-width: 2px !important;
+    box-shadow: 0 0 0 2px rgba(255,204,0,0.35), 0 0 10px rgba(255,204,0,0.55);
+}
+/* Coroinha ao lado do nome de quem é VIP, em qualquer lugar (chat, ranking, etc). */
+.md-nome-vip-coroa {
+    display: inline-block; font-size: 0.85em; margin-left: 3px; vertical-align: middle;
+    filter: drop-shadow(0 0 2px rgba(255,204,0,0.6));
+}
 .md-vip-ativo-card {
     text-align: center; padding: 10px 4px 4px;
 }
@@ -22285,9 +22317,9 @@ if (honrasTable && cerimonialData.honrasPortalo) {
             if (this.logado && this.usuario) {
                 bar.classList.remove('md-guest');
                 bar.innerHTML = `
-                    <img class="md-avatar-mini" src="${this.avatarUrl(this.usuario)}" onerror="this.src='${this.avatarFallback(this.usuario.nome)}'">
+                    <img class="md-avatar-mini ${this.claseAvatarVip(this.usuario)}" src="${this.avatarUrl(this.usuario)}" onerror="this.src='${this.avatarFallback(this.usuario.nome)}'">
                     <div class="md-userbar-info">
-                        <span class="md-userbar-nome">${this.escapeHtml(this.usuario.nome)}<span class="md-vip-badge" id="md-userbar-vip-badge" style="display:none">⭐ VIP</span></span>
+                        <span class="md-userbar-nome">${this.escapeHtml(this.usuario.nome)}${this.seloNomeVip(this.usuario)}<span class="md-vip-badge" id="md-userbar-vip-badge" style="display:none">⭐ VIP</span></span>
                         <span class="md-userbar-nivel">Nível ${this.usuario.level} · ${this.usuario.pontosTotais} XP</span>
                     </div>`;
                 bar.onclick = () => this.abrirPerfil();
@@ -22335,6 +22367,16 @@ if (honrasTable && cerimonialData.honrasPortalo) {
         avatarFallback(nome) {
             return `https://ui-avatars.com/api/?background=0066cc&color=fff&bold=true&name=${encodeURIComponent(nome || 'Marujo')}`;
         },
+        // Classe extra pra dar a moldura dourada na foto de quem é VIP.
+        // Uso: <img class="md-avatar-mini ${MarujoConta.claseAvatarVip(u)}" ...>
+        claseAvatarVip(usuario) {
+            return usuario && usuario.vip ? 'md-avatar-vip' : '';
+        },
+        // Coroinha pra colar do lado do nome de quem é VIP.
+        // Uso: ${MarujoConta.escapeHtml(u.nome)}${MarujoConta.seloNomeVip(u)}
+        seloNomeVip(usuario) {
+            return usuario && usuario.vip ? '<span class="md-nome-vip-coroa" title="Assinante VIP">👑</span>' : '';
+        },
         escapeHtml(t) {
             const d = document.createElement('div');
             d.textContent = t;
@@ -22361,7 +22403,8 @@ if (honrasTable && cerimonialData.honrasPortalo) {
                 nome: ds.nome || 'Marujo',
                 avatar: ds.avatar || '',
                 level: ds.nivel ? Number(ds.nivel) : null,
-                pontosTotais: ds.xp ? Number(ds.xp) : null
+                pontosTotais: ds.xp ? Number(ds.xp) : null,
+                vip: ds.vip === '1'
             });
         },
 
@@ -22416,7 +22459,8 @@ if (honrasTable && cerimonialData.honrasPortalo) {
             const avatarEl = document.getElementById('md-verperfil-avatar');
             avatarEl.src = this.avatarUrl(usuario);
             avatarEl.onerror = () => { avatarEl.src = this.avatarFallback(usuario.nome); };
-            document.getElementById('md-verperfil-nome').textContent = usuario.nome || 'Marujo';
+            avatarEl.classList.toggle('md-avatar-vip', !!usuario.vip);
+            document.getElementById('md-verperfil-nome').innerHTML = this.escapeHtml(usuario.nome || 'Marujo') + this.seloNomeVip(usuario);
 
             const elTitulo = document.getElementById('md-verperfil-patente-titulo');
             const elIcone = document.getElementById('md-verperfil-patente-icone');
@@ -22481,7 +22525,8 @@ if (honrasTable && cerimonialData.honrasPortalo) {
             document.getElementById('md-perfil-avatar').onerror = () => {
                 document.getElementById('md-perfil-avatar').src = this.avatarFallback(this.usuario.nome);
             };
-            document.getElementById('md-perfil-nome').textContent = this.usuario.nome;
+            document.getElementById('md-perfil-avatar').classList.toggle('md-avatar-vip', !!this.usuario.vip);
+            document.getElementById('md-perfil-nome').innerHTML = this.escapeHtml(this.usuario.nome) + this.seloNomeVip(this.usuario);
             document.getElementById('md-perfil-nivel').textContent = nivel;
             document.getElementById('md-perfil-xp').textContent = this.usuario.pontosTotais;
             document.getElementById('md-perfil-streak').textContent = this.usuario.streak;
@@ -22710,9 +22755,9 @@ if (honrasTable && cerimonialData.honrasPortalo) {
                 lista.innerHTML = data.ranking.slice(0, 3).map((u, i) => `
                     <div class="md-top3-item ${medalhas[i]}" onclick="MDChat.abrirDMComUsuario('${u.id}', '${this.escapeHtml(u.nome).replace(/'/g, "\\'")}')" title="Conversar com ${this.escapeHtml(u.nome)}">
                         <span class="md-top3-medalha">${icones[i]}</span>
-                        <img class="md-top3-avatar" src="${this.avatarUrl(u)}" onerror="this.src='${this.avatarFallback(u.nome)}'">
+                        <img class="md-top3-avatar ${this.claseAvatarVip(u)}" src="${this.avatarUrl(u)}" onerror="this.src='${this.avatarFallback(u.nome)}'">
                         <div class="md-top3-info">
-                            <div class="md-top3-nome">${this.escapeHtml(u.nome)}</div>
+                            <div class="md-top3-nome">${this.escapeHtml(u.nome)}${this.seloNomeVip(u)}</div>
                             <div class="md-top3-xp">${u.pontosTotais} XP</div>
                         </div>
                     </div>`).join('');
@@ -22764,11 +22809,11 @@ if (honrasTable && cerimonialData.honrasPortalo) {
             return `
                 <div class="md-rank-item ${souEu ? 'md-me' : ''}">
                     <div class="md-rank-pos">${u.posicao}º</div>
-                    <img class="md-rank-avatar" style="cursor:pointer" src="${this.avatarUrl(u)}" onerror="this.src='${this.avatarFallback(u.nome)}'"
-                        data-uid="${this.attrSafe(u.id)}" data-nome="${this.attrSafe(u.nome)}" data-avatar="${this.attrSafe(u.avatar)}" data-nivel="${this.attrSafe(u.level)}" data-xp="${this.attrSafe(u.pontosTotais)}"
+                    <img class="md-rank-avatar ${this.claseAvatarVip(u)}" style="cursor:pointer" src="${this.avatarUrl(u)}" onerror="this.src='${this.avatarFallback(u.nome)}'"
+                        data-uid="${this.attrSafe(u.id)}" data-nome="${this.attrSafe(u.nome)}" data-avatar="${this.attrSafe(u.avatar)}" data-nivel="${this.attrSafe(u.level)}" data-xp="${this.attrSafe(u.pontosTotais)}" data-vip="${u.vip ? '1' : '0'}"
                         onclick="MarujoConta.verPerfilFromEl(this)">
                     <div style="flex:1;overflow:hidden">
-                        <div class="md-rank-nome">${this.escapeHtml(u.nome)}${souEu ? ' (você)' : ''}</div>
+                        <div class="md-rank-nome">${this.escapeHtml(u.nome)}${this.seloNomeVip(u)}${souEu ? ' (você)' : ''}</div>
                         <div class="md-rank-nivel">Nível ${u.level}</div>
                     </div>
                     <div class="md-rank-pontos">${u.pontosTotais} XP</div>
@@ -22813,8 +22858,9 @@ if (honrasTable && cerimonialData.honrasPortalo) {
                     const div = document.createElement('div');
                     div.className = 'md-chat-msg' + (mine ? ' md-mine' : '') + (ehTulho ? ' md-chat-msg-ia' : '');
 
-                    const nomeExibido = ehTulho ? '🤖 Tulho (respondendo à tripulação)' : this.escapeHtml(m.nome);
+                    const nomeExibido = ehTulho ? '🤖 Tulho (respondendo à tripulação)' : this.escapeHtml(m.nome) + this.seloNomeVip(m);
                     const avatarSrc = ehTulho ? 'imagens/logo.png' : this.avatarUrl({ nome: m.nome, avatar: m.avatar });
+                    const avatarVipClasse = ehTulho ? '' : this.claseAvatarVip(m);
                     const bolhaClasse = ehTulho ? 'md-chat-bolha md-bolha-ia' : 'md-chat-bolha';
                     const escapadoFormatado = this.formatarMarkdown(this.escapeHtml(textoLimpo));
                     const textoHtml = window.MDChat ? window.MDChat.destacarMencoes(escapadoFormatado) : escapadoFormatado;
@@ -22824,13 +22870,13 @@ if (honrasTable && cerimonialData.honrasPortalo) {
                     // A foto abre o perfil da pessoa; o nome continua abrindo a DM
                     // (dois cliques diferentes, duas ações diferentes).
                     const verPerfilAttr = !ehTulho
-                        ? `data-uid="${this.attrSafe(m.userId)}" data-nome="${this.attrSafe(m.nome)}" data-avatar="${this.attrSafe(m.avatar || '')}" onclick="MarujoConta.verPerfilFromEl(this)"`
+                        ? `data-uid="${this.attrSafe(m.userId)}" data-nome="${this.attrSafe(m.nome)}" data-avatar="${this.attrSafe(m.avatar || '')}" data-vip="${m.vip ? '1' : '0'}" onclick="MarujoConta.verPerfilFromEl(this)"`
                         : '';
 
                     div.id = `md-msg-${m.id}`;
                     div.innerHTML = `
                         <div class="md-chat-msg-row">
-                            <img class="md-chat-msg-avatar" src="${avatarSrc}" onerror="this.src='${this.avatarFallback(m.nome)}'" ${verPerfilAttr} title="${!ehTulho ? 'Ver perfil' : ''}">
+                            <img class="md-chat-msg-avatar ${avatarVipClasse}" src="${avatarSrc}" onerror="this.src='${this.avatarFallback(m.nome)}'" ${verPerfilAttr} title="${!ehTulho ? 'Ver perfil' : ''}">
                             <div style="flex:1;min-width:0">
                                 <div class="md-chat-autor" ${abrirDM}>${nomeExibido}</div>
                                 <div class="${bolhaClasse}">${textoHtml}</div>
@@ -23022,9 +23068,9 @@ if (honrasTable && cerimonialData.honrasPortalo) {
             const html = !usuarios.length
                 ? '<div class="md-online-vazio">Ninguém por aqui agora.</div>'
                 : usuarios.map(u => `
-                    <div class="md-online-item" style="cursor:pointer" data-uid="${MarujoConta.attrSafe(u.id)}" data-nome="${MarujoConta.attrSafe(u.nome)}" data-avatar="${MarujoConta.attrSafe(u.avatar)}" data-nivel="${MarujoConta.attrSafe(u.level)}" data-xp="${MarujoConta.attrSafe(u.pontosTotais)}" onclick="MarujoConta.verPerfilFromEl(this)">
-                        <img src="${MarujoConta.avatarUrl(u)}" onerror="this.src='${MarujoConta.avatarFallback(u.nome)}'">
-                        <span>${MarujoConta.escapeHtml(u.nome)}</span>
+                    <div class="md-online-item" style="cursor:pointer" data-uid="${MarujoConta.attrSafe(u.id)}" data-nome="${MarujoConta.attrSafe(u.nome)}" data-avatar="${MarujoConta.attrSafe(u.avatar)}" data-nivel="${MarujoConta.attrSafe(u.level)}" data-xp="${MarujoConta.attrSafe(u.pontosTotais)}" data-vip="${u.vip ? '1' : '0'}" onclick="MarujoConta.verPerfilFromEl(this)">
+                        <img class="${MarujoConta.claseAvatarVip(u)}" src="${MarujoConta.avatarUrl(u)}" onerror="this.src='${MarujoConta.avatarFallback(u.nome)}'">
+                        <span>${MarujoConta.escapeHtml(u.nome)}${MarujoConta.seloNomeVip(u)}</span>
                     </div>
                 `).join('');
             ['md-online-lista', 'md-online-lista-header'].forEach(id => {
