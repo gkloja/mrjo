@@ -137,11 +137,39 @@
     // de "preciso clicar 2x pra funcionar" — o primeiro toque acerta o anúncio
     // invisível/transparente, não o botão. Aqui desligamos só esses dois formatos,
     // os outros anúncios (in-feed, in-article, display normal) continuam ativos.
-    (window.adsbygoogle = window.adsbygoogle || []).push({
-        google_ad_client: "ca-pub-2351298778216089",
-        enable_page_level_ads: true,
-        overlays: { bottom: false }
-    });
+    //
+    // Assinantes VIP não veem anúncio nenhum: antes de habilitar os anúncios
+    // de nível de página, checa o status VIP do usuário logado (mesmo token
+    // e mesma rota /api/vip/meu-status usados no resto do site). Se a checagem
+    // falhar por qualquer motivo (usuário deslogado, erro de rede, etc.), o
+    // padrão é mostrar anúncio normalmente — só quem é VIP confirmado é isento.
+    (async function () {
+        const API_BASE_ADS = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
+        let ehVip = false;
+        try {
+            const token = localStorage.getItem('md_token');
+            if (token) {
+                const r = await fetch(`${API_BASE_ADS}/api/vip/meu-status?md_token=${encodeURIComponent(token)}`, { credentials: 'include' });
+                if (r.ok) {
+                    const data = await r.json();
+                    ehVip = !!data.vip;
+                }
+            }
+        } catch (e) {
+            console.warn('[Ads] Erro ao checar status VIP, exibindo anúncio normalmente:', e);
+        }
+
+        if (ehVip) {
+            console.log('[Ads] Usuário VIP: anúncios de página desativados.');
+            return;
+        }
+
+        (window.adsbygoogle = window.adsbygoogle || []).push({
+            google_ad_client: "ca-pub-2351298778216089",
+            enable_page_level_ads: true,
+            overlays: { bottom: false }
+        });
+    })();
     </script>
 
     
