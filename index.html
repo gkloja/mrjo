@@ -446,10 +446,11 @@
     .md-online-wrap-header { flex-shrink: 0; }
     .md-online-badge-header {
         border-radius: 20px;
-        padding: 6px 12px;
-        font-size: 0.8rem;
+        padding: 7px 14px;
+        font-size: 0.92rem;
+        font-weight: 700;
     }
-    .md-online-label { opacity: 0.85; font-weight: 600; }
+    .md-online-label { opacity: 0.9; font-weight: 700; }
     .md-online-wrap-header { display: flex; align-items: center; gap: 6px; }
     /* Avatares de quem está online, visíveis direto ao lado do contador —
        sem precisar clicar para ver quem são. */
@@ -459,25 +460,25 @@
         padding-left: 4px;
     }
     .md-online-avatars-header img {
-        width: 24px;
-        height: 24px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         object-fit: cover;
         border: 2px solid var(--bg-dark, #0a1929);
-        margin-left: -8px;
+        margin-left: -9px;
         box-shadow: 0 0 0 1px rgba(255,204,0,0.4);
         background: var(--bg-darker, #051223);
     }
     .md-online-avatars-header img:first-child { margin-left: 0; }
     .md-online-avatars-mais {
-        margin-left: -8px;
-        width: 24px;
-        height: 24px;
+        margin-left: -9px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         background: var(--primary-dark, #004d99);
         border: 2px solid var(--bg-dark, #0a1929);
         color: #fff;
-        font-size: 0.62rem;
+        font-size: 0.72rem;
         font-weight: 700;
         display: flex;
         align-items: center;
@@ -485,7 +486,7 @@
     }
     @media (max-width: 768px) {
         .md-online-avatars-header img,
-        .md-online-avatars-mais { width: 20px; height: 20px; }
+        .md-online-avatars-mais { width: 26px; height: 26px; }
     }
     .md-online-wrap-header .md-online-dropdown {
         top: calc(100% + 10px);
@@ -493,9 +494,14 @@
         right: auto;
     }
     @media (max-width: 768px) {
-        .md-online-label { display: none; }
-        .md-online-badge-header { padding: 6px 9px; }
+        /* Antes o rótulo "online" sumia e sobrava só o número minúsculo —
+           agora mantemos o essencial visível e legível mesmo no celular. */
+        .md-online-badge-header { padding: 6px 10px; font-size: 0.85rem; }
         .md-online-wrap-header .md-online-dropdown { left: auto; right: 0; }
+    }
+    @media (max-width: 380px) {
+        /* Só em telas bem estreitas o rótulo some, pra não espremer o resto do cabeçalho */
+        .md-online-label { display: none; }
     }
 
     /* ===== RESPOSTA MAIS RÁPIDA/CONFIÁVEL PARA BOTÕES ===== */
@@ -4195,14 +4201,14 @@ audio::-webkit-media-controls-mute-button {
     box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 .md-top3-titulo {
-    color: #ffcc00; font-family: 'Cinzel', serif; font-weight: 700; font-size: 11.5px;
+    color: #ffcc00; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13.5px;
     letter-spacing: 0.03em; white-space: nowrap; flex-shrink: 0;
     display: flex; align-items: center; gap: 4px;
 }
-.md-top3-lista { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; overflow: hidden; }
+.md-top3-lista { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; overflow: hidden; }
 .md-top3-item {
-    display: flex; align-items: center; gap: 6px; min-width: 0;
-    padding: 3px 10px 3px 3px; border-radius: 999px;
+    display: flex; align-items: center; gap: 8px; min-width: 0;
+    padding: 4px 12px 4px 4px; border-radius: 999px;
     background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
     transition: transform .15s ease, background .15s ease;
 }
@@ -4210,23 +4216,23 @@ audio::-webkit-media-controls-mute-button {
 .md-top3-item.ouro { order: 1; border-color: rgba(255,215,0,0.5); background: linear-gradient(90deg, rgba(255,215,0,0.14), rgba(255,255,255,0.02)); }
 .md-top3-item.prata { order: 2; border-color: rgba(192,192,192,0.4); }
 .md-top3-item.bronze { order: 3; border-color: rgba(205,127,50,0.4); }
-.md-top3-medalha { font-size: 13px; line-height: 1; flex-shrink: 0; }
-.md-top3-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 1.5px solid rgba(255,204,0,0.45); flex-shrink: 0; }
-.md-top3-info { min-width: 0; line-height: 1.2; }
-.md-top3-nome { color: #fff; font-size: 11.5px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 90px; }
-.md-top3-xp { color: #ffcc00; font-size: 9.5px; font-weight: 600; opacity: 0.85; }
-.md-top3-vazio { color: #7a9ccc; font-size: 11.5px; padding: 2px 0; }
+.md-top3-medalha { font-size: 16px; line-height: 1; flex-shrink: 0; }
+.md-top3-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1.5px solid rgba(255,204,0,0.45); flex-shrink: 0; }
+.md-top3-info { min-width: 0; line-height: 1.25; }
+.md-top3-nome { color: #fff; font-size: 13.5px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 110px; }
+.md-top3-xp { color: #ffcc00; font-size: 11.5px; font-weight: 600; opacity: 0.9; }
+.md-top3-vazio { color: #7a9ccc; font-size: 13px; padding: 2px 0; }
 .md-top3-vertodos {
     flex-shrink: 0; background: transparent; border: 1px solid rgba(122,156,204,0.35);
-    color: #a8c7fa; font-size: 10.5px; font-weight: 600; cursor: pointer;
-    padding: 5px 10px; border-radius: 999px; white-space: nowrap; transition: all .15s ease;
+    color: #a8c7fa; font-size: 12px; font-weight: 600; cursor: pointer;
+    padding: 6px 12px; border-radius: 999px; white-space: nowrap; transition: all .15s ease;
 }
 .md-top3-vertodos:hover { border-color: #ffcc00; color: #ffcc00; }
 @media (max-width: 640px) {
-    .md-top3-bar { border-radius: 16px; flex-wrap: wrap; justify-content: center; padding: 10px 12px; }
-    .md-top3-titulo { width: 100%; justify-content: center; margin-bottom: 2px; }
-    .md-top3-lista { justify-content: center; flex-wrap: wrap; }
-    .md-top3-nome { max-width: 70px; }
+    .md-top3-bar { border-radius: 16px; flex-wrap: wrap; justify-content: center; padding: 12px 14px; }
+    .md-top3-titulo { width: 100%; justify-content: center; margin-bottom: 4px; font-size: 14px; }
+    .md-top3-lista { justify-content: center; flex-wrap: wrap; gap: 10px; }
+    .md-top3-nome { max-width: 90px; font-size: 13px; }
     .md-top3-vertodos { width: 100%; }
 }
 </style>
@@ -8861,11 +8867,48 @@ html[data-theme="light"] .daily-progress-dot {
     margin-bottom: 25px;
 }
 
-.question-header {
+/* Trilha de progresso do dia — substitui o antigo texto "Pendente", que
+   ficava sempre visível (já que a questão exibida é sempre a atual, não
+   respondida) e só poluía a tela. Agora um traço mostra de forma discreta
+   quais questões já foram respondidas, qual é a atual e quantas faltam. */
+.question-progress-track {
     display: flex;
     align-items: center;
+    gap: 5px;
+    margin-bottom: 14px;
+}
+
+.question-progress-dot {
+    height: 4px;
+    flex: 1;
+    min-width: 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.12);
+    transition: background .2s ease, transform .2s ease;
+}
+
+.question-progress-dot.done {
+    background: linear-gradient(90deg, #4f9d6c, #6cc48f);
+}
+
+.question-progress-dot.current {
+    background: linear-gradient(90deg, #e8c76b, #ffcc00);
+    transform: scaleY(1.5);
+}
+
+.question-header {
+    display: flex;
+    align-items: flex-start;
     gap: 12px;
     margin-bottom: 15px;
+}
+
+.question-header-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .question-number {
@@ -10131,20 +10174,16 @@ html[data-theme="light"] .daily-progress-dot {
 
 .question-status {
     display: inline-block;
+    align-self: flex-start;
     padding: 2px 8px;
     border-radius: 10px;
-    font-size: 0.8rem;
-    margin-left: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
 }
 
 .question-status.answered {
     background: rgba(79, 157, 108, 0.2);
     color: #4f9d6c;
-}
-
-.question-status.pending {
-    background: rgba(214, 158, 46, 0.2);
-    color: #d69e2e;
 }
 </style>
 
@@ -15745,6 +15784,36 @@ const userProgress = {
         return this.lastQuizDate !== new Date().toDateString();
     },
     
+    // Reconstrói o quiz de hoje já com as categorias/dificuldades/quantidade
+    // recém-salvas em Configurações, SEM esperar o dia seguinte. Mantém as
+    // questões que a pessoa já respondeu (para não zerar o progresso do dia)
+    // e apenas re-sorteia as que ainda faltam, usando as novas regras.
+    regenerateDailyQuestions() {
+        const respondidas = this.todayQuestions.filter(q => q.answered);
+        const idsUsados = this.todayQuestions.map(q => q.id);
+
+        let disponiveis = quizDatabase.filter(q =>
+            this.settings.categories.includes(q.category) &&
+            this.settings.difficulty.includes(q.difficulty) &&
+            !idsUsados.includes(q.id)
+        );
+        disponiveis = this.shuffleArray([...disponiveis]);
+
+        const faltam = Math.max(0, this.settings.questionsPerDay - respondidas.length);
+        const novas = disponiveis.slice(0, faltam).map(q => ({
+            id: q.id, answered: false, correct: false, selected: null
+        }));
+
+        this.todayQuestions = [...respondidas, ...novas];
+        this.lastQuizDate = new Date().toDateString();
+        this.saveProgress();
+
+        return this.todayQuestions
+            .filter(q => q.id)
+            .map(q => quizDatabase.find(qdb => qdb.id === q.id))
+            .filter(q => q);
+    },
+    
 getDailyQuestions() {
     // Se já tem questões de hoje e não é um novo dia, retorna elas
     if (this.todayQuestions.length > 0 && this.todayQuestions.every(q => q.id) && !this.hasNewQuiz()) {
@@ -16330,7 +16399,14 @@ function toggleCategory(category) {
     }
     
     // Atualizar botão visualmente
-    const button = document.querySelector(`button[onclick*="${category}"]`);
+    // CORREÇÃO: antes usava document.querySelector(`button[onclick*="${category}"]`)
+    // procurando em TODA a página — como "sinais" também aparece no onclick de
+    // outro botão (o filtro de bandeiras, filterFlags('sinais')), o navegador
+    // encontrava esse botão errado primeiro e o de "Sinais" no cerimonial
+    // nunca era marcado como ativo. Agora a busca é restrita ao painel do
+    // cerimonial (#cerimonialContent) e usa o atributo data-category, sem
+    // ambiguidade com outros onclicks da página.
+    const button = document.querySelector(`#cerimonialContent button[data-category="${category}"]`);
     if (button) {
         button.classList.toggle('active');
     }
@@ -16356,7 +16432,10 @@ function toggleDifficulty(difficulty) {
     }
     
     // Atualizar botão visualmente
-    const button = document.querySelector(`button[onclick*="${difficulty}"]`);
+    // Mesma correção do toggleCategory: busca restrita ao painel do
+    // cerimonial e por atributo data-difficulty, evitando pegar o botão
+    // errado em outra parte da página.
+    const button = document.querySelector(`#cerimonialContent button[data-difficulty="${difficulty}"]`);
     if (button) {
         button.classList.toggle('active');
     }
@@ -16408,12 +16487,22 @@ function saveSettings() {
     // Salvar progresso
     userProgress.saveProgress();
     
-    // Se ainda não respondeu hoje, recarregar questões já com as novas regras
-    if (!userProgress.answeredToday || userProgress.hasNewQuiz()) {
-        dailyQuestions = userProgress.getDailyQuestions();
-        currentQuestionIndex = 0;
+    // Se ainda não terminou o quiz de hoje, atualiza AGORA com as novas
+    // regras — antes isso só acontecia no dia seguinte, porque
+    // getDailyQuestions() reaproveitava o cache do dia enquanto não virasse
+    // a data. regenerateDailyQuestions() mantém o que já foi respondido e
+    // re-sorteia só o restante, já com as categorias/dificuldades novas.
+    if (!userProgress.answeredToday) {
+        dailyQuestions = userProgress.regenerateDailyQuestions();
+        currentQuestionIndex = userProgress.todayQuestions.filter(q => q.answered).length;
         score = 0;
         totalXP = 0;
+        userProgress.todayQuestions.forEach((q, index) => {
+            if (q.answered && q.correct && index < dailyQuestions.length) {
+                const question = dailyQuestions[index];
+                if (question) { score++; totalXP += question.xp; }
+            }
+        });
     }
     
     // Atualizar badge (blindado — nunca mais trava o resto da função)
@@ -16450,12 +16539,18 @@ function resetSettings() {
         
         userProgress.saveProgress();
         
-        // Se ainda não respondeu hoje, recarregar questões
-        if (!userProgress.answeredToday || userProgress.hasNewQuiz()) {
-            dailyQuestions = userProgress.getDailyQuestions();
-            currentQuestionIndex = 0;
+        // Se ainda não terminou o quiz de hoje, recarregar já com os valores padrão
+        if (!userProgress.answeredToday) {
+            dailyQuestions = userProgress.regenerateDailyQuestions();
+            currentQuestionIndex = userProgress.todayQuestions.filter(q => q.answered).length;
             score = 0;
             totalXP = 0;
+            userProgress.todayQuestions.forEach((q, index) => {
+                if (q.answered && q.correct && index < dailyQuestions.length) {
+                    const question = dailyQuestions[index];
+                    if (question) { score++; totalXP += question.xp; }
+                }
+            });
         }
         
         updateCerimonialBadge();
@@ -16590,6 +16685,7 @@ function showUserStatus() {
                         ${['fácil', 'médio', 'difícil'].map(diff => `
                             <button class="category-btn ${userProgress.settings.difficulty.includes(diff) ? 'active' : ''}" 
                                     onclick="toggleDifficulty('${diff}')"
+                                    data-difficulty="${diff}"
                                     data-tooltip="${getDifficultyTooltip(diff)}">
                                 ${getDifficultyIcon(diff)} ${diff}
                             </button>
@@ -16614,6 +16710,7 @@ function showUserStatus() {
                         <button class="category-btn ${userProgress.settings.categories.includes(cat.id) ? 'active' : ''}" 
                                 onclick="toggleCategory('${cat.id}')"
                                 style="${userProgress.settings.categories.includes(cat.id) ? `border-color: ${cat.color}; background: ${cat.color}20;` : ''}"
+                                data-category="${cat.id}"
                                 data-tooltip="${getCategoryDescription(cat.id)}">
                             ${cat.label}
                         </button>
@@ -16987,12 +17084,19 @@ function showWelcomeScreen() {
         <div class="quiz-content">
             <div class="quiz-section active" id="questionSection">
                 <div class="quiz-question">
+                    <div class="question-progress-track" aria-hidden="true">
+                        ${dailyQuestions.map((_, i) => {
+                            const respondida = userProgress.todayQuestions[i]?.answered;
+                            const atual = i === currentQuestionIndex;
+                            return `<span class="question-progress-dot ${respondida ? 'done' : ''} ${atual ? 'current' : ''}"></span>`;
+                        }).join('')}
+                    </div>
                     <div class="question-header">
-                        <div class="question-number">
-                            ${currentQuestionIndex + 1}/${dailyQuestions.length}
-                            ${isAnswered ? '<span class="question-status answered">✓ Respondida</span>' : '<span class="question-status pending">Pendente</span>'}
+                        <div class="question-number">${currentQuestionIndex + 1}</div>
+                        <div class="question-header-text">
+                            <p class="question-text">${question.question}</p>
+                            ${isAnswered ? '<span class="question-status answered">✓ Já respondida</span>' : ''}
                         </div>
-                        <p class="question-text">${question.question}</p>
                     </div>
                     <p class="question-hint">
                         <i class="fas fa-tag"></i> ${getCategoryLabel(question.category)} • 
