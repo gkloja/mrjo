@@ -5381,9 +5381,11 @@ const NewsSystem = {
                 </div>
                 
                 <div class="news-image">
-                    <img src="${noticia.imagemPreview || 'https://via.placeholder.com/400x200?text=Notícia+Militar'}" 
+                    <img src="${this.getImagemSegura(noticia.imagemPreview)}" 
                          alt="${noticia.title}"
-                         onerror="this.src='https://via.placeholder.com/400x200?text=Imagem+Indisponível'">
+                         loading="lazy"
+                         referrerpolicy="no-referrer"
+                         onerror="this.onerror=null; this.src='${this.PLACEHOLDER_IMG}'">
                     <div class="news-time">
                         <i class="far fa-clock"></i> ${tempoRelativo}
                     </div>
@@ -5572,10 +5574,12 @@ const NewsSystem = {
                     <i class="fas fa-times"></i>
                 </button>
                 
-                <img src="${noticia.imagemPrincipal || noticia.imagemPreview}" 
+                <img src="${this.getImagemSegura(noticia.imagemPrincipal || noticia.imagemPreview)}" 
                      alt="${noticia.title}" 
                      class="news-modal-image"
-                     onerror="this.src='https://via.placeholder.com/800x400?text=Imagem+Indisponível'">
+                     loading="lazy"
+                     referrerpolicy="no-referrer"
+                     onerror="this.onerror=null; this.src='${this.PLACEHOLDER_IMG}'">
                 
                 <div class="news-modal-body">
                     <div class="news-category-badge" style="position: relative; top: 0; right: 0; display: inline-block; margin-bottom: 15px;">
@@ -5676,6 +5680,25 @@ const NewsSystem = {
             'Aeronáutica': 'fa-fighter-jet'
         };
         return icons[categoria] || 'fa-newspaper';
+    },
+
+    // Placeholder que NUNCA depende de rede: um SVG embutido em data-URI.
+    // O antigo fallback usava via.placeholder.com, que ficou instável, então
+    // as notícias sem imagem (ou com imagem quebrada) ficavam sem nada.
+    PLACEHOLDER_IMG: 'data:image/svg+xml;utf8,' + encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200">' +
+        '<rect width="100%" height="100%" fill="#0d2038"/>' +
+        '<text x="50%" y="50%" fill="#8a6b28" font-family="Arial" font-size="18" text-anchor="middle" dominant-baseline="middle">⚓ Radar Militar</text>' +
+        '</svg>'
+    ),
+
+    // Escolhe uma URL de imagem válida (ignora vazio, "null" em texto, etc.)
+    // ou cai no placeholder local.
+    getImagemSegura: function(url) {
+        if (!url || typeof url !== 'string') return this.PLACEHOLDER_IMG;
+        const limpa = url.trim();
+        if (!limpa || limpa === 'null' || limpa === 'undefined') return this.PLACEHOLDER_IMG;
+        return limpa;
     },
     
     // Atualizar estatísticas
@@ -10150,6 +10173,15 @@ html[data-theme="light"] .daily-progress-dot {
     
     <div class="cerimonial-content" id="cerimonialContent">
         <!-- Conteúdo será carregado via JavaScript -->
+    </div>
+</div>
+
+<!-- Notificação de conquista desbloqueada (usada por showAchievementUnlocked) -->
+<div class="reward-notification" id="rewardNotification">
+    <i class="fas fa-trophy"></i>
+    <div class="reward-content">
+        <h4 id="rewardTitle"></h4>
+        <p id="rewardMessage"></p>
     </div>
 </div>
 
@@ -16338,12 +16370,21 @@ function toggleDifficulty(difficulty) {
 }
 
 function saveSettings() {
+  try {
+    // Só pode alterar as configurações do cerimonial UMA vez por dia.
+    const hoje = new Date().toDateString();
+    if (userProgress.settings.ultimaAlteracaoConfig === hoje) {
+        showNotification('⏳ Você já alterou as configurações hoje. Volte amanhã para mudar de novo!');
+        return;
+    }
+
     // Obter valor do slider
-    const questionsPerDay = parseInt(document.getElementById('questionsSlider').value);
+    const sliderEl = document.getElementById('questionsSlider');
+    const questionsPerDay = parseInt(sliderEl ? sliderEl.value : userProgress.settings.questionsPerDay);
     const limiteMax = mdLimiteQuestoesPorDia();
 
     // Validar valor
-    if (questionsPerDay < 1 || questionsPerDay > limiteMax) {
+    if (!questionsPerDay || questionsPerDay < 1 || questionsPerDay > limiteMax) {
         showNotification(`Escolha entre 1 e ${limiteMax} questões por dia!`);
         return;
     }
@@ -16362,11 +16403,12 @@ function saveSettings() {
     
     // Atualizar configurações
     userProgress.settings.questionsPerDay = questionsPerDay;
+    userProgress.settings.ultimaAlteracaoConfig = hoje; // trava novas alterações até amanhã
     
     // Salvar progresso
     userProgress.saveProgress();
     
-    // Se ainda não respondeu hoje, recarregar questões
+    // Se ainda não respondeu hoje, recarregar questões já com as novas regras
     if (!userProgress.answeredToday || userProgress.hasNewQuiz()) {
         dailyQuestions = userProgress.getDailyQuestions();
         currentQuestionIndex = 0;
@@ -16374,25 +16416,36 @@ function saveSettings() {
         totalXP = 0;
     }
     
-    // Atualizar badge
+    // Atualizar badge (blindado — nunca mais trava o resto da função)
     updateCerimonialBadge();
     
-    // Mostrar confirmação
-    showNotification('Configurações salvas com sucesso!');
+    // Mostrar confirmação clara de que salvou
+    showNotification('✅ Configurações salvas com sucesso!');
     
-    // Atualizar interface
+    // Atualiza o cerimonial JÁ NA TELA, sem precisar fechar/abrir o painel
     showUserStatus();
+  } catch (e) {
+    console.error('[saveSettings] Erro ao salvar:', e);
+    showNotification('⚠️ Não foi possível salvar agora. Tente novamente.');
+  }
 }
 
 // ADICIONE ESTA FUNÇÃO PARA RESETAR CONFIGURAÇÕES
 function resetSettings() {
+  try {
+    const hoje = new Date().toDateString();
+    if (userProgress.settings.ultimaAlteracaoConfig === hoje) {
+        showNotification('⏳ Você já alterou as configurações hoje. Volte amanhã para mudar de novo!');
+        return;
+    }
     if (confirm('Deseja redefinir todas as configurações para os valores padrão?')) {
         userProgress.settings = {
             questionsPerDay: 5,
             categories: ['bandeiras', 'sinais', 'protocolos', 'datas', 'apitos'],
             difficulty: ['fácil', 'médio', 'difícil'],
             timerEnabled: false,
-            challengeMode: false
+            challengeMode: false,
+            ultimaAlteracaoConfig: hoje
         };
         
         userProgress.saveProgress();
@@ -16406,9 +16459,13 @@ function resetSettings() {
         }
         
         updateCerimonialBadge();
-        showNotification('Configurações redefinidas para padrão!');
+        showNotification('✅ Configurações redefinidas para padrão!');
         showUserStatus();
     }
+  } catch (e) {
+    console.error('[resetSettings] Erro ao redefinir:', e);
+    showNotification('⚠️ Não foi possível redefinir agora. Tente novamente.');
+  }
 }
 
 // MODIFIQUE A SEÇÃO DE CONFIGURAÇÕES NA FUNÇÃO showUserStatus
@@ -16565,7 +16622,7 @@ function showUserStatus() {
             </div>
             
             <div class="settings-actions">
-                <button class="quiz-btn primary" onclick="saveSettings()" style="flex: 2;">
+                <button class="quiz-btn primary" onclick="saveSettings()" style="flex: 2" ${userProgress.settings.ultimaAlteracaoConfig === new Date().toDateString() ? 'disabled' : ''}>
                     <i class="fas fa-save"></i> Salvar Configurações
                 </button>
                 <button class="quiz-btn secondary" onclick="showPreviewQuestions()" style="flex: 1;">
@@ -16574,7 +16631,10 @@ function showUserStatus() {
             </div>
             
             <div class="settings-info">
-                <p><i class="fas fa-info-circle"></i> As novas configurações serão aplicadas no próximo quiz.</p>
+                ${userProgress.settings.ultimaAlteracaoConfig === new Date().toDateString() ?
+                    '<p><i class="fas fa-lock"></i> Você já alterou as configurações hoje. Volte amanhã para mudar de novo.</p>' :
+                    '<p><i class="fas fa-info-circle"></i> Você pode alterar as configurações uma vez por dia.</p>'
+                }
                 ${userProgress.answeredToday ? 
                     '<p><i class="fas fa-calendar-day"></i> Você já completou o quiz de hoje. As mudanças afetarão o quiz de amanhã.</p>' : 
                     '<p><i class="fas fa-sync-alt"></i> As mudanças serão aplicadas imediatamente ao seu quiz atual.</p>'
@@ -17371,15 +17431,16 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function updateCerimonialBadge() {
-    const badge = document.getElementById('cerimonialBadge');
-    
-    if (userProgress.hasNewQuiz() && !userProgress.answeredToday) {
-        badge.textContent = userProgress.settings.questionsPerDay;
-        badge.style.display = 'flex';
-        badge.style.animation = 'pulseBadge 2s infinite';
-    } else {
-        badge.style.display = 'none';
-    }
+    // Esse indicador é a bolinha vermelha pulsante no botão flutuante
+    // (#newIndicator), que já existe no HTML. Antes essa função tentava
+    // pegar um elemento "#cerimonialBadge" que não existe mais na página —
+    // isso quebrava (erro no console) bem no meio de saveSettings() /
+    // resetSettings(), e por causa disso o aviso "Configurações salvas"
+    // e a atualização da tela nunca chegavam a rodar.
+    const indicador = document.getElementById('newIndicator');
+    if (!indicador) return;
+    const temQuizNovo = userProgress.hasNewQuiz() && !userProgress.answeredToday;
+    indicador.style.display = temQuizNovo ? 'block' : 'none';
 }
 // ======================
 // PATENTE COMPLETA
@@ -21043,11 +21104,12 @@ function showNotification(message) {
         color: white;
         padding: 15px 25px;
         border-radius: 10px;
-        z-index: 10000;
+        z-index: 999999;
         animation: slideUp 0.3s;
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         border-left: 4px solid var(--accent);
         max-width: 300px;
+        font-size: 14px;
     `;
     notification.textContent = message;
     document.body.appendChild(notification);
@@ -21689,6 +21751,38 @@ img.md-avatar-vip {
     letter-spacing: 0.03em; font-family: 'Cinzel', serif;
 }
 
+.md-rank-busca-wrap { display: flex; gap: 8px; margin: 10px 0 12px; }
+.md-rank-busca-wrap input {
+    flex: 1; padding: 8px 12px; border-radius: 10px; font-size: 13px;
+    border: 1px solid var(--md-tint-014,rgba(255,255,255,0.14)); background: var(--md-tint-006,rgba(255,255,255,0.06)); color: inherit;
+}
+.md-rank-busca-wrap #md-rank-ir-pra-mim { white-space: nowrap; padding: 8px 12px; font-size: 12px; }
+.md-rank-item.md-me {
+    background: rgba(255,204,0,0.1); border: 1px solid rgba(255,204,0,0.4);
+    border-radius: 10px; scroll-margin: 60px;
+}
+.md-rank-variacao { font-size: 11px; font-weight: 700; margin-left: 4px; }
+.md-rank-variacao.md-rank-subiu { color: #3ecf6a; }
+.md-rank-variacao.md-rank-desceu { color: #ff6b6b; }
+.md-rank-variacao.md-rank-igual { color: var(--text-secondary,#a8c7fa); }
+
+/* Caixa de status VIP (tempo restante ou chamada pra assinar) logo abaixo da patente */
+.md-perfil-vip-info {
+    margin-top: 10px; font-size: 12px; text-align: center; padding: 6px 12px;
+    border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.md-perfil-vip-info.md-vip-ativo {
+    color: var(--accent,#ffcc00); background: rgba(255,204,0,0.1); border: 1px solid rgba(255,204,0,0.3);
+}
+.md-perfil-vip-info.md-vip-acabando {
+    color: #ff9d4d; background: rgba(255,157,77,0.12); border: 1px solid rgba(255,157,77,0.35);
+}
+.md-perfil-vip-info.md-vip-ausente {
+    color: var(--text-secondary,#a8c7fa); background: var(--md-tint-006,rgba(255,255,255,0.06));
+    border: 1px dashed var(--md-tint-014,rgba(255,255,255,0.14)); cursor: pointer;
+}
+.md-perfil-vip-info.md-vip-ausente:hover { border-color: var(--accent,#ffcc00); color: var(--accent,#ffcc00); }
+
 /* Progresso até a próxima patente */
 .md-perfil-proxima { margin-top: 16px; margin-bottom: 4px; }
 .md-perfil-proxima-track {
@@ -22037,6 +22131,7 @@ img.md-avatar-vip {
                 <span class="md-perfil-patente-icone" id="md-perfil-patente-icone">⛵</span>
                 <span class="md-perfil-patente-titulo" id="md-perfil-patente-titulo">Recruta</span>
             </div>
+            <div class="md-perfil-vip-info" id="md-perfil-vip-info" style="display:none"></div>
         </div>
         <div class="md-perfil-stats" style="justify-content:center">
             <div><b id="md-perfil-nivel">1</b>Nível</div>
@@ -22061,6 +22156,10 @@ img.md-avatar-vip {
         <button class="md-modal-close" onclick="MarujoConta.fecharModal('md-ranking-overlay')">&times;</button>
         <h2>🏆 Ranking da Tripulação</h2>
         <p class="md-sub">Top marujos por XP acumulado no Bizu.</p>
+        <div class="md-rank-busca-wrap">
+            <input type="text" id="md-rank-busca" placeholder="🔎 Buscar um marujo pelo nome..." oninput="MarujoConta.filtrarRanking(this.value)">
+            <button class="md-btn-ghost" id="md-rank-ir-pra-mim" style="display:none" onclick="MarujoConta.rolarAteMinhaPosicao()">📍 Minha posição</button>
+        </div>
         <div id="md-ranking-lista"></div>
     </div>
 </div>
@@ -22077,7 +22176,7 @@ img.md-avatar-vip {
                 <h2 style="margin-bottom:2px">Você é VIP!</h2>
                 <p>Plano <b id="md-vip-ativo-plano">—</b></p>
                 <p>Válido até <b id="md-vip-ativo-validade">—</b></p>
-                <p><b id="md-vip-ativo-perguntas">0/100</b> perguntas ao Tulho hoje</p>
+                <p>⭐ <b id="md-vip-ativo-perguntas">Perguntas ilimitadas</b> ao Tulho</p>
             </div>
             <button class="md-btn-secondary" onclick="MDVip.fechar()">Fechar</button>
         </div>
@@ -22085,9 +22184,9 @@ img.md-avatar-vip {
         <!-- Tela 2: escolha de plano -->
         <div id="md-vip-tela-planos">
             <h2>⭐ Torne-se VIP</h2>
-            <p class="md-sub">Desbloqueie o Tulho sem limites (até 100 perguntas/dia) e outros privilégios de tripulação.</p>
+            <p class="md-sub">Desbloqueie o Tulho sem limites e outros privilégios de tripulação.</p>
             <ul class="md-vip-beneficios">
-                <li>100 perguntas por dia ao Tulho (IA)</li>
+                <li>Perguntas ILIMITADAS ao Tulho (IA) todo dia</li>
                 <li>Selo VIP no chat e no ranking</li>
                 <li>Prioridade nas novidades do Marujo Digital</li>
             </ul>
@@ -22218,9 +22317,12 @@ img.md-avatar-vip {
     <div class="md-chat-login-aviso" id="md-chat-login-aviso">
         <a onclick="MarujoConta.abrirAuth()">Entre ou crie uma conta</a> para participar do chat.
     </div>
-    <div class="md-chat-footer" id="md-chat-footer-ia">
-        <input type="text" id="md-chat-ia-input" placeholder="Pergunte ao Tulho..." maxlength="300" onkeydown="if(event.key==='Enter')MDChat.perguntarIA()">
-        <button onclick="MDChat.perguntarIA()">➤</button>
+    <div class="md-chat-footer" id="md-chat-footer-ia" style="flex-direction:column;align-items:stretch;gap:4px">
+        <div id="md-chat-ia-contador" style="font-size:11px;color:var(--text-secondary,#a8c7fa);text-align:center"></div>
+        <div style="display:flex;gap:8px">
+            <input type="text" id="md-chat-ia-input" placeholder="Pergunte ao Tulho..." maxlength="300" onkeydown="if(event.key==='Enter')MDChat.perguntarIA()" style="flex:1">
+            <button onclick="MDChat.perguntarIA()">➤</button>
+        </div>
     </div>
     <div class="md-chat-footer" id="md-dm-footer" style="display:none">
         <input type="text" id="md-dm-input" placeholder="Escreva uma mensagem privada..." maxlength="300" onkeydown="if(event.key==='Enter')MDChat.enviarDM()">
@@ -22559,6 +22661,34 @@ img.md-avatar-vip {
             }
 
             document.getElementById('md-perfil-overlay').classList.add('md-show');
+
+            // Status VIP: dias restantes (ou chamada pra assinar, se não for VIP).
+            this.renderVipInfoPerfil();
+        },
+
+        async renderVipInfoPerfil() {
+            const el = document.getElementById('md-perfil-vip-info');
+            if (!el || !window.MDVip) return;
+            el.style.display = 'none';
+            const status = await MDVip.consultarMeuStatus();
+            if (status && status.vip && status.expiraEm) {
+                const msExpira = new Date(status.expiraEm) - new Date();
+                const diasRestantes = Math.max(0, Math.ceil(msExpira / (24 * 60 * 60 * 1000)));
+                el.className = 'md-perfil-vip-info ' + (diasRestantes <= 3 ? 'md-vip-acabando' : 'md-vip-ativo');
+                el.onclick = null;
+                if (diasRestantes <= 0) {
+                    el.textContent = '⏳ Seu VIP expira hoje';
+                } else if (diasRestantes === 1) {
+                    el.textContent = '⭐ VIP — falta 1 dia';
+                } else {
+                    el.textContent = `⭐ VIP — faltam ${diasRestantes} dias`;
+                }
+            } else {
+                el.className = 'md-perfil-vip-info md-vip-ausente';
+                el.textContent = '☆ Torne-se VIP e tenha o Tulho sem limites';
+                el.onclick = () => { this.fecharModal('md-perfil-overlay'); MDVip.abrir(); };
+            }
+            el.style.display = 'flex';
         },
 
         // Descobre a próxima patente andando nível a nível a partir do atual,
@@ -22796,19 +22926,58 @@ img.md-avatar-vip {
                     lista.innerHTML = '<div class="md-rank-vazio">Ainda não há ninguém no ranking. Seja o primeiro! ⚓</div>';
                     return;
                 }
-                lista.innerHTML = data.ranking.map(u => this.renderRankItem(u)).join('');
-                if (data.minhaPosicao && data.minhaPosicao.posicao > data.ranking.length) {
-                    lista.innerHTML += `<hr style="border-color:rgba(255,255,255,0.1);margin:8px 0">` + this.renderRankItem(data.minhaPosicao);
-                }
+                // Guarda os dados crus pra poder filtrar por nome sem recarregar,
+                // e pra saber se o botão "minha posição" faz sentido mostrar.
+                this._rankingCache = data;
+                const buscaAtual = document.getElementById('md-rank-busca')?.value || '';
+                this.filtrarRanking(buscaAtual);
+
+                const btnMinhaPos = document.getElementById('md-rank-ir-pra-mim');
+                if (btnMinhaPos) btnMinhaPos.style.display = (this.usuario) ? 'inline-block' : 'none';
             } catch (e) {
                 if (mostrarCarregando) lista.innerHTML = '<div class="md-rank-vazio">Erro ao carregar o ranking.</div>';
             }
         },
+        // Filtra a lista já carregada por nome, sem precisar de outra chamada
+        // ao servidor — digitar e apagar a busca volta pra lista completa.
+        filtrarRanking(termo) {
+            const lista = document.getElementById('md-ranking-lista');
+            const data = this._rankingCache;
+            if (!lista || !data) return;
+            const busca = (termo || '').trim().toLowerCase();
+
+            let itens = data.ranking;
+            if (busca) itens = itens.filter(u => u.nome.toLowerCase().includes(busca));
+
+            if (!itens.length) {
+                lista.innerHTML = '<div class="md-rank-vazio">Nenhum marujo encontrado com esse nome.</div>';
+                return;
+            }
+
+            lista.innerHTML = itens.map(u => this.renderRankItem(u)).join('');
+            if (!busca && data.minhaPosicao && data.minhaPosicao.posicao > data.ranking.length) {
+                lista.innerHTML += `<hr style="border-color:rgba(255,255,255,0.1);margin:8px 0">` + this.renderRankItem(data.minhaPosicao);
+            }
+        },
+        rolarAteMinhaPosicao() {
+            const buscaEl = document.getElementById('md-rank-busca');
+            if (buscaEl) { buscaEl.value = ''; this.filtrarRanking(''); }
+            requestAnimationFrame(() => {
+                const meuItem = document.querySelector('#md-ranking-lista .md-rank-item.md-me');
+                if (meuItem) meuItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        },
         renderRankItem(u) {
             const souEu = this.usuario && u.id === this.usuario.id;
+            let variacaoHtml = '';
+            if (typeof u.variacao === 'number') {
+                if (u.variacao > 0) variacaoHtml = `<span class="md-rank-variacao md-rank-subiu">▲${u.variacao}</span>`;
+                else if (u.variacao < 0) variacaoHtml = `<span class="md-rank-variacao md-rank-desceu">▼${Math.abs(u.variacao)}</span>`;
+                else variacaoHtml = `<span class="md-rank-variacao md-rank-igual">—</span>`;
+            }
             return `
                 <div class="md-rank-item ${souEu ? 'md-me' : ''}">
-                    <div class="md-rank-pos">${u.posicao}º</div>
+                    <div class="md-rank-pos">${u.posicao}º${variacaoHtml}</div>
                     <img class="md-rank-avatar ${this.claseAvatarVip(u)}" style="cursor:pointer" src="${this.avatarUrl(u)}" onerror="this.src='${this.avatarFallback(u.nome)}'"
                         data-uid="${this.attrSafe(u.id)}" data-nome="${this.attrSafe(u.nome)}" data-avatar="${this.attrSafe(u.avatar)}" data-nivel="${this.attrSafe(u.level)}" data-xp="${this.attrSafe(u.pontosTotais)}" data-vip="${u.vip ? '1' : '0'}"
                         onclick="MarujoConta.verPerfilFromEl(this)">
@@ -23336,6 +23505,42 @@ img.md-avatar-vip {
             if (!badge) return;
             const status = await this.consultarMeuStatus();
             badge.style.display = status.vip ? '' : 'none';
+        },
+
+        // ---- cota diária do Tulho IA (consulta, sem gastar pergunta) ----
+        async consultarCotaTulho() {
+            if (!window.MarujoConta || !MarujoConta.logado) return null;
+            try {
+                const r = await authFetch(`${API_BASE}/api/tulho/cota`);
+                if (!r.ok) return null;
+                return await r.json();
+            } catch (e) {
+                console.warn('[MDVip] Erro ao consultar cota do Tulho:', e);
+                return null;
+            }
+        },
+
+        // ---- cota diária do Tulho IA ----
+        // Chamado (pelo MDChat) ANTES de gerar cada resposta do Tulho.
+        // VIP: sempre libera (perguntas ilimitadas). Quem não é VIP: libera
+        // até o limite diário e, ao bater o teto, devolve `permitido:false`
+        // com uma mensagem pronta pra mostrar na tela.
+        async consumirPerguntaTulho() {
+            if (!window.MarujoConta || !MarujoConta.logado) {
+                return { permitido: false, erro: 'Você precisa entrar na sua conta pra falar com o Tulho.' };
+            }
+            try {
+                const r = await authFetch(`${API_BASE}/api/tulho/consumir`, { method: 'POST' });
+                const data = await r.json();
+                if (!r.ok) {
+                    return { permitido: false, erro: data.erro || 'Limite diário de perguntas ao Tulho atingido. Volte amanhã ou assine o VIP! ⭐', ...data };
+                }
+                return data;
+            } catch (e) {
+                console.warn('[MDVip] Erro ao consultar cota do Tulho:', e);
+                // Se o backend falhar, não trava o usuário — libera a pergunta.
+                return { permitido: true, vip: false };
+            }
         }
     };
     window.MDVip = MDVip;
@@ -23396,6 +23601,9 @@ window.MDChat = {
             iaFooter.style.display = 'flex';
             btnIa.classList.add('active');
             titulo.textContent = '🤖 Tulho IA (conversa privada)';
+            if (window.MDVip && logado) {
+                window.MDVip.consultarCotaTulho().then(status => { if (status) this.atualizarContadorTulho(status); });
+            }
         } else if (aba === 'dm') {
             btnDm.classList.add('active');
             if (!logado) {
@@ -23421,8 +23629,17 @@ window.MDChat = {
         const input = document.getElementById('md-chat-ia-input');
         const pergunta = input.value.trim();
         if (!pergunta) return;
-        input.value = '';
         const corpo = document.getElementById('md-chat-body-ia');
+
+        // Confere/consome a cota diária ANTES de gastar a pergunta do usuário.
+        // VIP sempre passa; sem VIP, trava ao bater o limite do dia.
+        const cota = window.MDVip ? await window.MDVip.consumirPerguntaTulho() : { permitido: true };
+        if (!cota.permitido) {
+            this.mostrarAvisoLimiteTulho(corpo, cota.erro);
+            return;
+        }
+
+        input.value = '';
 
         const minha = document.createElement('div');
         minha.className = 'md-chat-msg md-mine';
@@ -23439,12 +23656,46 @@ window.MDChat = {
             <div class="md-chat-bolha md-bolha-ia">${window.MarujoConta.formatarMarkdown(this.escapeHtml(resposta))}</div>`;
         corpo.appendChild(div);
         corpo.scrollTop = corpo.scrollHeight;
+        this.atualizarContadorTulho(cota);
+    },
+
+    // Mostra, dentro da própria conversa com o Tulho, o aviso de limite
+    // diário batido — com um atalho pra assinar o VIP.
+    mostrarAvisoLimiteTulho(corpo, mensagem) {
+        const div = document.createElement('div');
+        div.className = 'md-chat-msg-ia';
+        div.innerHTML = `
+            <div class="md-chat-autor">🤖 Tulho</div>
+            <div class="md-chat-bolha md-bolha-ia">
+                ⏳ ${this.escapeHtml(mensagem || 'Você atingiu o limite diário de perguntas ao Tulho.')}
+                <div style="margin-top:8px">
+                    <button class="md-btn-primary" style="padding:6px 12px;font-size:12px" onclick="MarujoConta.fecharModal('md-chat-panel'); window.MDVip.abrir();">⭐ Assinar VIP</button>
+                </div>
+            </div>`;
+        corpo.appendChild(div);
+        corpo.scrollTop = corpo.scrollHeight;
+    },
+
+    // Atualiza, se existir na tela, o contador "X perguntas restantes hoje".
+    atualizarContadorTulho(cota) {
+        const el = document.getElementById('md-chat-ia-contador');
+        if (!el) return;
+        if (!cota || cota.vip || cota.ilimitado) {
+            el.textContent = '⭐ Perguntas ilimitadas (VIP)';
+        } else if (typeof cota.restante === 'number') {
+            el.textContent = `${cota.restante} de ${cota.limite} perguntas restantes hoje`;
+        }
     },
 
     // Chamado quando alguém marca "🤖 Chamar Tulho" no chat da tripulação:
     // gera a resposta e publica ela no MESMO chat compartilhado, marcada
     // com um prefixo que todo mundo renderiza como bolha do Tulho.
     async responderNoChatDaTripulacao(pergunta) {
+        const cota = window.MDVip ? await window.MDVip.consumirPerguntaTulho() : { permitido: true };
+        if (!cota.permitido) {
+            window.MarujoConta.publicarNoChat(window.MarujoConta.IA_MARK + `⏳ ${cota.erro || 'Limite diário de perguntas ao Tulho atingido. Assine o VIP para perguntas ilimitadas!'}`);
+            return;
+        }
         const resposta = await this.obterRespostaTulho(pergunta);
         window.MarujoConta.publicarNoChat(window.MarujoConta.IA_MARK + resposta);
     },
