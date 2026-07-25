@@ -8905,14 +8905,25 @@ html[data-theme="light"] .daily-progress-dot {
 .question-progress-track {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 3px;
     margin-bottom: 14px;
+    /* Com muitas questões (ex.: 100, liberado pra VIP) a soma dos
+       "min-width" de cada bolinha passava da largura do container e a
+       trilha inteira vazava pro lado, quebrando o layout do cerimonial.
+       overflow:hidden garante que, mesmo em algum caso extremo, ela nunca
+       estoura visualmente a caixa. */
+    overflow: hidden;
 }
 
 .question-progress-dot {
     height: 4px;
-    flex: 1;
-    min-width: 10px;
+    flex: 1 1 0;
+    /* Sem min-width fixo: com poucas questões cada segmento ainda fica
+       confortável (o flex-grow distribui a largura toda entre elas), mas
+       agora elas também conseguem encolher o quanto for preciso pra
+       sempre caber lado a lado dentro do container, não importa se são
+       10 ou 100 questões no dia. */
+    min-width: 0;
     border-radius: 999px;
     background: rgba(255,255,255,0.12);
     transition: background .2s ease, transform .2s ease;
@@ -23290,11 +23301,11 @@ img.md-avatar-vip {
             // Estatísticas extras ao lado do nome: quantas pessoas essa conta
             // convidou e quantas perguntas de questionário já respondeu.
             const convidados = Number(u.convidados) || 0;
-            const questionarios = Number(u.questionariosRespondidos) || 0;
-            const statsHtml = (convidados || questionarios)
-                ? `<div class="md-rank-extra-stats" title="Convites feitos e questionários respondidos">
+            const acertos = Number(u.respostasCorretas) || 0;
+            const statsHtml = (convidados || acertos)
+                ? `<div class="md-rank-extra-stats" title="Convites feitos e questões respondidas corretamente">
                         ${convidados ? `<span>🎟️ ${convidados}</span>` : ''}
-                        ${questionarios ? `<span>📝 ${questionarios}</span>` : ''}
+                        ${acertos ? `<span>✅ ${acertos}</span>` : ''}
                    </div>`
                 : '';
             return `
