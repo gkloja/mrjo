@@ -22032,6 +22032,8 @@ img.md-avatar-vip {
 .md-rank-nome { flex: 1; font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .md-rank-pontos { font-size: 12px; color: var(--accent,#ffcc00); font-weight: 700; }
 .md-rank-nivel { font-size: 10.5px; color: var(--text-muted,#7a9ccc); }
+.md-rank-extra-stats { display: flex; gap: 10px; margin-top: 2px; font-size: 10.5px; color: var(--text-muted,#7a9ccc); }
+.md-rank-extra-stats span { white-space: nowrap; }
 
 /* ---------- Chat da comunidade ---------- */
 #md-chat-fab {
@@ -22362,8 +22364,31 @@ img.md-avatar-vip {
         <div class="md-erro" id="md-avatar-erro"></div>
         <button class="md-btn-primary" onclick="MarujoConta.fecharModal('md-perfil-overlay'); openCerimonialDia();">⚓ Cerimonial do Dia</button>
         <button class="md-btn-secondary" onclick="MarujoConta.abrirRanking()">🏆 Ver ranking</button>
+        <button class="md-btn-secondary" onclick="MarujoConta.abrirConvite()">🎟️ Convidar amigos (ganhe XP)</button>
         <button class="md-btn-secondary" onclick="MarujoConta.fecharModal('md-perfil-overlay'); MDVip.abrir();">⭐ Assinar VIP</button>
         <button class="md-btn-ghost" onclick="MarujoConta.logout()">Sair da conta</button>
+    </div>
+</div>
+
+<!-- Modal de Convites: cada marujo tem um link próprio; quem se cadastra
+     por ele credita XP pra quem convidou. -->
+<div class="md-overlay" id="md-convite-overlay">
+    <div class="md-modal">
+        <button class="md-modal-close" onclick="MarujoConta.fecharModal('md-convite-overlay')">&times;</button>
+        <h3 style="margin-top:0">🎟️ Convide a tripulação</h3>
+        <p class="md-sub">Cada amigo que criar conta pelo seu link te dá <b id="md-convite-xp-por-convite">50</b> XP direto no ranking.</p>
+        <div class="md-perfil-stats" style="justify-content:center;margin:16px 0">
+            <div><b id="md-convite-total">0</b>Convidados</div>
+            <div><b id="md-convite-xp-ganho">0</b>XP ganho</div>
+        </div>
+        <div class="info-item" style="margin-bottom:12px">
+            <div class="info-label">Seu link de convite</div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+                <input type="text" id="md-convite-link" readonly style="flex:1;padding:10px 12px;border-radius:8px;border:1px solid var(--md-tint-01,rgba(255,255,255,0.1));background:var(--md-tint-005,rgba(255,255,255,0.05));color:var(--text-primary);font-size:0.85rem">
+                <button class="md-btn-primary" style="padding:10px 14px;white-space:nowrap" onclick="MarujoConta.copiarLinkConvite()">Copiar</button>
+            </div>
+        </div>
+        <div class="md-erro" id="md-convite-erro"></div>
     </div>
 </div>
 
@@ -22570,6 +22595,28 @@ img.md-avatar-vip {
     }
     function mdToken() {
         return localStorage.getItem(MD_TOKEN_KEY) || '';
+    }
+
+    // ---------------------------------------------------------------------
+    // CONVITES: se a pessoa chegou pelo link de convite de alguém
+    // (ex.: marujodigital.onrender.com/?ref=ABC123), guarda o código numa
+    // sessionStorage assim que a página carrega — assim ele sobrevive
+    // mesmo que a pessoa navegue pelo site antes de criar a conta, e é
+    // enviado junto no cadastro pra creditar XP a quem convidou.
+    // ---------------------------------------------------------------------
+    const MD_REF_KEY = 'md_ref_code';
+    (function mdCapturarCodigoConviteDaURL() {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const ref = params.get('ref');
+            if (ref && ref.trim()) {
+                sessionStorage.setItem(MD_REF_KEY, ref.trim().toUpperCase());
+            }
+        } catch (e) { /* navegação privada pode bloquear sessionStorage; sem problema, só não credita */ }
+    })();
+    function mdCodigoConviteDaURL() {
+        try { return sessionStorage.getItem(MD_REF_KEY) || null; }
+        catch (e) { return null; }
     }
     // Manda o token na própria URL (query string) em vez de um header
     // customizado: headers customizados obrigam o navegador a fazer uma
@@ -22883,6 +22930,54 @@ img.md-avatar-vip {
             this.renderVipInfoPerfil();
         },
 
+        // ---------- Convites (indique e ganhe XP) ----------
+        async abrirConvite() {
+            if (!this.logado) return this.abrirAuth();
+            this.fecharTodosOverlays();
+            const erroEl = document.getElementById('md-convite-erro');
+            const linkEl = document.getElementById('md-convite-link');
+            erroEl.textContent = '';
+            linkEl.value = 'Carregando...';
+            document.getElementById('md-convite-overlay').classList.add('md-show');
+
+            try {
+                const r = await authFetch(`${API}/convite`);
+                const data = await r.json();
+                if (!data.ok) {
+                    erroEl.textContent = data.erro || 'Não foi possível carregar seu link de convite.';
+                    linkEl.value = '';
+                    return;
+                }
+                const link = `${window.location.origin}${window.location.pathname}?ref=${encodeURIComponent(data.codigo)}`;
+                linkEl.value = link;
+                document.getElementById('md-convite-total').textContent = data.convidados || 0;
+                document.getElementById('md-convite-xp-ganho').textContent = data.xpGanhoConvites || 0;
+                document.getElementById('md-convite-xp-por-convite').textContent = data.xpPorConvite || 50;
+            } catch (e) {
+                erroEl.textContent = 'Não foi possível conectar ao servidor.';
+                linkEl.value = '';
+            }
+        },
+        copiarLinkConvite() {
+            const linkEl = document.getElementById('md-convite-link');
+            const erroEl = document.getElementById('md-convite-erro');
+            if (!linkEl.value) return;
+            linkEl.select();
+            linkEl.setSelectionRange(0, 99999);
+            const marcarCopiado = () => {
+                erroEl.style.color = '';
+                erroEl.textContent = '✅ Link copiado! Agora é só mandar pra tripulação.';
+                setTimeout(() => { if (erroEl.textContent.startsWith('✅')) erroEl.textContent = ''; }, 3000);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(linkEl.value).then(marcarCopiado).catch(() => {
+                    try { document.execCommand('copy'); marcarCopiado(); } catch (e) {}
+                });
+            } else {
+                try { document.execCommand('copy'); marcarCopiado(); } catch (e) {}
+            }
+        },
+
         async renderVipInfoPerfil() {
             const el = document.getElementById('md-perfil-vip-info');
             if (!el || !window.MDVip) return;
@@ -22975,7 +23070,7 @@ img.md-avatar-vip {
             try {
                 const r = await authFetch(`${API}/registrar`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, senha })
+                    body: JSON.stringify({ nome, senha, convite: mdCodigoConviteDaURL() })
                 });
                 const data = await r.json();
                 if (!data.ok) { erroEl.textContent = data.erro || 'Erro ao criar conta.'; return; }
@@ -23192,6 +23287,16 @@ img.md-avatar-vip {
                 else if (u.variacao < 0) variacaoHtml = `<span class="md-rank-variacao md-rank-desceu">▼${Math.abs(u.variacao)}</span>`;
                 else variacaoHtml = `<span class="md-rank-variacao md-rank-igual">—</span>`;
             }
+            // Estatísticas extras ao lado do nome: quantas pessoas essa conta
+            // convidou e quantas perguntas de questionário já respondeu.
+            const convidados = Number(u.convidados) || 0;
+            const questionarios = Number(u.questionariosRespondidos) || 0;
+            const statsHtml = (convidados || questionarios)
+                ? `<div class="md-rank-extra-stats" title="Convites feitos e questionários respondidos">
+                        ${convidados ? `<span>🎟️ ${convidados}</span>` : ''}
+                        ${questionarios ? `<span>📝 ${questionarios}</span>` : ''}
+                   </div>`
+                : '';
             return `
                 <div class="md-rank-item ${souEu ? 'md-me' : ''}">
                     <div class="md-rank-pos">${u.posicao}º${variacaoHtml}</div>
@@ -23201,6 +23306,7 @@ img.md-avatar-vip {
                     <div style="flex:1;overflow:hidden">
                         <div class="md-rank-nome">${this.escapeHtml(u.nome)}${this.seloNomeVip(u)}${souEu ? ' (você)' : ''}</div>
                         <div class="md-rank-nivel">Nível ${u.level}</div>
+                        ${statsHtml}
                     </div>
                     <div class="md-rank-pontos">${u.pontosTotais} XP</div>
                 </div>`;
@@ -23214,15 +23320,14 @@ img.md-avatar-vip {
             painel.classList.toggle('md-show', this.chatAberto);
             if (this.chatAberto) {
                 document.getElementById('md-chat-badge').style.display = 'none';
-                // 🐞 CORRIGIDO: antes, reabrir o painel sempre forçava a caixa
-                // de resposta da Tripulação de volta a "flex", mesmo se a aba
-                // ativa antes de fechar era a "Tulho IA" — como o switchTab()
-                // não era chamado de novo, a caixa do Tulho continuava visível
-                // por baixo, e o resultado eram DUAS caixas de resposta na
-                // tela ao mesmo tempo. Agora simplesmente re-sincronizamos com
-                // a última aba usada (Tripulação por padrão, na primeira vez).
+                // Sempre abre na aba Tripulação. Tentar "lembrar" a aba
+                // anterior (Tulho IA/DM) causava um bug onde a caixa de
+                // resposta do Tulho ficava sobreposta à da Tripulação —
+                // então, pra simplificar e evitar esse bug de vez, todo
+                // reabrir do painel volta pro chat da Tripulação; o usuário
+                // pode trocar de aba normalmente pelos botões do topo.
                 if (window.MDChat) {
-                    window.MDChat.switchTab(window.MDChat.abaAtual || 'crew');
+                    window.MDChat.switchTab('crew');
                 } else {
                     document.getElementById('md-chat-footer-logado').style.display = this.logado ? 'flex' : 'none';
                     document.getElementById('md-chat-login-aviso').style.display = this.logado ? 'none' : 'block';
@@ -23549,7 +23654,7 @@ img.md-avatar-vip {
             { id: 'mensal', nome: 'VIP Mensal', dias: 30,  valor: 14.90,  destaque: false,
               beneficios: ['Sem anúncios', 'Até 100 perguntas por dia', 'Design/moldura exclusiva na foto de perfil', 'Selo ⭐ VIP no menu', 'Prioridade nas respostas'] },
             { id: 'anual',  nome: 'VIP Anual',  dias: 365, valor: 99.90, destaque: true,
-              beneficios: ['Sem anúncios', 'Até 100 perguntas por dia', 'Design/moldura exclusiva na foto de perfil', 'Selo ⭐ VIP no menu', 'Prioridade nas respostas'] },
+              beneficios: ['Sem anúncios', 'Até 100 perguntas por dia', 'Design/moldura exclusiva na foto de perfil', 'Selo ⭐ VIP no menu', 'Prioridade nas respostas', '2 meses de desconto'] },
         ],
 
         transacaoAtual: null,
