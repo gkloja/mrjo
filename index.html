@@ -15968,7 +15968,7 @@ function playSound(type) {
     // Sons reais de apito para acerto/erro do quiz. Se o arquivo não
     // carregar por algum motivo, cai no beep sintetizado como reserva.
     if (type === 'correct' || type === 'wrong') {
-        const src = type === 'correct' ? './Apitos/vitória_original.mp3' : './Apitos/falha_original.mp3';
+        const src = type === 'correct' ? './Apitos/vitoria_original.mp3' : './Apitos/derrota_original.mp3';
         const efeito = new Audio(src);
         efeito.volume = 1;
         efeito.addEventListener('error', () => {
