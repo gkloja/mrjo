@@ -3656,93 +3656,6 @@ audio::-webkit-media-controls-mute-button {
 </head>
 <body>
   
-<!-- NOTIFICAÇÃO DE LEVEL UP - DESIGN ELEGANTE -->
-<div class="notification-wrapper">
-    <div class="level-notification" id="levelNotification">
-        <!-- Camadas de brilho -->
-        <div class="glow-layers">
-            <div class="glow-core"></div>
-            <div class="glow-pulse"></div>
-            <div class="glow-rings"></div>
-        </div>
-        
-        <!-- Conteúdo principal -->
-        <div class="notification-content">
-            <!-- Header com joia -->
-            <div class="notification-header">
-                <div class="gem-container">
-                    <div class="gem" id="levelGem">
-                        <div class="gem-facet gem-facet-1"></div>
-                        <div class="gem-facet gem-facet-2"></div>
-                        <div class="gem-facet gem-facet-3"></div>
-                        <div class="gem-facet gem-facet-4"></div>
-                    </div>
-                </div>
-                <div class="header-text">
-                    <span class="header-sup">EVOLUTION</span>
-                    <span class="header-title" id="evolutionTitle">ASCENSÃO</span>
-                </div>
-            </div>
-            
-            <!-- Nível principal -->
-            <div class="level-display">
-                <div class="level-old" id="oldLevel">0</div>
-                <div class="level-arrow">
-                    <svg width="40" height="24" viewBox="0 0 40 24" fill="none">
-                        <path d="M38 12H2M38 12L28 2M38 12L28 22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                    </svg>
-                </div>
-                <div class="level-new" id="newLevel">1</div>
-            </div>
-            
-            <!-- Título do nível -->
-            <div class="level-rank" id="levelRank">INICIANTE</div>
-            
-            <!-- Barra de progresso refinada -->
-            <div class="progress-section">
-                <div class="progress-labels">
-                    <span class="progress-label">PROGRESSÃO</span>
-                    <span class="progress-value" id="progressValue">+150 XP</span>
-                </div>
-                <div class="progress-track">
-                    <div class="progress-fill" id="progressFill">
-                        <div class="progress-glow"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Benefícios e ação -->
-            <div class="benefits-section">
-                <div class="benefits-list" id="benefitsList">
-                    <div class="benefit-item">
-                        <svg width="16" height="16" viewBox="0 0 16 16">
-                            <circle cx="8" cy="8" r="6" fill="currentColor"/>
-                        </svg>
-                        <span>Bônus de 10%</span>
-                    </div>
-                    <div class="benefit-item">
-                        <svg width="16" height="16" viewBox="0 0 16 16">
-                            <circle cx="8" cy="8" r="6" fill="currentColor"/>
-                        </svg>
-                        <span>Nova habilidade</span>
-                    </div>
-                </div>
-                
-                <button class="action-button" onclick="showRewards()">
-                    <span>VER BENEFÍCIOS</span>
-                    <svg width="20" height="20" viewBox="0 0 20 20">
-                        <path d="M7 15L13 10L7 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                </button>
-            </div>
-            
-            <!-- Timer discreto -->
-            <div class="notification-timer" id="notificationTimer">
-                <div class="timer-bar"></div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <style>
 :root {
@@ -16055,7 +15968,7 @@ function playSound(type) {
     // Sons reais de apito para acerto/erro do quiz. Se o arquivo não
     // carregar por algum motivo, cai no beep sintetizado como reserva.
     if (type === 'correct' || type === 'wrong') {
-        const src = type === 'correct' ? './Apitos/vitória_1.mp3' : './Apitos/falha_1.mp3';
+        const src = type === 'correct' ? './Apitos/vitória_original.mp3' : './Apitos/falha_original.mp3';
         const efeito = new Audio(src);
         efeito.volume = 1;
         efeito.addEventListener('error', () => {
@@ -24262,7 +24175,7 @@ window.MDChat = {
 </script>
 
 <!-- Música ambiente: toca sozinha, em loop, assim que a pessoa entra no site -->
-<audio id="ambientMusicPlayer" src="./Apitos/home.mp3" loop preload="auto"></audio>
+<audio id="ambientMusicPlayer" src="./Apitos/home2.mp3" loop preload="auto"></audio>
 
 <script>
 // ==================== MÚSICA AMBIENTE (toca automático em loop, com botão de silenciar) ====================
