@@ -302,13 +302,30 @@
         background: rgba(10,41,80,0.08);
     }
 
-    /* O cabeçalho misturava a variável clara do fundo com um azul-marinho
-       fixo, criando um gradiente feio (quase branco → azul escuro). Ele
-       passa a ser um azul-marinho sólido e consistente nos dois temas,
-       como uma barra de marca (assim como muitos apps mantêm a barra
-       superior colorida mesmo no modo claro). */
+    /* Cabeçalho agora acompanha o tema como o resto do site, em vez de
+       ficar preso ao azul-marinho no modo claro. */
     html[data-theme="light"] .navy-header {
-        background: linear-gradient(135deg, #062c4d 0%, #001a33 100%);
+        background: linear-gradient(135deg, #eef3f9 0%, #dbe6f2 100%);
+        border-bottom-color: rgba(0,51,102,0.25);
+        box-shadow: 0 5px 20px rgba(10,25,50,0.08);
+    }
+    html[data-theme="light"] .navy-header::before {
+        background-image:
+            linear-gradient(90deg, transparent 50%, rgba(0, 102, 204, 0.06) 100%),
+            radial-gradient(ellipse at 30% 20%, rgba(0, 102, 204, 0.1) 0%, transparent 60%),
+            radial-gradient(ellipse at 70% 80%, rgba(255, 204, 0, 0.12) 0%, transparent 60%);
+    }
+    /* O título usava um degradê branco → dourado, feito pra "brilhar" sobre
+       fundo escuro. Sobre o novo fundo claro ele ficava quase invisível,
+       então no modo claro o degradê passa a ir do azul-marinho ao dourado. */
+    html[data-theme="light"] .logo-text h1 {
+        background: linear-gradient(135deg, #003366 0%, #0a4d8c 40%, #a9812f 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: none;
+    }
+    html[data-theme="light"] .subtitle {
+        text-shadow: none;
     }
     html[data-theme="light"] .navy-nav {
         background: rgba(255,255,255,0.85);
@@ -339,6 +356,16 @@
     html[data-theme="light"] .cerimonial-dia-container .user-status {
         background: linear-gradient(160deg, rgba(169,129,47,0.12), rgba(169,129,47,0.04));
         border-color: rgba(169,129,47,0.35);
+    }
+    /* Vários títulos do quiz/Cerimonial do Dia usavam uma cor creme fixa
+       (#f5efdd), pensada pra aparecer sobre fundo escuro. Sobre o card
+       claro (fundo bege/dourado) esse creme quase some — corrigidos aqui,
+       um por um, pros que não têm fundo colorido próprio. */
+    html[data-theme="light"] .cerimonial-text h3,
+    html[data-theme="light"] .rank-info h4,
+    html[data-theme="light"] .question-text,
+    html[data-theme="light"] .result-title {
+        color: var(--text-primary);
     }
     html[data-theme="light"] .cerimonial-text p,
     html[data-theme="light"] .rank-info p {
@@ -951,7 +978,7 @@
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 10000;
+    z-index: 100000; /* acima dos botões flutuantes (98000-99600) */
     padding: 20px;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -2876,7 +2903,7 @@ audio::-webkit-media-controls-mute-button {
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 2000;
+    z-index: 100000; /* acima dos botões flutuantes (98000-99600) */
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -3322,7 +3349,7 @@ audio::-webkit-media-controls-mute-button {
         display: none;
         justify-content: center;
         align-items: center;
-        z-index: 2000;
+        z-index: 100000; /* acima dos botões flutuantes (98000-99600), pra cobri-los quando aberto */
         opacity: 0;
         transition: opacity 0.3s;
     }
@@ -3644,6 +3671,103 @@ audio::-webkit-media-controls-mute-button {
         color: var(--accent);
         font-weight: 600;
         margin-bottom: 5px;
+    }
+
+    /* ===== CORREÇÕES DO MODO CLARO ===== */
+    /* Vários textos de título/rótulo usavam "color: white" fixo. Isso ficava
+       bem em fundo escuro, mas no modo claro os cards/modais clareiam (via
+       var(--bg-dark)/var(--bg-darker)) e o texto branco fica ilegível.
+       Aqui esses textos passam a acompanhar o tema. */
+    html[data-theme="light"] .download-modal-title,
+    html[data-theme="light"] .download-modal-hero h4,
+    html[data-theme="light"] .feature-item span,
+    html[data-theme="light"] .info-value,
+    html[data-theme="light"] .apito-card-name,
+    html[data-theme="light"] .apito-player-track,
+    html[data-theme="light"] .card-title,
+    html[data-theme="light"] .download-logo i,
+    html[data-theme="light"] .download-info h4,
+    html[data-theme="light"] .download-close:hover,
+    html[data-theme="light"] .download-stat-value,
+    html[data-theme="light"] .download-modal-icon i,
+    html[data-theme="light"] .download-info-value,
+    html[data-theme="light"] .flag-name,
+    html[data-theme="light"] .section-title,
+    html[data-theme="light"] .footer-section h3,
+    html[data-theme="light"] .footer-links a:hover,
+    html[data-theme="light"] .news-title-container h2,
+    html[data-theme="light"] .share-btn,
+    html[data-theme="light"] .news-title a,
+    html[data-theme="light"] .stat-item span,
+    html[data-theme="light"] .chat-header h4,
+    html[data-theme="light"] .api-status-header,
+    html[data-theme="light"] .api-status-name,
+    html[data-theme="light"] .radio-option.active span,
+    html[data-theme="light"] .radio-info h4,
+    html[data-theme="light"] .radio-close:hover,
+    html[data-theme="light"] .fala-titulo,
+    html[data-theme="light"] .xp-earned-value,
+    html[data-theme="light"] .journey-title,
+    html[data-theme="light"] .step-circle.current + .step-label,
+    html[data-theme="light"] .badge-item:hover .badge-label,
+    html[data-theme="light"] .questions-value,
+    html[data-theme="light"] .stat-value,
+    html[data-theme="light"] .category-name,
+    html[data-theme="light"] .challenge-title,
+    html[data-theme="light"] .timer-display,
+    html[data-theme="light"] .extra-title,
+    html[data-theme="light"] .extra-question,
+    html[data-theme="light"] .reward-xp-total-value,
+    html[data-theme="light"] .ranking-title,
+    html[data-theme="light"] .rank-user,
+    html[data-theme="light"] .review-title,
+    html[data-theme="light"] .xp-next,
+    html[data-theme="light"] .streak-badge span,
+    html[data-theme="light"] .preview-question,
+    html[data-theme="light"] .mobile-header-title,
+    html[data-theme="light"] .mobile-apito-name,
+    html[data-theme="light"] .mobile-no-results-title,
+    html[data-theme="light"] .mobile-player-name {
+        color: var(--text-primary);
+    }
+    html[data-theme="light"] .apito-search-box input,
+    html[data-theme="light"] .chat-input,
+    html[data-theme="light"] .mobile-search-box input {
+        color: var(--text-primary);
+    }
+    html[data-theme="light"] #searchFonoclama {
+        background: rgba(10,41,80,0.05);
+        border-color: rgba(10,41,80,0.1);
+        color: var(--text-primary);
+    }
+    html[data-theme="light"] .apito-search-box input::placeholder,
+    html[data-theme="light"] .chat-input::placeholder,
+    html[data-theme="light"] .mobile-search-box input::placeholder,
+    html[data-theme="light"] #searchFonoclama::placeholder {
+        color: var(--text-muted);
+    }
+
+    /* Botões "fechar" e pílulas translúcidas (fundo branco 10-20% de opacidade)
+       ficavam quase invisíveis sobre um fundo que também é claro. Escurecemos
+       a pílula e ajustamos o ícone/texto para acompanhar o tema. */
+    html[data-theme="light"] .modal-close,
+    html[data-theme="light"] .download-modal-close,
+    html[data-theme="light"] .download-btn-secondary,
+    html[data-theme="light"] .download-action-btn.secondary:hover,
+    html[data-theme="light"] .chat-close,
+    html[data-theme="light"] .filter-btn:hover,
+    html[data-theme="light"] .quiz-btn.secondary:hover,
+    html[data-theme="light"] .rank-position,
+    html[data-theme="light"] .review-btn:hover,
+    html[data-theme="light"] .mobile-search-clear:hover,
+    html[data-theme="light"] .cerimonial-close,
+    html[data-theme="light"] .navy-btn {
+        background: rgba(10,41,80,0.08);
+        color: var(--text-primary);
+    }
+    html[data-theme="light"] .message-content {
+        background: rgba(10,41,80,0.05);
+        color: var(--text-primary);
     }
     </style>
     
@@ -4048,7 +4172,7 @@ audio::-webkit-media-controls-mute-button {
                 
                 <!-- Container da imagem com ZOOM -->
                 <div class="logo-image-container">
-                    <img src="imagens/logo.png" alt="Marujo Digital" class="logo-image-zoomed">
+                    <img src="imagens/logo.png" alt="Marujo Digital" class="logo-image-zoomed" fetchpriority="high" decoding="async">
                 </div>
             </div>
             
@@ -4180,9 +4304,16 @@ audio::-webkit-media-controls-mute-button {
 </style>
 
 <!-- ===== SEÇÃO DE NOTÍCIAS MILITARES COM MINIMIZAR TOTAL E COMPARTILHAMENTO ===== -->
+<!-- Agora vive dentro de um painel flutuante (#md-news-panel), acionado pelo
+     botão flutuante #md-news-fab posicionado acima do chat da tripulação. -->
 
 <!-- NOTIFICAÇÃO DE LEVEL UP PREMIUM -->
 
+<div id="md-news-panel" class="md-news-panel" role="dialog" aria-modal="true" aria-label="Radar de Notícias Militares">
+<button class="md-news-panel-close" onclick="toggleNewsRadar()" aria-label="Fechar radar de notícias">
+    <i class="fas fa-times"></i>
+</button>
+<div class="md-news-panel-inner">
 <section class="military-news-section" id="militaryNewsSection">
     <!-- Cabeçalho da Seção com Controles -->
     <div class="news-section-header">
@@ -4266,6 +4397,8 @@ audio::-webkit-media-controls-mute-button {
         </div>
     </div>
 </section>
+</div>
+</div>
 
 <style>
 /* ===== SEÇÃO DE NOTÍCIAS MILITARES ===== */
@@ -4296,6 +4429,65 @@ audio::-webkit-media-controls-mute-button {
     box-shadow: 0 20px 40px rgba(0,0,0,0.5);
     position: relative;
     overflow: hidden;
+}
+
+/* ===== BOTÃO FLUTUANTE DO RADAR DE NOTÍCIAS (acima do chat) ===== */
+#md-news-fab {
+    position: fixed; bottom: 78px; left: 18px; z-index: 98000;
+    width: 50px; height: 50px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #123a5c, var(--navy-dark,#051523));
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.45), 0 0 0 1.5px var(--gold,#ffd700);
+    cursor: pointer; border: none; font-size: 19px; color: var(--gold,#ffd700);
+    transition: transform .2s ease, box-shadow .2s ease;
+    overflow: visible;
+}
+#md-news-fab:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 10px 24px rgba(0,0,0,0.6); }
+#md-news-fab:active { transform: scale(0.94); }
+#md-news-fab::after {
+    /* pulso sutil de "sinal ao vivo", ecoando o live-indicator do painel */
+    content: ''; position: absolute; inset: -4px; border-radius: 50%;
+    border: 1.5px solid rgba(255,215,0,0.5);
+    animation: mdNewsFabPulse 2.4s ease-out infinite;
+    pointer-events: none;
+}
+@keyframes mdNewsFabPulse {
+    0% { transform: scale(0.85); opacity: 0.9; }
+    70% { transform: scale(1.25); opacity: 0; }
+    100% { transform: scale(1.25); opacity: 0; }
+}
+.md-news-fab-badge {
+    position: absolute; top: -4px; right: -4px;
+    background: #ff4d4d; color: #fff; font-size: 10px; font-weight: 700;
+    border-radius: 50%; min-width: 18px; height: 18px; padding: 0 3px;
+    display: none; align-items: center; justify-content: center;
+    border: 2px solid var(--md-deep, #051223);
+}
+/* ===== PAINEL FLUTUANTE DO RADAR DE NOTÍCIAS ===== */
+.md-news-panel {
+    display: none;
+    position: fixed; inset: 0; z-index: 99500;
+    background: rgba(3, 12, 24, 0.82);
+    backdrop-filter: blur(6px);
+    padding: 60px 16px 24px;
+    overflow-y: auto;
+}
+.md-news-panel.md-show { display: block; animation: mdRise .25s ease; }
+.md-news-panel-inner { max-width: 960px; margin: 0 auto; }
+.md-news-panel-close {
+    position: fixed; top: 14px; right: 14px; z-index: 99600;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(145deg, var(--navy,#0a2a44), var(--navy-dark,#051523));
+    border: 1.5px solid var(--gold,#ffd700); color: var(--gold,#ffd700);
+    font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+    transition: transform .15s ease;
+}
+.md-news-panel-close:hover { transform: scale(1.08) rotate(90deg); }
+.md-news-panel .military-news-section { margin: 0; }
+@media (max-width: 640px) {
+    .md-news-panel { padding: 54px 8px 16px; }
 }
 
 /* Efeito de radar sutil */
@@ -5534,7 +5726,7 @@ const NewsSystem = {
                         <i class="fas ${this.getCategoriaIcon(noticia.categoria)}"></i> ${noticia.categoria}
                     </div>
                     
-                    <h2 style="color: white; margin-bottom: 15px;">${noticia.title}</h2>
+                    <h2 style="color: var(--text-primary); margin-bottom: 15px;">${noticia.title}</h2>
                     
                     <div style="color: var(--gold); margin-bottom: 20px; font-size: 0.9rem;">
                         <i class="far fa-clock"></i> Publicado em ${new Date(noticia.dataPublicacao).toLocaleString('pt-BR')}
@@ -5801,6 +5993,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// ===== Botão flutuante do Radar de Notícias =====
+function toggleNewsRadar() {
+    const painel = document.getElementById('md-news-panel');
+    if (!painel) return;
+    const abrindo = !painel.classList.contains('md-show');
+    painel.classList.toggle('md-show');
+    document.body.style.overflow = abrindo ? 'hidden' : '';
+    if (abrindo) {
+        const badge = document.getElementById('md-news-fab-badge');
+        if (badge) badge.style.display = 'none';
+        painel.scrollTop = 0;
+    }
+}
+
+// Fecha o painel com a tecla Esc
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const painel = document.getElementById('md-news-panel');
+        if (painel && painel.classList.contains('md-show')) toggleNewsRadar();
+    }
+});
+
+// Espelha o total de notícias no selo do botão flutuante
+(function () {
+    function sincronizarBadge() {
+        const total = document.getElementById('totalNoticias');
+        const badge = document.getElementById('md-news-fab-badge');
+        if (!total || !badge) return;
+        const painelAberto = document.getElementById('md-news-panel')?.classList.contains('md-show');
+        const n = parseInt(total.textContent, 10);
+        if (!painelAberto && !isNaN(n) && n > 0) {
+            badge.textContent = n > 99 ? '99+' : String(n);
+            badge.style.display = 'flex';
+        } else if (!painelAberto) {
+            badge.style.display = 'none';
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        sincronizarBadge();
+        const total = document.getElementById('totalNoticias');
+        if (total && window.MutationObserver) {
+            new MutationObserver(sincronizarBadge).observe(total, { childList: true, characterData: true, subtree: true });
+        }
+    });
+})();
+
 // Adicionar Font Awesome se não existir
 if (!document.querySelector('link[href*="font-awesome"]')) {
     const fa = document.createElement('link');
@@ -5826,7 +6064,7 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
         <div class="chat-header">
             <div class="chat-header-title">
                 <div class="chat-avatar">
-                    <img src="imagens/logo.png" alt="Tulho">
+                    <img src="imagens/logo.png" alt="Tulho" loading="lazy" decoding="async" width="40" height="40">
                 </div>
                 <div>
                     <h4>Tulho <span>Assistente</span></h4>
@@ -7696,7 +7934,7 @@ setInterval(() => {
         <!-- Barra de Pesquisa -->
 <!-- Substitua a barra de pesquisa existente por esta versão com botão limpar -->
 <div class="search-container" style="margin: 15px 0; padding: 0 15px; position: relative;">
-    <input type="text" id="searchFonoclama" placeholder="🔍 Pesquisar procedimento..." style="width: 100%; padding: 12px 45px 12px 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 0.95rem; box-sizing: border-box;">
+    <input type="text" id="searchFonoclama" placeholder="🔍 Pesquisar procedimento..." style="width: 100%; padding: 12px 45px 12px 15px; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;">
     <button onclick="limparPesquisa()" style="position: absolute; right: 25px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #ffcc00; cursor: pointer; font-size: 1rem;" title="Limpar pesquisa">
         <i class="fas fa-times-circle"></i>
     </button>
@@ -7858,7 +8096,7 @@ setInterval(() => {
     
     <!-- Detalhes das honras -->
     <div class="timeline" style="margin-top: 30px;">
-        <h4 style="color: white; margin-bottom: 20px;">Honras Específicas por Autoridade:</h4>
+        <h4 style="color: var(--text-primary); margin-bottom: 20px;">Honras Específicas por Autoridade:</h4>
         
         <div class="timeline-item">
             <div class="timeline-time">Presidente da República</div>
@@ -8397,7 +8635,7 @@ setInterval(() => {
     --naval-success: #4f9d6c;
     --naval-danger: #b8503f;
     position: fixed;
-    bottom: 96px; /* acima da barra de botões flutuantes (chat/música/perfil), evita sobreposição */
+    bottom: 96px; /* fica por cima da barra de botões flutuantes quando aberto */
     left: 50%;
     transform: translateX(-50%);
     width: 95%;
@@ -8412,7 +8650,7 @@ setInterval(() => {
         0 0 0 1px rgba(201, 161, 59, 0.25),
         inset 0 0 0 6px rgba(6, 15, 28, 0.35),
         inset 0 0 0 7px rgba(201, 161, 59, 0.35);
-    z-index: 5000; /* fica acima do conteúdo normal, mas abaixo de painéis/modais (98000+) */
+    z-index: 100000; /* acima dos botões flutuantes (98000-99600), pra sobrepô-los quando aberto */
     padding: 0;
     overflow: hidden;
     display: none;
@@ -9838,7 +10076,7 @@ html[data-theme="light"] .daily-progress-dot {
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 2000;
+    z-index: 100000; /* acima dos botões flutuantes (98000-99600) */
     padding: 20px;
 }
 
@@ -11611,7 +11849,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
                 msgDiv.innerHTML = `
                     <i class="fas fa-search" style="font-size: 3rem; color: #ffcc00; margin-bottom: 20px; display: block;"></i>
-                    <h3 style="color: white; margin-bottom: 10px;">Nenhum procedimento encontrado</h3>
+                    <h3 style="color: var(--text-primary); margin-bottom: 10px;">Nenhum procedimento encontrado</h3>
                     <p>Tente pesquisar com outras palavras</p>
                 `;
                 container.appendChild(msgDiv);
@@ -16063,7 +16301,7 @@ function showQuestionsByCategory(category) {
     const categoryQuestions = quizDatabase.filter(q => q.category === category);
     
     let html = '<div class="quiz-content">';
-    html += `<h3 style="color: white; margin-bottom: 20px;">Questões sobre ${getCategoryLabel(category)}</h3>`;
+    html += `<h3 style="color: var(--text-primary); margin-bottom: 20px;">Questões sobre ${getCategoryLabel(category)}</h3>`;
     
     categoryQuestions.forEach((q, index) => {
         const isAnsweredToday = userProgress.todayQuestions.some(tq => tq.id === q.id);
@@ -16093,7 +16331,7 @@ function showQuestionsByCategory(category) {
 
 function showAllQuestions() {
     let html = '<div class="quiz-content">';
-    html += '<h3 style="color: white; margin-bottom: 20px;">Todas as Questões (50)</h3>';
+    html += '<h3 style="color: var(--text-primary); margin-bottom: 20px;">Todas as Questões (50)</h3>';
     
     const categories = ['bandeiras', 'sinais', 'protocolos', 'datas', 'apitos'];
     
@@ -16717,7 +16955,7 @@ function showUserStatus() {
         
         <!-- Progresso por Categoria -->
         <div class="category-progress">
-            <h4 style="color: white; margin-bottom: 15px;">
+            <h4 style="color: var(--text-primary); margin-bottom: 15px;">
                 <i class="fas fa-chart-pie"></i> Seu Progresso por Categoria
             </h4>
             ${Object.keys(categoryStats).map(cat => `
@@ -16792,7 +17030,7 @@ function showPreviewQuestions() {
     const previewQuestions = userProgress.getDailyQuestions();
     
     let previewHTML = '<div class="quiz-content">';
-    previewHTML += '<h3 style="color: white; margin-bottom: 20px;">';
+    previewHTML += '<h3 style="color: var(--text-primary); margin-bottom: 20px;">';
     previewHTML += '<i class="fas fa-eye"></i> Pré-visualização do Quiz';
     previewHTML += '</h3>';
     
@@ -17294,7 +17532,7 @@ function showQuizResults() {
 
 function reviewTodayQuestions() {
     let reviewHTML = '<div style="padding: 20px;">';
-    reviewHTML += '<h3 style="color: white; margin-bottom: 20px;">Revisão das Questões de Hoje</h3>';
+    reviewHTML += '<h3 style="color: var(--text-primary); margin-bottom: 20px;">Revisão das Questões de Hoje</h3>';
     
     dailyQuestions.forEach((q, index) => {
         reviewHTML += `
@@ -17306,7 +17544,7 @@ function reviewTodayQuestions() {
                 border-left: 4px solid ${getCategoryColor(q.category)};
             ">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-                    <p style="color: white; font-weight: 600; margin: 0; flex: 1;">
+                    <p style="color: var(--text-primary); font-weight: 600; margin: 0; flex: 1;">
                         ${index + 1}. ${q.question}
                     </p>
                     <span style="
@@ -17357,7 +17595,7 @@ function showExtraQuestions() {
     ).slice(0, 5);
     
     let extraHTML = '<div style="padding: 20px;">';
-    extraHTML += '<h3 style="color: white; margin-bottom: 20px;">Questões Extras (+5 XP cada)</h3>';
+    extraHTML += '<h3 style="color: var(--text-primary); margin-bottom: 20px;">Questões Extras (+5 XP cada)</h3>';
     extraHTML += '<p style="color: var(--text-secondary); margin-bottom: 20px;">Responda questões adicionais para ganhar mais XP!</p>';
     
     unansweredQuestions.forEach((q, index) => {
@@ -18153,7 +18391,7 @@ honrasPortalo: [
                 </div>
             </div>
             
-            <h3 style="color: white; margin: 20px 0 10px 0;">Significados das Cores:</h3>
+            <h3 style="color: var(--text-primary); margin: 20px 0 10px 0;">Significados das Cores:</h3>
             <ul style="color: var(--text-secondary); padding-left: 20px;">
                 <li><strong style="color: #009c3b">Verde:</strong> Pujança das matas brasileiras</li>
                 <li><strong style="color: #ffdf00">Amarelo:</strong> Riquezas minerais do solo</li>
@@ -18163,7 +18401,7 @@ honrasPortalo: [
                 <li><strong>"Ordem e Progresso":</strong> Influência positivista de Auguste Comte</li>
             </ul>
             
-            <h3 style="color: white; margin: 20px 0 10px 0;">Dimensões Oficiais (Lei 5.700/71):</h3>
+            <h3 style="color: var(--text-primary); margin: 20px 0 10px 0;">Dimensões Oficiais (Lei 5.700/71):</h3>
             <table class="navy-table">
                 <thead>
                     <tr>
@@ -18182,7 +18420,7 @@ honrasPortalo: [
                 </tbody>
             </table>
             
-            <h3 style="color: white; margin: 20px 0 10px 0;">Constelações Representadas:</h3>
+            <h3 style="color: var(--text-primary); margin: 20px 0 10px 0;">Constelações Representadas:</h3>
             <p style="color: var(--text-secondary);">
                 As estrelas correspondem ao aspecto do céu do Rio de Janeiro às 8h30 de 15/11/1889:<br>
                 - Cruzeiro do Sul<br>
@@ -20353,6 +20591,7 @@ function createFlagCard(flagData) {
         imageElement = `
             <img src="${flagData.imagePath}" 
                  alt="${flagData.title}" 
+                 loading="lazy" decoding="async"
                  style="width: 100%; height: 100%; object-fit: contain;"
                  onerror="this.onerror=null; this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 70%22><rect width=%22100%22 height=%2270%22 fill=%22%232d3748%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23ffffff%22>${flagData.title.substring(0,3)}</text></svg>'">
         `;
@@ -20472,7 +20711,7 @@ function loadSignals() {
     
     content.innerHTML = `
         <div style="padding: 20px;">
-            <h3 style="color: white; margin-bottom: 20px;">Códigos de Sinais Navais</h3>
+            <h3 style="color: var(--text-primary); margin-bottom: 20px;">Códigos de Sinais Navais</h3>
             <p style="color: var(--text-secondary); margin-bottom: 20px;">
                 Sistema de comunicação visual entre navios usando bandeiras alfabéticas, numerais, galhardetes e cornetas substitutas.
             </p>
@@ -20507,7 +20746,7 @@ function loadSignals() {
             </div>
             
             <div style="margin-top: 40px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 10px;">
-                <h4 style="color: white; margin-bottom: 15px;">Legenda dos Tipos:</h4>
+                <h4 style="color: var(--text-primary); margin-bottom: 15px;">Legenda dos Tipos:</h4>
                 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
                     <span style="display: inline-flex; align-items: center; gap: 5px; background: rgba(56, 161, 105, 0.3); color: #38a169; padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;">
                         <div style="width: 10px; height: 10px; background: #38a169; border-radius: 50%;"></div>
@@ -20636,6 +20875,7 @@ function createSignalCard(sinal) {
                 ">
                     <img src="${sinal.imagem || 'https://via.placeholder.com/70x45/2d3748/ffffff?text=' + sinal.codigo.substring(0, 3)}" 
                          alt="${sinal.codigo}" 
+                         loading="lazy" decoding="async"
                          style="width: 100%; height: 100%; object-fit: cover;"
                          onerror="this.src='https://via.placeholder.com/70x45/2d3748/ffffff?text=' + this.alt.substring(0, 3)">
                 </div>
@@ -20655,7 +20895,7 @@ function createSignalCard(sinal) {
                 </div>
             </div>
             
-            <h4 style="color: white; margin: 0 0 10px 0; font-size: 1.2rem; font-weight: 600;">
+            <h4 style="color: var(--text-primary); margin: 0 0 10px 0; font-size: 1.2rem; font-weight: 600;">
                 ${sinal.codigo}
             </h4>
             
@@ -20806,7 +21046,7 @@ function openSignalModal(code, event) {
                 </div>
                 
                 <div style="margin: 25px 0;">
-                    <h3 style="color: white; margin-bottom: 15px;">Significado:</h3>
+                    <h3 style="color: var(--text-primary); margin-bottom: 15px;">Significado:</h3>
                     <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px;">
                         <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
                             ${signal.significado}
@@ -20817,7 +21057,7 @@ function openSignalModal(code, event) {
                 <!-- Informações específicas para substitutas -->
                 ${signal.tipo === 'substituta' ? `
                 <div style="margin: 20px 0;">
-                    <h3 style="color: white; margin-bottom: 10px;">Informações Específicas:</h3>
+                    <h3 style="color: var(--text-primary); margin-bottom: 10px;">Informações Específicas:</h3>
                     <div style="background: rgba(245, 158, 11, 0.1); padding: 20px; border-radius: 8px; border-left: 3px solid #f59e0b;">
                         <p style="color: var(--text-secondary); margin: 0;">
                             <strong>Posicionamento:</strong> ${signal.posicao || 'Não especificado'}<br>
@@ -20831,7 +21071,7 @@ function openSignalModal(code, event) {
                 <!-- Informações específicas para incêndio -->
                 ${signal.categoria === 'emergencia' && signal.descricao ? `
                 <div style="margin: 20px 0;">
-                    <h3 style="color: white; margin-bottom: 10px;">Procedimento de Emergência:</h3>
+                    <h3 style="color: var(--text-primary); margin-bottom: 10px;">Procedimento de Emergência:</h3>
                     <div style="background: rgba(229, 62, 62, 0.1); padding: 20px; border-radius: 8px; border-left: 3px solid #e53e3e;">
                         <p style="color: var(--text-secondary); margin: 0;">
                             <strong>Tipo de incêndio:</strong> ${signal.descricao}<br>
@@ -20858,9 +21098,9 @@ function openSignalModal(code, event) {
                 <!-- Imagem do sinal -->
                 ${signal.imagem ? `
                 <div style="margin: 25px 0;">
-                    <h3 style="color: white; margin-bottom: 15px;">Representação Visual:</h3>
+                    <h3 style="color: var(--text-primary); margin-bottom: 15px;">Representação Visual:</h3>
                     <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; text-align: center;">
-                        <img src="${signal.imagem}" alt="${signal.codigo}" 
+                        <img src="${signal.imagem}" alt="${signal.codigo}" loading="lazy" decoding="async"
                              style="max-width: 100%; max-height: 200px; border-radius: 8px;"
                              onerror="this.src='https://via.placeholder.com/300x200/2d3748/ffffff?text=${signal.codigo}'">
                         <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">
@@ -20878,7 +21118,7 @@ function openSignalModal(code, event) {
                     border-radius: 8px;
                     margin-top: 20px;
                 ">
-                    <div style="color: white; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                    <div style="color: var(--text-primary); font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-exclamation-triangle"></i> PROCEDIMENTO DE EMERGÊNCIA
                     </div>
                     <div style="color: var(--text-secondary); font-size: 0.95rem;">
@@ -20897,7 +21137,7 @@ function openSignalModal(code, event) {
                     border-radius: 8px;
                     margin-top: 20px;
                 ">
-                    <div style="color: white; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                    <div style="color: var(--text-primary); font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-user-slash"></i> PROCEDIMENTO DE AUSÊNCIA
                     </div>
                     <div style="color: var(--text-secondary); font-size: 0.95rem;">
@@ -20923,7 +21163,7 @@ function loadSubstitutasSection() {
     
     content.innerHTML = `
         <div style="padding: 20px;">
-            <h3 style="color: white; margin-bottom: 20px;">Cornetas Substitutas</h3>
+            <h3 style="color: var(--text-primary); margin-bottom: 20px;">Cornetas Substitutas</h3>
             <p style="color: var(--text-secondary); margin-bottom: 20px;">
                 Indicam a ausência de autoridades a bordo durante o período das 8h ao pôr do sol, 
                 por até 72 horas de ausência.
@@ -20966,7 +21206,7 @@ function loadSubstitutasSection() {
                             </div>
                         </div>
                         
-                        <h4 style="color: white; margin: 0 0 10px 0; font-size: 1.2rem; font-weight: 600;">
+                        <h4 style="color: var(--text-primary); margin: 0 0 10px 0; font-size: 1.2rem; font-weight: 600;">
                             ${substituta.codigo}
                         </h4>
                         
@@ -20982,7 +21222,7 @@ function loadSubstitutasSection() {
             </div>
             
             <div style="margin-top: 40px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 10px;">
-                <h4 style="color: white; margin-bottom: 15px;">📋 Diagrama de Posicionamento:</h4>
+                <h4 style="color: var(--text-primary); margin-bottom: 15px;">📋 Diagrama de Posicionamento:</h4>
                 <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
                     <div style="text-align: center;">
                         <div style="width: 120px; height: 150px; background: rgba(255,255,255,0.05); border: 2px solid #f59e0b; 
@@ -21004,7 +21244,7 @@ function loadSubstitutasSection() {
                     </div>
                     
                     <div style="max-width: 300px;">
-                        <h5 style="color: white; margin-bottom: 10px;">Legenda:</h5>
+                        <h5 style="color: var(--text-primary); margin-bottom: 10px;">Legenda:</h5>
                         <ul style="color: var(--text-secondary); padding-left: 20px; font-size: 0.9rem;">
                             <li><strong>1ª Substituta:</strong> Comandante de Força</li>
                             <li><strong>2ª Substituta:</strong> Chefe de Estado-Maior</li>
@@ -21109,6 +21349,7 @@ function showFlagDetail(flagId) {
                         ${flagData.imagePath ? `
                             <img src="${flagData.imagePath}" 
                                  alt="${flagData.title}" 
+                                 loading="lazy" decoding="async"
                                  style="
                                     max-width: 100%;
                                     max-height: 300px;
@@ -21148,7 +21389,7 @@ function showFlagDetail(flagId) {
                 
                 <!-- Descrição detalhada -->
                 <div style="margin: 30px 0;">
-                    <h3 style="color: white; margin-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                    <h3 style="color: var(--text-primary); margin-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
                         <i class="fas fa-file-alt"></i> Descrição Detalhada
                     </h3>
                     <div style="
@@ -21466,7 +21707,7 @@ if (honrasTable && cerimonialData.honrasPortalo) {
     <div class="app-lock-overlay" id="appLockOverlay">
         <div class="app-lock-card">
             <span class="app-lock-badge">100% Grátis</span>
-            <div class="app-lock-icon"><img src="imagens/logo.png" alt="Marujo Digital"></div>
+            <div class="app-lock-icon"><img src="imagens/logo.png" alt="Marujo Digital" loading="lazy" decoding="async"></div>
             <h2 id="appLockTitle">Continue no App Marujo Digital</h2>
             <p id="appLockText">Pra liberar o acesso completo ao Bizu, baixe o app gratuito. Fica salvo no seu celular, funciona offline e não some quando a internet cair.</p>
             <ul class="app-lock-benefits">
@@ -21961,7 +22202,7 @@ img.md-avatar-vip {
 
 /* ---------- Chat da comunidade ---------- */
 #md-chat-fab {
-    position: fixed; bottom: 18px; left: 16px; z-index: 98000;
+    position: fixed; bottom: 18px; left: 18px; z-index: 98000;
     width: 50px; height: 50px; border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, #1281e0, var(--primary-dark,#004d99));
     display: flex; align-items: center; justify-content: center;
@@ -21979,7 +22220,7 @@ img.md-avatar-vip {
     border: 2px solid var(--md-deep);
 }
 #md-chat-panel {
-    position: fixed; bottom: 88px; left: 16px; z-index: 98500;
+    position: fixed; bottom: 88px; left: 18px; z-index: 98500;
     width: 320px; max-width: calc(100vw - 32px); height: 420px; max-height: 65vh;
     background: linear-gradient(170deg, var(--md-hull-2), var(--md-deep));
     border: 1px solid rgba(255,204,0,0.3); border-radius: var(--md-radius);
@@ -22003,20 +22244,38 @@ img.md-avatar-vip {
 #md-profile-fab-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
 /* Botão flutuante de música ambiente — mesma posição do antigo botão de
-   busca de música, agora só liga/desliga o som de fundo. */
+   busca de música, agora só liga/desliga o som de fundo. Alinhado com o
+   botão do radar de notícias do outro lado (mesma linha e mesmo respiro
+   das bordas), com um pulso sonoro sutil enquanto a música está tocando. */
 #ambient-music-btn {
-    position: fixed; bottom: 86px; right: 18px; z-index: 98000;
+    position: fixed; bottom: 78px; right: 18px; z-index: 98000;
     width: 50px; height: 50px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #b06cf7, #6a3093 70%);
+    background: radial-gradient(circle at 35% 30%, #c084fc, #6a3093 75%);
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 8px 20px rgba(90,30,150,0.45), 0 0 0 1px rgba(0,0,0,0.15);
-    cursor: pointer; border: 1.5px solid var(--accent,#ffcc00);
+    box-shadow: 0 8px 20px rgba(120,50,200,0.5), 0 0 0 1.5px var(--accent,#ffcc00);
+    cursor: pointer; border: none;
     font-size: 19px; color: #fff;
-    transition: transform .2s ease, box-shadow .2s ease;
+    transition: transform .2s ease, box-shadow .2s ease, background .25s ease;
 }
-#ambient-music-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 10px 24px rgba(90,30,150,0.6); }
+#ambient-music-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 10px 24px rgba(120,50,200,0.65), 0 0 0 1.5px var(--accent,#ffcc00); }
 #ambient-music-btn:active { transform: scale(0.94); }
-#ambient-music-btn.muted { background: radial-gradient(circle at 35% 30%, #8a8a8a, #4a4a4a 70%); }
+#ambient-music-btn::after {
+    /* onda sonora: só pulsa enquanto a música está tocando */
+    content: ''; position: absolute; inset: -4px; border-radius: 50%;
+    border: 1.5px solid rgba(192,132,252,0.55);
+    animation: mdAmbientPulse 2.2s ease-out infinite;
+    pointer-events: none;
+}
+@keyframes mdAmbientPulse {
+    0% { transform: scale(0.85); opacity: 0.9; }
+    70% { transform: scale(1.3); opacity: 0; }
+    100% { transform: scale(1.3); opacity: 0; }
+}
+#ambient-music-btn.muted {
+    background: radial-gradient(circle at 35% 30%, #8a8a8a, #4a4a4a 75%);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4), 0 0 0 1.5px rgba(255,255,255,0.15);
+}
+#ambient-music-btn.muted::after { display: none; }
 
 /* Abas do chat unificado */
 .md-chat-tabs { display: flex; border-bottom: 1px solid var(--md-tint-008); flex-shrink: 0; }
@@ -22262,7 +22521,7 @@ img.md-avatar-vip {
         <button class="md-modal-close" onclick="MarujoConta.fecharModal('md-perfil-overlay')">&times;</button>
         <div class="md-perfil-header">
             <div class="md-avatar-wrap">
-                <img id="md-perfil-avatar" src="" alt="Avatar">
+                <img id="md-perfil-avatar" src="" alt="Avatar" loading="lazy" decoding="async">
                 <div class="md-avatar-loading" id="md-avatar-loading"><div class="md-avatar-spinner"></div></div>
                 <label class="md-avatar-edit" title="Trocar foto">
                     ✎
@@ -22365,7 +22624,7 @@ img.md-avatar-vip {
             <h2>Pagamento via PIX</h2>
             <p class="md-sub"><span id="md-vip-pix-plano-nome">Plano</span> — <b id="md-vip-pix-valor">R$ 0,00</b></p>
             <div class="md-vip-pix-box">
-                <img id="md-vip-pix-qr" src="" alt="QR Code PIX">
+                <img id="md-vip-pix-qr" src="" alt="QR Code PIX" loading="lazy" decoding="async">
                 <div class="md-vip-copia-wrap">
                     <input type="text" id="md-vip-pix-copiacola" readonly>
                     <button class="md-btn-primary" style="padding:8px 12px" onclick="MDVip.copiarCodigo()">Copiar</button>
@@ -22388,7 +22647,7 @@ img.md-avatar-vip {
         <button class="md-modal-close" onclick="MarujoConta.fecharModal('md-verperfil-overlay')">&times;</button>
         <div class="md-perfil-header">
             <div class="md-avatar-wrap">
-                <img id="md-verperfil-avatar" src="" alt="Avatar">
+                <img id="md-verperfil-avatar" src="" alt="Avatar" loading="lazy" decoding="async">
             </div>
             <div class="md-perfil-nome" id="md-verperfil-nome"></div>
             <div class="md-perfil-patente" id="md-verperfil-patente">
@@ -22404,6 +22663,12 @@ img.md-avatar-vip {
     </div>
 </div>
 
+<!-- Radar de Notícias Militares: botão flutuante, acima do chat da tripulação -->
+<div id="md-news-fab" onclick="toggleNewsRadar()" title="Radar de Notícias Militares">
+    <i class="fas fa-satellite-dish"></i>
+    <span class="md-news-fab-badge" id="md-news-fab-badge"></span>
+</div>
+
 <!-- Chat unificado: Tripulação + Tulho IA -->
 <div id="md-chat-fab" onclick="MarujoConta.toggleChat()">
     💬
@@ -22411,7 +22676,7 @@ img.md-avatar-vip {
 </div>
 <!-- Botão de perfil flutuante, no lugar do antigo botão do Tulho -->
 <div id="md-profile-fab" onclick="MarujoConta.onFloatingAvatarClick()" title="Meu perfil">
-    <img id="md-profile-fab-img" src="" alt="Perfil" style="display:none;">
+    <img id="md-profile-fab-img" src="" alt="Perfil" style="display:none;" loading="lazy" decoding="async">
     <span id="md-profile-fab-fallback">⚓</span>
 </div>
 
@@ -22465,7 +22730,7 @@ img.md-avatar-vip {
     <div class="md-chat-body md-dm-thread" id="md-dm-thread" style="display:none">
         <div class="md-dm-thread-header">
             <button class="md-dm-voltar" onclick="MDChat.voltarParaListaDM()">‹</button>
-            <img id="md-dm-thread-avatar" class="md-dm-thread-avatar" src="" alt="">
+            <img id="md-dm-thread-avatar" class="md-dm-thread-avatar" src="" alt="" loading="lazy" decoding="async">
             <span id="md-dm-thread-nome"></span>
         </div>
         <div class="md-dm-thread-msgs" id="md-dm-thread-msgs"></div>
@@ -22607,7 +22872,7 @@ img.md-avatar-vip {
             if (this.logado && this.usuario) {
                 bar.classList.remove('md-guest');
                 bar.innerHTML = `
-                    <img class="md-avatar-mini ${this.claseAvatarVip(this.usuario)}" src="${this.avatarUrl(this.usuario)}" onerror="this.src='${this.avatarFallback(this.usuario.nome)}'">
+                    <img class="md-avatar-mini ${this.claseAvatarVip(this.usuario)}" src="${this.avatarUrl(this.usuario)}" loading="lazy" decoding="async" onerror="this.src='${this.avatarFallback(this.usuario.nome)}'">
                     <div class="md-userbar-info">
                         <span class="md-userbar-nome">${this.escapeHtml(this.usuario.nome)}${this.seloNomeVip(this.usuario)}<span class="md-vip-badge" id="md-userbar-vip-badge" style="display:none">⭐ VIP</span></span>
                         <span class="md-userbar-nivel">Nível ${this.usuario.level} · ${this.usuario.pontosTotais} XP</span>
@@ -23121,7 +23386,7 @@ img.md-avatar-vip {
                 lista.innerHTML = data.ranking.slice(0, 3).map((u, i) => `
                     <div class="md-top3-item ${medalhas[i]}" onclick="MDChat.abrirDMComUsuario('${u.id}', '${this.escapeHtml(u.nome).replace(/'/g, "\\'")}')" title="Conversar com ${this.escapeHtml(u.nome)}">
                         <span class="md-top3-medalha">${icones[i]}</span>
-                        <img class="md-top3-avatar ${this.claseAvatarVip(u)}" src="${this.avatarUrl(u)}" onerror="this.src='${this.avatarFallback(u.nome)}'">
+                        <img class="md-top3-avatar ${this.claseAvatarVip(u)}" src="${this.avatarUrl(u)}" loading="lazy" decoding="async" onerror="this.src='${this.avatarFallback(u.nome)}'">
                         <div class="md-top3-info">
                             <div class="md-top3-nome">${this.escapeHtml(u.nome)}${this.seloNomeVip(u)}</div>
                             <div class="md-top3-xp">${u.pontosTotais} XP</div>
@@ -23224,7 +23489,7 @@ img.md-avatar-vip {
             return `
                 <div class="md-rank-item ${souEu ? 'md-me' : ''}">
                     <div class="md-rank-pos">${u.posicao}º${variacaoHtml}</div>
-                    <img class="md-rank-avatar ${this.claseAvatarVip(u)}" style="cursor:pointer" src="${this.avatarUrl(u)}" onerror="this.src='${this.avatarFallback(u.nome)}'"
+                    <img class="md-rank-avatar ${this.claseAvatarVip(u)}" style="cursor:pointer" src="${this.avatarUrl(u)}" loading="lazy" decoding="async" onerror="this.src='${this.avatarFallback(u.nome)}'"
                         data-uid="${this.attrSafe(u.id)}" data-nome="${this.attrSafe(u.nome)}" data-avatar="${this.attrSafe(u.avatar)}" data-nivel="${this.attrSafe(u.level)}" data-xp="${this.attrSafe(u.pontosTotais)}" data-vip="${u.vip ? '1' : '0'}"
                         onclick="MarujoConta.verPerfilFromEl(this)">
                     <div style="flex:1;overflow:hidden">
@@ -23302,7 +23567,7 @@ img.md-avatar-vip {
                     div.id = `md-msg-${m.id}`;
                     div.innerHTML = `
                         <div class="md-chat-msg-row">
-                            <img class="md-chat-msg-avatar ${avatarVipClasse}" src="${avatarSrc}" onerror="this.src='${this.avatarFallback(m.nome)}'" ${verPerfilAttr} title="${!ehTulho ? 'Ver perfil' : ''}">
+                            <img class="md-chat-msg-avatar ${avatarVipClasse}" src="${avatarSrc}" loading="lazy" decoding="async" onerror="this.src='${this.avatarFallback(m.nome)}'" ${verPerfilAttr} title="${!ehTulho ? 'Ver perfil' : ''}">
                             <div style="flex:1;min-width:0">
                                 <div class="md-chat-autor" ${abrirDM}>${nomeExibido}</div>
                                 <div class="${bolhaClasse}">${textoHtml}</div>
@@ -23495,7 +23760,7 @@ img.md-avatar-vip {
                 ? '<div class="md-online-vazio">Ninguém por aqui agora.</div>'
                 : usuarios.map(u => `
                     <div class="md-online-item" style="cursor:pointer" data-uid="${MarujoConta.attrSafe(u.id)}" data-nome="${MarujoConta.attrSafe(u.nome)}" data-avatar="${MarujoConta.attrSafe(u.avatar)}" data-nivel="${MarujoConta.attrSafe(u.level)}" data-xp="${MarujoConta.attrSafe(u.pontosTotais)}" data-vip="${u.vip ? '1' : '0'}" onclick="MarujoConta.verPerfilFromEl(this)">
-                        <img class="${MarujoConta.claseAvatarVip(u)}" src="${MarujoConta.avatarUrl(u)}" onerror="this.src='${MarujoConta.avatarFallback(u.nome)}'">
+                        <img class="${MarujoConta.claseAvatarVip(u)}" src="${MarujoConta.avatarUrl(u)}" loading="lazy" decoding="async" onerror="this.src='${MarujoConta.avatarFallback(u.nome)}'">
                         <span>${MarujoConta.escapeHtml(u.nome)}${MarujoConta.seloNomeVip(u)}</span>
                     </div>
                 `).join('');
@@ -23512,7 +23777,7 @@ img.md-avatar-vip {
                 const MAX_AVATARES = 5;
                 const visiveis = usuarios.slice(0, MAX_AVATARES);
                 let htmlAvatares = visiveis.map(u => `
-                    <img src="${MarujoConta.avatarUrl(u)}" onerror="this.src='${MarujoConta.avatarFallback(u.nome)}'" title="${MarujoConta.escapeHtml(u.nome)}" alt="${MarujoConta.escapeHtml(u.nome)}"
+                    <img src="${MarujoConta.avatarUrl(u)}" loading="lazy" decoding="async" onerror="this.src='${MarujoConta.avatarFallback(u.nome)}'" title="${MarujoConta.escapeHtml(u.nome)}" alt="${MarujoConta.escapeHtml(u.nome)}"
                         data-uid="${MarujoConta.attrSafe(u.id)}" data-nome="${MarujoConta.attrSafe(u.nome)}" data-avatar="${MarujoConta.attrSafe(u.avatar)}" data-nivel="${MarujoConta.attrSafe(u.level)}" data-xp="${MarujoConta.attrSafe(u.pontosTotais)}"
                         onclick="event.stopPropagation(); MarujoConta.verPerfilFromEl(this)">
                 `).join('');
@@ -24035,7 +24300,7 @@ window.MDChat = {
             if (!usuarios.length) { dropdown.style.display = 'none'; return; }
             dropdown.innerHTML = usuarios.map(u => `
                 <div class="md-mencao-item" onclick="MDChat.selecionarMencao('${u.nome.replace(/'/g, "\\'")}')">
-                    <img src="${window.MarujoConta.avatarUrl(u)}" onerror="this.src='${window.MarujoConta.avatarFallback(u.nome)}'">
+                    <img src="${window.MarujoConta.avatarUrl(u)}" loading="lazy" decoding="async" onerror="this.src='${window.MarujoConta.avatarFallback(u.nome)}'">
                     <span>${window.MarujoConta.escapeHtml(u.nome)}</span>
                 </div>`).join('');
             dropdown.style.display = 'block';
@@ -24076,7 +24341,7 @@ window.MDChat = {
         }
         lista.innerHTML = conversas.map(c => `
             <div class="md-dm-conversa-item" onclick="MDChat.abrirThreadDM('${c.usuario.id}','${c.usuario.nome.replace(/'/g, "\\'")}','${(c.usuario.avatar || '').replace(/'/g, "\\'")}')">
-                <img src="${window.MarujoConta.avatarUrl(c.usuario)}" onerror="this.src='${window.MarujoConta.avatarFallback(c.usuario.nome)}'">
+                <img src="${window.MarujoConta.avatarUrl(c.usuario)}" loading="lazy" decoding="async" onerror="this.src='${window.MarujoConta.avatarFallback(c.usuario.nome)}'">
                 <div class="md-dm-conversa-info">
                     <div class="md-dm-conversa-nome">${window.MarujoConta.escapeHtml(c.usuario.nome)}</div>
                     <div class="md-dm-conversa-prev">${c.minhaEnviada ? 'Você: ' : ''}${window.MarujoConta.escapeHtml(c.ultimaMensagem)}</div>
@@ -24095,7 +24360,7 @@ window.MDChat = {
             if (!usuarios.length) { resultados.classList.remove('md-show'); return; }
             resultados.innerHTML = usuarios.map(u => `
                 <div class="md-dm-conversa-item" onclick="MDChat.abrirThreadDM('${u.id}','${u.nome.replace(/'/g, "\\'")}','${(u.avatar || '').replace(/'/g, "\\'")}'); document.getElementById('md-dm-buscar-input').value=''; document.getElementById('md-dm-buscar-resultados').classList.remove('md-show');">
-                    <img src="${window.MarujoConta.avatarUrl(u)}" onerror="this.src='${window.MarujoConta.avatarFallback(u.nome)}'">
+                    <img src="${window.MarujoConta.avatarUrl(u)}" loading="lazy" decoding="async" onerror="this.src='${window.MarujoConta.avatarFallback(u.nome)}'">
                     <div class="md-dm-conversa-info"><div class="md-dm-conversa-nome">${window.MarujoConta.escapeHtml(u.nome)}</div></div>
                 </div>`).join('');
             resultados.classList.add('md-show');
