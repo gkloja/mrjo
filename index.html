@@ -5362,7 +5362,8 @@ const NewsSystem = {
         refreshInterval: 1800000, // 1 minuto
         debug: false,
         newsPerPage: 6,
-        siteUrl: window.location.origin + window.location.pathname // URL base do site
+        siteUrl: window.location.origin + window.location.pathname, // URL base do site
+        siteProxy: 'https://marujodigital.onrender.com' // Base do proxy (mesmo usado no backend)
     },
     
     // Estado
@@ -5759,7 +5760,7 @@ const NewsSystem = {
                     ${this.renderTags(noticia.palavrasChaveEncontradas)}
                     
                     <div style="margin-top: 25px; text-align: center;">
-                        <a href="${noticia.url}" target="_blank" class="news-read-more" style="display: inline-block;">
+                        <a href="${this.config.siteProxy}/proxy?url=${encodeURIComponent(noticia.url)}" target="_blank" class="news-read-more" style="display: inline-block;">
                             <i class="fas fa-external-link-alt"></i> Ler matéria original
                         </a>
                     </div>
