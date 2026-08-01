@@ -10,12 +10,12 @@
   
   <!-- PÁGINA INICIAL (Home Page) -->
   <url>
-    <loc>https://marujodigital.onrender.com/</loc>
+    <loc>https://bizunaval.vercel.app/</loc>
     <lastmod>2024-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
+      <image:loc>https://bizunaval.vercel.app/imagens/logo.png</image:loc>
       <image:title>Marujo Digital - Guia Completo do Cerimonial da Marinha</image:title>
       <image:caption>Portal oficial sobre cerimonial naval brasileiro</image:caption>
     </image:image>
@@ -23,28 +23,28 @@
   
   <!-- PÁGINA DE CÓDIGOS DE SINAIS (NOVA - Alta prioridade SEO) -->
   <url>
-    <loc>https://marujodigital.onrender.com/sinais.html</loc>
+    <loc>https://bizunaval.vercel.app/sinais.html</loc>
     <lastmod>2024-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
+      <image:loc>https://bizunaval.vercel.app/imagens/logo.png</image:loc>
       <image:title>Códigos de Sinais Navais CIS ATP - Guia Completo</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
+      <image:loc>https://bizunaval.vercel.app/imagens/logo.png</image:loc>
       <image:title>Cornetas Substitutas da Marinha</image:title>
     </image:image>
   </url>
   
   <!-- PÁGINA DE APITOS (conteúdo premium) -->
   <url>
-    <loc>https://marujodigital.onrender.com/apitos.html</loc>
+    <loc>https://bizunaval.vercel.app/apitos.html</loc>
     <lastmod>2024-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
+      <image:loc>https://bizunaval.vercel.app/imagens/logo.png</image:loc>
       <image:title>Toques de Apito da Marinha - Áudios Completos</image:title>
     </image:image>
   </url>
@@ -53,45 +53,45 @@
   
   <!-- PÁGINA DE PROTOCOLOS -->
   <url>
-    <loc>https://marujodigital.onrender.com/protocolos.html</loc>
+    <loc>https://bizunaval.vercel.app/protocolos.html</loc>
     <lastmod>2024-12-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
+      <image:loc>https://bizunaval.vercel.app/imagens/logo.png</image:loc>
       <image:title>Protocolos e Honras Navais - EMN-006</image:title>
     </image:image>
   </url>
   
     <url>
-    <loc>https://marujodigital.onrender.com/marujo.html</loc>
+    <loc>https://bizunaval.vercel.app/marujo.html</loc>
     <lastmod>2024-12-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
+      <image:loc>https://bizunaval.vercel.app/imagens/logo.png</image:loc>
       <image:title>Turma PAPA 2023 - Lista Completa de Formandos da Marinha | NIP e Nomes</image:title>
     </image:image>
   </url>
       <url>
-    <loc>https://marujodigital.onrender.com/marujoflix.html</loc>
+    <loc>https://bizunaval.vercel.app/marujoflix.html</loc>
     <lastmod>2024-12-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
+      <image:loc>https://bizunaval.vercel.app/imagens/logo.png</image:loc>
       <image:title>Marujo Flix | TV, Filmes e Séries</image:title>
     </image:image>
   </url>
   
   <!-- PÁGINA SOBRE -->
   <url>
-    <loc>https://marujodigital.onrender.com/sobre.html</loc>
+    <loc>https://bizunaval.vercel.app/sobre.html</loc>
     <lastmod>2024-12-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://marujodigital.onrender.com/imagens/logo.png</image:loc>
+      <image:loc>https://bizunaval.vercel.app/imagens/logo.png</image:loc>
       <image:title>Sobre o Marujo Digital - Especialista em Cerimonial Naval</image:title>
     </image:image>
   </url>
@@ -100,7 +100,7 @@
   
   <!-- POLÍTICA DE PRIVACIDADE -->
   <url>
-    <loc>https://marujodigital.onrender.com/privacidade.html</loc>
+    <loc>https://bizunaval.vercel.app/privacidade.html</loc>
     <lastmod>2024-12-24</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
@@ -108,7 +108,7 @@
   
   <!-- TERMOS DE USO -->
   <url>
-    <loc>https://marujodigital.onrender.com/termos.html</loc>
+    <loc>https://bizunaval.vercel.app/termos.html</loc>
     <lastmod>2024-12-24</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
@@ -116,7 +116,7 @@
   
   <!-- PÁGINA DE CONTATO -->
   <url>
-    <loc>https://marujodigital.onrender.com/contato.html</loc>
+    <loc>https://bizunaval.vercel.app/contato.html</loc>
     <lastmod>2024-12-24</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
