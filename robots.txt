@@ -3,7 +3,7 @@ Allow: /
 Disallow: /admin/
 Disallow: /private/
 
-Sitemap: https://marujodigital.onrender.com/sitemap.xml
+Sitemap: Sitemap: https://bizunaval.vercel.app/sitemap.xml
 
 User-agent: Googlebot
 Allow: /
