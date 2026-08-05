@@ -1,0 +1,17 @@
+<!-- ========== REGISTRO DO SERVICE WORKER — cole antes de </body> ========== -->
+<script>
+(function () {
+  if (!('serviceWorker' in navigator)) return;
+  window.addEventListener('load', function () {
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then(function (reg) {
+        console.log('[PWA] Service Worker registrado:', reg.scope);
+      })
+      .catch(function (err) {
+        console.warn('[PWA] Falha ao registrar SW:', err);
+      });
+  });
+})();
+</script>
+<!-- ========== fim registro SW ========== -->
