@@ -1,14 +1,8 @@
-[
-  {
-    "relation": [
-      "delegate_permission/common.handle_all_urls"
-    ],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "co.median.android.lppamml",
-      "sha256_cert_fingerprints": [
-        "59:EF:38:B9:CE:56:57:81:75:B6:6F:81:0D:E8:E2:A7:0E:AE:C4:44:E5:B6:00:58:8A:45:80:F9:01:34:12:B5"
-      ]
-    }
-  }
-]
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.marujodigital",
+        "sha256_cert_fingerprints": ["92:0B:E5:DC:2E:E7:F7:10:C8:56:DE:1A:FE:B1:D5:55:45:00:84:10:D7:55:89:D2:24:14:5E:83:56:B0:CD:DF"]
+      }
+    }]
