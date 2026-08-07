@@ -3,6 +3,6 @@
       "target": {
         "namespace": "android_app",
         "package_name": "app.marujodigital",
-        "sha256_cert_fingerprints": ["C8:DC:79:99:10:1E:75:C6:E8:08:7A:64:16:01:8E:03:F1:2F:25:A5:39:E3:6A:FF:AE:07:E5:B6:53:97:E5:C5"]
+        "sha256_cert_fingerprints": ["92:0B:E5:DC:2E:E7:F7:10:C8:56:DE:1A:FE:B1:D5:55:45:00:84:10:D7:55:89:D2:24:14:5E:83:56:B0:CD:DF","C8:DC:79:99:10:1E:75:C6:E8:08:7A:64:16:01:8E:03:F1:2F:25:A5:39:E3:6A:FF:AE:07:E5:B6:53:97:E5:C5"]
       }
     }]
