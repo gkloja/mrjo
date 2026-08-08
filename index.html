@@ -3763,6 +3763,727 @@ html[data-theme="light"] .sm-posicoes {
 }
 html[data-theme="light"] .sm-pos-desc { color: var(--text-primary); }
 
+
+
+
+/* ===== MISSÃO DO DIA / RANKING / BAZAR ===== */
+.md-hub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin: 14px 0 20px;
+}
+.md-hub-card {
+    border-radius: 18px;
+    padding: 18px;
+    border: 1px solid rgba(255,204,0,0.22);
+    background:
+        radial-gradient(ellipse at 0% 0%, rgba(0,102,204,0.25), transparent 55%),
+        linear-gradient(165deg, rgba(13,39,69,0.95), rgba(5,18,35,0.98));
+    position: relative;
+    overflow: hidden;
+}
+.md-hub-card.mission {
+    border-color: rgba(255,204,0,0.45);
+    background:
+        radial-gradient(ellipse at 100% 0%, rgba(255,204,0,0.18), transparent 50%),
+        linear-gradient(165deg, rgba(0,80,160,0.55), rgba(5,18,35,0.95));
+}
+.md-hub-card h3 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    color: #fff;
+    display: flex; align-items: center; gap: 8px;
+}
+.md-hub-card p {
+    margin: 0 0 12px;
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+.md-hub-badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(255,204,0,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(255,204,0,0.35);
+    margin-bottom: 10px;
+}
+.md-hub-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.md-hub-btn {
+    border: none; border-radius: 11px; padding: 10px 14px;
+    font-weight: 700; font-size: 0.85rem; cursor: pointer;
+    touch-action: manipulation;
+}
+.md-hub-btn.primary { background: linear-gradient(135deg,#ffcc00,#ffb300); color: #05203a; }
+.md-hub-btn.ghost {
+    background: rgba(255,255,255,0.06);
+    color: #fff; border: 1px solid rgba(255,255,255,0.14);
+}
+.md-hub-progress {
+    height: 6px; border-radius: 99px; background: rgba(255,255,255,0.08);
+    margin: 10px 0 6px; overflow: hidden;
+}
+.md-hub-progress > span {
+    display: block; height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, #ffcc00, #38a169);
+    transition: width 0.35s ease;
+}
+.md-mission-tasks { list-style: none; padding: 0; margin: 8px 0 0; }
+.md-mission-tasks li {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px; margin-bottom: 6px; border-radius: 12px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    font-size: 0.88rem; color: var(--text-secondary);
+}
+.md-mission-tasks li.done {
+    border-color: rgba(56,161,105,0.4);
+    background: rgba(56,161,105,0.12);
+    color: #9ae6b4;
+}
+.md-mission-check {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+}
+.md-mission-tasks li.done .md-mission-check {
+    background: #38a169; border-color: #38a169; color: #fff;
+}
+
+/* Ranking semanal */
+.md-rank-list { list-style: none; padding: 0; margin: 0; }
+.md-rank-list li {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 12px; margin-bottom: 6px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+}
+.md-rank-list li.top {
+    border-color: rgba(255,204,0,0.35);
+    background: linear-gradient(90deg, rgba(255,204,0,0.12), transparent);
+}
+.md-rank-pos {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.85rem;
+    background: rgba(255,255,255,0.08); color: var(--accent);
+}
+.md-rank-list li.top .md-rank-pos { background: rgba(255,204,0,0.25); color: #ffcc00; }
+.md-rank-name { flex: 1; font-weight: 600; color: #fff; font-size: 0.92rem; }
+.md-rank-score { font-weight: 800; color: var(--accent); font-size: 0.95rem; }
+.md-rank-meta { font-size: 0.72rem; color: var(--text-muted); }
+
+/* BAZAR */
+.md-bazar-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 16px;
+    margin-top: 12px;
+}
+@media (max-width: 860px) {
+    .md-bazar-layout { grid-template-columns: 1fr; }
+}
+.md-bazar-filters {
+    border-radius: 16px;
+    padding: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(5,18,35,0.6);
+    height: fit-content;
+    position: sticky; top: 70px;
+}
+.md-bazar-filters h4 {
+    margin: 0 0 10px; font-size: 0.8rem; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--accent);
+}
+.md-bazar-filters label {
+    display: block; font-size: 0.78rem; color: var(--text-muted); margin: 10px 0 4px;
+}
+.md-bazar-filters select,
+.md-bazar-filters input {
+    width: 100%; padding: 9px 10px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.25); color: var(--text-primary);
+    font-size: 0.88rem;
+}
+.md-bazar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+.md-bazar-item {
+    border-radius: 16px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: linear-gradient(165deg, rgba(13,39,69,0.95), rgba(5,18,35,0.98));
+    display: flex; flex-direction: column;
+    transition: transform 0.15s, border-color 0.15s;
+}
+.md-bazar-item:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255,204,0,0.35);
+}
+.md-bazar-photo {
+    aspect-ratio: 1 / 1;
+    background: #0a1628 center/cover no-repeat;
+    position: relative;
+}
+.md-bazar-photo .tag {
+    position: absolute; top: 8px; left: 8px;
+    font-size: 0.65rem; font-weight: 800; letter-spacing: 0.04em;
+    text-transform: uppercase; padding: 3px 8px; border-radius: 6px;
+    background: rgba(5,18,35,0.85); color: #ffcc00;
+    border: 1px solid rgba(255,204,0,0.35);
+}
+.md-bazar-photo .tipo-tag {
+    left: auto; right: 8px;
+    background: rgba(56,161,105,0.9); color: #fff; border-color: transparent;
+}
+.md-bazar-photo .tipo-tag.troca { background: rgba(66,153,225,0.9); }
+.md-bazar-body { padding: 12px 12px 14px; flex: 1; display: flex; flex-direction: column; }
+.md-bazar-title {
+    font-size: 0.95rem; font-weight: 700; color: #fff;
+    margin: 0 0 4px; line-height: 1.3;
+}
+.md-bazar-meta {
+    font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px;
+}
+.md-bazar-price {
+    font-size: 1.1rem; font-weight: 800; color: var(--accent); margin-bottom: 10px;
+}
+.md-bazar-actions { display: flex; gap: 8px; margin-top: auto; }
+.md-bazar-actions a, .md-bazar-actions button {
+    flex: 1; text-align: center; text-decoration: none;
+    padding: 9px 8px; border-radius: 10px; font-size: 0.8rem; font-weight: 700;
+    border: none; cursor: pointer;
+}
+.md-wa-btn {
+    background: #25D366; color: #fff !important;
+}
+.md-bazar-empty {
+    grid-column: 1 / -1;
+    text-align: center; padding: 40px 16px;
+    color: var(--text-secondary); font-size: 0.95rem;
+}
+
+/* Modal anúncio */
+.md-modal-overlay {
+    position: fixed; inset: 0; z-index: 999995;
+    display: none; align-items: flex-end; justify-content: center;
+    background: rgba(5,18,35,0.85); backdrop-filter: blur(8px);
+    padding: 12px;
+}
+.md-modal-overlay.show { display: flex; }
+@media (min-width: 640px) {
+    .md-modal-overlay { align-items: center; }
+}
+.md-modal-sheet {
+    width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto;
+    border-radius: 20px 20px 16px 16px;
+    background: linear-gradient(165deg, #0d2745, #061527);
+    border: 1px solid rgba(255,204,0,0.3);
+    padding: 18px 16px 20px;
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
+}
+.md-modal-sheet h3 { margin: 0 0 12px; color: #fff; font-size: 1.15rem; }
+.md-form-row { margin-bottom: 12px; }
+.md-form-row label {
+    display: block; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 5px;
+}
+.md-form-row input, .md-form-row select, .md-form-row textarea {
+    width: 100%; padding: 11px 12px; border-radius: 11px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.28); color: var(--text-primary);
+    font-size: 0.92rem; font-family: inherit;
+}
+.md-form-row textarea { min-height: 80px; resize: vertical; }
+.md-photo-drop {
+    border: 2px dashed rgba(255,204,0,0.35);
+    border-radius: 14px; padding: 20px; text-align: center;
+    cursor: pointer; background: rgba(255,204,0,0.04);
+    transition: border-color 0.15s, background 0.15s;
+}
+.md-photo-drop:hover, .md-photo-drop.drag {
+    border-color: #ffcc00; background: rgba(255,204,0,0.1);
+}
+.md-photo-drop img {
+    max-width: 100%; max-height: 180px; border-radius: 10px; margin-top: 8px;
+}
+.md-form-actions { display: flex; gap: 10px; margin-top: 16px; }
+.md-form-actions button { flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; }
+.md-dn-chips, .md-cat-chips {
+    display: flex; flex-wrap: wrap; gap: 6px;
+}
+.md-chip {
+    padding: 6px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04);
+    color: var(--text-secondary); cursor: pointer; touch-action: manipulation;
+}
+.md-chip.active {
+    border-color: rgba(255,204,0,0.5); background: rgba(255,204,0,0.15); color: #ffcc00;
+}
+
+html[data-theme="light"] .md-hub-card,
+html[data-theme="light"] .md-bazar-item,
+html[data-theme="light"] .md-modal-sheet {
+    background: linear-gradient(165deg, #fff, #eef3f9);
+    border-color: rgba(0,51,102,0.12);
+}
+html[data-theme="light"] .md-hub-card h3,
+html[data-theme="light"] .md-bazar-title,
+html[data-theme="light"] .md-rank-name { color: var(--text-primary); }
+
+/* ===== APP SHELL: bottom nav + mini-jogo + install ===== */
+.md-bottom-nav {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 98000;
+    display: none;
+    justify-content: space-around;
+    align-items: stretch;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(180deg, rgba(5,18,35,0.92), rgba(5,18,35,0.98));
+    border-top: 1px solid rgba(255,204,0,0.25);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.45);
+}
+@media (max-width: 900px) {
+    .md-bottom-nav { display: flex; }
+    body { padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)); }
+    .download-promo-container { bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important; }
+}
+.md-bn-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 6px 2px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor: pointer;
+    touch-action: manipulation;
+    border-radius: 12px;
+    transition: color 0.15s, background 0.15s;
+}
+.md-bn-item i { font-size: 1.25rem; }
+.md-bn-item.active { color: var(--accent); background: rgba(255,204,0,0.08); }
+.md-bn-item:active { transform: scale(0.94); }
+html[data-theme="light"] .md-bottom-nav {
+    background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(238,243,249,0.98));
+    border-top-color: rgba(0,51,102,0.15);
+}
+
+/* Mini-jogo Radar de Sinais */
+.md-radar-overlay {
+    position: fixed; inset: 0; z-index: 999990;
+    display: none; align-items: center; justify-content: center;
+    padding: 16px;
+    background: rgba(5,18,35,0.88);
+    backdrop-filter: blur(10px);
+}
+.md-radar-overlay.show { display: flex; }
+.md-radar-panel {
+    width: 100%; max-width: 420px; max-height: 92vh; overflow-y: auto;
+    border-radius: 22px;
+    border: 1px solid rgba(255,204,0,0.35);
+    background: linear-gradient(165deg, #0d2745, #061527);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+    padding: 22px 18px 18px;
+}
+.md-radar-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px;
+}
+.md-radar-head h3 { margin: 0; font-size: 1.15rem; color: #fff; }
+.md-radar-close {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid rgba(255,204,0,0.4); background: rgba(255,255,255,0.06);
+    color: #fff; font-size: 1.2rem; cursor: pointer;
+}
+.md-radar-stats {
+    display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.md-radar-stat {
+    flex: 1; min-width: 70px; text-align: center;
+    padding: 10px 6px; border-radius: 12px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+}
+.md-radar-stat .v { font-size: 1.35rem; font-weight: 800; color: var(--accent); }
+.md-radar-stat .l { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.md-radar-flag {
+    text-align: center; margin: 12px 0 16px;
+    min-height: 90px; display: flex; align-items: center; justify-content: center;
+}
+.md-radar-flag img {
+    max-width: 160px; max-height: 100px; border-radius: 8px;
+    border: 2px solid rgba(255,204,0,0.3); box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+.md-radar-code {
+    text-align: center; font-size: 1.4rem; font-weight: 800; color: #fff;
+    letter-spacing: 0.06em; margin-bottom: 6px;
+}
+.md-radar-mode {
+    text-align: center; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 14px;
+}
+.md-radar-opts { display: grid; gap: 8px; }
+.md-radar-opt {
+    text-align: left; padding: 12px 14px; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04);
+    color: var(--text-primary); font-size: 0.9rem; cursor: pointer;
+    transition: all 0.15s; touch-action: manipulation;
+}
+.md-radar-opt:hover:not(:disabled) { border-color: rgba(255,204,0,0.4); background: rgba(255,204,0,0.08); }
+.md-radar-opt.correct { border-color: #38a169; background: rgba(56,161,105,0.2); color: #9ae6b4; }
+.md-radar-opt.wrong { border-color: #e53e3e; background: rgba(229,62,62,0.15); color: #feb2b2; }
+.md-radar-opt:disabled { cursor: default; opacity: 0.95; }
+.md-radar-footer {
+    display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;
+}
+.md-radar-footer button {
+    flex: 1; min-width: 120px; padding: 12px; border-radius: 12px; font-weight: 700;
+    border: none; cursor: pointer; touch-action: manipulation;
+}
+.md-radar-btn-primary {
+    background: linear-gradient(135deg, #ffcc00, #ffb300); color: #05203a;
+}
+.md-radar-btn-ghost {
+    background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.15) !important;
+}
+.md-radar-result {
+    text-align: center; padding: 20px 10px;
+}
+.md-radar-result .score-big {
+    font-size: 3rem; font-weight: 800; color: var(--accent);
+    text-shadow: 0 0 30px rgba(255,204,0,0.35);
+}
+.md-radar-streak-banner {
+    margin-top: 12px; padding: 10px 12px; border-radius: 10px;
+    background: rgba(255,204,0,0.1); border: 1px solid rgba(255,204,0,0.3);
+    font-size: 0.85rem; color: var(--text-secondary);
+}
+.md-install-banner {
+    display: none; position: fixed; left: 12px; right: 12px;
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    z-index: 97000; padding: 12px 14px; border-radius: 14px;
+    background: linear-gradient(135deg, #0d2745, #003366);
+    border: 1px solid rgba(255,204,0,0.4);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    align-items: center; gap: 12px;
+}
+.md-install-banner.show { display: flex; }
+.md-install-banner p { margin: 0; flex: 1; font-size: 0.85rem; color: #fff; line-height: 1.35; }
+.md-install-banner button {
+    border: none; border-radius: 10px; padding: 8px 12px; font-weight: 700; cursor: pointer;
+}
+.md-install-go { background: #ffcc00; color: #05203a; }
+.md-install-x { background: transparent; color: var(--text-muted); font-size: 1.1rem; }
+
+/* ===== MÓDULO DATAS FESTIVAS / SALVAS / PORTALÓ (visual) ===== */
+.md-festive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+}
+.md-festive-card {
+    position: relative;
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    border: 1px solid rgba(255,204,0,0.22);
+    background:
+        radial-gradient(ellipse at 100% 0%, rgba(255,204,0,0.12), transparent 55%),
+        linear-gradient(160deg, rgba(0,51,102,0.55), rgba(5,18,35,0.75));
+    overflow: hidden;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.md-festive-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255,204,0,0.45);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+}
+.md-festive-card.grande {
+    border-color: rgba(255,204,0,0.45);
+    background:
+        radial-gradient(ellipse at 0% 0%, rgba(255,204,0,0.2), transparent 50%),
+        linear-gradient(160deg, rgba(0,80,160,0.65), rgba(5,18,35,0.85));
+}
+.md-festive-card.luto {
+    border-color: rgba(160,174,192,0.35);
+    background:
+        radial-gradient(ellipse at 100% 0%, rgba(160,174,192,0.12), transparent 55%),
+        linear-gradient(160deg, rgba(30,40,55,0.7), rgba(5,18,35,0.85));
+}
+.md-festive-date {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(255,204,0,0.12);
+    border: 1px solid rgba(255,204,0,0.35);
+    border-radius: 999px;
+    padding: 4px 10px;
+    margin-bottom: 10px;
+}
+.md-festive-card.luto .md-festive-date {
+    color: #a0aec0;
+    background: rgba(160,174,192,0.12);
+    border-color: rgba(160,174,192,0.3);
+}
+.md-festive-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    line-height: 1.3;
+}
+.md-festive-meta {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+.md-festive-tag {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+.md-festive-tag.gg { background: rgba(255,204,0,0.2); color: #ffcc00; }
+.md-festive-tag.pg { background: rgba(66,153,225,0.2); color: #90cdf4; }
+.md-festive-tag.lt { background: rgba(160,174,192,0.2); color: #cbd5e0; }
+
+.md-salva-hero {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 16px 0 20px;
+}
+.md-salva-shot {
+    text-align: center;
+    border-radius: 14px;
+    padding: 16px 10px;
+    background: linear-gradient(160deg, rgba(0,51,102,0.5), rgba(5,18,35,0.7));
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.md-salva-shot .n {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(255,204,0,0.25);
+}
+.md-salva-shot .l {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    line-height: 1.3;
+}
+.md-salva-shot.top {
+    border-color: rgba(255,204,0,0.4);
+    background: linear-gradient(160deg, rgba(255,204,0,0.12), rgba(0,51,102,0.55));
+}
+.md-rules-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 8px;
+}
+.md-rules-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+}
+.md-rules-list li i {
+    color: #fc8181;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.md-curso-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+}
+.md-curso-card {
+    border-radius: 16px;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: linear-gradient(165deg, rgba(13,39,69,0.9), rgba(5,18,35,0.95));
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.md-curso-card:hover {
+    border-color: rgba(255,204,0,0.35);
+    transform: translateY(-2px);
+}
+.md-curso-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: linear-gradient(90deg, rgba(0,102,204,0.25), transparent);
+    border-bottom: 1px solid rgba(255,204,0,0.15);
+}
+.md-curso-ico {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0066cc, #004a99);
+    border: 1px solid rgba(255,204,0,0.35);
+    color: #fff;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+.md-curso-head h4 {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+.md-curso-head span {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+.md-curso-body {
+    padding: 14px 16px 16px;
+}
+.md-curso-row {
+    margin-bottom: 12px;
+}
+.md-curso-row:last-child { margin-bottom: 0; }
+.md-curso-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+}
+.md-curso-text {
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+
+.md-timeline {
+    position: relative;
+    margin: 18px 0 8px;
+    padding-left: 22px;
+}
+.md-timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent), rgba(0,102,204,0.3));
+    border-radius: 2px;
+}
+.md-timeline-item {
+    position: relative;
+    padding: 0 0 16px 12px;
+}
+.md-timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -19px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255,204,0,0.2);
+}
+.md-timeline-time {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+}
+.md-timeline-action {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-top: 2px;
+}
+.md-timeline-note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.md-section-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 18px;
+}
+.md-section-tab {
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    color: var(--text-secondary);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    touch-action: manipulation;
+}
+.md-section-tab:hover { border-color: rgba(255,204,0,0.35); color: var(--text-primary); }
+.md-section-tab.active {
+    background: linear-gradient(135deg, rgba(0,102,204,0.35), rgba(255,204,0,0.15));
+    border-color: rgba(255,204,0,0.45);
+    color: #fff;
+}
+.md-proto-pane { display: none; }
+.md-proto-pane.active { display: block; animation: mdProtoFade 0.25s ease; }
+@keyframes mdProtoFade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+}
+
+html[data-theme="light"] .md-festive-card,
+html[data-theme="light"] .md-curso-card,
+html[data-theme="light"] .md-salva-shot {
+    background: linear-gradient(160deg, #ffffff, #eef3f9);
+    border-color: rgba(0,51,102,0.12);
+}
+html[data-theme="light"] .md-festive-name,
+html[data-theme="light"] .md-curso-head h4,
+html[data-theme="light"] .md-timeline-action { color: var(--text-primary); }
+html[data-theme="light"] .md-section-tab.active { color: #003366; }
+
 .sc-pos-hint {
     display: inline-flex;
     align-items: center;
@@ -9857,7 +10578,186 @@ const turmaPapa2023 = [
 
 
                 <!-- Informações Gerais do PDF -->
-        <section id="protocolos" class="content-section">
+        
+    <!-- ===== HUB: Missão do Dia + Ranking Radar ===== -->
+    <section id="missao" class="content-section">
+        <div class="content-card">
+            <div class="card-header">
+                <div class="card-icon"><i class="fas fa-compass"></i></div>
+                <div>
+                    <h2 class="card-title">Ponte de Comando</h2>
+                    <div class="card-subtitle">Missão diária · Ranking do Radar · Retenção da tripulação</div>
+                </div>
+            </div>
+            <div class="md-hub-grid">
+                <div class="md-hub-card mission" id="md-mission-card">
+                    <span class="md-hub-badge">Missão do dia</span>
+                    <h3>🎯 <span id="md-mission-title">Carregando…</span></h3>
+                    <p id="md-mission-desc">Complete as 3 tarefas e ganhe XP bônus + selo do dia.</p>
+                    <div class="md-hub-progress"><span id="md-mission-bar" style="width:0%"></span></div>
+                    <ul class="md-mission-tasks" id="md-mission-tasks"></ul>
+                    <div class="md-hub-actions" style="margin-top:12px">
+                        <button type="button" class="md-hub-btn primary" onclick="MDMissao.claim()" id="md-mission-claim" disabled>Resgatar recompensa</button>
+                        <button type="button" class="md-hub-btn ghost" onclick="MDRadar.open()">Abrir Radar</button>
+                    </div>
+                </div>
+                <div class="md-hub-card">
+                    <span class="md-hub-badge">Ranking semanal</span>
+                    <h3>🏆 Radar da Semana</h3>
+                    <p>Soma dos melhores scores diários do Radar. Zera toda segunda-feira.</p>
+                    <ol class="md-rank-list" id="md-rank-semana"></ol>
+                    <div class="md-hub-actions" style="margin-top:10px">
+                        <button type="button" class="md-hub-btn ghost" onclick="MDRadar.open()">Jogar e subir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== BAZAR DE FARDAMENTO ===== -->
+    <section id="bazar" class="content-section">
+        <div class="content-card">
+            <div class="card-header">
+                <div class="card-icon"><i class="fas fa-store"></i></div>
+                <div style="flex:1">
+                    <h2 class="card-title">Bazar Marujo</h2>
+                    <div class="card-subtitle">Venda · Troca · Fardamento e itens da tripulação</div>
+                </div>
+                <button type="button" class="md-hub-btn primary" onclick="MDBazar.openForm()" style="white-space:nowrap">
+                    <i class="fas fa-plus"></i> Anunciar
+                </button>
+            </div>
+
+            <p style="color:var(--text-secondary);font-size:0.9rem;margin:0 0 14px;line-height:1.45">
+                Espaço da tripulação para <strong>vender ou trocar</strong> peças de fardamento e acessórios.
+                Contato direto no WhatsApp — o Marujo Digital só conecta a tripulação.
+            </p>
+
+            <div class="md-bazar-layout">
+                <aside class="md-bazar-filters">
+                    <h4>Filtros</h4>
+                    <label>Busca</label>
+                    <input type="search" id="bz-q" placeholder="Ex: camisa branca 2DN" oninput="MDBazar.render()">
+                    <label>Categoria</label>
+                    <select id="bz-cat" onchange="MDBazar.render()">
+                        <option value="">Todas</option>
+                        <option>Camisa/Blusa</option>
+                        <option>Short</option>
+                        <option>Calça</option>
+                        <option>Fardamento</option>
+                        <option>Acessórios</option>
+                        <option>Calçado</option>
+                        <option>Cobertura</option>
+                        <option>Outros</option>
+                    </select>
+                    <label>Distrito Naval</label>
+                    <select id="bz-dn" onchange="MDBazar.render()">
+                        <option value="">Todos os DNs</option>
+                        <option value="1">1º DN</option>
+                        <option value="2">2º DN</option>
+                        <option value="3">3º DN</option>
+                        <option value="4">4º DN</option>
+                        <option value="5">5º DN</option>
+                        <option value="6">6º DN</option>
+                        <option value="7">7º DN</option>
+                        <option value="8">8º DN</option>
+                        <option value="9">9º DN</option>
+                    </select>
+                    <label>Tipo</label>
+                    <select id="bz-tipo" onchange="MDBazar.render()">
+                        <option value="">Venda e Troca</option>
+                        <option value="venda">Só venda</option>
+                        <option value="troca">Só troca</option>
+                    </select>
+                    <label style="margin-top:14px">
+                        <input type="checkbox" id="bz-meus" onchange="MDBazar.render()"> Meus anúncios
+                    </label>
+                </aside>
+                <div>
+                    <div class="md-bazar-grid" id="md-bazar-grid"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal anunciar item -->
+    <div class="md-modal-overlay" id="md-bazar-modal">
+        <div class="md-modal-sheet">
+            <h3 id="md-bazar-modal-title">📦 Novo anúncio</h3>
+            <form id="md-bazar-form" onsubmit="return MDBazar.submit(event)">
+                <div class="md-form-row">
+                    <label>Foto do item</label>
+                    <div class="md-photo-drop" id="md-photo-drop" onclick="document.getElementById('bz-foto').click()">
+                        <div id="md-photo-hint"><i class="fas fa-camera" style="font-size:1.5rem;color:var(--accent)"></i><br>Toque para enviar foto</div>
+                        <img id="md-photo-preview" style="display:none" alt="Prévia">
+                    </div>
+                    <input type="file" id="bz-foto" accept="image/*" capture="environment" style="display:none" onchange="MDBazar.previewPhoto(event)">
+                </div>
+                <div class="md-form-row">
+                    <label>Título</label>
+                    <input type="text" id="bz-titulo" required maxlength="80" placeholder="Ex: Camisa branca 1ª classe · tamanho M">
+                </div>
+                <div class="md-form-row">
+                    <label>Categoria</label>
+                    <select id="bz-categoria" required>
+                        <option value="">Selecione…</option>
+                        <option>Camisa/Blusa</option>
+                        <option>Short</option>
+                        <option>Calça</option>
+                        <option>Fardamento</option>
+                        <option>Acessórios</option>
+                        <option>Calçado</option>
+                        <option>Cobertura</option>
+                        <option>Outros</option>
+                    </select>
+                </div>
+                <div class="md-form-row">
+                    <label>Tipo de anúncio</label>
+                    <select id="bz-anuncio-tipo" required>
+                        <option value="venda">Venda</option>
+                        <option value="troca">Troca</option>
+                    </select>
+                </div>
+                <div class="md-form-row" id="bz-preco-row">
+                    <label>Preço (R$)</label>
+                    <input type="number" id="bz-preco" min="0" step="1" placeholder="Ex: 45">
+                </div>
+                <div class="md-form-row">
+                    <label>Distrito Naval</label>
+                    <select id="bz-dn-form" required>
+                        <option value="">Selecione o DN…</option>
+                        <option value="1">1º DN — Rio de Janeiro</option>
+                        <option value="2">2º DN — Salvador</option>
+                        <option value="3">3º DN — Natal</option>
+                        <option value="4">4º DN — Belém</option>
+                        <option value="5">5º DN — Rio Grande</option>
+                        <option value="6">6º DN — Ladário</option>
+                        <option value="7">7º DN — Brasília</option>
+                        <option value="8">8º DN — São Paulo</option>
+                        <option value="9">9º DN — Manaus</option>
+                    </select>
+                </div>
+                <div class="md-form-row">
+                    <label>Cidade / bairro (para entrega ou encontro)</label>
+                    <input type="text" id="bz-endereco" required maxlength="120" placeholder="Ex: Recife — Boa Viagem">
+                </div>
+                <div class="md-form-row">
+                    <label>WhatsApp (com DDD)</label>
+                    <input type="tel" id="bz-whats" required pattern="[0-9]{10,13}" placeholder="81999999999">
+                </div>
+                <div class="md-form-row">
+                    <label>Descrição</label>
+                    <textarea id="bz-desc" maxlength="500" placeholder="Estado de conservação, tamanho, se aceita troca, etc."></textarea>
+                </div>
+                <div class="md-form-actions">
+                    <button type="button" class="md-hub-btn ghost" onclick="MDBazar.closeForm()">Cancelar</button>
+                    <button type="submit" class="md-hub-btn primary">Publicar anúncio</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<section id="protocolos" class="content-section">
         <div class="content-card">
             <div class="card-header">
                 <div class="card-icon">
@@ -9868,192 +10768,165 @@ const turmaPapa2023 = [
                     <div class="card-subtitle">EMN-006 • 2ª Revisão • Aprovado em 25/10/2022</div>
                 </div>
             </div>
-     
-     
-     <!-- Na seção onde você tem a tabela de salvas (por volta da linha 1800 no HTML) -->
-<!-- Adicione APÓS a tabela de salvas ou em um local apropriado -->
 
-<div class="info-section">
-    <h3 class="section-title">Honras de Portaló</h3>
-    
-    <!-- Introdução -->
-    <div class="protocol-item" style="margin-bottom: 20px;">
-        <div class="protocol-title">Definição</div>
-        <div style="color: var(--text-secondary);">
-            As Honras de Portaló são continências de guarda, "boys" e toques de corneta e apito devidas na recepção ou despedida de autoridades a bordo de navios ou em OM de terra.
-        </div>
-    </div>
-    
-    <!-- Tabela de Honras de Portaló -->
-    <table class="navy-table" style="margin-top: 20px;">
-        <thead>
-            <tr>
-                <th>Autoridade</th>
-                <th>Número de "Boys"</th>
-                <th>Toques de Apito</th>
-                <th>Observações</th>
-            </tr>
-        </thead>
-        <tbody id="honrasPortaloTable">
-            <!-- Preenchido por JavaScript abaixo -->
-        </tbody>
-    </table>
-    
-    <!-- Informações adicionais -->
-    <div class="info-grid" style="margin-top: 30px;">
-        <div class="info-item">
-            <div class="info-label">Local das Honras</div>
-            <div class="info-value">Portaló de BE (oficiais)</div>
-            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                Junto à extremidade superior da escada do portaló ou prancha
+            <!-- Abas do módulo Protocolos -->
+            <div class="md-section-tabs" id="md-proto-tabs" role="tablist">
+                <button type="button" class="md-section-tab active" data-pane="portalo" onclick="mdProtoTab('portalo', this)"><i class="fas fa-door-open"></i> Portaló</button>
+                <button type="button" class="md-section-tab" data-pane="curso" onclick="mdProtoTab('curso', this)"><i class="fas fa-ship"></i> Curso ordinário</button>
+                <button type="button" class="md-section-tab" data-pane="salvas" onclick="mdProtoTab('salvas', this)"><i class="fas fa-bullseye"></i> Salvas</button>
+                <button type="button" class="md-section-tab" data-pane="datas" onclick="mdProtoTab('datas', this)"><i class="fas fa-calendar-alt"></i> Datas festivas</button>
+                <button type="button" class="md-section-tab" data-pane="bandeira" onclick="mdProtoTab('bandeira', this)"><i class="fas fa-flag"></i> Cerimonial à BN</button>
             </div>
-        </div>
-        
-        <div class="info-item">
-            <div class="info-label">Quando NÃO prestar</div>
-            <div class="info-value">3 Situações</div>
-            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                Faina de emergência, durante cerimonial à bandeira, segurança comprometida
-            </div>
-        </div>
-        
-        <div class="info-item">
-            <div class="info-label">Horário</div>
-            <div class="info-value">8h ao pôr do sol</div>
-            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                Exceto situações especiais entre toque de silêncio e hasteamento
-            </div>
-        </div>
-    </div>
-    
-    <!-- Detalhes das honras -->
-    <div class="timeline" style="margin-top: 30px;">
-        <h4 style="color: var(--text-primary); margin-bottom: 20px;">Honras Específicas por Autoridade:</h4>
-        
-        <div class="timeline-item">
-            <div class="timeline-time">Presidente da República</div>
-            <div style="color: var(--text-secondary);">
-                Salva de 21 tiros + todas as honras de portaló. É a única autoridade que suspende honras de outras autoridades quando a bordo.
-            </div>
-        </div>
-        
-        <div class="timeline-item">
-            <div class="timeline-time">Almirantes (AE/VA/CA)</div>
-            <div style="color: var(--text-secondary);">
-                8 "boys" + toques específicos. Recebem honras de portaló em qualquer OM da MB.
-            </div>
-        </div>
-        
-        <div class="timeline-item">
-            <div class="timeline-time">Comandante de Força</div>
-            <div style="color: var(--text-secondary);">
-                Toques de Comandante de Força em OM não subordinadas. Honras especiais no navio capitânia.
-            </div>
-        </div>
-        
-        <div class="timeline-item">
-            <div class="timeline-time">Autoridades Civis</div>
-            <div style="color: var(--text-secondary);">
-                Honras conforme precedência equivalente na hierarquia naval. Usam vocativos por cargo.
-            </div>
-        </div>
-    </div>
-    
-    <!-- Restrições -->
-    <div style="background: rgba(229, 62, 62, 0.1); padding: 20px; border-radius: 10px; margin-top: 30px; border-left: 4px solid #e53e3e;">
-        <h4 style="color: #e53e3e; margin-bottom: 15px;">⚠️ Restrições às Honras:</h4>
-        <ul style="color: var(--text-secondary); padding-left: 20px;">
-            <li>Não prestar quando o Presidente da República estiver no mar (dentro de 3 milhas)</li>
-            <li>Não prestar na presença de autoridade de maior precedência</li>
-            <li>Limitar a continências de guarda se autoridade superior estiver nas proximidades</li>
-            <li>Não prestar durante cerimonial à bandeira</li>
-        </ul>
-    </div>
-</div>     
-            
-            <!-- Tabela de Salvas -->
-            <div class="info-section">
-                <h3 class="section-title">Salvas de Honra</h3>
-                
-                <table class="navy-table">
-                    <thead>
-                        <tr>
-                            <th>Autoridade</th>
-                            <th>Tiros</th>
-                            <th>Observação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="salvasTable">
-                        <!-- Preenchido por JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Datas Festivas -->
-            <div class="info-section">
-                <h3 class="section-title">Datas Festivas</h3>
-                
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Grande Gala</div>
-                        <div class="info-value">2 Dias</div>
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                            7/Set - Independência<br>15/Nov - República
+
+            <!-- ===== PANE: PORTALÓ ===== -->
+            <div class="md-proto-pane active" id="md-pane-portalo">
+                <div class="info-section">
+                    <h3 class="section-title">Honras de Portaló</h3>
+                    <div class="protocol-item" style="margin-bottom: 16px;">
+                        <div class="protocol-title">Definição</div>
+                        <div style="color: var(--text-secondary);">
+                            Continências de guarda, <strong>“boys”</strong> e toques de corneta/apito devidos na recepção ou despedida de autoridades a bordo de navios ou em OM de terra.
                         </div>
                     </div>
-                    
-                    <div class="info-item">
-                        <div class="info-label">Pequena Gala</div>
-                        <div class="info-value">8 Dias</div>
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                            Tiradentes, Trabalho, Marinheiro, etc.
+                    <table class="navy-table" style="margin-top: 12px;">
+                        <thead>
+                            <tr>
+                                <th>Autoridade</th>
+                                <th>“Boys”</th>
+                                <th>Toques</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="honrasPortaloTable"></tbody>
+                    </table>
+                    <div class="info-grid" style="margin-top: 24px;">
+                        <div class="info-item">
+                            <div class="info-label">Local das Honras</div>
+                            <div class="info-value">Portaló de BE (oficiais)</div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                                Junto à extremidade superior da escada do portaló ou prancha
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="info-item">
-                        <div class="info-label">Data Magna</div>
-                        <div class="info-value">11 de Junho</div>
-                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                            Batalha Naval de Riachuelo
+                        <div class="info-item">
+                            <div class="info-label">Quando NÃO prestar</div>
+                            <div class="info-value">3 situações</div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                                Faina de emergência · Cerimonial à bandeira · Segurança comprometida
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Horário</div>
+                            <div class="info-value">Das 8h ao pôr do sol</div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                                Fora desse período: continência individual
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            
-            <!-- Procedimentos Importantes -->
-            <div class="info-section">
-                <h3 class="section-title">Procedimentos Importantes</h3>
-                
-                <div class="protocol-item">
-                    <div class="protocol-title">Hasteamento/Arriamento</div>
-                    <div style="color: var(--text-secondary);">
-                        <strong>Hasteamento:</strong> 8h com cerimonial específico<br>
-                        <strong>Arriamento:</strong> Pôr do sol (com cerimonial) ou antes do expediente (sem cerimonial)
+
+            <!-- ===== PANE: CURSO ORDINÁRIO ===== -->
+            <div class="md-proto-pane" id="md-pane-curso">
+                <div class="info-section">
+                    <h3 class="section-title">Honras no curso ordinário do serviço</h3>
+                    <p style="color:var(--text-secondary); font-size:0.92rem; margin-bottom:8px;">
+                        O que muda entre a <strong>primeira chegada / última saída do dia</strong> e as demais vezes — o bizu que cai em prova.
+                    </p>
+                    <div class="md-curso-grid" id="md-curso-ordinario-grid">
+                        <!-- preenchido por JS -->
                     </div>
-                </div>
-                
-                <div class="protocol-item">
-                    <div class="protocol-title">Bandeira a Meia Adriça</div>
-                    <div style="color: var(--text-secondary);">
-                        Usada em dias de luto, funeral e 2 de novembro (Finados)<br>
-                        Içada completamente e depois baixada à metade do mastro
-                    </div>
-                </div>
-                
-                <div class="protocol-item">
-                    <div class="protocol-title">Dia da Bandeira (19/11)</div>
-                    <div style="color: var(--text-secondary);">
-                        Cerimonial especial às 12h com cremação de bandeiras<br>
-                        Salva de 21 tiros e execução do Hino à Bandeira
+                    <div class="protocol-item" style="margin-top:22px;">
+                        <div class="protocol-title">Honras de passagem (resumo)</div>
+                        <div style="color: var(--text-secondary); font-size:0.9rem; line-height:1.5;">
+                            Distância de reconhecimento: <strong>~3 amarras (549 m)</strong> entre navios · <strong>~2 amarras (366 m)</strong> para miúdas.<br>
+                            Toques: <em>presença</em> (1 longo) → <em>continência</em> (1 curto) → <em>volta</em> (2 curtos).<br>
+                            <strong>Não se prestam</strong> entre o pôr do sol e 08h; nem em miúdas em socorro, rebocando/rebocada ou com risco à segurança.
+                        </div>
                     </div>
                 </div>
             </div>
-            
 
+            <!-- ===== PANE: SALVAS ===== -->
+            <div class="md-proto-pane" id="md-pane-salvas">
+                <div class="info-section">
+                    <h3 class="section-title">Salvas de canhão</h3>
+                    <p style="color:var(--text-secondary); font-size:0.9rem;">
+                        Honra prestada por tiros de canhão à autoridade ou em data festiva. Distância máxima: <strong>3 milhas</strong>. Intervalo: <strong>5 s</strong> (funeral: 30 s).
+                    </p>
+                    <div class="md-salva-hero">
+                        <div class="md-salva-shot top"><div class="n">21</div><div class="l">Presidente da República</div></div>
+                        <div class="md-salva-shot"><div class="n">19</div><div class="l">VP · CM · Almirante · Ministros · Governador…</div></div>
+                        <div class="md-salva-shot"><div class="n">17</div><div class="l">Almirante-de-Esquadra · Pres. STM</div></div>
+                        <div class="md-salva-shot"><div class="n">15</div><div class="l">Vice-Almirante</div></div>
+                        <div class="md-salva-shot"><div class="n">13</div><div class="l">Contra-Almirante · Enc. de Negócios</div></div>
+                        <div class="md-salva-shot"><div class="n">11</div><div class="l">Cônsul Geral do Brasil</div></div>
+                    </div>
+                    <h4 style="margin:18px 0 10px; color:var(--text-primary); font-size:0.95rem;">Quando NÃO se dão ou respondem salvas</h4>
+                    <ul class="md-rules-list" id="md-salva-regras"></ul>
+                    <table class="navy-table" style="margin-top: 22px;">
+                        <thead>
+                            <tr><th>Autoridade</th><th>Tiros</th><th>Obs.</th></tr>
+                        </thead>
+                        <tbody id="salvasTable"></tbody>
+                    </table>
+                </div>
+            </div>
 
+            <!-- ===== PANE: DATAS FESTIVAS ===== -->
+            <div class="md-proto-pane" id="md-pane-datas">
+                <div class="info-section">
+                    <h3 class="section-title">Datas festivas &amp; embandeiramento</h3>
+                    <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:4px;">
+                        <strong>Grande gala:</strong> CIS em arco + Bandeira Nacional nos topes · <strong>Pequena gala:</strong> BN também nos topes.
+                    </p>
+                    <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:12px;">
+                        ⚠️ Proibido usar bandeira do CIS que se assemelhe à de nação.
+                    </p>
+                    <div class="md-festive-grid" id="md-datas-festivas-grid"></div>
 
-            
+                    <h4 style="margin:26px 0 10px; color:var(--text-primary); font-size:0.95rem;">
+                        <i class="fas fa-flag" style="color:var(--accent)"></i> Dia da Bandeira (19 de novembro)
+                    </h4>
+                    <div class="md-timeline" id="md-timeline-bandeira"></div>
+                </div>
+            </div>
+
+            <!-- ===== PANE: CERIMONIAL BN ===== -->
+            <div class="md-proto-pane" id="md-pane-bandeira">
+                <div class="info-section">
+                    <h3 class="section-title">Cerimonial à Bandeira Nacional</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Hasteamento</div>
+                            <div class="info-value">Diário às 08h</div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Cerimonial específico</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Arriamento</div>
+                            <div class="info-value">Pôr do sol / fim do expediente</div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Com cerimonial (serviço 24h) ou sem</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Meia-adriça</div>
+                            <div class="info-value">Iça no tope, depois desce à metade</div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Luto, funeral e Dia dos Mortos</div>
+                        </div>
+                    </div>
+                    <div class="protocol-item" style="margin-top:18px;">
+                        <div class="protocol-title">Locais de hasteamento</div>
+                        <div style="color: var(--text-secondary); font-size:0.9rem; line-height:1.55;">
+                            <strong>Navio parado / dique:</strong> pau da bandeira (popa)<br>
+                            <strong>Navio em movimento:</strong> mastro de combate ou penol da carangueja do mastro principal<br>
+                            <strong>OM de terra:</strong> mastro da fachada principal ou penol da carangueja destinado
+                        </div>
+                    </div>
+                    <div class="protocol-item" style="margin-top:14px;">
+                        <div class="protocol-title">Linha do tempo do hasteamento (08h)</div>
+                        <div class="md-timeline" id="md-timeline-hasteamento"></div>
+                    </div>
+                </div>
+            </div>
+
                         <div class="info-section">
                 <h3 class="section-title">Capítulos da Apostila</h3>
                 
@@ -19683,6 +20556,7 @@ function selectAnswer(optionId) {
 function checkAnswer() {
     const question = dailyQuestions[currentQuestionIndex];
     const isCorrect = selectedAnswer === question.correct;
+    if (isCorrect) { try { if (window.MDMissao) MDMissao.onQuizCorrect(); } catch(e){} }
     
     // Marcar respostas
     document.querySelectorAll('.quiz-option').forEach(opt => {
@@ -24210,19 +25084,184 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Preencher tabela de Honras de Portaló
-const honrasTable = document.getElementById('honrasPortaloTable');
-if (honrasTable && cerimonialData.honrasPortalo) {
-    cerimonialData.honrasPortalo.forEach(honra => {
-        honrasTable.innerHTML += `
+    // Preencher Protocolos (Portaló, Salvas, Datas, Curso ordinário)
+try { mdRenderProtocolos(); } catch (e) { console.warn('[Protocolos]', e); }
+
+function mdProtoTab(pane, btn) {
+    document.querySelectorAll('#md-proto-tabs .md-section-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.md-proto-pane').forEach(p => p.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    const el = document.getElementById('md-pane-' + pane);
+    if (el) el.classList.add('active');
+}
+
+function mdRenderProtocolos() {
+    // --- Portaló table ---
+    const honrasTable = document.getElementById('honrasPortaloTable');
+    if (honrasTable && cerimonialData.honrasPortalo) {
+        honrasTable.innerHTML = cerimonialData.honrasPortalo.map(h => `
             <tr>
-                <td><strong>${honra.autoridade}</strong></td>
-                <td>${honra.boys}</td>
-                <td>${honra.toques}</td>
-                <td>${honra.obs}</td>
-            </tr>
-        `;
-    });
+                <td><strong>${h.autoridade}</strong></td>
+                <td>${h.boys}</td>
+                <td>${h.toques}</td>
+                <td>${h.obs || '—'}</td>
+            </tr>`).join('');
+    }
+
+    // --- Salvas table + regras ---
+    const salvasTable = document.getElementById('salvasTable');
+    if (salvasTable && cerimonialData.salvas) {
+        salvasTable.innerHTML = cerimonialData.salvas.map(s => `
+            <tr>
+                <td><strong>${s.autoridade}</strong></td>
+                <td style="color:var(--accent);font-weight:800">${s.tiros}</td>
+                <td>${s.obs || '—'}</td>
+            </tr>`).join('');
+    }
+    const regrasEl = document.getElementById('md-salva-regras');
+    if (regrasEl) {
+        const regras = (cerimonialData.regrasSalva && cerimonialData.regrasSalva.quandoNao) || [
+            'Antes das 8h e depois do pôr do sol',
+            'Com canhões não destinados a salva',
+            'Navio atracado com risco de danos a instalações de terra',
+            'Presidente da República no mar (exceto retribuição a salva estrangeira à terra)',
+            'Presente Chefe de Estado/Governo — não se dá a autoridade de menor precedência dessa nação',
+            'Quando sabidamente não puderem ser retribuídas'
+        ];
+        regrasEl.innerHTML = regras.map(r => `<li><i class="fas fa-ban"></i><span>${r}</span></li>`).join('');
+    }
+
+    // --- Datas festivas ---
+    const grid = document.getElementById('md-datas-festivas-grid');
+    if (grid && cerimonialData.datasFestivas) {
+        const df = cerimonialData.datasFestivas;
+        let html = '';
+        (df.grandeGala || []).forEach(d => {
+            html += `<div class="md-festive-card grande">
+                <span class="md-festive-tag gg">Grande gala</span>
+                <div class="md-festive-date">${d.data}</div>
+                <div class="md-festive-name">${d.nome}</div>
+                <div class="md-festive-meta">${d.embandeiramento || 'CIS em arco + BN nos topes'}</div>
+            </div>`;
+        });
+        (df.pequenaGala || []).forEach(d => {
+            html += `<div class="md-festive-card">
+                <span class="md-festive-tag pg">Pequena gala</span>
+                <div class="md-festive-date">${d.data}</div>
+                <div class="md-festive-name">${d.nome}</div>
+                <div class="md-festive-meta">${df.pequenaGalaEmbandeiramento || 'BN também nos topes dos mastros'}</div>
+            </div>`;
+        });
+        if (df.diaDosMortos) {
+            html += `<div class="md-festive-card luto">
+                <span class="md-festive-tag lt">Funeral</span>
+                <div class="md-festive-date">${df.diaDosMortos.data}</div>
+                <div class="md-festive-name">Dia dos Mortos</div>
+                <div class="md-festive-meta">${df.diaDosMortos.procedimento}</div>
+            </div>`;
+        }
+        grid.innerHTML = html;
+    }
+
+    // --- Timeline Dia da Bandeira ---
+    const tlB = document.getElementById('md-timeline-bandeira');
+    if (tlB) {
+        const steps = (cerimonialData.datasFestivas && cerimonialData.datasFestivas.diaDaBandeira) || [
+            '08h — cerimonial normal à Bandeira Nacional',
+            '11h55 — “Sinal para a Bandeira”, içar PREP, arriar BN e reiniciar hasteamento',
+            '12h — navios embandeiram nos topes',
+            'Após hasteamento — cremação das bandeiras do ano, salva de 21 tiros e Hino à Bandeira'
+        ];
+        tlB.innerHTML = steps.map(s => {
+            const parts = s.split('—');
+            const time = (parts[0] || '').trim();
+            const action = (parts.slice(1).join('—') || s).trim();
+            return `<div class="md-timeline-item">
+                <div class="md-timeline-time">${time}</div>
+                <div class="md-timeline-action">${action}</div>
+            </div>`;
+        }).join('');
+    }
+
+    // --- Timeline hasteamento diário ---
+    const tlH = document.getElementById('md-timeline-hasteamento');
+    if (tlH && cerimonialData.procedimentos) {
+        tlH.innerHTML = cerimonialData.procedimentos.map(p => `
+            <div class="md-timeline-item">
+                <div class="md-timeline-time">${p.hora}</div>
+                <div class="md-timeline-action">${p.acao}</div>
+                <div class="md-timeline-note">${p.observacao || ''}</div>
+            </div>`).join('');
+    }
+
+    // --- Curso ordinário do serviço ---
+    const cursoGrid = document.getElementById('md-curso-ordinario-grid');
+    if (cursoGrid) {
+        const cards = [
+            {
+                ico: 'fa-star',
+                titulo: 'Comandante de Força',
+                sub: 'No navio capitânia',
+                primeira: 'Honras de portaló pelo Capitão de Bandeira, Chefe e oficiais do EM e oficiais no convés.',
+                demais: 'Continências de guarda e “boys” pelo Chefe e Oficial de Serviço do EM e oficiais no convés — sem toques.'
+            },
+            {
+                ico: 'fa-anchor',
+                titulo: 'Comandante',
+                sub: 'Na OM que comanda',
+                primeira: 'Honras de portaló pelo Imediato e oficialidade.',
+                demais: 'Acompanhado pelo Imediato (ou oficial mais antigo próximo) e pelo Oficial de Serviço — sem toques.'
+            },
+            {
+                ico: 'fa-sitemap',
+                titulo: 'Chefe do Estado-Maior',
+                sub: 'No navio capitânia',
+                primeira: 'Se Almirante ou CMG: mesmas honras de Comandante de Força de igual posto. Se CF/CC: honras de Comandante.',
+                demais: 'Segue o mesmo critério de posto.'
+            },
+            {
+                ico: 'fa-user-tie',
+                titulo: 'Imediato',
+                sub: 'Na OM em que serve',
+                primeira: 'Honras de portaló pelo Chefe da Divisão de Serviço e Oficial de Serviço.',
+                demais: 'Saudado pelo Oficial de Serviço — sem continências de guarda, toques nem “boys”.'
+            },
+            {
+                ico: 'fa-user',
+                titulo: 'Demais oficiais',
+                sub: 'Na OM em que servem',
+                primeira: 'Honras de portaló pelo Oficial de Serviço.',
+                demais: 'Saudado pelo Oficial de Serviço — sem demais honras.'
+            },
+            {
+                ico: 'fa-handshake',
+                titulo: 'Visitas',
+                sub: 'Oficial × não anunciada',
+                primeira: 'Visita oficial (anunciada): caráter formal/protocolar — honras conforme a autoridade.',
+                demais: 'Visita não anunciada: apenas honras de portaló (cortesia ou necessidade administrativa).'
+            }
+        ];
+        cursoGrid.innerHTML = cards.map(c => `
+            <div class="md-curso-card">
+                <div class="md-curso-head">
+                    <div class="md-curso-ico"><i class="fas ${c.ico}"></i></div>
+                    <div>
+                        <h4>${c.titulo}</h4>
+                        <span>${c.sub}</span>
+                    </div>
+                </div>
+                <div class="md-curso-body">
+                    <div class="md-curso-row">
+                        <div class="md-curso-label">1ª chegada / última saída do dia</div>
+                        <div class="md-curso-text">${c.primeira}</div>
+                    </div>
+                    <div class="md-curso-row">
+                        <div class="md-curso-label">Demais vezes</div>
+                        <div class="md-curso-text">${c.demais}</div>
+                    </div>
+                </div>
+            </div>`).join('');
+    }
 }
     
     // Carregar conteúdo inicial de TODAS as seções de uma vez,
@@ -27113,6 +28152,725 @@ document.addEventListener('click', function(e) {
       .then(function (reg) { console.log('[PWA] Service Worker registrado:', reg.scope); })
       .catch(function (err) { console.warn('[PWA] Falha ao registrar SW:', err); });
   });
+})();
+</script>
+
+
+<!-- ===== APP SHELL: bottom nav + install + mini-jogo ===== -->
+<nav class="md-bottom-nav" id="md-bottom-nav" aria-label="Navegação principal">
+    <button type="button" class="md-bn-item active" data-go="sinais" onclick="mdAppGo('sinais', this)">
+        <i class="fas fa-signal"></i><span>Sinais</span>
+    </button>
+    <button type="button" class="md-bn-item" data-go="protocolos" onclick="mdAppGo('protocolos', this)">
+        <i class="fas fa-book-open"></i><span>Protocolo</span>
+    </button>
+    <button type="button" class="md-bn-item" data-go="radar" onclick="MDRadar.open()">
+        <i class="fas fa-crosshairs"></i><span>Radar</span>
+    </button>
+    <button type="button" class="md-bn-item" data-go="bazar" onclick="mdAppGo('bazar', this)">
+        <i class="fas fa-tshirt"></i><span>Bazar</span>
+    </button>
+    <button type="button" class="md-bn-item" data-go="conta" onclick="mdAppGo('conta', this)">
+        <i class="fas fa-user-circle"></i><span>Conta</span>
+    </button>
+</nav>
+
+<div class="md-install-banner" id="md-install-banner">
+    <p><strong>Instalar Marujo</strong><br>Acesse como app, offline e com ícone na tela inicial.</p>
+    <button type="button" class="md-install-go" id="md-install-btn">Instalar</button>
+    <button type="button" class="md-install-x" onclick="mdDismissInstall()" aria-label="Fechar">×</button>
+</div>
+
+<div class="md-radar-overlay" id="md-radar-overlay" role="dialog" aria-modal="true">
+    <div class="md-radar-panel">
+        <div class="md-radar-head">
+            <h3>🎯 Radar de Sinais</h3>
+            <button type="button" class="md-radar-close" onclick="MDRadar.close()" aria-label="Fechar">×</button>
+        </div>
+        <div id="md-radar-body">
+            <!-- preenchido por JS -->
+        </div>
+    </div>
+</div>
+
+<script>
+// ===== Navegação estilo app =====
+function mdAppGo(target, btn) {
+    document.querySelectorAll('.md-bn-item').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    if (target === 'chat') {
+        if (window.MarujoConta && MarujoConta.toggleChat) MarujoConta.toggleChat(true);
+        return;
+    }
+    if (target === 'conta') {
+        if (window.MarujoConta) {
+            if (MarujoConta.logado && MarujoConta.abrirPerfil) MarujoConta.abrirPerfil();
+            else if (MarujoConta.abrirAuth) MarujoConta.abrirAuth();
+        }
+        return;
+    }
+    if (target === 'radar') { MDRadar.open(); return; }
+    const el = document.getElementById(target);
+    if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // force visible if content-section system hides non-active
+        document.querySelectorAll('.content-section').forEach(s => {
+            if (s.id === target) s.style.display = '';
+        });
+    }
+    if (typeof showSection === 'function') {
+        try { showSection(target); } catch {}
+    }
+    if (target === 'bazar' && window.MDBazar) MDBazar.render();
+    if (target === 'missao' && window.MDMissao) MDMissao.render();
+}
+
+// ===== Install PWA =====
+let mdDeferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    mdDeferredPrompt = e;
+    if (localStorage.getItem('md_install_dismissed') === '1') return;
+    const ban = document.getElementById('md-install-banner');
+    if (ban) ban.classList.add('show');
+});
+document.getElementById('md-install-btn')?.addEventListener('click', async () => {
+    if (!mdDeferredPrompt) return;
+    mdDeferredPrompt.prompt();
+    await mdDeferredPrompt.userChoice;
+    mdDeferredPrompt = null;
+    mdDismissInstall();
+});
+function mdDismissInstall() {
+    localStorage.setItem('md_install_dismissed', '1');
+    document.getElementById('md-install-banner')?.classList.remove('show');
+}
+
+// ===== Mini-jogo: Radar de Sinais =====
+// API Marujo (Cloudflare Worker → servidor :4009)
+window.MD_API_BASE = window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
+window.MD_API_BAZAR = window.MD_API_BASE + '/api/marujo/bazar';
+window.MD_MEDIA_BASE = 'http://br2.bronxyshost.com:4009'; // fotos estáticas (uploads)
+
+const MDRadar = {
+    TOTAL: 10,
+    round: 0,
+    score: 0,
+    combo: 0,
+    bestCombo: 0,
+    locked: false,
+    pool: [],
+    current: null,
+
+    open() {
+        document.getElementById('md-radar-overlay')?.classList.add('show');
+        this.showHome();
+    },
+    close() {
+        document.getElementById('md-radar-overlay')?.classList.remove('show');
+    },
+    showHome() {
+        const hoje = new Date().toISOString().slice(0, 10);
+        const rec = JSON.parse(localStorage.getItem('md_radar_rec') || '{}');
+        const bestToday = rec[hoje]?.score ?? 0;
+        const streak = this.getStreak();
+        document.getElementById('md-radar-body').innerHTML = `
+            <p style="color:var(--text-secondary);font-size:0.92rem;line-height:1.5;margin:0 0 14px">
+                10 rodadas. Veja o código do sinal e escolha o significado certo.
+                Vale <strong>XP</strong>, combo e ranking do dia. CIS e ATP misturados — atenção às pegadinhas!
+            </p>
+            <div class="md-radar-stats">
+                <div class="md-radar-stat"><div class="v">${bestToday}</div><div class="l">Recorde hoje</div></div>
+                <div class="md-radar-stat"><div class="v">${streak}</div><div class="l">Dias seguidos</div></div>
+                <div class="md-radar-stat"><div class="v">+${this.TOTAL * 2}</div><div class="l">XP máx.</div></div>
+            </div>
+            <div class="md-radar-footer">
+                <button type="button" class="md-radar-btn-primary" onclick="MDRadar.start()">⚡ Começar missão</button>
+                <button type="button" class="md-radar-btn-ghost" onclick="MDRadar.close()">Fechar</button>
+            </div>
+            <div class="md-radar-streak-banner">
+                🔥 Jogue 1 partida por dia para manter a sequência de Radar.
+                ${streak > 0 ? `Você está com <strong>${streak} dia(s)</strong> seguidos.` : 'Comece sua sequência hoje!'}
+            </div>`;
+    },
+    getStreak() {
+        try {
+            const s = JSON.parse(localStorage.getItem('md_radar_streak') || '{"count":0,"last":null}');
+            return s.count || 0;
+        } catch { return 0; }
+    },
+    bumpStreak() {
+        const hoje = new Date().toISOString().slice(0, 10);
+        let s = { count: 0, last: null };
+        try { s = JSON.parse(localStorage.getItem('md_radar_streak') || '{}'); } catch {}
+        if (s.last === hoje) return s.count || 0;
+        const ontem = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+        if (s.last === ontem) s.count = (s.count || 0) + 1;
+        else s.count = 1;
+        s.last = hoje;
+        localStorage.setItem('md_radar_streak', JSON.stringify(s));
+        return s.count;
+    },
+    buildPool() {
+        const d = window.cerimonialData || {};
+        const list = [];
+        (d.sinaisCIS || []).forEach(s => list.push({ codigo: s.codigo, significado: s.significado, tipo: 'CIS', imagem: s.imagem }));
+        (d.sinaisATP || []).forEach(s => list.push({
+            codigo: String(s.codigo).replace(/\s*\(ATP\)/i, ''),
+            significado: s.significado, tipo: 'ATP', imagem: s.imagem
+        }));
+        // shuffle
+        for (let i = list.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [list[i], list[j]] = [list[j], list[i]];
+        }
+        return list;
+    },
+    start() {
+        this.pool = this.buildPool();
+        if (this.pool.length < 8) {
+            document.getElementById('md-radar-body').innerHTML = '<p style="color:#feb2b2">Sinais ainda não carregados. Abra a aba Sinais e tente de novo.</p>';
+            return;
+        }
+        this.round = 0; this.score = 0; this.combo = 0; this.bestCombo = 0; this.locked = false;
+        this.nextRound();
+    },
+    nextRound() {
+        if (this.round >= this.TOTAL) return this.finish();
+        this.round++;
+        this.locked = false;
+        this.current = this.pool[(this.round - 1) % this.pool.length];
+        // 3 distractors
+        const distractors = this.pool
+            .filter(s => s.significado !== this.current.significado)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 3)
+            .map(s => s.significado);
+        const opts = [this.current.significado, ...distractors].sort(() => Math.random() - 0.5);
+        const img = this.current.imagem
+            ? `<img src="${this.current.imagem}" alt="${this.current.codigo}" onerror="this.style.display='none'">`
+            : `<div style="font-size:2.5rem">🚩</div>`;
+        document.getElementById('md-radar-body').innerHTML = `
+            <div class="md-radar-stats">
+                <div class="md-radar-stat"><div class="v">${this.round}/${this.TOTAL}</div><div class="l">Rodada</div></div>
+                <div class="md-radar-stat"><div class="v">${this.score}</div><div class="l">Acertos</div></div>
+                <div class="md-radar-stat"><div class="v">${this.combo}</div><div class="l">Combo</div></div>
+            </div>
+            <div class="md-radar-flag">${img}</div>
+            <div class="md-radar-code">${this.current.codigo}</div>
+            <div class="md-radar-mode">${this.current.tipo} — escolha o significado</div>
+            <div class="md-radar-opts">
+                ${opts.map((o, i) => `<button type="button" class="md-radar-opt" data-i="${i}" onclick="MDRadar.answer(this, ${JSON.stringify(o).replace(/"/g, '&quot;')})">${o}</button>`).join('')}
+            </div>`;
+    },
+    answer(btn, chosen) {
+        if (this.locked) return;
+        this.locked = true;
+        const ok = chosen === this.current.significado;
+        document.querySelectorAll('.md-radar-opt').forEach(b => {
+            b.disabled = true;
+            if (b.textContent === this.current.significado) b.classList.add('correct');
+        });
+        if (ok) {
+            btn.classList.add('correct');
+            this.score++;
+            this.combo++;
+            this.bestCombo = Math.max(this.bestCombo, this.combo);
+        } else {
+            btn.classList.add('wrong');
+            this.combo = 0;
+        }
+        setTimeout(() => this.nextRound(), 900);
+    },
+    finish() {
+        const streak = this.bumpStreak();
+        const hoje = new Date().toISOString().slice(0, 10);
+        let rec = {};
+        try { rec = JSON.parse(localStorage.getItem('md_radar_rec') || '{}'); } catch {}
+        const prev = rec[hoje]?.score || 0;
+        const isRecord = this.score > prev;
+        if (isRecord) {
+            rec[hoje] = { score: this.score, combo: this.bestCombo, at: Date.now() };
+            localStorage.setItem('md_radar_rec', JSON.stringify(rec));
+        }
+        // XP leve no quiz system se existir
+        const xpGain = this.score * 2 + (this.bestCombo >= 3 ? 5 : 0);
+        try {
+            if (typeof userProgress !== 'undefined' && userProgress) {
+                userProgress.xp = (userProgress.xp || 0) + xpGain;
+                if (typeof saveProgress === 'function') saveProgress();
+            }
+        } catch {}
+        try { if (window.MDMissao) MDMissao.onRadar(this.score); } catch {}
+        try { if (window.MDRank) MDRank.reportRadar(this.score); } catch {}
+        document.getElementById('md-radar-body').innerHTML = `
+            <div class="md-radar-result">
+                <div style="font-size:0.85rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em">Missão concluída</div>
+                <div class="score-big">${this.score}/${this.TOTAL}</div>
+                <p style="color:var(--text-secondary);margin:8px 0">
+                    Melhor combo: <strong>${this.bestCombo}</strong> · XP ganho: <strong>+${xpGain}</strong>
+                    ${isRecord ? '<br>🏆 Novo recorde do dia!' : ''}
+                </p>
+                <div class="md-radar-streak-banner">
+                    🔥 Sequência de Radar: <strong>${streak} dia(s)</strong>. Volte amanhã para não quebrar!
+                </div>
+            </div>
+            <div class="md-radar-footer">
+                <button type="button" class="md-radar-btn-primary" onclick="MDRadar.start()">Jogar de novo</button>
+                <button type="button" class="md-radar-btn-ghost" onclick="MDRadar.close()">Fechar</button>
+            </div>`;
+    }
+};
+window.MDRadar = MDRadar;
+</script>
+
+
+<script>
+/* =========================================================
+   MISSÃO DO DIA · RANKING SEMANAL · BAZAR MARUJO
+   ========================================================= */
+(function () {
+  const API_BASE = window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
+  const API_BAZAR = window.MD_API_BAZAR || (API_BASE + '/api/marujo/bazar');
+  const API_RADAR_SCORE = API_BASE + '/api/marujo/radar/score';
+  const API_RADAR_RANK = API_BASE + '/api/marujo/radar/ranking';
+  const API_MISSAO_CLAIM = API_BASE + '/api/marujo/missao/claim';
+  const MEDIA_BASE = window.MD_MEDIA_BASE || 'http://br2.bronxyshost.com:4009';
+  const DN_NOME = {
+    '1': '1º DN', '2': '2º DN', '3': '3º DN', '4': '4º DN',
+    '5': '5º DN', '6': '6º DN', '7': '7º DN', '8': '8º DN', '9': '9º DN'
+  };
+
+  function hojeISO() {
+    return new Date().toISOString().slice(0, 10);
+  }
+  function semanaKey() {
+    // segunda-feira como início
+    const d = new Date();
+    const day = d.getDay(); // 0=dom
+    const diff = (day === 0 ? -6 : 1 - day);
+    const mon = new Date(d);
+    mon.setDate(d.getDate() + diff);
+    return mon.toISOString().slice(0, 10);
+  }
+  function userNome() {
+    try {
+      if (window.MarujoConta && MarujoConta.usuario && MarujoConta.usuario.nome)
+        return MarujoConta.usuario.nome;
+    } catch {}
+    return localStorage.getItem('md_display_name') || 'Marujo anônimo';
+  }
+  function userId() {
+    try {
+      if (window.MarujoConta && MarujoConta.usuario && MarujoConta.usuario.id)
+        return String(MarujoConta.usuario.id);
+    } catch {}
+    let id = localStorage.getItem('md_local_uid');
+    if (!id) {
+      id = 'u_' + Math.random().toString(36).slice(2, 10);
+      localStorage.setItem('md_local_uid', id);
+    }
+    return id;
+  }
+
+  // ---------- MISSÃO DO DIA ----------
+  const MDMissao = {
+    tasks: [
+      { id: 'radar', label: 'Jogar 1 partida no Radar de Sinais', xp: 10 },
+      { id: 'quiz', label: 'Acertar 3 perguntas no questionário', xp: 15 },
+      { id: 'protocolo', label: 'Abrir a aba Protocolos (revisar cerimonial)', xp: 5 }
+    ],
+    state() {
+      const h = hojeISO();
+      let s = { date: h, done: {}, claimed: false };
+      try {
+        const raw = JSON.parse(localStorage.getItem('md_missao_dia') || '{}');
+        if (raw.date === h) s = raw;
+      } catch {}
+      return s;
+    },
+    save(s) { localStorage.setItem('md_missao_dia', JSON.stringify(s)); },
+    mark(taskId) {
+      const s = this.state();
+      if (s.done[taskId]) return;
+      s.done[taskId] = true;
+      this.save(s);
+      this.render();
+    },
+    onRadar(score) {
+      if (score >= 0) this.mark('radar');
+    },
+    onQuizCorrect() {
+      const k = 'md_missao_quiz_' + hojeISO();
+      let n = parseInt(localStorage.getItem(k) || '0', 10) + 1;
+      localStorage.setItem(k, String(n));
+      if (n >= 3) this.mark('quiz');
+    },
+    onProtocolo() { this.mark('protocolo'); },
+    progress(s) {
+      const total = this.tasks.length;
+      const done = this.tasks.filter(t => s.done[t.id]).length;
+      return { done, total, pct: Math.round((done / total) * 100) };
+    },
+    claim() {
+      const s = this.state();
+      const p = this.progress(s);
+      if (p.done < p.total || s.claimed) return;
+      s.claimed = true;
+      this.save(s);
+      let xp = this.tasks.reduce((a, t) => a + (s.done[t.id] ? t.xp : 0), 0) + 20;
+      try {
+        if (typeof userProgress !== 'undefined' && userProgress) {
+          userProgress.xp = (userProgress.xp || 0) + xp;
+          if (typeof saveProgress === 'function') saveProgress();
+        }
+      } catch {}
+      fetch(API_MISSAO_CLAIM, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: userId(), nome: userNome(), tasks: s.done })
+      }).catch(() => {});
+      alert('🎖️ Missão cumprida! +' + xp + ' XP e selo do dia na tripulação.');
+      this.render();
+    },
+    render() {
+      const s = this.state();
+      const p = this.progress(s);
+      const titles = [
+        'Patrulha matinal',
+        'Guarda do portaló',
+        'Exercício de sinais',
+        'Revista de cerimonial',
+        'Alerta de gala'
+      ];
+      const dayIdx = new Date().getDate() % titles.length;
+      const titleEl = document.getElementById('md-mission-title');
+      if (titleEl) titleEl.textContent = titles[dayIdx];
+      const bar = document.getElementById('md-mission-bar');
+      if (bar) bar.style.width = p.pct + '%';
+      const ul = document.getElementById('md-mission-tasks');
+      if (ul) {
+        ul.innerHTML = this.tasks.map(t => {
+          const ok = !!s.done[t.id];
+          return `<li class="${ok ? 'done' : ''}">
+            <span class="md-mission-check">${ok ? '✓' : ''}</span>
+            <span>${t.label} <em style="opacity:.7">(+${t.xp} XP)</em></span>
+          </li>`;
+        }).join('');
+      }
+      const btn = document.getElementById('md-mission-claim');
+      if (btn) {
+        btn.disabled = !(p.done === p.total && !s.claimed);
+        btn.textContent = s.claimed ? '✓ Recompensa resgatada' : 'Resgatar recompensa';
+      }
+    }
+  };
+  window.MDMissao = MDMissao;
+
+  // marcar protocolo ao abrir aba
+  const _mdProtoTab = window.mdProtoTab;
+  window.mdProtoTab = function (pane, btn) {
+    if (typeof _mdProtoTab === 'function') _mdProtoTab(pane, btn);
+    try { MDMissao.onProtocolo(); } catch {}
+  };
+
+  // ---------- RANKING SEMANAL ----------
+  const MDRank = {
+    load() {
+      try { return JSON.parse(localStorage.getItem('md_radar_week') || '{}'); } catch { return {}; }
+    },
+    save(data) { localStorage.setItem('md_radar_week', JSON.stringify(data)); },
+    reportRadar(score) {
+      const sk = semanaKey();
+      const data = this.load();
+      if (!data[sk]) data[sk] = {};
+      const uid = userId();
+      const prev = data[sk][uid];
+      const entry = {
+        nome: userNome(),
+        best: Math.max(score, prev?.best || 0),
+        plays: (prev?.plays || 0) + 1,
+        total: (prev?.total || 0) + score
+      };
+      data[sk][uid] = entry;
+      this.save(data);
+      // servidor (ranking global)
+      fetch(API_RADAR_SCORE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: uid, nome: userNome(), score })
+      }).then(() => this.render()).catch(() => this.render());
+    },
+    async render() {
+      const ol = document.getElementById('md-rank-semana');
+      if (!ol) return;
+      let board = [];
+      try {
+        const r = await fetch(API_RADAR_RANK + '?limite=8');
+        const j = await r.json();
+        if (j && j.ok && Array.isArray(j.ranking)) board = j.ranking;
+      } catch {}
+      if (!board.length) {
+        // fallback local
+        const sk = semanaKey();
+        const data = this.load();
+        board = Object.values(data[sk] || {})
+          .sort((a, b) => (b.best - a.best) || (b.total - a.total))
+          .slice(0, 8);
+      }
+      if (!board.length) {
+        ol.innerHTML = `<li><span class="md-rank-name" style="color:var(--text-muted)">Ninguém jogou ainda esta semana. Seja o primeiro!</span></li>`;
+        return;
+      }
+      ol.innerHTML = board.map((e, i) => `
+        <li class="${i < 3 ? 'top' : ''}">
+          <span class="md-rank-pos">${i + 1}</span>
+          <div style="flex:1">
+            <div class="md-rank-name">${e.nome || 'Marujo'}</div>
+            <div class="md-rank-meta">${e.plays || 0} partida(s) · soma ${e.total || e.best || 0}</div>
+          </div>
+          <span class="md-rank-score">${e.best}/10</span>
+        </li>`).join('');
+    }
+  };
+  window.MDRank = MDRank;
+
+  // ---------- BAZAR ----------
+  const MDBazar = {
+    photoData: null,
+    cache: [],
+    load() {
+      try { return JSON.parse(localStorage.getItem('md_bazar_items') || '[]'); } catch { return []; }
+    },
+    save(list) { localStorage.setItem('md_bazar_items', JSON.stringify(list)); },
+    mediaUrl(foto) {
+      if (!foto) return null;
+      if (/^https?:\/\//i.test(foto) || foto.startsWith('data:')) return foto;
+      return MEDIA_BASE.replace(/\/$/, '') + (foto.startsWith('/') ? foto : '/' + foto);
+    },
+    openForm() {
+      this.photoData = null;
+      document.getElementById('md-bazar-form')?.reset();
+      const prev = document.getElementById('md-photo-preview');
+      const hint = document.getElementById('md-photo-hint');
+      if (prev) { prev.style.display = 'none'; prev.src = ''; }
+      if (hint) hint.style.display = '';
+      document.getElementById('md-bazar-modal')?.classList.add('show');
+    },
+    closeForm() {
+      document.getElementById('md-bazar-modal')?.classList.remove('show');
+    },
+    previewPhoto(ev) {
+      const file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+      if (file.size > 4 * 1024 * 1024) {
+        alert('Foto até 4 MB, por favor.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        // comprimir via canvas
+        const img = new Image();
+        img.onload = () => {
+          const max = 900;
+          let w = img.width, h = img.height;
+          if (w > max || h > max) {
+            const r = Math.min(max / w, max / h);
+            w = Math.round(w * r); h = Math.round(h * r);
+          }
+          const c = document.createElement('canvas');
+          c.width = w; c.height = h;
+          c.getContext('2d').drawImage(img, 0, 0, w, h);
+          this.photoData = c.toDataURL('image/jpeg', 0.72);
+          const prev = document.getElementById('md-photo-preview');
+          const hint = document.getElementById('md-photo-hint');
+          if (prev) { prev.src = this.photoData; prev.style.display = 'block'; }
+          if (hint) hint.style.display = 'none';
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    submit(ev) {
+      ev.preventDefault();
+      const titulo = document.getElementById('bz-titulo').value.trim();
+      const categoria = document.getElementById('bz-categoria').value;
+      const tipo = document.getElementById('bz-anuncio-tipo').value;
+      const preco = document.getElementById('bz-preco').value;
+      const dn = document.getElementById('bz-dn-form').value;
+      const endereco = document.getElementById('bz-endereco').value.trim();
+      const whats = document.getElementById('bz-whats').value.replace(/\D/g, '');
+      const desc = document.getElementById('bz-desc').value.trim();
+      if (!titulo || !categoria || !dn || !endereco || whats.length < 10) {
+        alert('Preencha título, categoria, DN, endereço e WhatsApp válido.');
+        return false;
+      }
+      if (!this.photoData) {
+        if (!confirm('Publicar sem foto? Recomendamos incluir uma foto do item.')) return false;
+      }
+      const item = {
+        id: 'bz_' + Date.now().toString(36),
+        ownerId: userId(),
+        ownerNome: userNome(),
+        titulo, categoria, tipo,
+        preco: tipo === 'venda' ? Number(preco || 0) : null,
+        dn, endereco, whats, desc,
+        foto: this.photoData || null,
+        criadoEm: new Date().toISOString()
+      };
+      // tenta servidor primeiro
+      const payload = {
+        ...item,
+        fotoBase64: this.photoData || undefined,
+        foto: undefined
+      };
+      fetch(API_BAZAR, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(async (r) => {
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok || j.ok === false) throw new Error(j.erro || 'Falha no servidor');
+        // espelho local
+        const list = this.load();
+        list.unshift(j.item || item);
+        this.save(list);
+        this.closeForm();
+        this.render();
+        alert('✅ Anúncio publicado no Bazar Marujo!');
+      }).catch((err) => {
+        // fallback offline local
+        const list = this.load();
+        list.unshift({ ...item, foto: this.photoData || null });
+        this.save(list);
+        this.closeForm();
+        this.render();
+        alert('✅ Anúncio salvo localmente (servidor offline). Quando o servidor voltar, publique de novo se precisar.');
+        console.warn('[Bazar]', err);
+      });
+      return false;
+    },
+    remove(id) {
+      if (!confirm('Remover este anúncio?')) return;
+      fetch(API_BAZAR + '/' + encodeURIComponent(id) + '?ownerId=' + encodeURIComponent(userId()), {
+        method: 'DELETE'
+      }).catch(() => {});
+      const list = this.load().filter(x => x.id !== id);
+      this.save(list);
+      this.render();
+    },
+    waLink(item) {
+      let num = String(item.whats || '').replace(/\D/g, '');
+      if (num.length <= 11) num = '55' + num;
+      const txt = encodeURIComponent(
+        `Olá! Vi seu anúncio no *Bazar Marujo*:\n"${item.titulo}" (${item.categoria} · ${DN_NOME[item.dn] || item.dn})\nAinda está disponível?`
+      );
+      return `https://wa.me/${num}?text=${txt}`;
+    },
+    async render() {
+      const q = (document.getElementById('bz-q')?.value || '').toLowerCase().trim();
+      const cat = document.getElementById('bz-cat')?.value || '';
+      const dn = document.getElementById('bz-dn')?.value || '';
+      const tipo = document.getElementById('bz-tipo')?.value || '';
+      const meus = document.getElementById('bz-meus')?.checked;
+      const grid = document.getElementById('md-bazar-grid');
+      if (!grid) return;
+
+      let list = [];
+      try {
+        const params = new URLSearchParams();
+        if (q) params.set('q', q);
+        if (cat) params.set('cat', cat);
+        if (dn) params.set('dn', dn);
+        if (tipo) params.set('tipo', tipo);
+        if (meus) params.set('ownerId', userId());
+        const r = await fetch(API_BAZAR + '?' + params.toString());
+        const j = await r.json();
+        if (j && j.ok && Array.isArray(j.itens)) list = j.itens;
+      } catch {}
+      if (!list.length) {
+        // fallback local
+        list = this.load();
+        if (meus) list = list.filter(x => x.ownerId === userId());
+        if (cat) list = list.filter(x => x.categoria === cat);
+        if (dn) list = list.filter(x => String(x.dn) === String(dn));
+        if (tipo) list = list.filter(x => x.tipo === tipo);
+        if (q) {
+          list = list.filter(x =>
+            (x.titulo + ' ' + (x.desc||'') + ' ' + (x.endereco||'') + ' ' + (x.categoria||''))
+              .toLowerCase().includes(q)
+          );
+        }
+      }
+      if (!list.length) {
+        grid.innerHTML = `<div class="md-bazar-empty">
+          Nenhum item encontrado.<br>
+          <button type="button" class="md-hub-btn primary" style="margin-top:12px" onclick="MDBazar.openForm()">
+            Seja o primeiro a anunciar
+          </button>
+        </div>`;
+        return;
+      }
+      grid.innerHTML = list.map(item => {
+        const fotoSrc = this.mediaUrl(item.foto);
+        const foto = fotoSrc
+          ? `background-image:url('${fotoSrc}')`
+          : `background:linear-gradient(135deg,#0d2745,#003366)`;
+        const preco = item.tipo === 'troca'
+          ? 'Troca'
+          : (item.preco > 0 ? 'R$ ' + Number(item.preco).toLocaleString('pt-BR') : 'A combinar');
+        const isMine = item.ownerId === userId();
+        return `<article class="md-bazar-item">
+          <div class="md-bazar-photo" style="${foto}">
+            <span class="tag">${DN_NOME[item.dn] || item.dn + 'º DN'}</span>
+            <span class="tag tipo-tag ${item.tipo === 'troca' ? 'troca' : ''}">${item.tipo === 'troca' ? 'Troca' : 'Venda'}</span>
+          </div>
+          <div class="md-bazar-body">
+            <h4 class="md-bazar-title">${escapeHtml(item.titulo)}</h4>
+            <div class="md-bazar-meta">${escapeHtml(item.categoria)} · ${escapeHtml(item.endereco)}
+              <br>por ${escapeHtml(item.ownerNome || 'Marujo')}</div>
+            <div class="md-bazar-price">${preco}</div>
+            <div class="md-bazar-actions">
+              <a class="md-wa-btn" href="${this.waLink(item)}" target="_blank" rel="noopener">
+                <i class="fab fa-whatsapp"></i> WhatsApp
+              </a>
+              ${isMine ? `<button type="button" class="md-hub-btn ghost" onclick="MDBazar.remove('${item.id}')">Remover</button>` : ''}
+            </div>
+          </div>
+        </article>`;
+      }).join('');
+    }
+  };
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[c]);
+  }
+  window.MDBazar = MDBazar;
+
+  // demos só se local vazio E sem rede (não polui servidor)
+  // (removido seed automático — anúncios reais via API)
+
+  // tipo venda/troca mostra preço
+  document.addEventListener('change', (e) => {
+    if (e.target && e.target.id === 'bz-anuncio-tipo') {
+      const row = document.getElementById('bz-preco-row');
+      if (row) row.style.display = e.target.value === 'troca' ? 'none' : '';
+    }
+  });
+
+  // init
+  function bootHub() {
+    MDMissao.render();
+    MDRank.render();
+    MDBazar.render();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootHub);
+  else bootHub();
+
+  // Hook quiz acertos se existir sistema de quiz
+  const _origCheck = window.checkAnswer || window.verificarResposta;
+  // observação: MDMissao.onQuizCorrect() pode ser chamado do quiz engine existente
 })();
 </script>
 
