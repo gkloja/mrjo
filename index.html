@@ -4551,38 +4551,60 @@ html[data-theme="light"] .md-cmd-name { color: var(--text-primary); }
 }
 
 
-/* ===== PATRULHA NAVAL FAB + OVERLAY ===== */
-.md-patrulha-fab {
+/* ===== JOGOS FAB + OVERLAY ===== */
+.md-patrulha-fab, .md-jogos-fab {
   position: fixed;
   right: 16px;
   bottom: calc(88px + env(safe-area-inset-bottom, 0px));
   z-index: 97000;
-  width: 58px; height: 58px;
+  width: 62px; height: 62px;
   border-radius: 50%;
-  border: 2px solid rgba(255,204,0,0.55);
-  background: linear-gradient(145deg, #0a4d8c, #051223);
+  border: 2px solid rgba(255,204,0,0.75);
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255,220,80,0.35), transparent 55%),
+    linear-gradient(145deg, #1a6bb5 0%, #0a3d70 45%, #051223 100%);
   color: #ffcc00;
-  font-size: 1.45rem;
+  font-size: 1.55rem;
   cursor: pointer;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.45), 0 0 0 4px rgba(255,204,0,0.08);
+  box-shadow:
+    0 8px 28px rgba(0,0,0,0.5),
+    0 0 0 5px rgba(255,204,0,0.12),
+    0 0 24px rgba(255,204,0,0.25);
   display: flex; align-items: center; justify-content: center;
   transition: transform .15s, box-shadow .15s;
+  animation: mdJogosPulse 2.4s ease-in-out infinite;
 }
-.md-patrulha-fab:hover { transform: scale(1.06); }
-.md-patrulha-fab:active { transform: scale(0.94); }
-.md-patrulha-fab .md-pf-label {
-  position: absolute; right: 64px; white-space: nowrap;
-  background: rgba(5,18,35,0.92); color: #ffcc00;
-  font-size: 11px; font-weight: 800; letter-spacing: .04em;
-  padding: 6px 10px; border-radius: 999px;
-  border: 1px solid rgba(255,204,0,0.35);
+@keyframes mdJogosPulse {
+  0%, 100% { box-shadow: 0 8px 28px rgba(0,0,0,0.5), 0 0 0 5px rgba(255,204,0,0.12), 0 0 20px rgba(255,204,0,0.22); }
+  50% { box-shadow: 0 10px 32px rgba(0,0,0,0.55), 0 0 0 8px rgba(255,204,0,0.18), 0 0 32px rgba(255,204,0,0.4); }
+}
+.md-patrulha-fab:hover, .md-jogos-fab:hover { transform: scale(1.08); animation: none; }
+.md-patrulha-fab:active, .md-jogos-fab:active { transform: scale(0.94); }
+.md-patrulha-fab .md-pf-label, .md-jogos-fab .md-pf-label {
+  position: absolute; right: 70px; white-space: nowrap;
+  background: linear-gradient(135deg, rgba(5,18,35,0.95), rgba(10,61,112,0.95));
+  color: #ffcc00;
+  font-size: 12px; font-weight: 900; letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 7px 12px; border-radius: 999px;
+  border: 1px solid rgba(255,204,0,0.45);
   opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
   transform: translateX(6px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
 }
-.md-patrulha-fab:hover .md-pf-label { opacity: 1; transform: none; }
+.md-patrulha-fab:hover .md-pf-label, .md-jogos-fab:hover .md-pf-label { opacity: 1; transform: none; }
+.md-jogos-fab .md-pf-badge {
+  position: absolute; top: -2px; right: -2px;
+  min-width: 18px; height: 18px; padding: 0 5px;
+  border-radius: 999px; background: #e74c3c; color: #fff;
+  font-size: 10px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid #051223;
+  box-shadow: 0 2px 8px rgba(231,76,60,0.5);
+}
 @media (max-width: 900px) {
-  .md-patrulha-fab { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); right: 12px; width: 52px; height: 52px; }
-  .md-patrulha-fab .md-pf-label { display: none; }
+  .md-patrulha-fab, .md-jogos-fab { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); right: 12px; width: 56px; height: 56px; font-size: 1.4rem; }
+  .md-patrulha-fab .md-pf-label, .md-jogos-fab .md-pf-label { display: none; }
 }
 .md-patrulha-overlay {
   position: fixed; inset: 0; z-index: 999995;
@@ -28813,10 +28835,11 @@ document.addEventListener('click', function(e) {
 
 
 
-<!-- PATRULHA NAVAL -->
-<button type="button" class="md-patrulha-fab" id="md-patrulha-fab" title="Patrulha Naval" aria-label="Abrir Patrulha Naval" onclick="MDPatrulha.open()">
-  <span class="md-pf-label">Patrulha Naval</span>
-  <span aria-hidden="true">🚢</span>
+<!-- JOGOS (Patrulha Naval + futuros) -->
+<button type="button" class="md-jogos-fab md-patrulha-fab" id="md-patrulha-fab" title="Jogos da Tripulação" aria-label="Abrir jogos" onclick="MDPatrulha.open()">
+  <span class="md-pf-label">🎮 Jogos</span>
+  <span class="md-pf-badge" id="md-jogos-badge">1</span>
+  <span aria-hidden="true">🎮</span>
 </button>
 <div class="md-patrulha-overlay" id="md-patrulha-overlay" role="dialog" aria-label="Patrulha Naval">
   <iframe id="md-patrulha-frame" title="Patrulha Naval" allow="autoplay"></iframe>

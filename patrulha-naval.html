@@ -178,6 +178,55 @@
     position: absolute; left: 0; right: 0; bottom: 0; height: 40%;
     pointer-events: none; opacity: 0;
   }
+
+  /* Segunda chance — quiz */
+  #screen-quiz {
+    z-index: 8;
+  }
+  #screen-quiz .quiz-diff {
+    display: inline-block;
+    font-size: 11px; font-weight: 800; letter-spacing: .12em;
+    text-transform: uppercase; padding: 4px 12px; border-radius: 999px;
+    margin-bottom: 10px;
+    background: rgba(255,204,0,.15); border: 1px solid rgba(255,204,0,.4); color: var(--gold);
+  }
+  #screen-quiz .quiz-diff.medio { background: rgba(243,156,18,.15); border-color: rgba(243,156,18,.45); color: #f39c12; }
+  #screen-quiz .quiz-diff.dificil { background: rgba(231,76,60,.15); border-color: rgba(231,76,60,.45); color: #e74c3c; }
+  #quiz-timer-wrap {
+    width: min(280px, 90%); height: 8px; border-radius: 999px;
+    background: rgba(255,255,255,.12); overflow: hidden; margin: 8px auto 16px;
+  }
+  #quiz-timer-bar {
+    height: 100%; width: 100%;
+    background: linear-gradient(90deg, var(--ok), var(--gold));
+    transition: width .1s linear;
+  }
+  #quiz-timer-bar.warn { background: linear-gradient(90deg, #f39c12, #e74c3c); }
+  #quiz-timer-bar.danger { background: var(--danger); }
+  #quiz-q {
+    font-size: 15px; font-weight: 700; line-height: 1.4;
+    max-width: 340px; margin: 0 auto 16px; color: #fff;
+  }
+  #quiz-opts {
+    display: flex; flex-direction: column; gap: 8px;
+    width: min(340px, 100%); margin: 0 auto;
+  }
+  #quiz-opts button {
+    pointer-events: auto;
+    appearance: none; border: 1px solid rgba(168,199,250,.3);
+    background: rgba(255,255,255,.06); color: #fff;
+    font-size: 13px; font-weight: 600; text-align: left;
+    padding: 12px 14px; border-radius: 12px; cursor: pointer;
+    transition: background .12s, border-color .12s, transform .1s;
+  }
+  #quiz-opts button:active { transform: scale(.98); }
+  #quiz-opts button:hover { background: rgba(255,255,255,.12); border-color: var(--gold); }
+  #quiz-opts button.ok { background: rgba(46,204,113,.25); border-color: #2ecc71; }
+  #quiz-opts button.bad { background: rgba(231,76,60,.25); border-color: #e74c3c; }
+  #quiz-lives {
+    font-size: 12px; color: var(--foam); margin-bottom: 6px; opacity: .9;
+  }
+
 </style>
 </head>
 <body>
@@ -225,6 +274,19 @@
     <button type="button" class="btn ghost" id="btn-quit">Abandonar missão</button>
   </div>
 
+
+  <!-- QUIZ SEGUNDA CHANCE -->
+  <div class="screen hidden" id="screen-quiz">
+    <div class="logo-mark">🛟</div>
+    <h1 style="font-size:22px">Salva-vidas!</h1>
+    <p class="sub" style="margin-bottom:8px">Acerte a pergunta em <strong id="quiz-secs">10</strong>s para recuperar 1 de integridade.</p>
+    <div id="quiz-lives">Tentativa <span id="quiz-try">1</span> de 3</div>
+    <div class="quiz-diff" id="quiz-diff">FÁCIL</div>
+    <div id="quiz-timer-wrap"><div id="quiz-timer-bar"></div></div>
+    <div id="quiz-q">…</div>
+    <div id="quiz-opts"></div>
+  </div>
+
   <!-- GAME OVER -->
   <div class="screen hidden" id="screen-over">
     <div class="logo-mark">🏳️</div>
@@ -234,7 +296,7 @@
       <div class="stat"><div class="l">XP ganho</div><div class="n" id="over-xp">0</div></div>
       <div class="stat"><div class="l">Distância</div><div class="n" id="over-nm">0</div></div>
       <div class="stat"><div class="l">Combo máx.</div><div class="n" id="over-combo">0</div></div>
-      <div class="stat"><div class="l">Patente</div><div class="n" id="over-rank" style="font-size:15px">Recruta</div></div>
+      <div class="stat"><div class="l">Sua patente</div><div class="n" id="over-rank" style="font-size:13px;line-height:1.2">Grumete</div></div>
     </div>
     <div id="xp-award" hidden style="margin-bottom:12px;padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,rgba(255,204,0,.15),rgba(0,102,204,.15));border:1px solid rgba(255,204,0,.35);font-size:14px;font-weight:700">
       +<strong id="xp-gained" style="color:var(--gold);font-size:18px">0</strong> XP na sua conta
@@ -379,12 +441,64 @@
   let state = STATE.MENU;
 
   const MAX_HP = 3;
+  const MAX_QUIZ_SAVES = 3;
   let score = 0, dist = 0, hp = MAX_HP;
   let combo = 0, maxCombo = 0, comboTimer = 0;
   let speed = 1, elapsed = 0, sector = 1;
   let invuln = 0;
   let shake = 0;
   let best = Number(localStorage.getItem('md_patrulha_best') || 0);
+  let quizSavesUsed = 0;
+  let quizTimerId = null;
+  let quizDeadline = 0;
+  let quizAnswered = false;
+  let quizCurrent = null;
+
+  // Banco local (amostra do quizDatabase do site) — fácil / médio / difícil
+  const QUIZ_BANK = {
+    "fácil": [
+      {"q":"Quantos tiros são disparados em honra ao Presidente da República?","opts":["19 tiros","21 tiros","17 tiros","15 tiros"],"c":"B"},
+      {"q":"Qual é a Bandeira Distintiva da Marinha do Brasil?","opts":["Bandeira Nacional","Bandeira do Cruzeiro","Estandarte Presidencial","Pavilhão do Almirantado"],"c":"B"},
+      {"q":"Quantas estrelas tem a Bandeira Nacional?","opts":["26 estrelas","27 estrelas","28 estrelas","29 estrelas"],"c":"B"},
+      {"q":"Qual a salva de tiros para um Contra-Almirante?","opts":["13 tiros","15 tiros","17 tiros","19 tiros"],"c":"A"},
+      {"q":"O que representa a cor verde na Bandeira Nacional?","opts":["Riquezas minerais","Pujança das matas","O céu do Brasil","A paz"],"c":"B"},
+      {"q":"Quando é hasteada a Bandeira Nacional?","opts":["7:00 horas","8:00 horas","9:00 horas","10:00 horas"],"c":"B"},
+      {"q":"Qual sinal indica 'Homem ao mar'?","opts":["OSCAR","PAPA","SIERRA","VICTOR"],"c":"A"},
+      {"q":"Qual toque de apito é usado para o Presidente da República?","opts":["Toque de Comandante da Marinha","Toque de Almirante","Toque específico do Presidente","Toque de Oficial General"],"c":"C"},
+      {"q":"Quantos 'boys' para um Oficial Superior?","opts":["2 boys","4 boys","6 boys","8 boys"],"c":"B"},
+      {"q":"Qual é a Data Magna da Marinha?","opts":["15 de novembro - Proclamação da República","7 de setembro - Independência","11 de junho - Batalha Naval de Riachuelo","25 de dezembro - Natal"],"c":"C"},
+      {"q":"Qual o significado da sigla 'CIS'?","opts":["Código Internacional de Sinais","Comunicação Internacional Simplificada","Código de Informações Seguras","Comando Internacional de Sinais"],"c":"A"},
+      {"q":"O que significa o galhardete 'NEGAT'?","opts":["Negativo / cessar / não fazer","Necessário aguardar tempo","Negociação em andamento","Nenhuma das alternativas"],"c":"A"}
+    ],
+    "médio": [
+      {"q":"Qual bandeira pode ficar içada junto com o Estandarte Presidencial?","opts":["Pavilhão do Comandante da Marinha","Bandeira do Cruzeiro","Pavilhão do Patrono da Marinha","Flâmula de Comando"],"c":"C"},
+      {"q":"Quantas corneta substitutas existem?","opts":["2 substitutas","3 substitutas","4 substitutas","5 substitutas"],"c":"C"},
+      {"q":"Qual a salva de tiros para um Vice-Almirante?","opts":["13 tiros","15 tiros","17 tiros","19 tiros"],"c":"B"},
+      {"q":"O que significa o sinal 'PAPA' no Código Internacional?","opts":["Todos a bordo, prosseguir","Homem ao mar","Solicito pratico","Navio em quarentena"],"c":"A"},
+      {"q":"Quantos 'boys' prestam continência a um Almirante?","opts":["4 boys","6 boys","8 boys","10 boys"],"c":"C"},
+      {"q":"Qual o significado do toque 'Atenção'?","opts":["Início de cerimônia","Chamada para formatura","Preparar para continuar","Todas as anteriores"],"c":"C"},
+      {"q":"Em que data se comemora o Dia do Marinheiro?","opts":["13 de dezembro","11 de junho","7 de setembro","15 de novembro"],"c":"A"},
+      {"q":"Qual a diferença entre Continência e Saudação?","opts":["Continência é formal, Saudação é informal","São a mesma coisa","Continência só para oficiais","Saudação só em terra"],"c":"A"},
+      {"q":"O que é a 'Flâmula Nacional'?","opts":["Bandeira longa hasteada na mastreação","Outro nome da Bandeira Nacional","Bandeira de guerra","Sinal de perigo"],"c":"A"},
+      {"q":"Qual autoridade recebe 19 tiros de salva?","opts":["Presidente da República","Vice-Presidente e Ministros de Estado","Almirante de Esquadra","Comandante da Marinha"],"c":"B"},
+      {"q":"O que indica a 1ª Corneta Substituta içada?","opts":["Comandante ausente","Presidente a bordo","Navio em exercício","Pedido de pratico"],"c":"A"},
+      {"q":"Qual o formato da Bandeira do Cruzeiro?","opts":["Retangular azul com 21 estrelas","Quadrada azul com cruz","Triangular amarela","Retangular verde-amarela"],"c":"A"}
+    ],
+    "difícil": [
+      {"q":"Qual é a proporção oficial da Bandeira Nacional?","opts":["20:14 (Módulo)","3:2","16:9","4:3"],"c":"A"},
+      {"q":"Qual é o significado do sinal 'QUEBEC' no código CIS?","opts":["Solicito livre prática","Tenho médico a bordo","Estou fundeado","Solicito rebocador"],"c":"A"},
+      {"q":"Quantos tipos de toques de apito existem para continências?","opts":["5 toques","10 toques","15 toques","20 toques"],"c":"C"},
+      {"q":"Quantos dias de 'Pequena Gala' por ano?","opts":["5 dias","8 dias","12 dias","15 dias"],"c":"B"},
+      {"q":"Quantas bandeiras compõem o Sinal de Barroso 'O Brasil espera...'?","opts":["2 bandeiras","3 bandeiras","4 bandeiras","5 bandeiras"],"c":"B"},
+      {"q":"O que significa o sinal 'XRAY' no código ATP?","opts":["Evolução concluída","Suspenda e observe meus sinais","Exercício de bandeiras","Indicador de hora"],"c":"B"},
+      {"q":"O que é o 'COMAPEM'?","opts":["Comandante mais antigo presente embarcado","Comando de Apoio de Emergência","Comissão de Aperfeiçoamento de Pessoal","Nenhuma das alternativas"],"c":"A"},
+      {"q":"Quantas estrelas no Pavilhão de Almirante?","opts":["3 estrelas","4 estrelas","5 estrelas","6 estrelas"],"c":"C"},
+      {"q":"Qual a origem do lema 'Ordem e Progresso'?","opts":["Filosofia positivista","Revolução Francesa","Independência do Brasil","Todas as anteriores"],"c":"A"},
+      {"q":"Quantas constelações estão representadas na Bandeira Nacional?","opts":["5 constelações","9 constelações","12 constelações","15 constelações"],"c":"B"},
+      {"q":"Como são dispostas as estrelas na Bandeira-insígnia de Embaixador do Brasil?","opts":["Em cruz como na Bandeira do Cruzeiro","Nas diagonais da bandeira","Formando um círculo","Alinhadas verticalmente"],"c":"B"},
+      {"q":"Onde é içada a 2ª Corneta Substituta?","opts":["Adriça mais de fora a BE","Adriça de dentro a BB","Adriça mais de fora a BB","Adriça de dentro a BE"],"c":"B"}
+    ]
+  };
 
   document.getElementById('best-start').textContent = best;
 
@@ -411,18 +525,58 @@
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const rr = (n) => Math.random() < n;
 
-  function rankFor(xp) {
-    if (xp >= 2500) return 'Almirante';
-    if (xp >= 1500) return 'Capitão';
-    if (xp >= 800) return 'Imediato';
-    if (xp >= 400) return 'Cabo';
-    if (xp >= 150) return 'Marinheiro';
+  // Mesma escala de patente do site (baseada em nível da conta)
+  function getRankTitle(level) {
+    level = Number(level) || 1;
+    if (level >= 100) return 'Almirante da Armada';
+    if (level >= 90) return 'Grande Almirante';
+    if (level >= 80) return 'Almirante-Mor';
+    if (level >= 70) return 'Almirante do Atlântico Sul';
+    if (level >= 60) return 'Almirante de Esquadra Sênior';
+    if (level >= 55) return 'Almirante de Esquadra';
+    if (level >= 50) return 'Almirante de Frota';
+    if (level >= 45) return 'Almirante de Divisão';
+    if (level >= 40) return 'Vice-Almirante Sênior';
+    if (level >= 35) return 'Vice-Almirante';
+    if (level >= 32) return 'Contra-Almirante Sênior';
+    if (level >= 30) return 'Contra-Almirante';
+    if (level >= 28) return 'Comodoro';
+    if (level >= 26) return 'Capitão de Mar e Guerra';
+    if (level >= 24) return 'Capitão de Fragata';
+    if (level >= 22) return 'Capitão de Corveta';
+    if (level >= 20) return 'Capitão Tenente';
+    if (level >= 18) return 'Primeiro Tenente';
+    if (level >= 16) return 'Segundo Tenente';
+    if (level >= 14) return 'Guarda-Marinha';
+    if (level >= 12) return 'Aspirante';
+    if (level >= 10) return 'Suboficial';
+    if (level >= 8) return 'Sargento-Mor';
+    if (level >= 6) return 'Sargento';
+    if (level >= 4) return 'Cabo';
+    if (level >= 2) return 'Marinheiro';
+    if (level >= 1) return 'Grumete';
     return 'Recruta';
+  }
+  function playerLevel() {
+    try {
+      if (IN_IFRAME && parent.userProgress && parent.userProgress.level != null)
+        return Number(parent.userProgress.level) || 1;
+      if (IN_IFRAME && parent.MarujoConta && parent.MarujoConta.usuario) {
+        const u = parent.MarujoConta.usuario;
+        return Number(u.level || u.nivel || 1) || 1;
+      }
+    } catch (e) {}
+    return 1;
+  }
+  // Desempenho da partida (só para texto de compartilhar)
+  function rankFor(xp) {
+    return getRankTitle(playerLevel());
   }
 
   function setScreen(id) {
-    ['screen-start', 'screen-pause', 'screen-over'].forEach(s => {
-      document.getElementById(s).classList.toggle('hidden', s !== id);
+    ['screen-start', 'screen-pause', 'screen-over', 'screen-quiz'].forEach(s => {
+      const el = document.getElementById(s);
+      if (el) el.classList.toggle('hidden', s !== id);
     });
     document.getElementById('pause-btn').classList.toggle('show', state === STATE.PLAY);
   }
@@ -453,6 +607,8 @@
     combo = 0; maxCombo = 0; comboTimer = 0;
     speed = 1; elapsed = 0; sector = 1;
     invuln = 0; shake = 0;
+    quizSavesUsed = 0;
+    if (quizTimerId) { clearInterval(quizTimerId); quizTimerId = null; }
     obstacles = []; pickups = []; particles = [];
     ship.x = W / 2;
     ship.y = H * 0.78;
@@ -491,7 +647,7 @@
     document.getElementById('over-xp').textContent = pts;
     document.getElementById('over-nm').textContent = Math.floor(dist);
     document.getElementById('over-combo').textContent = '×' + maxCombo;
-    document.getElementById('over-rank').textContent = rankFor(pts);
+    document.getElementById('over-rank').textContent = getRankTitle(playerLevel());
     document.getElementById('over-title').textContent = hp <= 0 ? 'Embarcação abatida' : 'Fim de patrulha';
     document.getElementById('over-sub').textContent =
       pts >= best && pts > 0
@@ -521,6 +677,123 @@
       try { parent.postMessage({ type: 'md-patrulha', action: 'over', detail: { score: pts, dist: Math.floor(dist), combo: maxCombo, xpGained: gained, rank: rankFor(pts), top } }, '*'); } catch (e) {}
     }
     try { window.dispatchEvent(new CustomEvent('md-patrulha-fim', { detail: { xp: pts, dist: Math.floor(dist), combo: maxCombo, rank: rankFor(pts), xpGained: gained } })); } catch (e) {}
+  }
+
+
+  // ---- Segunda chance (quiz) ----
+  function quizDiffLabel(n) {
+    if (n <= 0) return { key: 'fácil', label: 'FÁCIL', cls: '' };
+    if (n === 1) return { key: 'médio', label: 'MÉDIO', cls: 'medio' };
+    return { key: 'difícil', label: 'DIFÍCIL', cls: 'dificil' };
+  }
+  function pickQuizQuestion(diffKey) {
+    // Tenta pegar do site (parent.quizDatabase); senão usa banco local
+    try {
+      if (IN_IFRAME && parent.quizDatabase && Array.isArray(parent.quizDatabase)) {
+        const pool = parent.quizDatabase.filter(q =>
+          q && q.difficulty === diffKey && q.question && q.options && q.correct
+        );
+        if (pool.length) {
+          const q = pool[Math.floor(Math.random() * pool.length)];
+          return {
+            q: q.question,
+            opts: q.options.map(o => (typeof o === 'string' ? o : o.text)),
+            c: q.correct
+          };
+        }
+      }
+    } catch (e) {}
+    const local = QUIZ_BANK[diffKey] || QUIZ_BANK['fácil'];
+    return local[Math.floor(Math.random() * local.length)];
+  }
+  function offerQuizSave() {
+    state = STATE.PAUSE; // congela o update loop
+    stopMusic();
+    document.getElementById('pause-btn').classList.remove('show');
+    const mb = document.getElementById('mute-btn'); if (mb) mb.classList.remove('show');
+
+    const info = quizDiffLabel(quizSavesUsed);
+    quizCurrent = pickQuizQuestion(info.key);
+    quizAnswered = false;
+
+    const diffEl = document.getElementById('quiz-diff');
+    diffEl.textContent = info.label;
+    diffEl.className = 'quiz-diff' + (info.cls ? ' ' + info.cls : '');
+    document.getElementById('quiz-try').textContent = String(quizSavesUsed + 1);
+    document.getElementById('quiz-q').textContent = quizCurrent.q;
+
+    const opts = document.getElementById('quiz-opts');
+    opts.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+    quizCurrent.opts.forEach((txt, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = letters[i] + ') ' + txt;
+      b.dataset.letter = letters[i];
+      b.onclick = () => answerQuiz(letters[i], b);
+      opts.appendChild(b);
+    });
+
+    const bar = document.getElementById('quiz-timer-bar');
+    bar.style.width = '100%';
+    bar.className = '';
+    document.getElementById('quiz-secs').textContent = '10';
+
+    setScreen('screen-quiz');
+
+    quizDeadline = performance.now() + 10000;
+    if (quizTimerId) clearInterval(quizTimerId);
+    quizTimerId = setInterval(() => {
+      if (quizAnswered) return;
+      const left = Math.max(0, quizDeadline - performance.now());
+      const pct = (left / 10000) * 100;
+      bar.style.width = pct + '%';
+      document.getElementById('quiz-secs').textContent = String(Math.ceil(left / 1000));
+      if (left < 4000) bar.className = left < 2000 ? 'danger' : 'warn';
+      if (left <= 0) {
+        clearInterval(quizTimerId); quizTimerId = null;
+        failQuiz();
+      }
+    }, 50);
+  }
+  function answerQuiz(letter, btn) {
+    if (quizAnswered) return;
+    quizAnswered = true;
+    if (quizTimerId) { clearInterval(quizTimerId); quizTimerId = null; }
+    const ok = letter === quizCurrent.c;
+    const opts = document.querySelectorAll('#quiz-opts button');
+    opts.forEach(b => {
+      if (b.dataset.letter === quizCurrent.c) b.classList.add('ok');
+      else if (b === btn && !ok) b.classList.add('bad');
+      b.disabled = true;
+    });
+    if (ok) {
+      beep(880, 0.12, 'triangle', 0.1);
+      setTimeout(() => beep(1200, 0.18, 'triangle', 0.1), 80);
+      setTimeout(() => {
+        quizSavesUsed += 1;
+        hp = 1;
+        invuln = 2.0;
+        shake = 0;
+        updateHud();
+        state = STATE.PLAY;
+        setScreen(null);
+        document.getElementById('pause-btn').classList.add('show');
+        const mb = document.getElementById('mute-btn');
+        if (mb) { mb.classList.add('show'); mb.textContent = muted ? '🔇' : '🔊'; }
+        startMusic();
+        last = performance.now();
+      }, 700);
+    } else {
+      sfxHit();
+      setTimeout(() => gameOver(), 800);
+    }
+  }
+  function failQuiz() {
+    if (quizAnswered) return;
+    quizAnswered = true;
+    sfxOver();
+    setTimeout(() => gameOver(), 400);
   }
 
   // ---- Spawn ----
@@ -630,7 +903,14 @@
         sfxHit(); burst(ship.x, ship.y, '#e74c3c', 18);
         obstacles.splice(i, 1);
         updateHud();
-        if (hp <= 0) { gameOver(); return; }
+        if (hp <= 0) {
+          if (quizSavesUsed < MAX_QUIZ_SAVES) {
+            offerQuizSave();
+          } else {
+            gameOver();
+          }
+          return;
+        }
       }
     }
 
