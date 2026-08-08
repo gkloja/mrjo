@@ -4038,6 +4038,77 @@ html[data-theme="light"] .md-hub-card h3,
 html[data-theme="light"] .md-bazar-title,
 html[data-theme="light"] .md-rank-name { color: var(--text-primary); }
 
+
+/* ===== APP SHELL FIX: FABs → bottom nav ===== */
+@media (max-width: 900px) {
+    #md-chat-fab,
+    #md-profile-fab,
+    #ambient-music-btn,
+    .cerimonial-floating-btn,
+    #openCerimonialBtn,
+    .floating-chat-container,
+    .download-promo-container {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+    /* espaço para a barra */
+    body {
+        padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+@media (min-width: 901px) {
+    .md-bottom-nav { display: none !important; }
+    .md-more-sheet { display: none !important; }
+}
+
+.md-more-sheet {
+    position: fixed; inset: 0; z-index: 99000;
+    display: none; align-items: flex-end; justify-content: center;
+    background: rgba(5,18,35,0.65);
+    backdrop-filter: blur(6px);
+}
+.md-more-sheet.show { display: flex; }
+.md-more-panel {
+    width: 100%; max-width: 420px;
+    border-radius: 20px 20px 0 0;
+    background: linear-gradient(165deg, #0d2745, #061527);
+    border: 1px solid rgba(255,204,0,0.3);
+    border-bottom: none;
+    padding: 14px 14px calc(18px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -12px 40px rgba(0,0,0,0.45);
+}
+.md-more-handle {
+    width: 40px; height: 4px; border-radius: 4px;
+    background: rgba(255,255,255,0.25); margin: 0 auto 14px;
+}
+.md-more-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+}
+.md-more-item {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 14px 6px; border-radius: 14px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    color: #fff; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.03em; cursor: pointer; border-style: solid;
+}
+.md-more-item i { font-size: 1.35rem; color: var(--accent); }
+.md-more-item:active { transform: scale(0.96); background: rgba(255,204,0,0.12); }
+
+/* Protocolos: garantir abas usáveis no mobile */
+#md-proto-tabs {
+    display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 8px;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    margin: 8px 0 16px; padding-bottom: 4px;
+}
+#md-proto-tabs::-webkit-scrollbar { display: none; }
+.md-section-tab { flex: 0 0 auto; white-space: nowrap; }
+
+/* Tabelas de protocolo: scroll horizontal no mobile */
+#protocolos .navy-table {
+    display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+
 /* ===== APP SHELL: bottom nav + mini-jogo + install ===== */
 .md-bottom-nav {
     position: fixed;
@@ -14625,28 +14696,31 @@ function limparPesquisa() {
     }
 }
 function showSection(sectionId) {
-    // Esconder todas as seções
-    document.querySelectorAll('.content-section').forEach(section => {
-        section.style.display = 'none';
-    });
-    
-    // Mostrar a seção selecionada
+    // content-section usa display:block !important — não forçar none (quebrava o layout)
     const selectedSection = document.getElementById(sectionId);
     if (selectedSection) {
-        selectedSection.style.display = 'block';
-        
-        // Se for a seção de fonoclama, garantir que está renderizada
-        if (sectionId === 'fonoclama') {
-            renderFonoclama('all');
+        selectedSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (sectionId === 'fonoclama' && typeof renderFonoclama === 'function') {
+            try { renderFonoclama('all'); } catch (e) {}
+        }
+        if (sectionId === 'protocolos' && typeof mdRenderProtocolos === 'function') {
+            try { mdRenderProtocolos(); } catch (e) {}
+        }
+        if (sectionId === 'bazar' && window.MDBazar) {
+            try { MDBazar.render(); } catch (e) {}
+        }
+        if (sectionId === 'missao' && window.MDMissao) {
+            try { MDMissao.render(); if (window.MDRank) MDRank.render(); } catch (e) {}
         }
     }
-    
-    // Atualizar links ativos
     document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.remove('active');
         if (link.getAttribute('onclick')?.includes(sectionId)) {
             link.classList.add('active');
         }
+    });
+    document.querySelectorAll('.md-bn-item').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-go') === sectionId);
     });
 }
 </script>
@@ -25085,21 +25159,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Preencher Protocolos (Portaló, Salvas, Datas, Curso ordinário)
+
+try { if (typeof cerimonialData !== 'undefined') window.cerimonialData = cerimonialData; } catch (e) {}
 try { mdRenderProtocolos(); } catch (e) { console.warn('[Protocolos]', e); }
 
 function mdProtoTab(pane, btn) {
-    document.querySelectorAll('#md-proto-tabs .md-section-tab').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.md-proto-pane').forEach(p => p.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    const el = document.getElementById('md-pane-' + pane);
-    if (el) el.classList.add('active');
+    try {
+        document.querySelectorAll('#md-proto-tabs .md-section-tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.md-proto-pane').forEach(p => p.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        else {
+            const t = document.querySelector('#md-proto-tabs .md-section-tab[data-pane="'+pane+'"]');
+            if (t) t.classList.add('active');
+        }
+        const el = document.getElementById('md-pane-' + pane);
+        if (el) {
+            el.classList.add('active');
+            el.style.display = 'block';
+        }
+        document.querySelectorAll('.md-proto-pane:not(.active)').forEach(p => { p.style.display = 'none'; });
+        try { if (window.MDMissao) MDMissao.onProtocolo(); } catch (e) {}
+    } catch (e) { console.warn('[mdProtoTab]', e); }
 }
 
 function mdRenderProtocolos() {
+    const data = (typeof cerimonialData !== 'undefined' && cerimonialData)
+        ? cerimonialData
+        : (window.cerimonialData || {});
     // --- Portaló table ---
     const honrasTable = document.getElementById('honrasPortaloTable');
-    if (honrasTable && cerimonialData.honrasPortalo) {
-        honrasTable.innerHTML = cerimonialData.honrasPortalo.map(h => `
+    if (honrasTable && data.honrasPortalo) {
+        honrasTable.innerHTML = data.honrasPortalo.map(h => `
             <tr>
                 <td><strong>${h.autoridade}</strong></td>
                 <td>${h.boys}</td>
@@ -25110,8 +25200,8 @@ function mdRenderProtocolos() {
 
     // --- Salvas table + regras ---
     const salvasTable = document.getElementById('salvasTable');
-    if (salvasTable && cerimonialData.salvas) {
-        salvasTable.innerHTML = cerimonialData.salvas.map(s => `
+    if (salvasTable && data.salvas) {
+        salvasTable.innerHTML = data.salvas.map(s => `
             <tr>
                 <td><strong>${s.autoridade}</strong></td>
                 <td style="color:var(--accent);font-weight:800">${s.tiros}</td>
@@ -25120,7 +25210,7 @@ function mdRenderProtocolos() {
     }
     const regrasEl = document.getElementById('md-salva-regras');
     if (regrasEl) {
-        const regras = (cerimonialData.regrasSalva && cerimonialData.regrasSalva.quandoNao) || [
+        const regras = (data.regrasSalva && data.regrasSalva.quandoNao) || [
             'Antes das 8h e depois do pôr do sol',
             'Com canhões não destinados a salva',
             'Navio atracado com risco de danos a instalações de terra',
@@ -25133,8 +25223,8 @@ function mdRenderProtocolos() {
 
     // --- Datas festivas ---
     const grid = document.getElementById('md-datas-festivas-grid');
-    if (grid && cerimonialData.datasFestivas) {
-        const df = cerimonialData.datasFestivas;
+    if (grid && data.datasFestivas) {
+        const df = data.datasFestivas;
         let html = '';
         (df.grandeGala || []).forEach(d => {
             html += `<div class="md-festive-card grande">
@@ -25166,7 +25256,7 @@ function mdRenderProtocolos() {
     // --- Timeline Dia da Bandeira ---
     const tlB = document.getElementById('md-timeline-bandeira');
     if (tlB) {
-        const steps = (cerimonialData.datasFestivas && cerimonialData.datasFestivas.diaDaBandeira) || [
+        const steps = (data.datasFestivas && data.datasFestivas.diaDaBandeira) || [
             '08h — cerimonial normal à Bandeira Nacional',
             '11h55 — “Sinal para a Bandeira”, içar PREP, arriar BN e reiniciar hasteamento',
             '12h — navios embandeiram nos topes',
@@ -25185,8 +25275,8 @@ function mdRenderProtocolos() {
 
     // --- Timeline hasteamento diário ---
     const tlH = document.getElementById('md-timeline-hasteamento');
-    if (tlH && cerimonialData.procedimentos) {
-        tlH.innerHTML = cerimonialData.procedimentos.map(p => `
+    if (tlH && data.procedimentos) {
+        tlH.innerHTML = data.procedimentos.map(p => `
             <div class="md-timeline-item">
                 <div class="md-timeline-time">${p.hora}</div>
                 <div class="md-timeline-action">${p.acao}</div>
@@ -28164,16 +28254,50 @@ document.addEventListener('click', function(e) {
     <button type="button" class="md-bn-item" data-go="protocolos" onclick="mdAppGo('protocolos', this)">
         <i class="fas fa-book-open"></i><span>Protocolo</span>
     </button>
-    <button type="button" class="md-bn-item" data-go="radar" onclick="MDRadar.open()">
+    <button type="button" class="md-bn-item" data-go="radar" onclick="mdAppGo('radar', this)">
         <i class="fas fa-crosshairs"></i><span>Radar</span>
     </button>
     <button type="button" class="md-bn-item" data-go="bazar" onclick="mdAppGo('bazar', this)">
         <i class="fas fa-tshirt"></i><span>Bazar</span>
     </button>
-    <button type="button" class="md-bn-item" data-go="conta" onclick="mdAppGo('conta', this)">
-        <i class="fas fa-user-circle"></i><span>Conta</span>
+    <button type="button" class="md-bn-item" data-go="mais" onclick="mdOpenMore()">
+        <i class="fas fa-ellipsis-h"></i><span>Mais</span>
     </button>
 </nav>
+
+<!-- Sheet "Mais": substitui os FABs no mobile -->
+<div class="md-more-sheet" id="md-more-sheet" onclick="if(event.target===this)mdCloseMore()">
+    <div class="md-more-panel" role="dialog" aria-label="Mais opções">
+        <div class="md-more-handle"></div>
+        <div class="md-more-grid">
+            <button type="button" class="md-more-item" onclick="mdMoreAction('chat')">
+                <i class="fas fa-comments"></i><span>Chat</span>
+            </button>
+            <button type="button" class="md-more-item" onclick="mdMoreAction('conta')">
+                <i class="fas fa-user-circle"></i><span>Conta</span>
+            </button>
+            <button type="button" class="md-more-item" onclick="mdMoreAction('quiz')">
+                <i class="fas fa-graduation-cap"></i><span>Quiz</span>
+            </button>
+            <button type="button" class="md-more-item" onclick="mdMoreAction('missao')">
+                <i class="fas fa-compass"></i><span>Missão</span>
+            </button>
+            <button type="button" class="md-more-item" onclick="mdMoreAction('musica')">
+                <i class="fas fa-music"></i><span>Música</span>
+            </button>
+            <button type="button" class="md-more-item" onclick="mdMoreAction('bandeiras')">
+                <i class="fas fa-flag"></i><span>Bandeiras</span>
+            </button>
+            <button type="button" class="md-more-item" onclick="mdMoreAction('apitos')">
+                <i class="fas fa-volume-up"></i><span>Apitos</span>
+            </button>
+            <button type="button" class="md-more-item" onclick="mdCloseMore()">
+                <i class="fas fa-times"></i><span>Fechar</span>
+            </button>
+        </div>
+    </div>
+</div>
+
 
 <div class="md-install-banner" id="md-install-banner">
     <p><strong>Instalar Marujo</strong><br>Acesse como app, offline e com ícone na tela inicial.</p>
@@ -28198,31 +28322,71 @@ document.addEventListener('click', function(e) {
 function mdAppGo(target, btn) {
     document.querySelectorAll('.md-bn-item').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
+    if (target === 'radar') {
+        if (window.MDRadar) MDRadar.open();
+        return;
+    }
     if (target === 'chat') {
-        if (window.MarujoConta && MarujoConta.toggleChat) MarujoConta.toggleChat(true);
+        mdOpenChat();
         return;
     }
     if (target === 'conta') {
-        if (window.MarujoConta) {
-            if (MarujoConta.logado && MarujoConta.abrirPerfil) MarujoConta.abrirPerfil();
-            else if (MarujoConta.abrirAuth) MarujoConta.abrirAuth();
-        }
+        mdOpenConta();
         return;
     }
-    if (target === 'radar') { MDRadar.open(); return; }
-    const el = document.getElementById(target);
-    if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // force visible if content-section system hides non-active
-        document.querySelectorAll('.content-section').forEach(s => {
-            if (s.id === target) s.style.display = '';
-        });
-    }
     if (typeof showSection === 'function') {
-        try { showSection(target); } catch {}
+        try { showSection(target); } catch (e) {
+            const el = document.getElementById(target);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    } else {
+        const el = document.getElementById(target);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    if (target === 'bazar' && window.MDBazar) MDBazar.render();
-    if (target === 'missao' && window.MDMissao) MDMissao.render();
+}
+function mdOpenChat() {
+    try {
+        if (window.MarujoConta && MarujoConta.toggleChat) return MarujoConta.toggleChat(true);
+    } catch (e) {}
+    const fab = document.getElementById('md-chat-fab');
+    if (fab) fab.click();
+}
+function mdOpenConta() {
+    try {
+        if (window.MarujoConta) {
+            if (MarujoConta.logado && MarujoConta.abrirPerfil) return MarujoConta.abrirPerfil();
+            if (MarujoConta.abrirAuth) return MarujoConta.abrirAuth();
+        }
+    } catch (e) {}
+    const fab = document.getElementById('md-profile-fab');
+    if (fab) fab.click();
+}
+function mdOpenMore() {
+    document.getElementById('md-more-sheet')?.classList.add('show');
+}
+function mdCloseMore() {
+    document.getElementById('md-more-sheet')?.classList.remove('show');
+}
+function mdMoreAction(action) {
+    mdCloseMore();
+    if (action === 'chat') return mdOpenChat();
+    if (action === 'conta') return mdOpenConta();
+    if (action === 'musica') {
+        const btn = document.getElementById('ambient-music-btn');
+        if (btn) btn.click();
+        else if (window.toggleAmbientMusic) toggleAmbientMusic();
+        return;
+    }
+    if (action === 'quiz') {
+        const btn = document.getElementById('openCerimonialBtn') || document.getElementById('fabZoneQuiz');
+        if (btn) btn.click();
+        else if (typeof openCerimonialQuiz === 'function') openCerimonialQuiz();
+        else if (typeof startQuiz === 'function') startQuiz();
+        return;
+    }
+    if (action === 'missao') return mdAppGo('missao');
+    if (action === 'bandeiras') return mdAppGo('bandeiras');
+    if (action === 'apitos') return mdAppGo('apitos');
 }
 
 // ===== Install PWA =====
@@ -28567,12 +28731,8 @@ window.MDRadar = MDRadar;
   };
   window.MDMissao = MDMissao;
 
-  // marcar protocolo ao abrir aba
-  const _mdProtoTab = window.mdProtoTab;
-  window.mdProtoTab = function (pane, btn) {
-    if (typeof _mdProtoTab === 'function') _mdProtoTab(pane, btn);
-    try { MDMissao.onProtocolo(); } catch {}
-  };
+  // protocolo já marca missão dentro de mdProtoTab
+
 
   // ---------- RANKING SEMANAL ----------
   const MDRank = {
@@ -28874,6 +29034,18 @@ window.MDRadar = MDRadar;
 })();
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  setTimeout(function () {
+    try { if (typeof mdRenderProtocolos === 'function') mdRenderProtocolos(); } catch (e) {}
+    try {
+      // garantir painel Portaló visível
+      var p = document.getElementById('md-pane-portalo');
+      if (p) { p.classList.add('active'); p.style.display = 'block'; }
+    } catch (e) {}
+  }, 400);
+});
+</script>
 </body>
 </html>
 
