@@ -30208,7 +30208,7 @@ window.MDPatrulha = {
       if (a && !a.paused) { a.pause(); window.__mdPatrulhaPausedSiteMusic = a; }
       else if (window.ambientAudio && !ambientAudio.paused) { ambientAudio.pause(); window.__mdPatrulhaPausedSiteMusic = ambientAudio; }
     } catch (e) {}
-    fr.src = '/patrulha-naval.html?v=2';
+    fr.src = '/patrulha-naval.html?v=3';
     ov.classList.add('show');
     document.body.style.overflow = 'hidden';
   },
@@ -30231,7 +30231,37 @@ window.addEventListener('message', function (ev) {
   var d = ev.data;
   if (!d || d.type !== 'md-patrulha') return;
   if (d.action === 'close' || d.action === 'quit') MDPatrulha.close();
-  if (d.action === 'over') { try { if (window.mdSyncCmdBar) mdSyncCmdBar(); } catch (e) {} }
+  if (d.action === 'xp' && d.detail && d.detail.xpGained > 0) {
+    try {
+      // Evita creditar 2x se o iframe já chamou addXP direto
+      if (!window.__mdPatrulhaXpAt || Date.now() - window.__mdPatrulhaXpAt > 1500) {
+        if (typeof userProgress !== 'undefined' && userProgress && typeof userProgress.addXP === 'function') {
+          // Só credita via postMessage se ainda não tiver sido aplicado no mesmo fim de jogo
+          if (!window.__mdPatrulhaLastScore || window.__mdPatrulhaLastScore !== d.detail.score) {
+            userProgress.addXP(Number(d.detail.xpGained) || 0);
+            window.__mdPatrulhaLastScore = d.detail.score;
+            window.__mdPatrulhaXpAt = Date.now();
+          }
+        }
+      }
+      if (typeof updateFloatingButton === 'function') updateFloatingButton();
+      if (typeof mdSyncCmdBar === 'function') mdSyncCmdBar();
+    } catch (e) { console.warn('[MDPatrulha xp]', e); }
+  }
+  if (d.action === 'over') {
+    try {
+      if (d.detail && d.detail.xpGained > 0 && typeof userProgress !== 'undefined' && userProgress && typeof userProgress.addXP === 'function') {
+        // garante crédito se o action xp não chegou
+        if (window.__mdPatrulhaLastScore !== d.detail.score) {
+          userProgress.addXP(Number(d.detail.xpGained) || 0);
+          window.__mdPatrulhaLastScore = d.detail.score;
+          window.__mdPatrulhaXpAt = Date.now();
+        }
+      }
+      if (typeof updateFloatingButton === 'function') updateFloatingButton();
+      if (window.mdSyncCmdBar) mdSyncCmdBar();
+    } catch (e) {}
+  }
 });
 </script>
 
