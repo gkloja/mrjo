@@ -3927,10 +3927,48 @@ html[data-theme="light"] .sm-pos-desc { color: var(--text-primary); }
     border-color: rgba(255,204,0,0.35);
 }
 .md-bazar-photo {
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4 / 3;
+    max-height: 140px;
     background: #0a1628 center/cover no-repeat;
     position: relative;
+    cursor: zoom-in;
+    overflow: hidden;
 }
+.md-bazar-photo img.md-bazar-thumb {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.md-bazar-lightbox {
+    display: none; position: fixed; inset: 0; z-index: 999999;
+    background: rgba(5,18,35,0.92); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center; padding: 16px;
+}
+.md-bazar-lightbox.show { display: flex; }
+.md-bazar-lightbox img {
+    max-width: min(960px, 96vw); max-height: 88vh;
+    border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    object-fit: contain;
+}
+.md-bazar-photo.no-img {
+    background: linear-gradient(135deg,#0d2745,#003366);
+    display: flex; align-items: center; justify-content: center;
+}
+.md-bazar-photo.no-img::after {
+    content: '📷'; font-size: 1.5rem; opacity: 0.5;
+}
+.md-bazar-lightbox-x {
+    position: absolute; top: 14px; right: 16px;
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1px solid rgba(255,204,0,0.4); background: rgba(0,0,0,0.4);
+    color: #fff; font-size: 1.5rem; cursor: pointer; line-height: 1;
+}
+.md-bazar-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+    gap: 10px !important;
+}
+.md-bazar-body { padding: 10px 10px 12px !important; }
+.md-bazar-title { font-size: 0.88rem !important; }
+.md-bazar-price { font-size: 0.98rem !important; margin-bottom: 8px !important; }
+
 .md-bazar-photo .tag {
     position: absolute; top: 8px; left: 8px;
     font-size: 0.65rem; font-weight: 800; letter-spacing: 0.04em;
@@ -28807,7 +28845,7 @@ function mdDismissInstall() {
 // API Marujo (Cloudflare Worker → servidor :4009)
 window.MD_API_BASE = window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
 window.MD_API_BAZAR = window.MD_API_BASE + '/api/marujo/bazar';
-window.MD_MEDIA_BASE = 'http://br2.bronxyshost.com:4009'; // fotos estáticas (uploads)
+window.MD_MEDIA_BASE = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009'; // fotos via proxy HTTPS
 
 const MDRadar = {
     TOTAL: 10,
@@ -28992,7 +29030,7 @@ window.MDRadar = MDRadar;
   const API_RADAR_SCORE = API_BASE + '/api/marujo/radar/score';
   const API_RADAR_RANK = API_BASE + '/api/marujo/radar/ranking';
   const API_MISSAO_CLAIM = API_BASE + '/api/marujo/missao/claim';
-  const MEDIA_BASE = window.MD_MEDIA_BASE || 'http://br2.bronxyshost.com:4009';
+  const MEDIA_BASE = window.MD_MEDIA_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
   const DN_NOME = {
     '1': '1º DN', '2': '2º DN', '3': '3º DN', '4': '4º DN',
     '5': '5º DN', '6': '6º DN', '7': '7º DN', '8': '8º DN', '9': '9º DN'
@@ -29198,8 +29236,36 @@ window.MDRadar = MDRadar;
     save(list) { localStorage.setItem('md_bazar_items', JSON.stringify(list)); },
     mediaUrl(foto) {
       if (!foto) return null;
-      if (/^https?:\/\//i.test(foto) || foto.startsWith('data:')) return foto;
-      return MEDIA_BASE.replace(/\/$/, '') + (foto.startsWith('/') ? foto : '/' + foto);
+      if (String(foto).startsWith('data:')) return foto;
+      // Já é URL completa
+      if (/^https?:\/\//i.test(foto)) {
+        // Se for http do backend e a página for https, passa pelo proxy
+        if (foto.indexOf('http://br2.bronxyshost.com:4009') === 0) {
+          return 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=' + encodeURIComponent(foto);
+        }
+        return foto;
+      }
+      // Caminho relativo: /uploads/bazar/...
+      const path = foto.startsWith('/') ? foto : '/' + foto;
+      const target = 'http://br2.bronxyshost.com:4009' + path;
+      return 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=' + encodeURIComponent(target);
+    },
+    openFoto(url) {
+      if (!url) return;
+      let ov = document.getElementById('md-bazar-lightbox');
+      if (!ov) {
+        ov = document.createElement('div');
+        ov.id = 'md-bazar-lightbox';
+        ov.className = 'md-bazar-lightbox';
+        ov.innerHTML = '<button type="button" class="md-bazar-lightbox-x" aria-label="Fechar">&times;</button><img alt="Foto do item">';
+        document.body.appendChild(ov);
+        ov.addEventListener('click', function (e) {
+          if (e.target === ov || e.target.classList.contains('md-bazar-lightbox-x')) ov.classList.remove('show');
+        });
+      }
+      const img = ov.querySelector('img');
+      img.src = url;
+      ov.classList.add('show');
     },
     openForm() {
       this.photoData = null;
@@ -29379,15 +29445,16 @@ window.MDRadar = MDRadar;
       }
       grid.innerHTML = list.map(item => {
         const fotoSrc = this.mediaUrl(item.foto);
-        const foto = fotoSrc
-          ? `background-image:url('${fotoSrc}')`
-          : `background:linear-gradient(135deg,#0d2745,#003366)`;
         const preco = item.tipo === 'troca'
           ? 'Troca'
           : (item.preco > 0 ? 'R$ ' + Number(item.preco).toLocaleString('pt-BR') : 'A combinar');
         const isMine = item.ownerId === userId();
+        const thumb = fotoSrc
+          ? `<img class="md-bazar-thumb" src="${fotoSrc}" alt="${escapeHtml(item.titulo)}" loading="lazy" decoding="async" onerror="this.style.display='none';this.parentNode.classList.add('no-img')">`
+          : '';
         return `<article class="md-bazar-item ${item.status === 'pending' ? 'is-pending' : ''} ${item.status === 'sold' ? 'is-sold' : ''}">
-          <div class="md-bazar-photo" style="${foto}">
+          <div class="md-bazar-photo ${fotoSrc ? '' : 'no-img'}" ${fotoSrc ? `onclick="MDBazar.openFoto('${fotoSrc.replace(/'/g, "\'")}')"` : ''}>
+            ${thumb}
             <span class="tag">${DN_NOME[item.dn] || item.dn + 'º DN'}</span>
             <span class="tag tipo-tag ${item.status === 'pending' ? 'pending' : item.status === 'sold' ? 'sold' : (item.tipo === 'troca' ? 'troca' : '')}">${item.status === 'pending' ? 'Análise' : item.status === 'sold' ? 'Vendido' : (item.tipo === 'troca' ? 'Troca' : 'Venda')}</span>
           </div>
