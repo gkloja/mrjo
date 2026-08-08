@@ -3963,6 +3963,12 @@ html[data-theme="light"] .sm-pos-desc { color: var(--text-primary); }
 .md-wa-btn {
     background: #25D366; color: #fff !important;
 }
+
+.md-bazar-photo .tipo-tag.pending { background: rgba(214,158,11,0.95) !important; }
+.md-bazar-photo .tipo-tag.sold { background: rgba(113,128,150,0.95) !important; }
+.md-bazar-item.is-pending { opacity: 0.92; border-color: rgba(214,158,11,0.35); }
+.md-bazar-item.is-sold { opacity: 0.7; filter: grayscale(0.3); }
+
 .md-bazar-empty {
     grid-column: 1 / -1;
     text-align: center; padding: 40px 16px;
@@ -11040,8 +11046,8 @@ const turmaPapa2023 = [
             </div>
 
             <p style="color:var(--text-secondary);font-size:0.9rem;margin:0 0 14px;line-height:1.45">
-                Espaço da tripulação para <strong>vender ou trocar</strong> peças de fardamento e acessórios.
-                Contato direto no WhatsApp — o Marujo Digital só conecta a tripulação.
+                Venda ou troca de fardamento entre a tripulação. Todo anúncio passa por <strong>análise</strong> antes de aparecer publicamente.
+                Você pode <strong>apagar</strong> ou marcar como <strong>vendido</strong> a qualquer momento.
             </p>
 
             <div class="md-bazar-layout">
@@ -11102,7 +11108,7 @@ const turmaPapa2023 = [
                         <div id="md-photo-hint"><i class="fas fa-camera" style="font-size:1.5rem;color:var(--accent)"></i><br>Toque para enviar foto</div>
                         <img id="md-photo-preview" style="display:none" alt="Prévia">
                     </div>
-                    <input type="file" id="bz-foto" accept="image/*" capture="environment" style="display:none" onchange="MDBazar.previewPhoto(event)">
+                    <input type="file" id="bz-foto" accept="image/*" style="display:none" onchange="MDBazar.previewPhoto(event)">
                 </div>
                 <div class="md-form-row">
                     <label>Título</label>
@@ -23125,11 +23131,7 @@ function loadApitosGrid(category = 'all', searchTerm = '') {
                     <i class="fas fa-volume-up" style="color: var(--text-muted); font-size: 0.8rem;"></i>
                 </div>
                 
-                ${apito.download ? `
-                <a href="${apito.download}" class="apito-download-btn" target="_blank">
-                    <i class="fas fa-download"></i> Baixar
-                </a>
-                ` : ''}
+                
             </div>
         `;
     });
@@ -29267,6 +29269,7 @@ window.MDRadar = MDRadar;
         preco: tipo === 'venda' ? Number(preco || 0) : null,
         dn, endereco, whats, desc,
         foto: this.photoData || null,
+        status: 'pending',
         criadoEm: new Date().toISOString()
       };
       // tenta servidor primeiro
@@ -29288,7 +29291,7 @@ window.MDRadar = MDRadar;
         this.save(list);
         this.closeForm();
         this.render();
-        alert('✅ Anúncio publicado no Bazar Marujo!');
+        alert('✅ Anúncio enviado para análise!\nQuando for aprovado, aparece no Bazar para a tripulação.');
       }).catch((err) => {
         // fallback offline local
         const list = this.load();
@@ -29296,19 +29299,31 @@ window.MDRadar = MDRadar;
         this.save(list);
         this.closeForm();
         this.render();
-        alert('✅ Anúncio salvo localmente (servidor offline). Quando o servidor voltar, publique de novo se precisar.');
+        alert('⚠️ Servidor offline. Anúncio ficou pendente só neste aparelho.');
         console.warn('[Bazar]', err);
       });
       return false;
     },
     remove(id) {
-      if (!confirm('Remover este anúncio?')) return;
+      if (!confirm('Remover este anúncio permanentemente?')) return;
       fetch(API_BAZAR + '/' + encodeURIComponent(id) + '?ownerId=' + encodeURIComponent(userId()), {
         method: 'DELETE'
       }).catch(() => {});
       const list = this.load().filter(x => x.id !== id);
       this.save(list);
       this.render();
+    },
+    markSold(id) {
+      if (!confirm('Marcar como VENDIDO / TROCA CONCLUÍDA?')) return;
+      fetch(API_BAZAR + '/' + encodeURIComponent(id) + '/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'sold', ownerId: userId() })
+      }).then(() => this.render()).catch(() => {
+        const list = this.load().map(x => x.id === id ? { ...x, status: 'sold' } : x);
+        this.save(list);
+        this.render();
+      });
     },
     waLink(item) {
       let num = String(item.whats || '').replace(/\D/g, '');
@@ -29371,10 +29386,10 @@ window.MDRadar = MDRadar;
           ? 'Troca'
           : (item.preco > 0 ? 'R$ ' + Number(item.preco).toLocaleString('pt-BR') : 'A combinar');
         const isMine = item.ownerId === userId();
-        return `<article class="md-bazar-item">
+        return `<article class="md-bazar-item ${item.status === 'pending' ? 'is-pending' : ''} ${item.status === 'sold' ? 'is-sold' : ''}">
           <div class="md-bazar-photo" style="${foto}">
             <span class="tag">${DN_NOME[item.dn] || item.dn + 'º DN'}</span>
-            <span class="tag tipo-tag ${item.tipo === 'troca' ? 'troca' : ''}">${item.tipo === 'troca' ? 'Troca' : 'Venda'}</span>
+            <span class="tag tipo-tag ${item.status === 'pending' ? 'pending' : item.status === 'sold' ? 'sold' : (item.tipo === 'troca' ? 'troca' : '')}">${item.status === 'pending' ? 'Análise' : item.status === 'sold' ? 'Vendido' : (item.tipo === 'troca' ? 'Troca' : 'Venda')}</span>
           </div>
           <div class="md-bazar-body">
             <h4 class="md-bazar-title">${escapeHtml(item.titulo)}</h4>
@@ -29382,10 +29397,11 @@ window.MDRadar = MDRadar;
               <br>por ${escapeHtml(item.ownerNome || 'Marujo')}</div>
             <div class="md-bazar-price">${preco}</div>
             <div class="md-bazar-actions">
-              <a class="md-wa-btn" href="${this.waLink(item)}" target="_blank" rel="noopener">
-                <i class="fab fa-whatsapp"></i> WhatsApp
-              </a>
-              ${isMine ? `<button type="button" class="md-hub-btn ghost" onclick="MDBazar.remove('${item.id}')">Remover</button>` : ''}
+              ${item.status === 'pending' ? '<span style="flex:1;font-size:0.75rem;color:#f6e05e;font-weight:700">⏳ Em análise</span>' : ''}
+              ${item.status === 'sold' ? '<span style="flex:1;font-size:0.75rem;color:#a0aec0;font-weight:700">✓ Vendido</span>' : ''}
+              ${(!item.status || item.status === 'approved') ? `<a class="md-wa-btn" href="${this.waLink(item)}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
+              ${isMine && item.status !== 'sold' ? `<button type="button" class="md-hub-btn ghost" onclick="MDBazar.markSold('${item.id}')">Vendido</button>` : ''}
+              ${isMine ? `<button type="button" class="md-hub-btn ghost" onclick="MDBazar.remove('${item.id}')">Apagar</button>` : ''}
             </div>
           </div>
         </article>`;
