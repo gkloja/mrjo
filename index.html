@@ -4299,6 +4299,45 @@ html[data-theme="light"] .navy-header {
 }
 html[data-theme="light"] .md-cmd-name { color: var(--text-primary); }
 
+
+/* Badges da barra inferior / sheet Mais */
+.md-bn-item { position: relative; }
+.md-bn-badge, .md-more-badge {
+    position: absolute;
+    top: 2px; right: 50%;
+    transform: translate(14px, 0);
+    min-width: 16px; height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 800;
+    line-height: 16px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(185, 28, 28, 0.45);
+    pointer-events: none;
+    z-index: 2;
+}
+.md-bn-badge:empty, .md-more-badge:empty,
+.md-bn-badge[data-count="0"], .md-more-badge[data-count="0"] {
+    display: none;
+}
+.md-bn-badge.md-bn-badge-soft {
+    background: linear-gradient(135deg, #ffcc00, #f59e0b);
+    color: #05203a;
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.4);
+}
+.md-bn-badge.md-bn-badge-ok {
+    background: linear-gradient(135deg, #34d399, #059669);
+    color: #fff;
+}
+.md-more-item { position: relative; }
+.md-more-badge {
+    top: 6px; right: 6px;
+    transform: none;
+}
+
 /* ===== APP SHELL FIX: FABs → bottom nav ===== */
 @media (max-width: 900px) {
     #md-news-fab,
@@ -28582,17 +28621,19 @@ document.addEventListener('click', function(e) {
     <button type="button" class="md-bn-item active" data-go="sinais" onclick="mdAppGo('sinais', this)">
         <i class="fas fa-signal"></i><span>Sinais</span>
     </button>
-    <button type="button" class="md-bn-item" data-go="protocolos" onclick="mdAppGo('protocolos', this)">
-        <i class="fas fa-book-open"></i><span>Protocolo</span>
+    <button type="button" class="md-bn-item" data-go="apitos" onclick="mdAppGo('apitos', this)">
+        <i class="fas fa-volume-up"></i><span>Apitos</span>
     </button>
-    <button type="button" class="md-bn-item" data-go="radar" onclick="mdAppGo('radar', this)">
-        <i class="fas fa-crosshairs"></i><span>Radar</span>
+    <button type="button" class="md-bn-item" data-go="fonoclama" onclick="mdAppGo('fonoclama', this)">
+        <i class="fas fa-bullhorn"></i><span>Fonoclama</span>
     </button>
     <button type="button" class="md-bn-item" data-go="bazar" onclick="mdAppGo('bazar', this)">
         <i class="fas fa-tshirt"></i><span>Bazar</span>
+        <span class="md-bn-badge" id="md-bn-badge-bazar" data-count="0"></span>
     </button>
     <button type="button" class="md-bn-item" data-go="mais" onclick="mdOpenMore()">
-        <i class="fas fa-ellipsis-h"></i><span>Mais</span>
+        <i class="fas fa-th-large"></i><span>Mais</span>
+        <span class="md-bn-badge md-bn-badge-soft" id="md-bn-badge-mais" data-count="0"></span>
     </button>
 </nav>
 
@@ -28609,21 +28650,24 @@ document.addEventListener('click', function(e) {
             </button>
             <button type="button" class="md-more-item" onclick="mdMoreAction('noticias')">
                 <i class="fas fa-satellite-dish"></i><span>Notícias</span>
+                <span class="md-more-badge" id="md-more-badge-noticias" data-count="0"></span>
+            </button>
+            <button type="button" class="md-more-item" onclick="mdMoreAction('radar')">
+                <i class="fas fa-crosshairs"></i><span>Radar</span>
+                <span class="md-more-badge" id="md-more-badge-radar" data-count="0"></span>
+            </button>
+            <button type="button" class="md-more-item" onclick="mdMoreAction('missao')">
+                <i class="fas fa-compass"></i><span>Missão</span>
+                <span class="md-more-badge" id="md-more-badge-missao" data-count="0"></span>
+            </button>
+            <button type="button" class="md-more-item" onclick="mdMoreAction('protocolos')">
+                <i class="fas fa-book-open"></i><span>Protocolo</span>
             </button>
             <button type="button" class="md-more-item" onclick="mdMoreAction('quiz')">
                 <i class="fas fa-graduation-cap"></i><span>Quiz</span>
             </button>
-            <button type="button" class="md-more-item" onclick="mdMoreAction('missao')">
-                <i class="fas fa-compass"></i><span>Missão</span>
-            </button>
-            <button type="button" class="md-more-item" onclick="mdMoreAction('musica')">
-                <i class="fas fa-music"></i><span>Música</span>
-            </button>
             <button type="button" class="md-more-item" onclick="mdMoreAction('bandeiras')">
                 <i class="fas fa-flag"></i><span>Bandeiras</span>
-            </button>
-            <button type="button" class="md-more-item" onclick="mdMoreAction('apitos')">
-                <i class="fas fa-volume-up"></i><span>Apitos</span>
             </button>
             <button type="button" class="md-more-item" onclick="mdCloseMore()">
                 <i class="fas fa-times"></i><span>Fechar</span>
@@ -28714,6 +28758,14 @@ function mdMoreAction(action) {
     if (action === 'noticias') {
         if (typeof toggleNewsRadar === 'function') toggleNewsRadar();
         else document.getElementById('md-news-fab')?.click();
+        return;
+    }
+    if (action === 'radar') {
+        if (window.MDRadar) MDRadar.open();
+        return;
+    }
+    if (action === 'protocolos') {
+        mdAppGo('protocolos');
         return;
     }
     if (action === 'quiz') {
@@ -29614,6 +29666,160 @@ document.addEventListener('DOMContentLoaded', function () {
       if (el) new MutationObserver(mdSyncCmdBar).observe(el, { attributes: true, childList: true, characterData: true, subtree: true });
     });
   }, 1200);
+})();
+</script>
+
+<script>
+(function () {
+  function setBadge(id, n, opts) {
+    opts = opts || {};
+    var el = document.getElementById(id);
+    if (!el) return;
+    n = Number(n) || 0;
+    if (n > 99) n = 99;
+    el.setAttribute('data-count', String(n));
+    el.textContent = n > 0 ? String(n) : '';
+    el.style.display = n > 0 ? '' : 'none';
+    if (opts.soft) el.classList.add('md-bn-badge-soft');
+    if (opts.ok) el.classList.add('md-bn-badge-ok');
+  }
+
+  function countNoticias() {
+    try {
+      if (window.NewsSystem) {
+        var list = NewsSystem.noticias || NewsSystem.news || NewsSystem.items || [];
+        if (Array.isArray(list) && list.length) return list.length;
+        var t = document.getElementById('totalNoticias');
+        if (t) {
+          var m = String(t.textContent || '').match(/\d+/);
+          if (m) return parseInt(m[0], 10);
+        }
+        var badge = document.getElementById('md-news-fab-badge');
+        if (badge && badge.textContent) {
+          var m2 = String(badge.textContent).match(/\d+/);
+          if (m2) return parseInt(m2[0], 10);
+        }
+      }
+    } catch (e) {}
+    return 0;
+  }
+
+  var _bazarCountCache = 0;
+  var _bazarCountAt = 0;
+  function countBazar() {
+    try {
+      if (window.MDBazar && typeof MDBazar.load === 'function') {
+        var local = MDBazar.load() || [];
+        if (local.length) {
+          _bazarCountCache = local.length;
+          return local.length;
+        }
+      }
+    } catch (e) {}
+    try {
+      var grid = document.getElementById('md-bazar-grid');
+      if (grid) {
+        var cards = grid.querySelectorAll('.md-bazar-item');
+        if (cards.length) {
+          _bazarCountCache = cards.length;
+          return cards.length;
+        }
+      }
+    } catch (e) {}
+    // fetch leve a cada 60s
+    var now = Date.now();
+    if (now - _bazarCountAt > 60000) {
+      _bazarCountAt = now;
+      try {
+        var base = window.MD_API_BAZAR || (window.MD_API_BASE ? window.MD_API_BASE + '/api/marujo/bazar' : null);
+        if (base) {
+          fetch(base).then(function (r) { return r.json(); }).then(function (j) {
+            if (j && j.ok && typeof j.total === 'number') {
+              _bazarCountCache = j.total;
+              setBadge('md-bn-badge-bazar', j.total);
+            } else if (j && Array.isArray(j.itens)) {
+              _bazarCountCache = j.itens.length;
+              setBadge('md-bn-badge-bazar', j.itens.length);
+            }
+          }).catch(function () {});
+        }
+      } catch (e) {}
+    }
+    return _bazarCountCache;
+  }
+
+  function countMissaoPendentes() {
+    try {
+      if (!window.MDMissao) return 0;
+      var s = MDMissao.state();
+      if (s.claimed) return 0;
+      var pend = MDMissao.tasks.filter(function (t) { return !s.done[t.id]; }).length;
+      return pend;
+    } catch (e) { return 0; }
+  }
+
+  function countRadar() {
+    // 1 se ainda não jogou hoje; 0 se já jogou (streak do dia)
+    try {
+      var hoje = new Date().toISOString().slice(0, 10);
+      var rec = JSON.parse(localStorage.getItem('md_radar_rec') || '{}');
+      if (rec[hoje] && rec[hoje].score != null) return 0;
+      return 1; // missão diária de radar disponível
+    } catch (e) { return 1; }
+  }
+
+  function mdSyncBadges() {
+    var nNews = countNoticias();
+    var nBazar = countBazar();
+    var nMissao = countMissaoPendentes();
+    var nRadar = countRadar();
+
+    setBadge('md-more-badge-noticias', nNews);
+    setBadge('md-bn-badge-bazar', nBazar);
+    setBadge('md-more-badge-missao', nMissao);
+    setBadge('md-more-badge-radar', nRadar, { soft: true });
+
+    // badge no "Mais" = soma do que está pendente (notícias novas vistas como info + missões)
+    var mais = 0;
+    if (nMissao > 0) mais += nMissao;
+    if (nRadar > 0) mais += nRadar;
+    // notícias: só entra no "Mais" se houver (informativo)
+    // não soma tudo de notícias pra não ficar 40+ sempre
+    if (nNews > 0) mais += 1;
+    setBadge('md-bn-badge-mais', mais, { soft: true });
+  }
+
+  window.mdSyncBadges = mdSyncBadges;
+
+  function boot() {
+    mdSyncBadges();
+    setInterval(mdSyncBadges, 8000);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+
+  // Quando o radar de notícias atualiza o badge original, espelha
+  setTimeout(function () {
+    var b = document.getElementById('md-news-fab-badge');
+    if (b && window.MutationObserver) {
+      new MutationObserver(mdSyncBadges).observe(b, { childList: true, characterData: true, subtree: true, attributes: true });
+    }
+    var t = document.getElementById('totalNoticias');
+    if (t && window.MutationObserver) {
+      new MutationObserver(mdSyncBadges).observe(t, { childList: true, characterData: true, subtree: true });
+    }
+  }, 1500);
+
+  // Após abrir/fechar missao ou radar
+  var _open = window.MDRadar && MDRadar.open;
+  if (window.MDRadar && typeof MDRadar.open === 'function') {
+    var origOpen = MDRadar.open.bind(MDRadar);
+    MDRadar.open = function () {
+      var r = origOpen();
+      setTimeout(mdSyncBadges, 300);
+      return r;
+    };
+  }
 })();
 </script>
 </body>
