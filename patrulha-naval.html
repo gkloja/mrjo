@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Patrulha Naval · Marujo Digital</title>
+<meta name="theme-color" content="#051223">
+<style>
+  :root {
+    --navy: #003366;
+    --navy-deep: #051223;
+    --navy-mid: #0a1929;
+    --gold: #ffcc00;
+    --gold-dim: #c9a13b;
+    --foam: #a8c7fa;
+    --ok: #2ecc71;
+    --danger: #e74c3c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    height: 100%;
+    background: var(--navy-deep);
+    color: #fff;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+  }
+  #wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, #051223 0%, #0a2744 40%, #0d3a5c 100%);
+    box-shadow: 0 0 40px rgba(0,0,0,.5);
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* HUD */
+  #hud {
+    position: absolute; inset: 0; pointer-events: none;
+    display: flex; flex-direction: column;
+  }
+  #topbar {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 0;
+    gap: 8px;
+  }
+  .pill {
+    background: rgba(5,18,35,.72);
+    border: 1px solid rgba(255,204,0,.28);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; gap: 6px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.25);
+  }
+  .pill .v { color: var(--gold); font-variant-numeric: tabular-nums; }
+  .pill.hp .bars { display: flex; gap: 3px; }
+  .pill.hp .bar {
+    width: 10px; height: 10px; border-radius: 2px;
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.2);
+  }
+  .pill.hp .bar.on { background: var(--ok); border-color: #27ae60; box-shadow: 0 0 6px rgba(46,204,113,.5); }
+  .pill.hp .bar.warn { background: #f39c12; border-color: #e67e22; }
+  .pill.hp .bar.dead { background: var(--danger); border-color: #c0392b; }
+
+  #combo {
+    position: absolute; left: 50%; top: 22%;
+    transform: translate(-50%, -50%) scale(.8);
+    font-size: 22px; font-weight: 900; color: var(--gold);
+    text-shadow: 0 0 20px rgba(255,204,0,.6), 0 2px 0 #003366;
+    opacity: 0; transition: opacity .15s, transform .15s;
+    pointer-events: none; letter-spacing: .04em;
+  }
+  #combo.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+  #wave-tag {
+    position: absolute; left: 50%; top: 12%;
+    transform: translateX(-50%);
+    font-size: 11px; font-weight: 800; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--foam);
+    opacity: .85; pointer-events: none;
+  }
+
+  /* Screens */
+  .screen {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom, 0px));
+    background: radial-gradient(ellipse at 50% 30%, rgba(0,102,204,.25), transparent 55%),
+                rgba(5,18,35,.88);
+    backdrop-filter: blur(6px);
+    text-align: center;
+    z-index: 5;
+  }
+  .screen.hidden { display: none; }
+  .screen h1 {
+    font-size: clamp(26px, 7vw, 34px);
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 0%, var(--gold) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+  }
+  .screen .sub {
+    color: var(--foam); font-size: 14px; max-width: 320px; line-height: 1.45;
+    margin-bottom: 22px; opacity: .95;
+  }
+  .screen .stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    width: min(320px, 100%); margin-bottom: 22px;
+  }
+  .stat {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,204,0,.2);
+    border-radius: 14px; padding: 12px 10px;
+  }
+  .stat .l { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--foam); opacity: .8; }
+  .stat .n { font-size: 22px; font-weight: 900; color: var(--gold); margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .btn {
+    pointer-events: auto;
+    appearance: none; border: none; cursor: pointer;
+    background: linear-gradient(135deg, var(--gold) 0%, #e6b800 100%);
+    color: #051223; font-weight: 900; font-size: 15px;
+    padding: 14px 28px; border-radius: 999px;
+    box-shadow: 0 8px 24px rgba(255,204,0,.35);
+    letter-spacing: .04em; text-transform: uppercase;
+    transition: transform .12s, box-shadow .12s;
+    min-width: 200px;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn.ghost {
+    background: transparent; color: var(--foam);
+    border: 1px solid rgba(168,199,250,.35);
+    box-shadow: none; margin-top: 10px; font-size: 13px; padding: 11px 22px;
+  }
+  .badge-row {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    margin-bottom: 18px; max-width: 340px;
+  }
+  .badge {
+    font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 999px;
+    background: rgba(255,204,0,.12); border: 1px solid rgba(255,204,0,.3); color: var(--gold);
+  }
+  .logo-mark {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #1a4a7a, #051223);
+    border: 2px solid var(--gold);
+    display: grid; place-items: center; margin-bottom: 14px;
+    font-size: 34px; box-shadow: 0 0 30px rgba(255,204,0,.2);
+  }
+  .hint {
+    margin-top: 16px; font-size: 12px; color: var(--foam); opacity: .7; line-height: 1.4;
+  }
+  #pause-btn {
+    pointer-events: auto;
+    position: absolute; right: 12px; top: calc(52px + env(safe-area-inset-top, 0px));
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(5,18,35,.7); border: 1px solid rgba(255,255,255,.2);
+    color: #fff; font-size: 16px; cursor: pointer;
+    display: none; align-items: center; justify-content: center;
+    z-index: 4;
+  }
+  #pause-btn.show { display: flex; }
+
+  /* Mobile steer hint */
+  #touch-zones {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 40%;
+    pointer-events: none; opacity: 0;
+  }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="c"></canvas>
+
+  <div id="hud">
+    <div id="topbar">
+      <div class="pill">⚓ <span class="v" id="score">0</span> XP</div>
+      <div class="pill">🌊 <span class="v" id="dist">0</span> nm</div>
+      <div class="pill hp" title="Integridade">
+        <span class="bars" id="hp-bars"></span>
+      </div>
+    </div>
+    <div id="wave-tag">PATRULHA · SETOR 1</div>
+    <div id="combo">COMBO ×2</div>
+  </div>
+
+  <button type="button" id="pause-btn" aria-label="Pausar">⏸</button>
+
+  <!-- START -->
+  <div class="screen" id="screen-start">
+    <div class="logo-mark">🚢</div>
+    <h1>Patrulha Naval</h1>
+    <p class="sub">Conduza sua embarcação pelos mares da tripulação. Desvie de minas e tempestades, recolha suprimentos e acumule XP de patrulha.</p>
+    <div class="badge-row">
+      <span class="badge">← → ou toque</span>
+      <span class="badge">Pegue ⭐ âncoras</span>
+      <span class="badge">Fuja das 💣</span>
+    </div>
+    <button type="button" class="btn" id="btn-start">Içar âncora</button>
+    <p class="hint">Recorde local: <strong id="best-start">0</strong> XP</p>
+  </div>
+
+  <!-- PAUSE -->
+  <div class="screen hidden" id="screen-pause">
+    <h1>Pausa</h1>
+    <p class="sub">A patrulha aguarda suas ordens, marujo.</p>
+    <button type="button" class="btn" id="btn-resume">Continuar</button>
+    <button type="button" class="btn ghost" id="btn-quit">Abandonar missão</button>
+  </div>
+
+  <!-- GAME OVER -->
+  <div class="screen hidden" id="screen-over">
+    <div class="logo-mark">🏳️</div>
+    <h1 id="over-title">Fim de patrulha</h1>
+    <p class="sub" id="over-sub">Sua embarcação retornou ao porto.</p>
+    <div class="stats">
+      <div class="stat"><div class="l">XP ganho</div><div class="n" id="over-xp">0</div></div>
+      <div class="stat"><div class="l">Distância</div><div class="n" id="over-nm">0</div></div>
+      <div class="stat"><div class="l">Combo máx.</div><div class="n" id="over-combo">0</div></div>
+      <div class="stat"><div class="l">Patente</div><div class="n" id="over-rank" style="font-size:15px">Recruta</div></div>
+    </div>
+    <button type="button" class="btn" id="btn-again">Nova patrulha</button>
+    <button type="button" class="btn ghost" id="btn-share">Compartilhar resultado</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const wrap = document.getElementById('wrap');
+
+  // ---- DPR resize ----
+  let W = 0, H = 0, dpr = 1;
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const r = wrap.getBoundingClientRect();
+    W = r.width; H = r.height;
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // ---- State ----
+  const STATE = { MENU: 0, PLAY: 1, PAUSE: 2, OVER: 3 };
+  let state = STATE.MENU;
+
+  const MAX_HP = 3;
+  let score = 0, dist = 0, hp = MAX_HP;
+  let combo = 0, maxCombo = 0, comboTimer = 0;
+  let speed = 1, elapsed = 0, sector = 1;
+  let invuln = 0;
+  let shake = 0;
+  let best = Number(localStorage.getItem('md_patrulha_best') || 0);
+
+  document.getElementById('best-start').textContent = best;
+
+  // Ship
+  const ship = {
+    x: 0, y: 0, w: 36, h: 48,
+    vx: 0, targetX: 0,
+    tilt: 0
+  };
+
+  // Entities
+  let obstacles = [];
+  let pickups = [];
+  let particles = [];
+  let waves = [];
+  let starsBg = [];
+
+  // Input
+  let keys = { left: false, right: false };
+  let pointerActive = false;
+
+  // ---- Utils ----
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const rr = (n) => Math.random() < n;
+
+  function rankFor(xp) {
+    if (xp >= 2500) return 'Almirante';
+    if (xp >= 1500) return 'Capitão';
+    if (xp >= 800) return 'Imediato';
+    if (xp >= 400) return 'Cabo';
+    if (xp >= 150) return 'Marinheiro';
+    return 'Recruta';
+  }
+
+  function setScreen(id) {
+    ['screen-start', 'screen-pause', 'screen-over'].forEach(s => {
+      document.getElementById(s).classList.toggle('hidden', s !== id);
+    });
+    document.getElementById('pause-btn').classList.toggle('show', state === STATE.PLAY);
+  }
+
+  function updateHud() {
+    document.getElementById('score').textContent = Math.floor(score);
+    document.getElementById('dist').textContent = Math.floor(dist);
+    document.getElementById('wave-tag').textContent = 'PATRULHA · SETOR ' + sector;
+
+    const bars = document.getElementById('hp-bars');
+    bars.innerHTML = '';
+    for (let i = 0; i < MAX_HP; i++) {
+      const b = document.createElement('span');
+      b.className = 'bar' + (i < hp ? (hp === 1 ? ' on dead' : hp === 2 ? ' on warn' : ' on') : '');
+      bars.appendChild(b);
+    }
+
+    const comboEl = document.getElementById('combo');
+    if (combo >= 2 && state === STATE.PLAY) {
+      comboEl.textContent = 'COMBO ×' + combo;
+      comboEl.classList.add('show');
+    } else comboEl.classList.remove('show');
+  }
+
+  // ---- Reset / start ----
+  function resetGame() {
+    score = 0; dist = 0; hp = MAX_HP;
+    combo = 0; maxCombo = 0; comboTimer = 0;
+    speed = 1; elapsed = 0; sector = 1;
+    invuln = 0; shake = 0;
+    obstacles = []; pickups = []; particles = [];
+    ship.x = W / 2;
+    ship.y = H * 0.78;
+    ship.vx = 0;
+    ship.targetX = ship.x;
+    ship.tilt = 0;
+    waves = [];
+    for (let i = 0; i < 14; i++) {
+      waves.push({ y: rand(0, H), amp: rand(8, 18), ph: rand(0, Math.PI * 2), sp: rand(0.4, 1.1) });
+    }
+    starsBg = [];
+    for (let i = 0; i < 50; i++) {
+      starsBg.push({ x: rand(0, W), y: rand(0, H), s: rand(0.5, 1.8), a: rand(0.15, 0.55) });
+    }
+    updateHud();
+  }
+
+  function startGame() {
+    resetGame();
+    state = STATE.PLAY;
+    setScreen(null);
+    document.getElementById('pause-btn').classList.add('show');
+  }
+
+  function gameOver() {
+    state = STATE.OVER;
+    document.getElementById('pause-btn').classList.remove('show');
+    const xp = Math.floor(score);
+    if (xp > best) {
+      best = xp;
+      localStorage.setItem('md_patrulha_best', String(best));
+    }
+    document.getElementById('over-xp').textContent = xp;
+    document.getElementById('over-nm').textContent = Math.floor(dist);
+    document.getElementById('over-combo').textContent = '×' + maxCombo;
+    document.getElementById('over-rank').textContent = rankFor(xp);
+    document.getElementById('over-title').textContent = hp <= 0 ? 'Embarcação abatida' : 'Fim de patrulha';
+    document.getElementById('over-sub').textContent =
+      xp >= best && xp > 0
+        ? 'Novo recorde de patrulha! A tripulação saúda sua navegação.'
+        : 'Sua embarcação retornou ao porto. Treine de novo e suba de patente.';
+    setScreen('screen-over');
+
+    // Hook opcional para o site Marujo Digital
+    try {
+      if (window.MDMissao && typeof MDMissao.onQuizCorrect === 'function' && xp >= 100) {
+        // sinal leve — não quebra se não existir
+      }
+      window.dispatchEvent(new CustomEvent('md-patrulha-fim', {
+        detail: { xp, dist: Math.floor(dist), combo: maxCombo, rank: rankFor(xp) }
+      }));
+    } catch (e) {}
+  }
+
+  // ---- Spawn ----
+  function spawnObstacle() {
+    const lane = Math.floor(rand(0, 5));
+    const x = (lane + 0.5) * (W / 5);
+    const kinds = ['mine', 'rock', 'storm'];
+    const kind = kinds[Math.floor(rand(0, kinds.length * 0.999))];
+    const size = kind === 'storm' ? rand(28, 42) : rand(18, 28);
+    obstacles.push({
+      kind, x, y: -40, r: size,
+      rot: rand(0, Math.PI * 2),
+      vr: rand(-0.04, 0.04),
+      vx: kind === 'storm' ? rand(-0.6, 0.6) : 0
+    });
+  }
+
+  function spawnPickup() {
+    const lane = Math.floor(rand(0, 5));
+    const x = (lane + 0.5) * (W / 5);
+    const kind = rr(0.12) ? 'shield' : rr(0.25) ? 'star' : 'anchor';
+    pickups.push({
+      kind, x, y: -30, r: 14,
+      bob: rand(0, Math.PI * 2)
+    });
+  }
+
+  function burst(x, y, color, n) {
+    for (let i = 0; i < n; i++) {
+      const a = rand(0, Math.PI * 2);
+      const sp = rand(0.5, 3.5);
+      particles.push({
+        x, y,
+        vx: Math.cos(a) * sp,
+        vy: Math.sin(a) * sp,
+        life: rand(0.4, 1),
+        max: 1,
+        color,
+        size: rand(1.5, 4)
+      });
+    }
+  }
+
+  // ---- Collision ----
+  function hitShip(e) {
+    const dx = ship.x - e.x;
+    const dy = (ship.y - 6) - e.y;
+    const rr2 = (ship.w * 0.35 + e.r * 0.75);
+    return dx * dx + dy * dy < rr2 * rr2;
+  }
+
+  // ---- Update ----
+  let last = performance.now();
+  let spawnAcc = 0, pickAcc = 0;
+
+  function update(dt) {
+    if (state !== STATE.PLAY) return;
+    elapsed += dt;
+    dist += speed * dt * 18;
+    sector = 1 + Math.floor(dist / 120);
+
+    // Difficulty ramp
+    speed = 1 + Math.min(2.2, dist / 400) + sector * 0.05;
+
+    // Movement
+    let dir = 0;
+    if (keys.left) dir -= 1;
+    if (keys.right) dir += 1;
+    if (pointerActive) {
+      // targetX already set
+      const dx = ship.targetX - ship.x;
+      ship.vx = clamp(dx * 0.18, -7, 7);
+    } else {
+      ship.vx += dir * 0.9;
+      ship.vx *= 0.86;
+    }
+    ship.x = clamp(ship.x + ship.vx, ship.w * 0.6, W - ship.w * 0.6);
+    ship.tilt = clamp(ship.tilt * 0.85 + ship.vx * 0.04, -0.45, 0.45);
+
+    // Spawns
+    spawnAcc += dt;
+    pickAcc += dt;
+    const obsRate = Math.max(0.35, 1.1 - speed * 0.18);
+    const pickRate = 1.4;
+    if (spawnAcc > obsRate) {
+      spawnAcc = 0;
+      spawnObstacle();
+      if (rr(0.25 + speed * 0.05)) spawnObstacle();
+    }
+    if (pickAcc > pickRate) {
+      pickAcc = 0;
+      spawnPickup();
+    }
+
+    // Obstacles
+    for (let i = obstacles.length - 1; i >= 0; i--) {
+      const o = obstacles[i];
+      o.y += (2.6 + speed * 2.1) * (60 * dt);
+      o.x += o.vx * (60 * dt);
+      o.rot += o.vr;
+      if (o.y > H + 60) { obstacles.splice(i, 1); continue; }
+      if (invuln <= 0 && hitShip(o)) {
+        hp -= 1;
+        invuln = 1.4;
+        shake = 10;
+        combo = 0;
+        burst(ship.x, ship.y, '#e74c3c', 18);
+        obstacles.splice(i, 1);
+        updateHud();
+        if (hp <= 0) { gameOver(); return; }
+      }
+    }
+
+    // Pickups
+    for (let i = pickups.length - 1; i >= 0; i--) {
+      const p = pickups[i];
+      p.y += (2.2 + speed * 1.6) * (60 * dt);
+      p.bob += dt * 4;
+      if (p.y > H + 40) { pickups.splice(i, 1); continue; }
+      if (hitShip(p)) {
+        let gain = 10;
+        if (p.kind === 'star') gain = 25;
+        if (p.kind === 'shield') {
+          hp = Math.min(MAX_HP, hp + 1);
+          gain = 15;
+          burst(p.x, p.y, '#2ecc71', 14);
+        } else if (p.kind === 'star') {
+          burst(p.x, p.y, '#ffcc00', 16);
+        } else {
+          burst(p.x, p.y, '#a8c7fa', 12);
+        }
+        combo += 1;
+        maxCombo = Math.max(maxCombo, combo);
+        comboTimer = 2.2;
+        const mult = Math.min(5, 1 + Math.floor(combo / 3));
+        score += gain * mult;
+        pickups.splice(i, 1);
+        updateHud();
+      }
+    }
+
+    if (comboTimer > 0) {
+      comboTimer -= dt;
+      if (comboTimer <= 0) combo = 0;
+    }
+
+    if (invuln > 0) invuln -= dt;
+    if (shake > 0) shake *= 0.85;
+
+    // Passive XP for distance
+    score += dt * 2.5 * (1 + Math.floor(combo / 5) * 0.3);
+
+    // Particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.05;
+      p.life -= dt;
+      if (p.life <= 0) particles.splice(i, 1);
+    }
+
+    // Waves scroll
+    for (const w of waves) {
+      w.y += speed * 40 * dt;
+      if (w.y > H + 20) { w.y = -20; w.ph = rand(0, Math.PI * 2); }
+    }
+    for (const s of starsBg) {
+      s.y += speed * 12 * dt * s.s;
+      if (s.y > H) { s.y = 0; s.x = rand(0, W); }
+    }
+
+    updateHud();
+  }
+
+  // ---- Draw ----
+  function drawShip() {
+    ctx.save();
+    ctx.translate(ship.x, ship.y);
+    ctx.rotate(ship.tilt);
+    if (invuln > 0 && Math.floor(invuln * 12) % 2 === 0) ctx.globalAlpha = 0.35;
+
+    // wake
+    ctx.fillStyle = 'rgba(168,199,250,0.25)';
+    ctx.beginPath();
+    ctx.moveTo(-10, 18);
+    ctx.quadraticCurveTo(0, 38 + Math.sin(elapsed * 8) * 3, 10, 18);
+    ctx.fill();
+
+    // hull
+    const g = ctx.createLinearGradient(0, -24, 0, 24);
+    g.addColorStop(0, '#1a5a9a');
+    g.addColorStop(0.5, '#0d3a66');
+    g.addColorStop(1, '#051223');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(0, -26);
+    ctx.lineTo(16, 8);
+    ctx.lineTo(10, 22);
+    ctx.lineTo(-10, 22);
+    ctx.lineTo(-16, 8);
+    ctx.closePath();
+    ctx.fill();
+
+    // deck line
+    ctx.strokeStyle = 'rgba(255,204,0,0.7)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-12, 4);
+    ctx.lineTo(12, 4);
+    ctx.stroke();
+
+    // bridge
+    ctx.fillStyle = '#ffcc00';
+    ctx.fillRect(-5, -6, 10, 8);
+    ctx.fillStyle = '#051223';
+    ctx.fillRect(-3, -4, 6, 4);
+
+    // mast
+    ctx.strokeStyle = '#e8e8e8';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -6);
+    ctx.lineTo(0, -22);
+    ctx.stroke();
+
+    // flag
+    ctx.fillStyle = '#ffcc00';
+    ctx.beginPath();
+    ctx.moveTo(0, -22);
+    ctx.lineTo(12, -18);
+    ctx.lineTo(0, -14);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  function drawObstacle(o) {
+    ctx.save();
+    ctx.translate(o.x, o.y);
+    ctx.rotate(o.rot);
+    if (o.kind === 'mine') {
+      ctx.fillStyle = '#2c3e50';
+      ctx.beginPath();
+      ctx.arc(0, 0, o.r * 0.7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#e74c3c';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * o.r * 0.5, Math.sin(a) * o.r * 0.5);
+        ctx.lineTo(Math.cos(a) * o.r, Math.sin(a) * o.r);
+        ctx.stroke();
+      }
+      ctx.fillStyle = '#e74c3c';
+      ctx.beginPath();
+      ctx.arc(0, 0, 4, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (o.kind === 'rock') {
+      ctx.fillStyle = '#5d6d7e';
+      ctx.beginPath();
+      ctx.moveTo(-o.r, o.r * 0.3);
+      ctx.lineTo(-o.r * 0.4, -o.r);
+      ctx.lineTo(o.r * 0.5, -o.r * 0.6);
+      ctx.lineTo(o.r, o.r * 0.4);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = 'rgba(0,0,0,0.25)';
+      ctx.beginPath();
+      ctx.moveTo(0, -o.r * 0.5);
+      ctx.lineTo(o.r, o.r * 0.4);
+      ctx.lineTo(-o.r * 0.2, o.r * 0.3);
+      ctx.fill();
+    } else {
+      // storm cloud
+      ctx.fillStyle = 'rgba(100,120,150,0.85)';
+      ctx.beginPath();
+      ctx.arc(-8, 0, o.r * 0.55, 0, Math.PI * 2);
+      ctx.arc(8, 0, o.r * 0.55, 0, Math.PI * 2);
+      ctx.arc(0, -6, o.r * 0.65, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#ffcc00';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, 4);
+      ctx.lineTo(-4, 14);
+      ctx.lineTo(2, 14);
+      ctx.lineTo(-2, 24);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawPickup(p) {
+    ctx.save();
+    const by = Math.sin(p.bob) * 3;
+    ctx.translate(p.x, p.y + by);
+    if (p.kind === 'anchor') {
+      ctx.strokeStyle = '#ffcc00';
+      ctx.fillStyle = '#ffcc00';
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(0, -6, 5, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, -1);
+      ctx.lineTo(0, 10);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0, 8, 8, 0.15, Math.PI - 0.15);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-9, 6);
+      ctx.lineTo(-6, 10);
+      ctx.moveTo(9, 6);
+      ctx.lineTo(6, 10);
+      ctx.stroke();
+    } else if (p.kind === 'star') {
+      ctx.fillStyle = '#ffcc00';
+      ctx.shadowColor = '#ffcc00';
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      for (let i = 0; i < 5; i++) {
+        const a = -Math.PI / 2 + i * (Math.PI * 2 / 5);
+        const a2 = a + Math.PI / 5;
+        ctx.lineTo(Math.cos(a) * 11, Math.sin(a) * 11);
+        ctx.lineTo(Math.cos(a2) * 5, Math.sin(a2) * 5);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    } else {
+      // shield
+      ctx.fillStyle = 'rgba(46,204,113,0.25)';
+      ctx.strokeStyle = '#2ecc71';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, -12);
+      ctx.quadraticCurveTo(14, -8, 12, 4);
+      ctx.quadraticCurveTo(0, 14, 0, 14);
+      ctx.quadraticCurveTo(0, 14, -12, 4);
+      ctx.quadraticCurveTo(-14, -8, 0, -12);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#2ecc71';
+      ctx.font = 'bold 11px system-ui';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('+', 0, 1);
+    }
+    ctx.restore();
+  }
+
+  function draw() {
+    const sx = shake ? rand(-shake, shake) : 0;
+    const sy = shake ? rand(-shake, shake) : 0;
+    ctx.save();
+    ctx.translate(sx, sy);
+
+    // water background
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#051223');
+    bg.addColorStop(0.45, '#0a2744');
+    bg.addColorStop(1, '#0d4a6e');
+    ctx.fillStyle = bg;
+    ctx.fillRect(-20, -20, W + 40, H + 40);
+
+    // stars / foam dots
+    for (const s of starsBg) {
+      ctx.globalAlpha = s.a;
+      ctx.fillStyle = '#c5d8f0';
+      ctx.fillRect(s.x, s.y, s.s, s.s);
+    }
+    ctx.globalAlpha = 1;
+
+    // wave lines
+    ctx.strokeStyle = 'rgba(168,199,250,0.12)';
+    ctx.lineWidth = 1.5;
+    for (const w of waves) {
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += 12) {
+        const yy = w.y + Math.sin(x * 0.02 + w.ph + elapsed * w.sp) * w.amp;
+        if (x === 0) ctx.moveTo(x, yy);
+        else ctx.lineTo(x, yy);
+      }
+      ctx.stroke();
+    }
+
+    // lane guides (subtle)
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 1;
+    for (let i = 1; i < 5; i++) {
+      const x = (i / 5) * W;
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, H);
+      ctx.stroke();
+    }
+
+    for (const o of obstacles) drawObstacle(o);
+    for (const p of pickups) drawPickup(p);
+    for (const p of particles) {
+      ctx.globalAlpha = clamp(p.life / p.max, 0, 1);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    if (state === STATE.PLAY || state === STATE.PAUSE) drawShip();
+
+    ctx.restore();
+  }
+
+  // ---- Loop ----
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    update(dt);
+    draw();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // ---- Input ----
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
+    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
+    if (e.key === 'p' || e.key === 'P' || e.key === 'Escape') {
+      if (state === STATE.PLAY) pause();
+      else if (state === STATE.PAUSE) resume();
+    }
+    if ((e.key === ' ' || e.key === 'Enter') && state === STATE.MENU) startGame();
+  });
+  window.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
+    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
+  });
+
+  function pointer(x) {
+    const rect = canvas.getBoundingClientRect();
+    ship.targetX = ((x - rect.left) / rect.width) * W;
+    pointerActive = true;
+  }
+  canvas.addEventListener('pointerdown', (e) => {
+    if (state !== STATE.PLAY) return;
+    canvas.setPointerCapture(e.pointerId);
+    pointer(e.clientX);
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (state !== STATE.PLAY || !pointerActive) return;
+    pointer(e.clientX);
+  });
+  canvas.addEventListener('pointerup', () => { pointerActive = false; });
+  canvas.addEventListener('pointercancel', () => { pointerActive = false; });
+
+  function pause() {
+    if (state !== STATE.PLAY) return;
+    state = STATE.PAUSE;
+    setScreen('screen-pause');
+    document.getElementById('pause-btn').classList.remove('show');
+  }
+  function resume() {
+    if (state !== STATE.PAUSE) return;
+    state = STATE.PLAY;
+    setScreen(null);
+    document.getElementById('pause-btn').classList.add('show');
+    last = performance.now();
+  }
+
+  document.getElementById('btn-start').onclick = startGame;
+  document.getElementById('btn-resume').onclick = resume;
+  document.getElementById('btn-quit').onclick = () => {
+    state = STATE.MENU;
+    setScreen('screen-start');
+    document.getElementById('best-start').textContent = best;
+  };
+  document.getElementById('btn-again').onclick = startGame;
+  document.getElementById('pause-btn').onclick = pause;
+
+  document.getElementById('btn-share').onclick = async () => {
+    const xp = Math.floor(score);
+    const text = `⚓ Patrulha Naval — ${xp} XP · ${Math.floor(dist)} nm · ${rankFor(xp)}\nPatrulhei com o Marujo Digital!`;
+    const url = location.href.split('?')[0];
+    try {
+      if (navigator.share) await navigator.share({ title: 'Patrulha Naval', text, url });
+      else {
+        await navigator.clipboard.writeText(text + '\n' + url);
+        alert('Resultado copiado!');
+      }
+    } catch (e) {}
+  };
+
+  // initial screen
+  setScreen('screen-start');
+  ship.x = W / 2;
+  ship.y = H * 0.78;
+})();
+</script>
+</body>
+</html>
