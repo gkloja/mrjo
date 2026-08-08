@@ -171,6 +171,7 @@
     z-index: 4;
   }
   #pause-btn.show { display: flex; }
+  #mute-btn.show { display: flex; }
 
   /* Mobile steer hint */
   #touch-zones {
@@ -195,6 +196,7 @@
     <div id="combo">COMBO ×2</div>
   </div>
 
+  <button type="button" id="mute-btn" aria-label="Som" style="pointer-events:auto;position:absolute;left:12px;top:calc(52px + env(safe-area-inset-top,0px));width:40px;height:40px;border-radius:50%;background:rgba(5,18,35,.7);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:4">🔊</button>
   <button type="button" id="pause-btn" aria-label="Pausar">⏸</button>
 
   <!-- START -->
@@ -206,6 +208,10 @@
       <span class="badge">← → ou toque</span>
       <span class="badge">Pegue ⭐ âncoras</span>
       <span class="badge">Fuja das 💣</span>
+    </div>
+    <div id="start-rank" style="width:min(320px,100%);text-align:left;margin:0 auto 14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,204,0,.2);border-radius:14px;padding:12px 14px">
+      <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--foam);margin-bottom:8px">🏆 Top 3 da Patrulha</div>
+      <div id="start-rank-list" style="font-size:13px;opacity:.85">Carregando…</div>
     </div>
     <button type="button" class="btn" id="btn-start">Içar âncora</button>
     <p class="hint">Recorde local: <strong id="best-start">0</strong> XP</p>
@@ -230,7 +236,16 @@
       <div class="stat"><div class="l">Combo máx.</div><div class="n" id="over-combo">0</div></div>
       <div class="stat"><div class="l">Patente</div><div class="n" id="over-rank" style="font-size:15px">Recruta</div></div>
     </div>
+    <div id="xp-award" hidden style="margin-bottom:12px;padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,rgba(255,204,0,.15),rgba(0,102,204,.15));border:1px solid rgba(255,204,0,.35);font-size:14px;font-weight:700">
+      +<strong id="xp-gained" style="color:var(--gold);font-size:18px">0</strong> XP na sua conta
+      <div style="font-size:12px;opacity:.8;margin-top:4px" id="xp-account-line"></div>
+    </div>
+    <div style="width:min(320px,100%);text-align:left;margin:0 auto 14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,204,0,.2);border-radius:14px;padding:12px 14px">
+      <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--foam);margin-bottom:8px">🏆 Top 3 · Ranking da Patrulha</div>
+      <div id="over-rank-list"></div>
+    </div>
     <button type="button" class="btn" id="btn-again">Nova patrulha</button>
+    <button type="button" class="btn ghost" id="btn-close-parent" style="display:none">Voltar ao site</button>
     <button type="button" class="btn ghost" id="btn-share">Compartilhar resultado</button>
   </div>
 </div>
@@ -255,6 +270,109 @@
   }
   window.addEventListener('resize', resize);
   resize();
+
+
+  // ---- Audio (SFX + drone oceânico) ----
+  const IN_IFRAME = window.parent !== window;
+  const API_RANK = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
+  let audioCtx = null, muted = localStorage.getItem('md_patrulha_mute') === '1';
+  let musicNodes = null, musicGain = null;
+  function ensureAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function beep(freq, dur, type, vol, slide) {
+    if (muted) return;
+    try {
+      const c = ensureAudio();
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type || 'sine';
+      o.frequency.setValueAtTime(freq, c.currentTime);
+      if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(40, slide), c.currentTime + dur);
+      g.gain.setValueAtTime(vol || 0.08, c.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(); o.stop(c.currentTime + dur + 0.02);
+    } catch (e) {}
+  }
+  function sfxCollect(kind) {
+    if (kind === 'star') { beep(880, 0.12, 'triangle', 0.1); setTimeout(() => beep(1320, 0.15, 'triangle', 0.08), 60); }
+    else if (kind === 'shield') beep(420, 0.2, 'sine', 0.1, 680);
+    else { beep(660, 0.1, 'square', 0.06); setTimeout(() => beep(880, 0.1, 'square', 0.05), 50); }
+  }
+  function sfxHit() { beep(120, 0.25, 'sawtooth', 0.12, 60); }
+  function sfxOver() { beep(300, 0.2, 'triangle', 0.1, 150); setTimeout(() => beep(150, 0.35, 'sine', 0.08), 180); }
+  function sfxStart() { beep(440, 0.1, 'sine', 0.08); setTimeout(() => beep(660, 0.12, 'sine', 0.08), 100); }
+  function startMusic() {
+    if (muted || musicNodes) return;
+    try {
+      const c = ensureAudio();
+      musicGain = c.createGain(); musicGain.gain.value = 0.035; musicGain.connect(c.destination);
+      const o1 = c.createOscillator(), o2 = c.createOscillator(), lfo = c.createOscillator(), lfoG = c.createGain();
+      o1.type = 'sine'; o1.frequency.value = 55;
+      o2.type = 'sine'; o2.frequency.value = 82.5;
+      lfo.frequency.value = 0.12; lfoG.gain.value = 0.012;
+      lfo.connect(lfoG); lfoG.connect(musicGain.gain);
+      o1.connect(musicGain); o2.connect(musicGain);
+      o1.start(); o2.start(); lfo.start();
+      musicNodes = [o1, o2, lfo];
+    } catch (e) {}
+  }
+  function stopMusic() {
+    if (musicNodes) { musicNodes.forEach(n => { try { n.stop(); } catch (e) {} }); musicNodes = null; }
+  }
+  function toggleMute() {
+    muted = !muted;
+    localStorage.setItem('md_patrulha_mute', muted ? '1' : '0');
+    const btn = document.getElementById('mute-btn');
+    if (btn) btn.textContent = muted ? '🔇' : '🔊';
+    if (muted) stopMusic(); else if (state === STATE.PLAY) startMusic();
+  }
+  function xpFromScore(pts) { return Math.min(80, Math.floor(pts / 12)); }
+  function playerInfo() {
+    let nome = 'Marujo', id = null, level = 1, xp = 0;
+    try {
+      if (IN_IFRAME && parent.MarujoConta && parent.MarujoConta.usuario) {
+        const u = parent.MarujoConta.usuario; nome = u.nome || nome; id = u.id;
+      }
+      if (IN_IFRAME && parent.userProgress) { level = parent.userProgress.level || 1; xp = parent.userProgress.xp || 0; }
+    } catch (e) {}
+    return { nome, id, level, xp };
+  }
+  function renderRankList(el, list) {
+    if (!el) return;
+    if (!list || !list.length) { el.innerHTML = '<div style="opacity:.6">Nenhum registro — seja o primeiro!</div>'; return; }
+    el.innerHTML = list.slice(0, 3).map((e, i) => {
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉';
+      const nm = String(e.nome || 'Marujo').replace(/[<>]/g, '');
+      return `<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06)"><span>${medal}</span><span style="flex:1;font-weight:700">${nm}</span><span style="color:var(--gold);font-weight:800">${Math.floor(e.score||0)}</span></div>`;
+    }).join('');
+  }
+  async function loadTop() {
+    try {
+      const r = await fetch(API_RANK + '/api/marujo/patrulha/rank');
+      if (r.ok) { const j = await r.json(); if (j && j.top) return j.top; }
+    } catch (e) {}
+    try { return JSON.parse(localStorage.getItem('md_patrulha_local_rank') || '[]').slice(0, 3); } catch (e) { return []; }
+  }
+  async function submitRank(pts) {
+    const p = playerInfo();
+    const entry = { nome: p.nome, userId: p.id, score: Math.floor(pts), dist: Math.floor(dist), combo: maxCombo, at: Date.now() };
+    let local = [];
+    try { local = JSON.parse(localStorage.getItem('md_patrulha_local_rank') || '[]'); } catch (e) {}
+    local.push(entry);
+    local.sort((a, b) => b.score - a.score);
+    const seen = new Set();
+    local = local.filter(e => { const k = String(e.userId || e.nome); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 20);
+    localStorage.setItem('md_patrulha_local_rank', JSON.stringify(local));
+    try {
+      const r = await fetch(API_RANK + '/api/marujo/patrulha/score', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(entry) });
+      if (r.ok) { const j = await r.json(); if (j && j.top) return j.top; }
+    } catch (e) {}
+    return local.slice(0, 3);
+  }
+
 
   // ---- State ----
   const STATE = { MENU: 0, PLAY: 1, PAUSE: 2, OVER: 3 };
@@ -353,40 +471,56 @@
   }
 
   function startGame() {
+    ensureAudio();
     resetGame();
     state = STATE.PLAY;
     setScreen(null);
     document.getElementById('pause-btn').classList.add('show');
+    const mb = document.getElementById('mute-btn'); if (mb) { mb.classList.add('show'); mb.textContent = muted ? '🔇' : '🔊'; }
+    sfxStart(); startMusic();
+    try { parent.postMessage({ type: 'md-patrulha', action: 'play' }, '*'); } catch (e) {}
   }
 
-  function gameOver() {
+  async function gameOver() {
     state = STATE.OVER;
+    stopMusic(); sfxOver();
     document.getElementById('pause-btn').classList.remove('show');
-    const xp = Math.floor(score);
-    if (xp > best) {
-      best = xp;
-      localStorage.setItem('md_patrulha_best', String(best));
-    }
-    document.getElementById('over-xp').textContent = xp;
+    const mb = document.getElementById('mute-btn'); if (mb) mb.classList.remove('show');
+    const pts = Math.floor(score);
+    if (pts > best) { best = pts; localStorage.setItem('md_patrulha_best', String(best)); }
+    document.getElementById('over-xp').textContent = pts;
     document.getElementById('over-nm').textContent = Math.floor(dist);
     document.getElementById('over-combo').textContent = '×' + maxCombo;
-    document.getElementById('over-rank').textContent = rankFor(xp);
+    document.getElementById('over-rank').textContent = rankFor(pts);
     document.getElementById('over-title').textContent = hp <= 0 ? 'Embarcação abatida' : 'Fim de patrulha';
     document.getElementById('over-sub').textContent =
-      xp >= best && xp > 0
+      pts >= best && pts > 0
         ? 'Novo recorde de patrulha! A tripulação saúda sua navegação.'
         : 'Sua embarcação retornou ao porto. Treine de novo e suba de patente.';
-    setScreen('screen-over');
 
-    // Hook opcional para o site Marujo Digital
-    try {
-      if (window.MDMissao && typeof MDMissao.onQuizCorrect === 'function' && xp >= 100) {
-        // sinal leve — não quebra se não existir
-      }
-      window.dispatchEvent(new CustomEvent('md-patrulha-fim', {
-        detail: { xp, dist: Math.floor(dist), combo: maxCombo, rank: rankFor(xp) }
-      }));
-    } catch (e) {}
+    const gained = xpFromScore(pts);
+    const award = document.getElementById('xp-award');
+    if (award) {
+      if (gained > 0) {
+        award.hidden = false;
+        const gEl = document.getElementById('xp-gained'); if (gEl) gEl.textContent = gained;
+        try {
+          if (IN_IFRAME && parent.userProgress && typeof parent.userProgress.addXP === 'function') {
+            parent.userProgress.addXP(gained);
+            const line = document.getElementById('xp-account-line');
+            if (line) line.textContent = 'Conta · Nível ' + parent.userProgress.level + ' · ' + parent.userProgress.xp + ' XP no nível';
+          }
+        } catch (e) {}
+      } else award.hidden = true;
+    }
+    const top = await submitRank(pts);
+    renderRankList(document.getElementById('over-rank-list'), top);
+    setScreen('screen-over');
+    if (IN_IFRAME) {
+      const cp = document.getElementById('btn-close-parent'); if (cp) cp.style.display = '';
+      try { parent.postMessage({ type: 'md-patrulha', action: 'over', detail: { score: pts, dist: Math.floor(dist), combo: maxCombo, xpGained: gained, rank: rankFor(pts), top } }, '*'); } catch (e) {}
+    }
+    try { window.dispatchEvent(new CustomEvent('md-patrulha-fim', { detail: { xp: pts, dist: Math.floor(dist), combo: maxCombo, rank: rankFor(pts), xpGained: gained } })); } catch (e) {}
   }
 
   // ---- Spawn ----
@@ -493,7 +627,7 @@
         invuln = 1.4;
         shake = 10;
         combo = 0;
-        burst(ship.x, ship.y, '#e74c3c', 18);
+        sfxHit(); burst(ship.x, ship.y, '#e74c3c', 18);
         obstacles.splice(i, 1);
         updateHud();
         if (hp <= 0) { gameOver(); return; }
@@ -518,6 +652,7 @@
         } else {
           burst(p.x, p.y, '#a8c7fa', 12);
         }
+        sfxCollect(p.kind);
         combo += 1;
         maxCombo = Math.max(maxCombo, combo);
         comboTimer = 2.2;
@@ -849,7 +984,7 @@
 
   function pause() {
     if (state !== STATE.PLAY) return;
-    state = STATE.PAUSE;
+    state = STATE.PAUSE; stopMusic();
     setScreen('screen-pause');
     document.getElementById('pause-btn').classList.remove('show');
   }
@@ -858,6 +993,7 @@
     state = STATE.PLAY;
     setScreen(null);
     document.getElementById('pause-btn').classList.add('show');
+    startMusic();
     last = performance.now();
   }
 
@@ -883,6 +1019,14 @@
       }
     } catch (e) {}
   };
+
+
+  const muteBtn = document.getElementById('mute-btn');
+  if (muteBtn) muteBtn.onclick = toggleMute;
+  const closeParent = document.getElementById('btn-close-parent');
+  if (closeParent) closeParent.onclick = () => { try { parent.postMessage({ type: 'md-patrulha', action: 'close' }, '*'); } catch (e) {} };
+  loadTop().then(list => renderRankList(document.getElementById('start-rank-list'), list));
+  if (IN_IFRAME && closeParent) closeParent.style.display = '';
 
   // initial screen
   setScreen('screen-start');
