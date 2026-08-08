@@ -3715,6 +3715,68 @@ html[data-theme="light"] .filter-btn.active {
 .legend-atp { background: rgba(214,158,46,0.18); color: #f6e05e; border: 1px solid rgba(214,158,46,0.35); }
 .legend-same { background: rgba(66,153,225,0.15); color: #90cdf4; border: 1px solid rgba(66,153,225,0.3); }
 
+/* Posições da bandeira (a meio / atopetada / arriada) */
+.sm-posicoes {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(66,153,225,0.08), rgba(5,18,35,0.35));
+    border: 1px solid rgba(66,153,225,0.28);
+}
+.sm-pos-intro {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin: 6px 0 12px;
+}
+.sm-pos-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.sm-pos-row:last-child { border-bottom: none; }
+.sm-pos-badge {
+    flex-shrink: 0;
+    min-width: 110px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #90cdf4;
+    background: rgba(66,153,225,0.15);
+    border: 1px solid rgba(66,153,225,0.35);
+    border-radius: 999px;
+    padding: 5px 10px;
+}
+.sm-pos-desc {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    line-height: 1.45;
+}
+html[data-theme="light"] .sm-posicoes {
+    background: linear-gradient(145deg, rgba(66,153,225,0.06), rgba(238,243,249,0.9));
+    border-color: rgba(0,51,102,0.15);
+}
+html[data-theme="light"] .sm-pos-desc { color: var(--text-primary); }
+
+.sc-pos-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #90cdf4;
+    background: rgba(66,153,225,0.12);
+    border: 1px solid rgba(66,153,225,0.3);
+    border-radius: 999px;
+    padding: 2px 8px;
+    margin-top: 6px;
+}
+
 .signal-card-v2 {
     background: rgba(255,255,255,0.04);
     border-radius: 14px;
@@ -15740,11 +15802,11 @@ const quizDatabase = [
         options: [
             { id: 'A', text: "Estou guinando para boreste" },
             { id: 'B', text: "Operações com aeronave" },
-            { id: 'C', text: "Exercício de tiro" },
+            { id: 'C', text: "Sem significado atribuído (reservado)" },
             { id: 'D', text: "Homem trabalhando no mastro" }
         ],
-        correct: 'A',
-        hint: "Mesmo significado do CIS",
+        correct: 'C',
+        hint: "No PDF do EMN-006 aparece como XXXXX — reservado no ATP",
         category: "sinais",
         difficulty: "fácil",
         xp: 10
@@ -15753,13 +15815,13 @@ const quizDatabase = [
         id: 132,
         question: "O que significa 'GOLF' no código ATP?",
         options: [
-            { id: 'A', text: "Este navio é o Bizu da formatura" },
+            { id: 'A', text: "Enquanto içada — este navio é o guia da formatura" },
             { id: 'B', text: "Solicito prático" },
             { id: 'C', text: "Operações de reboque" },
             { id: 'D', text: "Transferência de cabos" }
         ],
         correct: 'A',
-        hint: "Diferente do CIS",
+        hint: "Diferente do CIS (CIS = solicito prático)",
         category: "sinais",
         difficulty: "médio",
         xp: 12
@@ -16721,12 +16783,12 @@ const quizDatabase = [
         question: "O que significa 'MIKE' no código CIS?",
         options: [
             { id: 'A', text: "Estou manobrando" },
-            { id: 'B', text: "Movimento imprevisível" },
+            { id: 'B', text: "Meu navio está parado e sem seguimento" },
             { id: 'C', text: "Meus movimentos não devem ser levados em consideração" },
-            { id: 'D', text: "Não siga meus movimentos" }
+            { id: 'D', text: "Navio de registro médico" }
         ],
-        correct: 'C',
-        hint: "Aviso de manobra",
+        correct: 'B',
+        hint: "CIS = parado sem seguimento. A opção C é o sentido ATP (no mar) — pegadinha clássica",
         category: "sinais",
         difficulty: "difícil",
         xp: 15
@@ -17602,16 +17664,468 @@ const quizDatabase = [
             { id: 'A', text: "DIV" },
             { id: 'B', text: "FLOT" },
             { id: 'C', text: "ESQUAD" },
-            { id: 'D', text: "SUBDTV" }
+            { id: 'D', text: "SUBDIV" }
         ],
         correct: 'D',
-        hint: "Menor subunidade",
+        hint: "SUBDIV = subdivisão (menor subunidade)",
         category: "sinais",
         difficulty: "fácil",
         xp: 10
+    },
+
+    // ========== NOVOS BIZUS (CIS × ATP + Cerimonial) — mais pegadinhas e casos reais ==========
+    {
+        id: 251,
+        question: "No CIS, INDIA significa 'Estou guinando para bombordo'. No ATP, o mesmo pano significa o quê?",
+        options: [
+            { id: 'A', text: "Também guinando para bombordo" },
+            { id: 'B', text: "Manobra de atracação" },
+            { id: 'C', text: "Operações com helicóptero" },
+            { id: 'D', text: "Homens no mastro" }
+        ],
+        correct: 'B',
+        hint: "Um dos casos clássicos em que CIS e ATP NÃO coincidem",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 15
+    },
+    {
+        id: 252,
+        question: "Qual o significado correto de MIKE no Código Internacional de Sinais (CIS)?",
+        options: [
+            { id: 'A', text: "Meus movimentos não devem ser levados em consideração" },
+            { id: 'B', text: "Meu navio está parado e sem seguimento" },
+            { id: 'C', text: "Navio de registro médico" },
+            { id: 'D', text: "Negativo" }
+        ],
+        correct: 'B',
+        hint: "Atenção: a opção A é o sentido ATP (no mar)",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 15
+    },
+    {
+        id: 253,
+        question: "ECHO no ATP (conforme EMN-006) aparece como XXXXX. O que isso indica?",
+        options: [
+            { id: 'A', text: "Estou guinando para boreste (igual ao CIS)" },
+            { id: 'B', text: "Sem significado atribuído / reservado" },
+            { id: 'C', text: "Incêndio a bordo" },
+            { id: 'D', text: "Solicito prático" }
+        ],
+        correct: 'B',
+        hint: "No ATP alguns panos ficam sem significado tático",
+        category: "sinais",
+        difficulty: "difícil",
+        xp: 18
+    },
+    {
+        id: 254,
+        question: "Quando a Bandeira Nacional é hasteada a meia-adriça, o procedimento correto é:",
+        options: [
+            { id: 'A', text: "Içá-la direto até a metade do mastro" },
+            { id: 'B', text: "Içá-la completamente e só então baixá-la até aproximadamente a metade" },
+            { id: 'C', text: "Arriá-la completamente e içar só até a metade" },
+            { id: 'D', text: "Deixá-la enrolada na metade do mastro" }
+        ],
+        correct: 'B',
+        hint: "Sempre sobe até o tope primeiro — tradição e norma",
+        category: "protocolos",
+        difficulty: "médio",
+        xp: 14
+    },
+    {
+        id: 255,
+        question: "No porto, a 3ª Substituta içada na adriça mais de fora a BB indica ausência de quem?",
+        options: [
+            { id: 'A', text: "Comandante de Força" },
+            { id: 'B', text: "Chefe de Estado-Maior" },
+            { id: 'C', text: "Comandante do navio" },
+            { id: 'D', text: "Autoridade civil visitante" }
+        ],
+        correct: 'C',
+        hint: "1ª = CF (BE fora) · 2ª = CEM (BB dentro) · 3ª = CMTE (BB fora) · 4ª = autoridade civil/militar (BE dentro)",
+        category: "sinais",
+        difficulty: "difícil",
+        xp: 18
+    },
+    {
+        id: 256,
+        question: "Sinal de incêndio a bordo (ATP): EMERG PAPA seguido de BA 2 significa:",
+        options: [
+            { id: 'A', text: "Incêndio classe ALFA (sólidos)" },
+            { id: 'B', text: "Incêndio classe BRAVO (líquidos inflamáveis)" },
+            { id: 'C', text: "Incêndio classe CHARLIE (elétrico)" },
+            { id: 'D', text: "Incêndio classe DELTA (metais)" }
+        ],
+        correct: 'B',
+        hint: "UNO=Alfa, DOIS=Bravo, TRÊS=Charlie, QUATRO=Delta",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 14
+    },
+    {
+        id: 257,
+        question: "Honras de passagem NÃO são prestadas em qual situação?",
+        options: [
+            { id: 'A', text: "Entre o nascer do sol e o meio-dia" },
+            { id: 'B', text: "No período entre o pôr do sol e 08h" },
+            { id: 'C', text: "Quando o navio está em manobra de atracação" },
+            { id: 'D', text: "Somente aos domingos" }
+        ],
+        correct: 'B',
+        hint: "Do pôr do sol até 8h não se prestam honras de passagem",
+        category: "protocolos",
+        difficulty: "médio",
+        xp: 14
+    },
+    {
+        id: 258,
+        question: "Distância de reconhecimento para honras de passagem entre navios é de aproximadamente:",
+        options: [
+            { id: 'A', text: "1 amarra (183 m)" },
+            { id: 'B', text: "2 amarras (366 m)" },
+            { id: 'C', text: "3 amarras (549 m)" },
+            { id: 'D', text: "5 amarras (915 m)" }
+        ],
+        correct: 'C',
+        hint: "Navios ≈ 3 amarras; embarcações miúdas ≈ 2 amarras",
+        category: "protocolos",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 259,
+        question: "No CIS, JULIET completa o sentido de 'mantenha-se afastado' porque:",
+        options: [
+            { id: 'A', text: "Estou guinando com dificuldade" },
+            { id: 'B', text: "Tenho incêndio e/ou carga perigosa / vazamento de carga perigosa" },
+            { id: 'C', text: "Estou com mergulhador na água" },
+            { id: 'D', text: "Solicito assistência médica" }
+        ],
+        correct: 'B',
+        hint: "JULIET = perigo real a bordo (fogo/carga)",
+        category: "sinais",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 260,
+        question: "FOXTROT no CIS vs ATP — escolha a combinação correta:",
+        options: [
+            { id: 'A', text: "CIS: à matroca, comunique-se | ATP: operações com aeronave de asa fixa" },
+            { id: 'B', text: "CIS e ATP: ambos 'à matroca'" },
+            { id: 'C', text: "CIS: helicóptero | ATP: asa fixa" },
+            { id: 'D', text: "CIS: guia da formatura | ATP: à matroca" }
+        ],
+        correct: 'A',
+        hint: "FOXTROT é outro clássico de significados diferentes",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 15
+    },
+    {
+        id: 261,
+        question: "No sino de bordo, quantas batidas marcam a 8ª meia-hora do quarto?",
+        options: [
+            { id: 'A', text: "Três batidas duplas" },
+            { id: 'B', text: "Três batidas duplas e uma singela" },
+            { id: 'C', text: "Quatro batidas duplas" },
+            { id: 'D', text: "Oito batidas singelas" }
+        ],
+        correct: 'C',
+        hint: "8ª meia-hora = quatro batidas duplas (fim do quarto)",
+        category: "apitos",
+        difficulty: "difícil",
+        xp: 16
+    },
+    {
+        id: 262,
+        question: "A frase 'Ordem e Progresso' na Bandeira Nacional é escrita em qual cor?",
+        options: [
+            { id: 'A', text: "Azul" },
+            { id: 'B', text: "Branco" },
+            { id: 'C', text: "Verde" },
+            { id: 'D', text: "Amarelo" }
+        ],
+        correct: 'C',
+        hint: "Letras verdes sobre a faixa branca",
+        category: "bandeiras",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 263,
+        question: "As estrelas da Bandeira Nacional representam o céu do Rio de Janeiro em qual momento histórico?",
+        options: [
+            { id: 'A', text: "Meio-dia de 7 de setembro de 1822" },
+            { id: 'B', text: "8h30 de 15 de novembro de 1889" },
+            { id: 'C', text: "Meia-noite de 15 de novembro de 1889" },
+            { id: 'D', text: "Nascer do sol de 15 de novembro de 1889" }
+        ],
+        correct: 'B',
+        hint: "Proclamação da República — aspecto do céu às 8h30",
+        category: "bandeiras",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 264,
+        question: "HOTEL no ATP significa:",
+        options: [
+            { id: 'A', text: "Tenho prático a bordo" },
+            { id: 'B', text: "Operações com helicópteros" },
+            { id: 'C', text: "Homem ao mar" },
+            { id: 'D', text: "Solicito rebocador" }
+        ],
+        correct: 'B',
+        hint: "CIS = prático a bordo; ATP = helicópteros",
+        category: "sinais",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 265,
+        question: "Qual pano, no CIS, pede 'Pare imediatamente seu navio'?",
+        options: [
+            { id: 'A', text: "KILO" },
+            { id: 'B', text: "LIMA" },
+            { id: 'C', text: "MIKE" },
+            { id: 'D', text: "NOVEMBER" }
+        ],
+        correct: 'B',
+        hint: "LIMA = stop / pare",
+        category: "sinais",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 266,
+        question: "No curso ordinário do serviço, ao Comandante chegando pela primeira vez no dia são prestadas:",
+        options: [
+            { id: 'A', text: "Apenas continência individual do Oficial de Serviço" },
+            { id: 'B', text: "Honras de portaló pelo Imediato e oficialidade" },
+            { id: 'C', text: "Salva de 21 tiros" },
+            { id: 'D', text: "Nenhuma honra, só no desembarque" }
+        ],
+        correct: 'B',
+        hint: "Primeira chegada / última saída do dia = portaló completo",
+        category: "protocolos",
+        difficulty: "médio",
+        xp: 14
+    },
+    {
+        id: 267,
+        question: "ZULU no CIS significa 'Solicito rebocador'. No ATP o mesmo pano está:",
+        options: [
+            { id: 'A', text: "Com o mesmo significado" },
+            { id: 'B', text: "Reservado (XXXXX)" },
+            { id: 'C', text: "Como indicador de hora" },
+            { id: 'D', text: "Como chamada de embarcações" }
+        ],
+        correct: 'B',
+        hint: "Mais um caso CIS ≠ ATP",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 14
+    },
+    {
+        id: 268,
+        question: "PREP no cerimonial à bandeira, quando atopetada, indica:",
+        options: [
+            { id: 'A', text: "Cerimônia encerrada" },
+            { id: 'B', text: "5 minutos antes de içar/arriar a bandeira" },
+            { id: 'C', text: "Bandeira já içada" },
+            { id: 'D', text: "Meia-adriça" }
+        ],
+        correct: 'B',
+        hint: "Atopetada = 5 min; arriada = cerimônia encerrada",
+        category: "protocolos",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 269,
+        question: "OSCAR tem o mesmo significado em CIS e ATP. Qual é?",
+        options: [
+            { id: 'A', text: "Solicito auxílio" },
+            { id: 'B', text: "Homem ao mar" },
+            { id: 'C', text: "Incêndio a bordo" },
+            { id: 'D', text: "Navio parado" }
+        ],
+        correct: 'B',
+        hint: "Um dos poucos que coincidem 100%",
+        category: "sinais",
+        difficulty: "fácil",
+        xp: 8
+    },
+    {
+        id: 270,
+        question: "Proporção bandeira/mastro em OM de terra: a largura da Bandeira Nacional não deve ser maior que:",
+        options: [
+            { id: 'A', text: "1/3 da altura do mastro" },
+            { id: 'B', text: "1/5 da altura do mastro" },
+            { id: 'C', text: "1/2 da altura do mastro" },
+            { id: 'D', text: "Igual à altura do mastro" }
+        ],
+        correct: 'B',
+        hint: "Entre 1/5 e 1/7 da altura do mastro",
+        category: "bandeiras",
+        difficulty: "difícil",
+        xp: 16
+    },
+
+    // ========== POSIÇÕES DA BANDEIRA + DATAS FESTIVAS + SALVAS ==========
+    {
+        id: 271,
+        question: "No galhardete PREP, durante o cerimonial à bandeira, a posição ATOPETADA significa:",
+        options: [
+            { id: 'A', text: "Cerimônia encerrada" },
+            { id: 'B', text: "5 minutos antes de içar/arriar a bandeira" },
+            { id: 'C', text: "Bandeira já no tope" },
+            { id: 'D', text: "Meia-adriça" }
+        ],
+        correct: 'B',
+        hint: "Atopetada = 5 min; arriada = cerimônia encerrada",
+        category: "protocolos",
+        difficulty: "médio",
+        xp: 14
+    },
+    {
+        id: 272,
+        question: "ROMEO no ATP: o que significa quando a bandeira está ARRIADA?",
+        options: [
+            { id: 'A', text: "Estou me preparando" },
+            { id: 'B', text: "Estou pronto / iniciando aproximação" },
+            { id: 'C', text: "Passado o primeiro cabo" },
+            { id: 'D', text: "Exercício de bandeiras" }
+        ],
+        correct: 'C',
+        hint: "A meio = preparando · Atopetada = pronto · Arriada = primeiro cabo passado",
+        category: "sinais",
+        difficulty: "difícil",
+        xp: 16
+    },
+    {
+        id: 273,
+        question: "VELOC atopetada indica que a autoridade:",
+        options: [
+            { id: 'A', text: "Já partiu" },
+            { id: 'B', text: "Pretende partir dentro de 5 minutos" },
+            { id: 'C', text: "Pretende partir dentro de 15 minutos" },
+            { id: 'D', text: "Solicita barca d'água" }
+        ],
+        correct: 'B',
+        hint: "A meio = 15 min · Atopetada = 5 min · Arriada = partiu",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 14
+    },
+    {
+        id: 274,
+        question: "Quais são os dois dias de GRANDE GALA na Marinha?",
+        options: [
+            { id: 'A', text: "7 de setembro e 15 de novembro" },
+            { id: 'B', text: "11 de junho e 13 de dezembro" },
+            { id: 'C', text: "19 de novembro e 1º de maio" },
+            { id: 'D', text: "21 de abril e 25 de dezembro" }
+        ],
+        correct: 'A',
+        hint: "Independência e Proclamação da República — CIS em arco + BN nos topes",
+        category: "datas",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 275,
+        question: "No Dia dos Mortos (2 de novembro), a Bandeira Nacional é içada:",
+        options: [
+            { id: 'A', text: "Normalmente no tope o dia todo" },
+            { id: 'B', text: "A meia-adriça às 8h; arriada ao pôr do sol e içada de novo; arriada em definitivo às 23h59" },
+            { id: 'C', text: "Só no pau da bandeira à popa, a meia-adriça o dia todo" },
+            { id: 'D', text: "Não se içá a bandeira nesse dia" }
+        ],
+        correct: 'B',
+        hint: "Embandeiramento em funeral com ciclo 8h → pôr do sol → 23h59",
+        category: "datas",
+        difficulty: "difícil",
+        xp: 16
+    },
+    {
+        id: 276,
+        question: "Intervalo entre tiros de uma salva (exceto funeral) é de:",
+        options: [
+            { id: 'A', text: "3 segundos" },
+            { id: 'B', text: "5 segundos" },
+            { id: 'C', text: "10 segundos" },
+            { id: 'D', text: "30 segundos" }
+        ],
+        correct: 'B',
+        hint: "5 s normal · 30 s em funeral",
+        category: "protocolos",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 277,
+        question: "Salva devida ao Presidente da República:",
+        options: [
+            { id: 'A', text: "19 tiros" },
+            { id: 'B', text: "21 tiros" },
+            { id: 'C', text: "17 tiros" },
+            { id: 'D', text: "15 tiros" }
+        ],
+        correct: 'B',
+        hint: "Máxima honra = 21 tiros",
+        category: "protocolos",
+        difficulty: "fácil",
+        xp: 8
+    },
+    {
+        id: 278,
+        question: "Salva NÃO é dada ou respondida em qual situação?",
+        options: [
+            { id: 'A', text: "Entre 8h e o meio-dia" },
+            { id: 'B', text: "Antes das 8h e depois do pôr do sol" },
+            { id: 'C', text: "Em qualquer dia de pequena gala" },
+            { id: 'D', text: "Quando o navio está fundeado" }
+        ],
+        correct: 'B',
+        hint: "Mesma lógica das honras de passagem noturnas",
+        category: "protocolos",
+        difficulty: "médio",
+        xp: 12
+    },
+    {
+        id: 279,
+        question: "Data Magna da Marinha (Batalha Naval de Riachuelo):",
+        options: [
+            { id: 'A', text: "7 de setembro" },
+            { id: 'B', text: "11 de junho" },
+            { id: 'C', text: "13 de dezembro" },
+            { id: 'D', text: "19 de novembro" }
+        ],
+        correct: 'B',
+        hint: "Pequena gala — 11 de junho",
+        category: "datas",
+        difficulty: "fácil",
+        xp: 10
+    },
+    {
+        id: 280,
+        question: "RECON a meio vs atopetada:",
+        options: [
+            { id: 'A', text: "A meio = interpretei · Atopetada = reconheço" },
+            { id: 'B', text: "A meio = reconheço o sinal · Atopetada = interpretei o sinal" },
+            { id: 'C', text: "Ambos significam o mesmo" },
+            { id: 'D', text: "Só existe a posição atopetada" }
+        ],
+        correct: 'B',
+        hint: "Reconheço (a meio) → Interpretei (atopetada)",
+        category: "sinais",
+        difficulty: "médio",
+        xp: 14
     }
-
-
 
 ];
 
@@ -20809,6 +21323,50 @@ sinaisBarroso: [
     
     { autoridade: "Cônsul Geral do Brasil", tiros: 11, obs: "—" }
 ],
+
+    // Regras gerais de salva (EMN-006)
+    regrasSalva: {
+        distanciaMaxima: "Nunca superior a 3 milhas de quem ou do que se deseja honrar",
+        intervaloTiros: "5 segundos (funeral: 30 segundos)",
+        quandoNao: [
+            "Antes das 8h e depois do pôr do sol",
+            "Com canhões não destinados a salva",
+            "Navio atracado com risco de danos a instalações de terra",
+            "Presidente da República no mar (exceto retribuição a salva de navio estrangeiro à terra)",
+            "Presente Chefe de Estado/Governo de nação — não se dá a autoridade de menor precedência dessa nação",
+            "Quando sabidamente não puderem ser retribuídas"
+        ]
+    },
+
+    // Datas festivas e embandeiramento (EMN-006 §2.6)
+    datasFestivas: {
+        grandeGala: [
+            { data: "7 de setembro", nome: "Independência do Brasil", embandeiramento: "CIS em arco + Bandeira Nacional nos topes dos mastros" },
+            { data: "15 de novembro", nome: "Proclamação da República", embandeiramento: "CIS em arco + Bandeira Nacional nos topes dos mastros" }
+        ],
+        pequenaGala: [
+            { data: "1º de janeiro", nome: "Confraternização Universal" },
+            { data: "21 de abril", nome: "Tiradentes" },
+            { data: "1º de maio", nome: "Dia do Trabalho" },
+            { data: "11 de junho", nome: "Batalha Naval de Riachuelo — Data Magna da Marinha" },
+            { data: "19 de novembro", nome: "Dia da Bandeira" },
+            { data: "13 de dezembro", nome: "Dia do Marinheiro" },
+            { data: "25 de dezembro", nome: "Natal" },
+            { data: "—", nome: "Honras ao Presidente da República" }
+        ],
+        pequenaGalaEmbandeiramento: "Bandeira Nacional também içada nos topes dos mastros",
+        diaDosMortos: {
+            data: "2 de novembro",
+            procedimento: "Às 8h içar Bandeira Nacional a meia-adriça (mastros e popa); arriar ao pôr do sol e içar novamente; às 23h59 arriar em definitivo"
+        },
+        diaDaBandeira: [
+            "08h — cerimonial normal à Bandeira Nacional",
+            "11h55 — voz “Sinal para a Bandeira”, içar PREP, arriar a Bandeira e reiniciar cerimonial de hasteamento",
+            "12h — navios embandeiram nos topes",
+            "Após hasteamento — cremação das bandeiras substituídas no ano, salva de 21 tiros e Hino à Bandeira"
+        ],
+        obsGrandeGala: "É proibido empregar bandeira do CIS que se assemelhe à de nação."
+    },
     
     // Códigos de Sinais (exemplos) - ATUALIZADO
     sinaisCIS: [
@@ -20818,18 +21376,18 @@ sinaisBarroso: [
         { codigo: "DELTA", significado: "Mantenha-se afastado; estou manobrando com dificuldade", tipo: "cis", categoria: "manobra", imagem: "imagens/sinais/67.png" },
         { codigo: "ECHO", significado: "Estou guinando para boreste", tipo: "cis", categoria: "manobra", imagem: "imagens/sinais/68.png" },
         { codigo: "FOXTROT", significado: "Estou à matroca, comunique-se comigo", tipo: "cis", categoria: "comunicação", imagem: "imagens/sinais/69.png" },
-        { codigo: "GOLF", significado: "Solicito prático", tipo: "cis", categoria: "navegação", imagem: "imagens/sinais/70.png" },
+        { codigo: "GOLF", significado: "Solicito prático (barcos de pesca: estou arrastando redes)", tipo: "cis", categoria: "navegação", imagem: "imagens/sinais/70.png" },
         { codigo: "HOTEL", significado: "Tenho prático a bordo", tipo: "cis", categoria: "navegação", imagem: "imagens/sinais/71.png" },
         { codigo: "INDIA", significado: "Estou guinando para bombordo", tipo: "cis", categoria: "manobra", imagem: "imagens/sinais/72.png" },
-        { codigo: "JULIET", significado: "Mantenha-se bem afastado de mim. Tenho incêndio a bordo", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/73.png" },
+        { codigo: "JULIET", significado: "Mantenha-se bem afastado de mim. Tenho incêndio a bordo e/ou carga perigosa a bordo ou vazamento de carga perigosa", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/73.png" },
         { codigo: "KILO", significado: "Desejo comunicar-me com você", tipo: "cis", categoria: "comunicação", imagem: "imagens/sinais/74.png" },
         { codigo: "LIMA", significado: "Pare imediatamente seu navio", tipo: "cis", categoria: "ordem", imagem: "imagens/sinais/75.png" },
-        { codigo: "MIKE", significado: "Meus movimentos não devem ser levados em consideração", tipo: "cis", categoria: "manobra", imagem: "imagens/sinais/76.png" },
+        { codigo: "MIKE", significado: "Meu navio está parado e sem seguimento", tipo: "cis", categoria: "manobra", imagem: "imagens/sinais/76.png" },
         { codigo: "NOVEMBER", significado: "Negativo, não, não concordo", tipo: "cis", categoria: "comunicação", imagem: "imagens/sinais/77.png" },
         { codigo: "OSCAR", significado: "Homem ao mar", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/78.png" },
-        { codigo: "PAPA", significado: "Todas as pessoas devem regressar imediatamente", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/86.png" },
+        { codigo: "PAPA", significado: "(No porto) Todas as pessoas embarcadas devem regressar imediatamente, pois o navio está prestes a partir", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/86.png" },
         { codigo: "QUEBEC", significado: "Estado sanitário do meu navio é bom, solicito livre prática", tipo: "cis", categoria: "saúde", imagem: "imagens/sinais/79.png" },
-        { codigo: "ROMEO", significado: "Recibo (sem significado específico)", tipo: "cis", categoria: "comunicação", imagem: "imagens/sinais/80.png" },
+        { codigo: "ROMEO", significado: "Não possui significado próprio (recibo / cumprir procedimento específico)", tipo: "cis", categoria: "comunicação", imagem: "imagens/sinais/80.png" },
         { codigo: "SIERRA", significado: "Minhas máquinas estão dando atrás", tipo: "cis", categoria: "mecânica", imagem: "imagens/sinais/81.png" },
         { codigo: "TANGO", significado: "Mantenha-se afastado; estou arrastando rede em paralelo", tipo: "cis", categoria: "pesca", imagem: "imagens/sinais/82.png" },
         { codigo: "UNIFORM", significado: "Você se dirige para um perigo", tipo: "cis", categoria: "perigo", imagem: "imagens/sinais/83.png" },
@@ -20837,7 +21395,7 @@ sinaisBarroso: [
         { codigo: "WHISKEY", significado: "Solicito assistência médica", tipo: "cis", categoria: "emergencia", imagem: "imagens/sinais/85.png" },
         { codigo: "XRAY", significado: "Suspenda a execução do que você está fazendo e observe meus sinais", tipo: "cis", categoria: "ordem", imagem: "imagens/sinais/88.png" },
         { codigo: "YANKEE", significado: "Estou arrastando meu ferro", tipo: "cis", categoria: "ancoragem", imagem: "imagens/sinais/89.png" },
-        { codigo: "ZULU", significado: "Solicito rebocador", tipo: "cis", categoria: "navegação", imagem: "imagens/sinais/90.png" }
+        { codigo: "ZULU", significado: "Solicito rebocador (pesca: estou lançando minhas redes)", tipo: "cis", categoria: "navegação", imagem: "imagens/sinais/90.png" }
     ],
     
     sinaisATP: [
@@ -20845,20 +21403,32 @@ sinaisBarroso: [
         { codigo: "BRAVO (ATP)", significado: "Exercício de tiro ou transferência de explosivos ou inflamáveis", tipo: "atp", categoria: "perigo", imagem: "imagens/sinais/65.png" },
         { codigo: "CHARLIE (ATP)", significado: "Afirmativo (em resposta a um sinal)", tipo: "atp", categoria: "comunicação", imagem: "imagens/sinais/66.png" },
         { codigo: "DELTA (ATP)", significado: "Estou operando com degaussing", tipo: "atp", categoria: "mecânica", imagem: "imagens/sinais/67.png" },
-        { codigo: "ECHO (ATP)", significado: "Estou guinando para boreste", tipo: "atp", categoria: "manobra", imagem: "imagens/sinais/68.png" },
-        { codigo: "FOXTROT (ATP)", significado: "Operações com aeronave de asa fixa", tipo: "atp", categoria: "aeronaves", imagem: "imagens/sinais/69.png" },
-        { codigo: "GOLF (ATP)", significado: "Este navio é o Bizu da formatura", tipo: "atp", categoria: "formação", imagem: "imagens/sinais/70.png" },
+        { codigo: "ECHO (ATP)", significado: "Sem significado atribuído (reservado)", tipo: "atp", categoria: "reservado", imagem: "imagens/sinais/68.png" },
+        { codigo: "FOXTROT (ATP)", significado: "Operações com aeronave de asa fixa", tipo: "atp", categoria: "aeronaves", imagem: "imagens/sinais/69.png",
+            posicoes: {
+                "a meio": "Estou pronto para operar com aeronaves de asas fixas (quando as condições de vento forem apropriadas)",
+                "atopetada": "Em operações com aeronave de asa fixa"
+            }
+        },
+        { codigo: "GOLF (ATP)", significado: "Enquanto içada — este navio é o guia da formatura", tipo: "atp", categoria: "formação", imagem: "imagens/sinais/70.png" },
         { codigo: "HOTEL (ATP)", significado: "Operações com helicópteros", tipo: "atp", categoria: "aeronaves", imagem: "imagens/sinais/71.png" },
-        { codigo: "INDIA (ATP)", significado: "Estou guinando para bombordo", tipo: "atp", categoria: "manobra", imagem: "imagens/sinais/72.png" },
+        { codigo: "INDIA (ATP)", significado: "Manobra de atracação", tipo: "atp", categoria: "manobra", imagem: "imagens/sinais/72.png" },
         { codigo: "JULIET (ATP)", significado: "Tenho mensagem para transmitir por semáforas", tipo: "atp", categoria: "comunicação", imagem: "imagens/sinais/73.png" },
         { codigo: "KILO (ATP)", significado: "Homens trabalhando no mastro", tipo: "atp", categoria: "operações", imagem: "imagens/sinais/74.png" },
         { codigo: "LIMA (ATP)", significado: "Não se aproxime dentro do número de jardas indicadas", tipo: "atp", categoria: "segurança", imagem: "imagens/sinais/75.png" },
-        { codigo: "MIKE (ATP)", significado: "Navio de registro médico", tipo: "atp", categoria: "saúde", imagem: "imagens/sinais/76.png" },
-        { codigo: "NOVEMBER (ATP)", significado: "Seus movimentos não estão sendo compreendidos", tipo: "atp", categoria: "comunicação", imagem: "imagens/sinais/77.png" },
+        { codigo: "MIKE (ATP)", significado: "(No mar) Meus movimentos não devem ser levados em consideração; (No porto) Navio de registro médico", tipo: "atp", categoria: "saúde", imagem: "imagens/sinais/76.png" },
+        { codigo: "NOVEMBER (ATP)", significado: "(No mar) Seus movimentos não estão sendo compreendidos; (No porto) Este navio não possui sinaleiro de serviço", tipo: "atp", categoria: "comunicação", imagem: "imagens/sinais/77.png" },
         { codigo: "OSCAR (ATP)", significado: "Homem ao mar", tipo: "atp", categoria: "emergencia", imagem: "imagens/sinais/78.png" },
         { codigo: "PAPA (ATP)", significado: "Todo pessoal deve regressar imediatamente para bordo", tipo: "atp", categoria: "emergencia", imagem: "imagens/sinais/86.png" },
         { codigo: "QUEBEC (ATP)", significado: "Chamada geral de embarcações", tipo: "atp", categoria: "operações", imagem: "imagens/sinais/79.png" },
-        { codigo: "ROMEO (ATP)", significado: "Transferência (aproximação/cabo)", tipo: "atp", categoria: "operações", imagem: "imagens/sinais/80.png" },
+        { codigo: "ROMEO (ATP)", significado: "Transferência (aproximação/cabo)", tipo: "atp", categoria: "operações", imagem: "imagens/sinais/80.png",
+            posicoes: {
+                "a meio": "Estou me preparando para transferência",
+                "atopetada": "Estou pronto / iniciando aproximação",
+                "arriada": "Passado o primeiro cabo"
+            },
+            contextoPorto: "No porto: Navio de serviço"
+        },
         { codigo: "SIERRA (ATP)", significado: "Exercício de bandeiras", tipo: "atp", categoria: "exercicio", imagem: "imagens/sinais/81.png" },
         { codigo: "TANGO (ATP)", significado: "Indicador de hora", tipo: "atp", categoria: "comunicação", imagem: "imagens/sinais/82.png" },
         { codigo: "UNIFORM (ATP)", significado: "Manobra com o ferro (fundear, amarrar e suspender)", tipo: "atp", categoria: "manobra", imagem: "imagens/sinais/83.png" },
@@ -21001,16 +21571,41 @@ indicativosUnidade: [
 ],
     
     galhardetes: [
-        { codigo: "NEGAT", significado: "Negativo, cessar, não fazer, exetuados", tipo: "galhardete", categoria: "comando", imagem: "imagens/sinais/109.png" },
-        { codigo: "INT", significado: "Interroga ou pergunta", tipo: "galhardete", categoria: "comunicação", imagem: "imagens/sinais/110.png" },
-        { codigo: "PREP", significado: "Preparação para manobra ou cerimonial", tipo: "galhardete", categoria: "operações", imagem: "imagens/sinais/111.png" },
-        { codigo: "BOMBORDO", significado: "Guinada para bombordo", tipo: "galhardete", categoria: "manobra", imagem: "imagens/sinais/105.png" },
-        { codigo: "RECON", significado: "Reconhecimento", tipo: "galhardete", categoria: "comunicação", imagem: "imagens/sinais/106.png" },
-        { codigo: "DESIG", significado: "Designação de texto em linguagem clara", tipo: "galhardete", categoria: "comunicação", imagem: "imagens/sinais/112.png" },
-        { codigo: "EMERG", significado: "Emergência - executar sinal imediatamente", tipo: "galhardete", categoria: "emergencia", imagem: "imagens/sinais/113.png" },
-        { codigo: "FORM", significado: "Solicita embarcação de lixo", tipo: "galhardete", categoria: "serviço", imagem: "imagens/sinais/114.png" },
-        { codigo: "VELOC", significado: "Indicação de velocidade ou partida", tipo: "galhardete", categoria: "manobra", imagem: "imagens/sinais/115.png" },
-        { codigo: "BORESTE", significado: "Guinada para boreste", tipo: "galhardete", categoria: "manobra", imagem: "imagens/sinais/116.png" }
+        { codigo: "NEGAT", significado: "Negativo, cessar, não fazer, exceto", tipo: "galhardete", categoria: "comando", imagem: "imagens/sinais/109.png" },
+        { codigo: "INT", significado: "Interroga ou pergunta", tipo: "galhardete", categoria: "comunicação", imagem: "imagens/sinais/110.png",
+            detalhes: "INTE 1 — Não consigo identificar o sinal içado. INTE 2 — Você está repetindo o sinal incorretamente." },
+        { codigo: "PREP", significado: "Preparação para manobra ou cerimonial à bandeira", tipo: "galhardete", categoria: "operações", imagem: "imagens/sinais/111.png",
+            posicoes: {
+                "a meio": "Em manobra: espero desengajar dentro de 15 minutos",
+                "atopetada": "Em manobra: reabastecimento concluído, desengajando na última estação · No cerimonial à bandeira: 5 minutos antes de içar/arriar",
+                "arriada": "Em manobra: todos os cabos estão safos · No cerimonial: cerimônia encerrada"
+            }
+        },
+        { codigo: "BOMBORDO", significado: "Navio fora de rotina (nenhuma honraria é feita/esperada); guinada de valor não especificado para bombordo", tipo: "galhardete", categoria: "manobra", imagem: "imagens/sinais/105.png" },
+        { codigo: "RECON", significado: "Reconhecimento", tipo: "galhardete", categoria: "comunicação", imagem: "imagens/sinais/106.png",
+            posicoes: {
+                "a meio": "Reconheço o sinal",
+                "atopetada": "Interpretei o sinal",
+                "no texto": "Vírgula decimal ou meia unidade"
+            }
+        },
+        { codigo: "NEGRO", significado: "Cobertura (screen)", tipo: "galhardete", categoria: "tatico", imagem: "imagens/sinais/109.png" },
+        { codigo: "RUMOCOR", significado: "Cessar guinada; governar num rumo 20° além daquele seguido quando o sinal foi compreendido. Seguido de numeral = rumo a seguir", tipo: "galhardete", categoria: "manobra", imagem: "imagens/sinais/115.png" },
+        { codigo: "DESIG", significado: "Designação / texto em linguagem clara (posto, fundeadouro, atracação) ou sinais descritivos de forças", tipo: "galhardete", categoria: "comunicação", imagem: "imagens/sinais/112.png",
+            detalhes: "Sinal descritivo: DESIG + quantidade e/ou indicadores de tipo. Ex.: EMERG E-345-10 DESIG 2CL2D" },
+        { codigo: "EMERG", significado: "Emergência — o sinal içado deve ser executado assim que compreendido", tipo: "galhardete", categoria: "emergencia", imagem: "imagens/sinais/113.png",
+            detalhes: "Repetir para todos os navios, içado em adriça adjacente à 1ª Substituta com o indicativo da origem." },
+        { codigo: "FORM", significado: "Enquanto içada: solicito embarcação de lixo", tipo: "galhardete", categoria: "serviço", imagem: "imagens/sinais/114.png" },
+        { codigo: "VELOC", significado: "Partida de autoridade cujo pavilhão está içado neste navio; ou indicação de velocidade", tipo: "galhardete", categoria: "manobra", imagem: "imagens/sinais/115.png",
+            posicoes: {
+                "a meio": "Pretende partir dentro de 15 minutos",
+                "atopetada": "Pretende partir dentro de 5 minutos",
+                "arriada": "Partiu. Seguida de numeral = velocidade em nós"
+            }
+        },
+        { codigo: "BORESTE", significado: "Oficial mais antigo presente da nação embarcada; guinada de valor não especificado para boreste", tipo: "galhardete", categoria: "manobra", imagem: "imagens/sinais/116.png" },
+        { codigo: "POS", significado: "Assumir o posto correto ou o posto determinado", tipo: "galhardete", categoria: "manobra", imagem: "imagens/sinais/114.png" },
+        { codigo: "GUINA", significado: "Pedido de barca d'água (enquanto içada: solicito barca d'água)", tipo: "galhardete", categoria: "serviço", imagem: "imagens/sinais/115.png" }
     ],
     
     // Procedimentos do Cerimonial
@@ -22562,20 +23157,26 @@ function buildUnifiedSignals() {
                 atp: null,
                 single: null,
                 posicao: s.posicao,
+                posicoes: s.posicoes || null,
                 detalhes: s.detalhes,
                 descricao: s.descricao,
                 procedimento: s.procedimento,
-                uso: s.uso
+                uso: s.uso,
+                contextoPorto: s.contextoPorto || null
             });
         }
         const g = map.get(key);
         if (!g.imagem && s.imagem) g.imagem = s.imagem;
+        if (s.posicoes) g.posicoes = s.posicoes;
+        if (s.detalhes) g.detalhes = s.detalhes;
+        if (s.contextoPorto) g.contextoPorto = s.contextoPorto;
         if (s.tipo === 'cis') {
             g.cis = s;
             if (!g.categoria) g.categoria = s.categoria;
         } else if (s.tipo === 'atp' && isAlpha) {
             g.atp = s;
             if (!g.categoria) g.categoria = s.categoria;
+            if (s.posicoes) g.posicoes = s.posicoes;
         } else if (s.tipo === 'atp' && !isAlpha) {
             g.atp = s;
             g.single = s;
@@ -22607,8 +23208,8 @@ function getSignalBizu(group) {
         'BRAVO': 'Bizu: B de Bomba/Perigo — carga perigosa (CIS) ou exercício de tiro/explosivos (ATP).',
         'OSCAR': 'Bizu: O de “Oh não!” — Homem ao mar. Mesmo significado no CIS e no ATP.',
         'PAPA': 'Bizu: P de Pessoal — todos a bordo. Quase idêntico nos dois códigos.',
-        'ECHO': 'Bizu: E de Estibordo (boreste). Mesmo significado CIS/ATP.',
-        'INDIA': 'Bizu: I de “In” bombordo. Mesmo significado CIS/ATP.',
+        'ECHO': 'Bizu: CIS = guinando p/ boreste (E de Estibordo). ATP = SEM significado (XXXXX) — NÃO são iguais.',
+        'INDIA': 'Bizu: CIS = guinando p/ bombordo (I de In/Inside). ATP = manobra de atracação — significados DIFERENTES.',
         'CHARLIE': 'Bizu: C de Confirma — Afirmativo. Mesmo nos dois códigos.',
         'JULIET': 'Bizu: CIS = Incêndio (J de “Joga água”); ATP = mensagem por semáforas.',
         'FOXTROT': 'Bizu: CIS = comunique-se (F de Falar); ATP = aeronave de asa fixa (Flight).',
@@ -22776,6 +23377,8 @@ function createUnifiedSignalCard(g) {
     const cat = getSignalCategoryLabel(g.categoria || (g.single && g.single.categoria) || '');
     const img = g.imagem || (g.cis && g.cis.imagem) || (g.atp && g.atp.imagem) || (g.single && g.single.imagem) || '';
     const imgSrc = img || `https://via.placeholder.com/72x48/1a365d/ffffff?text=${encodeURIComponent(String(g.codigo).substring(0, 3))}`;
+    const hasPos = !!(g.posicoes || (g.atp && g.atp.posicoes) || (g.cis && g.cis.posicoes) || (g.single && g.single.posicoes));
+    const posHint = hasPos ? `<span class="sc-pos-hint"><i class="fas fa-arrows-alt-v"></i> A meio · Atopetada · Arriada</span>` : '';
 
     return `
         <div class="signal-card-v2" style="border-left-color:${borderColor}" onclick="openSignalModal('${escapeAttr(g.key)}', event)">
@@ -22784,6 +23387,7 @@ function createUnifiedSignalCard(g) {
                 <div class="sc-meta">
                     <h4 class="sc-code">${escapeHtmlSignal(g.codigo)}</h4>
                     <div class="sc-badges">${badges}</div>
+                    ${posHint}
                 </div>
             </div>
             <div class="sc-meanings">${meanings}</div>
@@ -22951,9 +23555,11 @@ function openSignalModal(codeOrKey, event) {
             atp: raw.tipo === 'atp' ? raw : null,
             single: raw,
             posicao: raw.posicao,
+            posicoes: raw.posicoes || null,
             detalhes: raw.detalhes,
             descricao: raw.descricao,
-            procedimento: raw.procedimento
+            procedimento: raw.procedimento,
+            contextoPorto: raw.contextoPorto || null
         };
     }
 
@@ -22990,6 +23596,49 @@ function openSignalModal(codeOrKey, event) {
 
     const extraSections = [];
     const s = group.single || group.cis || group.atp;
+
+    // --- Posições da bandeira (a meio / atopetada / arriada) ---
+    const posicoes =
+        group.posicoes ||
+        (group.atp && group.atp.posicoes) ||
+        (group.cis && group.cis.posicoes) ||
+        (s && s.posicoes) ||
+        null;
+    if (posicoes && typeof posicoes === 'object') {
+        const rows = Object.entries(posicoes).map(([pos, desc]) => {
+            const label = pos === 'a meio' ? 'A meio' :
+                         pos === 'atopetada' ? 'Atopetada' :
+                         pos === 'arriada' ? 'Arriada' :
+                         pos.charAt(0).toUpperCase() + pos.slice(1);
+            const ico = pos === 'a meio' ? 'fa-arrow-down' :
+                        pos === 'atopetada' ? 'fa-arrow-up' :
+                        pos === 'arriada' ? 'fa-flag' : 'fa-info-circle';
+            return `<div class="sm-pos-row">
+                <span class="sm-pos-badge"><i class="fas ${ico}"></i> ${label}</span>
+                <span class="sm-pos-desc">${escapeHtmlSignal(desc)}</span>
+            </div>`;
+        }).join('');
+        extraSections.push(`
+            <div class="sm-posicoes">
+                <div class="sm-bizu-title" style="color:#90cdf4;"><i class="fas fa-arrows-alt-v"></i> Posição da bandeira</div>
+                <p class="sm-pos-intro">O mesmo pano muda de sentido conforme a altura na adriça:</p>
+                ${rows}
+            </div>`);
+    }
+    if (group.contextoPorto || (s && s.contextoPorto)) {
+        extraSections.push(`
+            <div class="sm-bizu" style="border-color:rgba(66,153,225,0.35);">
+                <div class="sm-bizu-title" style="color:#90cdf4;"><i class="fas fa-anchor"></i> Contexto porto</div>
+                <p>${escapeHtmlSignal(group.contextoPorto || s.contextoPorto)}</p>
+            </div>`);
+    }
+    if (group.detalhes || (s && s.detalhes)) {
+        extraSections.push(`
+            <div class="sm-bizu" style="border-color:rgba(159,122,234,0.35);">
+                <div class="sm-bizu-title" style="color:#b794f4;"><i class="fas fa-book-open"></i> Detalhes (EMN-006)</div>
+                <p>${escapeHtmlSignal(group.detalhes || s.detalhes)}</p>
+            </div>`);
+    }
     if (s && s.tipo === 'substituta') {
         extraSections.push(`
             <div class="sm-bizu" style="border-color:rgba(245,158,11,0.4);">
