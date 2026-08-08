@@ -4039,6 +4039,212 @@ html[data-theme="light"] .md-bazar-title,
 html[data-theme="light"] .md-rank-name { color: var(--text-primary); }
 
 
+
+/* ===== HEADER DE COMANDO (sem menu de seções) ===== */
+
+@media (max-width: 700px) {
+  .navy-header .logo-circle { width: 42px !important; height: 42px !important; }
+  .navy-header .logo-text h1 { font-size: 1rem !important; }
+  .navy-header .logo-text .subtitle { font-size: 0.7rem !important; }
+  .navy-header .logo-container-enhanced { padding-bottom: 4px !important; }
+  .header-actions .md-online-wrap-header { display: none !important; } /* online vai no cmd-bar */
+}
+
+#mainNav.navy-nav,
+nav#mainNav {
+    display: none !important;
+}
+.navy-header {
+    position: sticky;
+    top: 0;
+    z-index: 5000;
+    background: linear-gradient(180deg, rgba(5,18,35,0.98), rgba(5,18,35,0.92));
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,204,0,0.2);
+}
+.md-cmd-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px 10px;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.md-cmd-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 2px solid rgba(255,204,0,0.45);
+    object-fit: cover; background: #0d2745; flex-shrink: 0;
+    cursor: pointer;
+}
+.md-cmd-avatar.placeholder {
+    display: flex; align-items: center; justify-content: center;
+    color: #ffcc00; font-size: 1.2rem;
+}
+.md-cmd-info { flex: 1; min-width: 0; }
+.md-cmd-name {
+    font-size: 0.92rem; font-weight: 700; color: #fff;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    display: flex; align-items: center; gap: 6px;
+}
+.md-cmd-vip {
+    font-size: 0.62rem; font-weight: 800; letter-spacing: 0.06em;
+    padding: 2px 6px; border-radius: 999px;
+    background: linear-gradient(135deg, #ffcc00, #ffb300); color: #05203a;
+}
+.md-cmd-vip.off {
+    background: rgba(255,255,255,0.08); color: var(--text-muted);
+    border: 1px solid rgba(255,255,255,0.12);
+}
+.md-cmd-xp-row {
+    display: flex; align-items: center; gap: 8px; margin-top: 4px;
+}
+.md-cmd-xp-bar {
+    flex: 1; height: 6px; border-radius: 99px;
+    background: rgba(255,255,255,0.1); overflow: hidden;
+}
+.md-cmd-xp-bar > span {
+    display: block; height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, #ffcc00, #38a169);
+    width: 0%; transition: width 0.4s ease;
+}
+.md-cmd-xp-text {
+    font-size: 0.68rem; color: var(--text-muted); white-space: nowrap;
+    font-weight: 600;
+}
+.md-cmd-side {
+    display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+}
+.md-cmd-online {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 10px; border-radius: 999px;
+    background: rgba(56,161,105,0.12);
+    border: 1px solid rgba(56,161,105,0.35);
+    font-size: 0.75rem; font-weight: 700; color: #9ae6b4;
+    cursor: pointer;
+}
+.md-cmd-online .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #38a169; box-shadow: 0 0 0 3px rgba(56,161,105,0.25);
+    animation: mdOnlinePulse 1.6s ease infinite;
+}
+@keyframes mdOnlinePulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(56,161,105,0.25); }
+    50% { box-shadow: 0 0 0 6px rgba(56,161,105,0.08); }
+}
+
+/* Protocolos redesenhado */
+#protocolos .content-card {
+    border: 1px solid rgba(255,204,0,0.18);
+    border-radius: 18px;
+    overflow: hidden;
+}
+.md-proto-tabs-wrap {
+    margin: 4px 0 16px;
+    padding: 4px;
+    border-radius: 14px;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+#md-proto-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+#md-proto-tabs::-webkit-scrollbar { display: none; }
+.md-section-tab {
+    flex: 0 0 auto;
+    border: none !important;
+    background: transparent !important;
+    color: var(--text-muted) !important;
+    border-radius: 11px !important;
+    padding: 11px 14px !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+    position: relative;
+    z-index: 2;
+}
+.md-section-tab i { margin-right: 5px; pointer-events: none; }
+.md-section-tab.active {
+    background: linear-gradient(135deg, rgba(0,102,204,0.55), rgba(255,204,0,0.2)) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 14px rgba(0,102,204,0.25);
+}
+.md-proto-pane {
+    display: none !important;
+    animation: none;
+}
+.md-proto-pane.active {
+    display: block !important;
+    animation: mdProtoFade 0.28s ease;
+}
+.md-proto-hero {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+}
+.md-proto-stat {
+    padding: 14px 12px;
+    border-radius: 14px;
+    background: linear-gradient(160deg, rgba(0,51,102,0.45), rgba(5,18,35,0.7));
+    border: 1px solid rgba(255,255,255,0.08);
+    text-align: center;
+}
+.md-proto-stat .n {
+    font-size: 1.5rem; font-weight: 800; color: var(--accent); line-height: 1.1;
+}
+.md-proto-stat .l {
+    font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;
+}
+#protocolos .navy-table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+#protocolos .table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+#protocolos .navy-table th {
+    background: rgba(0,102,204,0.25);
+    color: var(--accent);
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+#protocolos .navy-table td {
+    padding: 11px 12px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    color: var(--text-secondary);
+    vertical-align: top;
+}
+#protocolos .navy-table tr:hover td {
+    background: rgba(255,204,0,0.04);
+}
+
+html[data-theme="light"] .navy-header {
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(238,243,249,0.95));
+    border-bottom-color: rgba(0,51,102,0.12);
+}
+html[data-theme="light"] .md-cmd-name { color: var(--text-primary); }
+
 /* ===== APP SHELL FIX: FABs → bottom nav ===== */
 @media (max-width: 900px) {
     #md-chat-fab,
@@ -5796,9 +6002,32 @@ html[data-theme="light"] .signal-hero {
             <div id="md-userbar" style="display:none;"></div>
         </div>
     </div>
+
+<!-- Barra de comando: perfil · XP · VIP · online (substitui menu de seções) -->
+<div class="md-cmd-bar" id="md-cmd-bar">
+    <div class="md-cmd-avatar placeholder" id="md-cmd-avatar" onclick="mdOpenConta()" title="Minha conta" role="button">
+        <i class="fas fa-user"></i>
+    </div>
+    <div class="md-cmd-info">
+        <div class="md-cmd-name">
+            <span id="md-cmd-nome">Marujo</span>
+            <span class="md-cmd-vip off" id="md-cmd-vip">FREE</span>
+        </div>
+        <div class="md-cmd-xp-row">
+            <div class="md-cmd-xp-bar"><span id="md-cmd-xp-fill" style="width:0%"></span></div>
+            <span class="md-cmd-xp-text" id="md-cmd-xp-text">0 XP</span>
+        </div>
+    </div>
+    <div class="md-cmd-side">
+        <button type="button" class="md-cmd-online" id="md-cmd-online-btn" onclick="try{MDOnline.toggleDropdown('header')}catch(e){}" title="Tripulação online">
+            <span class="dot"></span>
+            <span><span id="md-cmd-online-n">0</span> online</span>
+        </button>
+    </div>
+</div>
 </header>
       <!-- Navegação fixa: rolagem suave até cada seção, todas visíveis na página -->
-    <nav class="navy-nav" id="mainNav">
+    <nav class="navy-nav" id="mainNav" hidden aria-hidden="true" style="display:none!important">
         <div class="nav-menu">
             <div class="nav-item">
                 <a href="#sinais" class="nav-link active" onclick="showSection('sinais', event)">
@@ -10840,36 +11069,45 @@ const turmaPapa2023 = [
                 </div>
             </div>
 
-            <!-- Abas do módulo Protocolos -->
-            <div class="md-section-tabs" id="md-proto-tabs" role="tablist">
-                <button type="button" class="md-section-tab active" data-pane="portalo" onclick="mdProtoTab('portalo', this)"><i class="fas fa-door-open"></i> Portaló</button>
-                <button type="button" class="md-section-tab" data-pane="curso" onclick="mdProtoTab('curso', this)"><i class="fas fa-ship"></i> Curso ordinário</button>
-                <button type="button" class="md-section-tab" data-pane="salvas" onclick="mdProtoTab('salvas', this)"><i class="fas fa-bullseye"></i> Salvas</button>
-                <button type="button" class="md-section-tab" data-pane="datas" onclick="mdProtoTab('datas', this)"><i class="fas fa-calendar-alt"></i> Datas festivas</button>
-                <button type="button" class="md-section-tab" data-pane="bandeira" onclick="mdProtoTab('bandeira', this)"><i class="fas fa-flag"></i> Cerimonial à BN</button>
+            <!-- Abas Protocolos (event delegation — sem depender de onclick inline) -->
+            <div class="md-proto-tabs-wrap">
+                <div class="md-section-tabs" id="md-proto-tabs" role="tablist">
+                    <button type="button" class="md-section-tab active" data-pane="portalo"><i class="fas fa-door-open"></i> Portaló</button>
+                    <button type="button" class="md-section-tab" data-pane="curso"><i class="fas fa-ship"></i> Curso</button>
+                    <button type="button" class="md-section-tab" data-pane="salvas"><i class="fas fa-bullseye"></i> Salvas</button>
+                    <button type="button" class="md-section-tab" data-pane="datas"><i class="fas fa-calendar-alt"></i> Datas</button>
+                    <button type="button" class="md-section-tab" data-pane="bandeira"><i class="fas fa-flag"></i> Bandeira</button>
+                </div>
             </div>
 
             <!-- ===== PANE: PORTALÓ ===== -->
             <div class="md-proto-pane active" id="md-pane-portalo">
                 <div class="info-section">
                     <h3 class="section-title">Honras de Portaló</h3>
+                    <div class="md-proto-hero">
+                        <div class="md-proto-stat"><div class="n">BE</div><div class="l">Portaló de oficiais</div></div>
+                        <div class="md-proto-stat"><div class="n">8h</div><div class="l">Até o pôr do sol</div></div>
+                        <div class="md-proto-stat"><div class="n">3</div><div class="l">Situações de exceção</div></div>
+                    </div>
                     <div class="protocol-item" style="margin-bottom: 16px;">
                         <div class="protocol-title">Definição</div>
-                        <div style="color: var(--text-secondary);">
-                            Continências de guarda, <strong>“boys”</strong> e toques de corneta/apito devidos na recepção ou despedida de autoridades a bordo de navios ou em OM de terra.
+                        <div style="color: var(--text-secondary); line-height:1.5">
+                            Continências de guarda, <strong>“boys”</strong> e toques de corneta/apito na recepção ou despedida de autoridades a bordo ou em OM de terra.
                         </div>
                     </div>
-                    <table class="navy-table" style="margin-top: 12px;">
+                    <div class="table-scroll">
+                    <table class="navy-table">
                         <thead>
                             <tr>
                                 <th>Autoridade</th>
-                                <th>“Boys”</th>
+                                <th>Boys</th>
                                 <th>Toques</th>
-                                <th>Observações</th>
+                                <th>Obs.</th>
                             </tr>
                         </thead>
                         <tbody id="honrasPortaloTable"></tbody>
                     </table>
+                    </div>
                     <div class="info-grid" style="margin-top: 24px;">
                         <div class="info-item">
                             <div class="info-label">Local das Honras</div>
@@ -25164,23 +25402,44 @@ try { if (typeof cerimonialData !== 'undefined') window.cerimonialData = cerimon
 try { mdRenderProtocolos(); } catch (e) { console.warn('[Protocolos]', e); }
 
 function mdProtoTab(pane, btn) {
-    try {
-        document.querySelectorAll('#md-proto-tabs .md-section-tab').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.md-proto-pane').forEach(p => p.classList.remove('active'));
-        if (btn) btn.classList.add('active');
-        else {
-            const t = document.querySelector('#md-proto-tabs .md-section-tab[data-pane="'+pane+'"]');
-            if (t) t.classList.add('active');
-        }
-        const el = document.getElementById('md-pane-' + pane);
-        if (el) {
-            el.classList.add('active');
-            el.style.display = 'block';
-        }
-        document.querySelectorAll('.md-proto-pane:not(.active)').forEach(p => { p.style.display = 'none'; });
-        try { if (window.MDMissao) MDMissao.onProtocolo(); } catch (e) {}
-    } catch (e) { console.warn('[mdProtoTab]', e); }
+    pane = String(pane || 'portalo');
+    var tabs = document.querySelectorAll('#md-proto-tabs .md-section-tab');
+    var panes = document.querySelectorAll('#protocolos .md-proto-pane, .md-proto-pane');
+    tabs.forEach(function (b) {
+        var on = b.getAttribute('data-pane') === pane;
+        b.classList.toggle('active', on);
+    });
+    if (btn && btn.classList) btn.classList.add('active');
+    panes.forEach(function (p) {
+        var on = p.id === ('md-pane-' + pane);
+        p.classList.toggle('active', on);
+        p.style.setProperty('display', on ? 'block' : 'none', 'important');
+    });
+    try { if (window.MDMissao) MDMissao.onProtocolo(); } catch (e) {}
+    try { if (typeof mdRenderProtocolos === 'function') mdRenderProtocolos(); } catch (e) {}
 }
+// Clique nas abas por delegação (funciona mesmo se o HTML for re-renderizado)
+(function bindProtoTabs() {
+    function bind() {
+        var root = document.getElementById('md-proto-tabs');
+        if (!root || root._mdBound) return;
+        root._mdBound = true;
+        root.addEventListener('click', function (ev) {
+            var btn = ev.target.closest('.md-section-tab');
+            if (!btn || !root.contains(btn)) return;
+            ev.preventDefault();
+            ev.stopPropagation();
+            var pane = btn.getAttribute('data-pane');
+            if (pane) mdProtoTab(pane, btn);
+        });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+    else bind();
+    setTimeout(bind, 500);
+    setTimeout(bind, 1500);
+})();
+window.mdProtoTab = mdProtoTab;
+
 
 function mdRenderProtocolos() {
     const data = (typeof cerimonialData !== 'undefined' && cerimonialData)
@@ -29039,12 +29298,93 @@ document.addEventListener('DOMContentLoaded', function () {
   setTimeout(function () {
     try { if (typeof mdRenderProtocolos === 'function') mdRenderProtocolos(); } catch (e) {}
     try {
-      // garantir painel Portaló visível
-      var p = document.getElementById('md-pane-portalo');
-      if (p) { p.classList.add('active'); p.style.display = 'block'; }
+      if (typeof mdProtoTab === 'function') mdProtoTab('portalo');
+      else {
+        var p = document.getElementById('md-pane-portalo');
+        if (p) { p.classList.add('active'); p.style.setProperty('display','block','important'); }
+      }
     } catch (e) {}
   }, 400);
 });
+</script>
+
+<script>
+(function () {
+  function mdSyncCmdBar() {
+    try {
+      var nome = 'Marujo';
+      var avatar = null;
+      var vip = false;
+      var xp = 0, next = 100, level = 1;
+
+      if (window.MarujoConta && MarujoConta.usuario) {
+        var u = MarujoConta.usuario;
+        nome = u.nome || u.name || nome;
+        avatar = u.avatar || u.foto || null;
+        vip = !!(u.vip || u.isVip || u.plano === 'vip');
+        xp = Number(u.xp || u.pontos || 0);
+        level = Number(u.level || u.nivel || 1);
+      }
+      if (typeof userProgress !== 'undefined' && userProgress) {
+        xp = Number(userProgress.xp != null ? userProgress.xp : xp);
+        level = Number(userProgress.level != null ? userProgress.level : level);
+        next = Number(userProgress.nextLevelXp || userProgress.nextXP || (level * 100));
+      } else {
+        next = level * 100;
+      }
+      // progresso dentro do nível
+      var prevThreshold = (level - 1) * 100;
+      if (typeof userProgress !== 'undefined' && userProgress && userProgress.levelStartXp != null) {
+        prevThreshold = userProgress.levelStartXp;
+      }
+      var span = Math.max(1, next - prevThreshold);
+      var pct = Math.max(0, Math.min(100, Math.round(((xp - prevThreshold) / span) * 100)));
+      var falta = Math.max(0, next - xp);
+
+      var nomeEl = document.getElementById('md-cmd-nome');
+      if (nomeEl) nomeEl.textContent = nome;
+
+      var vipEl = document.getElementById('md-cmd-vip');
+      if (vipEl) {
+        vipEl.textContent = vip ? 'VIP' : 'FREE';
+        vipEl.classList.toggle('off', !vip);
+      }
+
+      var fill = document.getElementById('md-cmd-xp-fill');
+      if (fill) fill.style.width = pct + '%';
+      var xpText = document.getElementById('md-cmd-xp-text');
+      if (xpText) xpText.textContent = falta > 0 ? (falta + ' XP p/ nível ' + (level + 1)) : ('Nv. ' + level + ' · max');
+
+      var av = document.getElementById('md-cmd-avatar');
+      if (av) {
+        if (avatar) {
+          av.classList.remove('placeholder');
+          av.innerHTML = '';
+          av.style.backgroundImage = 'url(' + avatar + ')';
+          av.style.backgroundSize = 'cover';
+          av.style.backgroundPosition = 'center';
+        }
+      }
+
+      // online: espelha contador existente
+      var src = document.getElementById('md-online-count-header');
+      var dst = document.getElementById('md-cmd-online-n');
+      if (src && dst) dst.textContent = src.textContent || '0';
+    } catch (e) {}
+  }
+  window.mdSyncCmdBar = mdSyncCmdBar;
+  document.addEventListener('DOMContentLoaded', function () {
+    mdSyncCmdBar();
+    setInterval(mdSyncCmdBar, 3000);
+  });
+  // Observa mudanças no contador online
+  setTimeout(function () {
+    var src = document.getElementById('md-online-count-header');
+    if (src && window.MutationObserver) {
+      new MutationObserver(mdSyncCmdBar).observe(src, { childList: true, characterData: true, subtree: true });
+    }
+  }, 1000);
+})();
 </script>
 </body>
 </html>
