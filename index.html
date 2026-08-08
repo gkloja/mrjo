@@ -4042,6 +4042,33 @@ html[data-theme="light"] .md-rank-name { color: var(--text-primary); }
 
 /* ===== HEADER DE COMANDO (sem menu de seções) ===== */
 
+.md-header-music-btn { font-size: 0.95rem; }
+.md-header-music-btn.is-playing {
+    background: linear-gradient(135deg, #c084fc, #6a3093) !important;
+    border-color: #e9d5ff !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 3px rgba(192,132,252,0.25), 0 4px 12px rgba(0,0,0,0.3);
+}
+.md-cmd-patente {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--accent);
+    opacity: 0.95;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 1px;
+}
+.md-cmd-avatar {
+    background-size: cover !important;
+    background-position: center !important;
+}
+.md-cmd-avatar img {
+    width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+    display: block;
+}
+
+
 @media (max-width: 700px) {
   .navy-header .logo-circle { width: 42px !important; height: 42px !important; }
   .navy-header .logo-text h1 { font-size: 1rem !important; }
@@ -4247,7 +4274,7 @@ html[data-theme="light"] .md-cmd-name { color: var(--text-primary); }
 
 /* ===== APP SHELL FIX: FABs → bottom nav ===== */
 @media (max-width: 900px) {
-    #md-chat-fab,
+    #md-news-fab,
     #md-profile-fab,
     #ambient-music-btn,
     .cerimonial-floating-btn,
@@ -4258,11 +4285,25 @@ html[data-theme="light"] .md-cmd-name { color: var(--text-primary); }
         visibility: hidden !important;
         pointer-events: none !important;
     }
-    /* espaço para a barra */
+    /* Chat flutuante (no lugar das notícias) */
+    #md-chat-fab {
+        display: flex !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        bottom: calc(78px + env(safe-area-inset-bottom, 0px)) !important;
+        left: 16px !important;
+        z-index: 98100 !important;
+    }
     body {
         padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
     }
 }
+/* Desktop: notícias saem do flutuante; chat fica embaixo à esquerda */
+@media (min-width: 901px) {
+    #md-news-fab { display: none !important; }
+    #ambient-music-btn { display: none !important; } /* música vai pro header */
+}
+
 @media (min-width: 901px) {
     .md-bottom-nav { display: none !important; }
     .md-more-sheet { display: none !important; }
@@ -5998,6 +6039,9 @@ html[data-theme="light"] .signal-hero {
                     </div>
                 </div>
             </div>
+            <button type="button" class="theme-toggle-btn md-header-music-btn" id="md-header-music-btn" title="Música ambiente" onclick="mdToggleHeaderMusic()" aria-label="Música ambiente">
+                <i class="fas fa-music" id="md-header-music-ico"></i>
+            </button>
             <button class="theme-toggle-btn" id="themeToggleBtn" title="Alternar modo claro/escuro" onclick="MDTheme.toggle()">🌙</button>
             <div id="md-userbar" style="display:none;"></div>
         </div>
@@ -6013,6 +6057,7 @@ html[data-theme="light"] .signal-hero {
             <span id="md-cmd-nome">Marujo</span>
             <span class="md-cmd-vip off" id="md-cmd-vip">FREE</span>
         </div>
+        <div class="md-cmd-patente" id="md-cmd-patente">Recruta</div>
         <div class="md-cmd-xp-row">
             <div class="md-cmd-xp-bar"><span id="md-cmd-xp-fill" style="width:0%"></span></div>
             <span class="md-cmd-xp-text" id="md-cmd-xp-text">0 XP</span>
@@ -26752,7 +26797,7 @@ img.md-avatar-vip {
             const fabFallback = document.getElementById('md-profile-fab-fallback');
             if (fabImg && fabFallback) {
                 if (this.logado && this.usuario) {
-                    fabImg.src = this.avatarUrl(this.usuario);
+                    fabImg.src = this.avatarUrl(this.usuario); try { if (window.mdSyncCmdBar) mdSyncCmdBar(); } catch(e) {}
                     fabImg.onerror = () => { fabImg.src = this.avatarFallback(this.usuario.nome); };
                     fabImg.style.display = 'block';
                     fabFallback.style.display = 'none';
@@ -28535,6 +28580,9 @@ document.addEventListener('click', function(e) {
             <button type="button" class="md-more-item" onclick="mdMoreAction('conta')">
                 <i class="fas fa-user-circle"></i><span>Conta</span>
             </button>
+            <button type="button" class="md-more-item" onclick="mdMoreAction('noticias')">
+                <i class="fas fa-satellite-dish"></i><span>Notícias</span>
+            </button>
             <button type="button" class="md-more-item" onclick="mdMoreAction('quiz')">
                 <i class="fas fa-graduation-cap"></i><span>Quiz</span>
             </button>
@@ -28634,6 +28682,11 @@ function mdMoreAction(action) {
         const btn = document.getElementById('ambient-music-btn');
         if (btn) btn.click();
         else if (window.toggleAmbientMusic) toggleAmbientMusic();
+        return;
+    }
+    if (action === 'noticias') {
+        if (typeof toggleNewsRadar === 'function') toggleNewsRadar();
+        else document.getElementById('md-news-fab')?.click();
         return;
     }
     if (action === 'quiz') {
@@ -29310,29 +29363,66 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script>
 (function () {
+  function mdResolveAvatarUrl(u) {
+    try {
+      if (window.MarujoConta && typeof MarujoConta.avatarUrl === 'function' && u) {
+        return MarujoConta.avatarUrl(u);
+      }
+    } catch (e) {}
+    if (!u) return null;
+    var a = u.avatar || u.foto || u.avatarUrl || u.photoURL || null;
+    if (!a) return null;
+    if (/^https?:\/\//i.test(a) || a.indexOf('data:') === 0) return a;
+    var base = window.MD_API_BASE || window.API_BASE || 'http://br2.bronxyshost.com:4009';
+    // se for worker proxy, mídia costuma ser host direto
+    if (base.indexOf('workers.dev') >= 0) base = 'http://br2.bronxyshost.com:4009';
+    return base.replace(/\/$/, '') + (a.charAt(0) === '/' ? a : '/' + a);
+  }
+  function mdResolvePatente(level) {
+    try {
+      if (typeof getRankTitle === 'function') return getRankTitle(level);
+    } catch (e) {}
+    if (level >= 50) return 'Almirante';
+    if (level >= 30) return 'Capitão de Mar e Guerra';
+    if (level >= 20) return 'Capitão de Fragata';
+    if (level >= 15) return 'Capitão de Corveta';
+    if (level >= 10) return 'Capitão-Tenente';
+    if (level >= 7) return '1º Tenente';
+    if (level >= 5) return '2º Tenente';
+    if (level >= 3) return 'Guarda-Marinha';
+    if (level >= 2) return 'Marinheiro';
+    return 'Recruta';
+  }
   function mdSyncCmdBar() {
     try {
       var nome = 'Marujo';
       var avatar = null;
       var vip = false;
       var xp = 0, next = 100, level = 1;
+      var u = null;
 
       if (window.MarujoConta && MarujoConta.usuario) {
-        var u = MarujoConta.usuario;
+        u = MarujoConta.usuario;
         nome = u.nome || u.name || nome;
-        avatar = u.avatar || u.foto || null;
-        vip = !!(u.vip || u.isVip || u.plano === 'vip');
-        xp = Number(u.xp || u.pontos || 0);
+        vip = !!(u.vip || u.isVip || u.plano === 'vip' || u.tipo === 'vip');
+        xp = Number(u.xp || u.pontos || u.pontosTotais || 0);
         level = Number(u.level || u.nivel || 1);
+        avatar = mdResolveAvatarUrl(u);
+      }
+      // fallback: imagem do FAB de perfil
+      if (!avatar) {
+        var fabImg = document.getElementById('md-profile-fab-img');
+        if (fabImg && fabImg.src && fabImg.style.display !== 'none' && fabImg.src.indexOf('data:,') < 0) {
+          avatar = fabImg.src;
+        }
       }
       if (typeof userProgress !== 'undefined' && userProgress) {
         xp = Number(userProgress.xp != null ? userProgress.xp : xp);
         level = Number(userProgress.level != null ? userProgress.level : level);
         next = Number(userProgress.nextLevelXp || userProgress.nextXP || (level * 100));
       } else {
-        next = level * 100;
+        next = Math.max(level * 100, xp + 1);
       }
-      // progresso dentro do nível
       var prevThreshold = (level - 1) * 100;
       if (typeof userProgress !== 'undefined' && userProgress && userProgress.levelStartXp != null) {
         prevThreshold = userProgress.levelStartXp;
@@ -29340,6 +29430,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var span = Math.max(1, next - prevThreshold);
       var pct = Math.max(0, Math.min(100, Math.round(((xp - prevThreshold) / span) * 100)));
       var falta = Math.max(0, next - xp);
+      var patente = (u && (u.patente || u.posto)) || mdResolvePatente(level);
 
       var nomeEl = document.getElementById('md-cmd-nome');
       if (nomeEl) nomeEl.textContent = nome;
@@ -29353,37 +29444,59 @@ document.addEventListener('DOMContentLoaded', function () {
       var fill = document.getElementById('md-cmd-xp-fill');
       if (fill) fill.style.width = pct + '%';
       var xpText = document.getElementById('md-cmd-xp-text');
-      if (xpText) xpText.textContent = falta > 0 ? (falta + ' XP p/ nível ' + (level + 1)) : ('Nv. ' + level + ' · max');
+      if (xpText) xpText.textContent = falta > 0 ? (falta + ' XP p/ nv. ' + (level + 1)) : ('Nv. ' + level);
+
+      var patEl = document.getElementById('md-cmd-patente');
+      if (patEl) patEl.textContent = patente;
 
       var av = document.getElementById('md-cmd-avatar');
       if (av) {
         if (avatar) {
           av.classList.remove('placeholder');
-          av.innerHTML = '';
-          av.style.backgroundImage = 'url(' + avatar + ')';
-          av.style.backgroundSize = 'cover';
-          av.style.backgroundPosition = 'center';
+          av.innerHTML = '<img src="' + avatar.replace(/"/g, '&quot;') + '" alt="' + String(nome).replace(/"/g, '') + '" onerror="this.parentNode.classList.add('placeholder');this.remove();">';
+          av.style.backgroundImage = '';
+        } else if (!av.querySelector('img')) {
+          av.classList.add('placeholder');
+          if (!av.querySelector('i')) av.innerHTML = '<i class="fas fa-user"></i>';
         }
       }
 
-      // online: espelha contador existente
       var src = document.getElementById('md-online-count-header');
       var dst = document.getElementById('md-cmd-online-n');
       if (src && dst) dst.textContent = src.textContent || '0';
-    } catch (e) {}
+    } catch (e) { console.warn('[cmd-bar]', e); }
   }
   window.mdSyncCmdBar = mdSyncCmdBar;
+  window.mdToggleHeaderMusic = function () {
+    var btn = document.getElementById('ambient-music-btn');
+    if (btn) btn.click();
+    else if (typeof toggleAmbientMusic === 'function') toggleAmbientMusic();
+    // estado visual
+    setTimeout(function () {
+      var hb = document.getElementById('md-header-music-btn');
+      var amb = document.getElementById('ambient-music-btn');
+      var playing = false;
+      try {
+        playing = !!(window.ambientMusic && !ambientMusic.paused);
+      } catch (e) {}
+      if (!playing && amb) playing = amb.classList.contains('playing') || amb.classList.contains('active') || amb.getAttribute('aria-pressed') === 'true';
+      if (hb) hb.classList.toggle('is-playing', !!playing);
+    }, 200);
+  };
   document.addEventListener('DOMContentLoaded', function () {
     mdSyncCmdBar();
-    setInterval(mdSyncCmdBar, 3000);
+    setInterval(mdSyncCmdBar, 2500);
   });
-  // Observa mudanças no contador online
   setTimeout(function () {
     var src = document.getElementById('md-online-count-header');
     if (src && window.MutationObserver) {
       new MutationObserver(mdSyncCmdBar).observe(src, { childList: true, characterData: true, subtree: true });
     }
-  }, 1000);
+    var fabImg = document.getElementById('md-profile-fab-img');
+    if (fabImg && window.MutationObserver) {
+      new MutationObserver(mdSyncCmdBar).observe(fabImg, { attributes: true, attributeFilter: ['src', 'style'] });
+    }
+  }, 800);
 })();
 </script>
 </body>
