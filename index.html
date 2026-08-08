@@ -4042,13 +4042,40 @@ html[data-theme="light"] .md-rank-name { color: var(--text-primary); }
 
 /* ===== HEADER DE COMANDO (sem menu de seções) ===== */
 
-.md-header-music-btn { font-size: 0.95rem; }
-.md-header-music-btn.is-playing {
-    background: linear-gradient(135deg, #c084fc, #6a3093) !important;
-    border-color: #e9d5ff !important;
-    color: #fff !important;
-    box-shadow: 0 0 0 3px rgba(192,132,252,0.25), 0 4px 12px rgba(0,0,0,0.3);
+.md-header-music-btn {
+    flex-shrink: 0;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 2px solid #c084fc !important;
+    background: linear-gradient(135deg, #7c3aed, #4c1d95) !important;
+    color: #f3e8ff !important;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(76, 29, 149, 0.45);
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    touch-action: manipulation;
 }
+.md-header-music-btn:hover { transform: translateY(-1px); }
+.md-header-music-btn:active { transform: scale(0.9); }
+.md-header-music-btn.is-playing {
+    background: linear-gradient(135deg, #e9d5ff, #c084fc) !important;
+    border-color: #f5d0fe !important;
+    color: #4c1d95 !important;
+    box-shadow: 0 0 0 3px rgba(192,132,252,0.35), 0 4px 14px rgba(124, 58, 237, 0.5);
+    animation: mdMusicPulse 1.4s ease infinite;
+}
+@keyframes mdMusicPulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(192,132,252,0.3), 0 4px 14px rgba(124, 58, 237, 0.45); }
+    50% { box-shadow: 0 0 0 6px rgba(192,132,252,0.12), 0 4px 18px rgba(124, 58, 237, 0.55); }
+}
+@media (max-width: 768px) {
+    .md-header-music-btn { width: 36px; height: 36px; font-size: 0.9rem; }
+}
+html[data-theme="light"] .md-header-music-btn {
+    background: linear-gradient(135deg, #a78bfa, #7c3aed) !important;
+    color: #fff !important;
+}
+
 .md-cmd-patente {
     font-size: 0.68rem;
     font-weight: 600;
@@ -6039,7 +6066,7 @@ html[data-theme="light"] .signal-hero {
                     </div>
                 </div>
             </div>
-            <button type="button" class="theme-toggle-btn md-header-music-btn" id="md-header-music-btn" title="Música ambiente" onclick="mdToggleHeaderMusic()" aria-label="Música ambiente">
+            <button type="button" class="md-header-music-btn" id="md-header-music-btn" title="Música ambiente" onclick="mdToggleHeaderMusic()" aria-label="Música ambiente">
                 <i class="fas fa-music" id="md-header-music-ico"></i>
             </button>
             <button class="theme-toggle-btn" id="themeToggleBtn" title="Alternar modo claro/escuro" onclick="MDTheme.toggle()">🌙</button>
@@ -26752,7 +26779,7 @@ img.md-avatar-vip {
                 const r = await authFetch(`${API}/eu`);
                 const data = await r.json();
                 this.logado = !!data.logado;
-                this.usuario = data.usuario || null;
+                this.usuario = data.usuario || null; try { if (window.mdSyncCmdBar) setTimeout(mdSyncCmdBar, 50); } catch (e) {}
                 if (this.logado && this.usuario && this.usuario.id && window.mdOneSignalLogin) {
                     window.mdOneSignalLogin(this.usuario.id);
                 }
@@ -26979,7 +27006,7 @@ img.md-avatar-vip {
             this.fecharTodosOverlays();
             const nivel = this.usuario.level || 1;
 
-            document.getElementById('md-perfil-avatar').src = this.avatarUrl(this.usuario);
+            document.getElementById('md-perfil-avatar').src = this.avatarUrl(this.usuario); try{if(window.mdSyncCmdBar)mdSyncCmdBar();}catch(e){}
             document.getElementById('md-perfil-avatar').onerror = () => {
                 document.getElementById('md-perfil-avatar').src = this.avatarFallback(this.usuario.nome);
             };
@@ -29363,140 +29390,230 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script>
 (function () {
-  function mdResolveAvatarUrl(u) {
+  var MD_AVATAR_API = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
+
+  function mdCmdApiBase() {
     try {
-      if (window.MarujoConta && typeof MarujoConta.avatarUrl === 'function' && u) {
-        return MarujoConta.avatarUrl(u);
+      if (window.MarujoConta && MarujoConta.usuario) {
+        // avatarUrl no MarujoConta usa API_BASE do closure; replicamos a mesma base
       }
     } catch (e) {}
-    if (!u) return null;
-    var a = u.avatar || u.foto || u.avatarUrl || u.photoURL || null;
-    if (!a) return null;
-    if (/^https?:\/\//i.test(a) || a.indexOf('data:') === 0) return a;
-    var base = window.MD_API_BASE || window.API_BASE || 'http://br2.bronxyshost.com:4009';
-    // se for worker proxy, mídia costuma ser host direto
-    if (base.indexOf('workers.dev') >= 0) base = 'http://br2.bronxyshost.com:4009';
-    return base.replace(/\/$/, '') + (a.charAt(0) === '/' ? a : '/' + a);
+    return MD_AVATAR_API;
   }
-  function mdResolvePatente(level) {
+
+  function mdCmdAvatarUrl(usuario) {
+    // Cópia fiel de MarujoConta.avatarUrl
+    try {
+      if (window.MarujoConta && typeof MarujoConta.avatarUrl === 'function') {
+        return MarujoConta.avatarUrl(usuario || MarujoConta.usuario);
+      }
+    } catch (e) {}
+    if (!usuario || !usuario.avatar || String(usuario.avatar).indexOf('avatar-padrao') >= 0) {
+      var nome = (usuario && usuario.nome) || 'Marujo';
+      try {
+        if (window.MarujoConta && typeof MarujoConta.avatarFallback === 'function') {
+          return MarujoConta.avatarFallback(nome);
+        }
+      } catch (e) {}
+      return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(nome) + '&background=0d2745&color=ffcc00&size=128';
+    }
+    if (String(usuario.avatar).indexOf('http') === 0) return usuario.avatar;
+    return mdCmdApiBase() + usuario.avatar;
+  }
+
+  function mdCmdNextXp(level) {
+    level = level || 1;
+    try {
+      if (typeof userProgress !== 'undefined' && userProgress && typeof userProgress.getNextLevelXP === 'function') {
+        return userProgress.getNextLevelXP();
+      }
+    } catch (e) {}
+    return Math.floor(100 * Math.pow(1.5, level - 1));
+  }
+
+  function mdCmdPrevXp(level) {
+    level = Math.max(1, level || 1);
+    if (level <= 1) return 0;
+    return Math.floor(100 * Math.pow(1.5, level - 2));
+  }
+
+  function mdCmdPatente(level) {
     try {
       if (typeof getRankTitle === 'function') return getRankTitle(level);
     } catch (e) {}
-    if (level >= 50) return 'Almirante';
-    if (level >= 30) return 'Capitão de Mar e Guerra';
-    if (level >= 20) return 'Capitão de Fragata';
-    if (level >= 15) return 'Capitão de Corveta';
-    if (level >= 10) return 'Capitão-Tenente';
-    if (level >= 7) return '1º Tenente';
-    if (level >= 5) return '2º Tenente';
-    if (level >= 3) return 'Guarda-Marinha';
-    if (level >= 2) return 'Marinheiro';
-    return 'Recruta';
+    return 'Nv. ' + level;
   }
+
   function mdSyncCmdBar() {
     try {
       var nome = 'Marujo';
-      var avatar = null;
       var vip = false;
-      var xp = 0, next = 100, level = 1;
+      var level = 1;
+      var xp = 0;
       var u = null;
 
+      // 1) Conta logada
       if (window.MarujoConta && MarujoConta.usuario) {
         u = MarujoConta.usuario;
         nome = u.nome || u.name || nome;
-        vip = !!(u.vip || u.isVip || u.plano === 'vip' || u.tipo === 'vip');
-        xp = Number(u.xp || u.pontos || u.pontosTotais || 0);
-        level = Number(u.level || u.nivel || 1);
-        avatar = mdResolveAvatarUrl(u);
+        vip = !!(u.vip || u.isVip);
+        level = Number(u.level || u.nivel || 1) || 1;
+        xp = Number(u.xp != null ? u.xp : (u.pontosTotais != null ? u.pontosTotais : u.pontos)) || 0;
       }
-      // fallback: imagem do FAB de perfil
-      if (!avatar) {
-        var fabImg = document.getElementById('md-profile-fab-img');
-        if (fabImg && fabImg.src && fabImg.style.display !== 'none' && fabImg.src.indexOf('data:,') < 0) {
-          avatar = fabImg.src;
-        }
-      }
-      if (typeof userProgress !== 'undefined' && userProgress) {
-        xp = Number(userProgress.xp != null ? userProgress.xp : xp);
-        level = Number(userProgress.level != null ? userProgress.level : level);
-        next = Number(userProgress.nextLevelXp || userProgress.nextXP || (level * 100));
-      } else {
-        next = Math.max(level * 100, xp + 1);
-      }
-      var prevThreshold = (level - 1) * 100;
-      if (typeof userProgress !== 'undefined' && userProgress && userProgress.levelStartXp != null) {
-        prevThreshold = userProgress.levelStartXp;
-      }
-      var span = Math.max(1, next - prevThreshold);
-      var pct = Math.max(0, Math.min(100, Math.round(((xp - prevThreshold) / span) * 100)));
-      var falta = Math.max(0, next - xp);
-      var patente = (u && (u.patente || u.posto)) || mdResolvePatente(level);
 
+      // 2) Progresso local do quiz (fonte do XP “de verdade” no FAB)
+      if (typeof userProgress !== 'undefined' && userProgress) {
+        if (userProgress.level != null) level = Number(userProgress.level) || level;
+        if (userProgress.xp != null) xp = Number(userProgress.xp) || xp;
+      }
+
+      var next = mdCmdNextXp(level);
+      var prev = mdCmdPrevXp(level);
+      // Se getNextLevelXP retorna XP total acumulado necessário:
+      var pct;
+      if (next > xp) {
+        var span = Math.max(1, next - prev);
+        pct = Math.max(0, Math.min(100, Math.round(((xp - prev) / span) * 100)));
+      } else {
+        pct = 100;
+      }
+      var falta = Math.max(0, next - xp);
+      var patente = (u && (u.patente || u.posto)) || mdCmdPatente(level);
+
+      // Nome + VIP + patente
       var nomeEl = document.getElementById('md-cmd-nome');
       if (nomeEl) nomeEl.textContent = nome;
-
       var vipEl = document.getElementById('md-cmd-vip');
       if (vipEl) {
         vipEl.textContent = vip ? 'VIP' : 'FREE';
         vipEl.classList.toggle('off', !vip);
       }
-
-      var fill = document.getElementById('md-cmd-xp-fill');
-      if (fill) fill.style.width = pct + '%';
-      var xpText = document.getElementById('md-cmd-xp-text');
-      if (xpText) xpText.textContent = falta > 0 ? (falta + ' XP p/ nv. ' + (level + 1)) : ('Nv. ' + level);
-
       var patEl = document.getElementById('md-cmd-patente');
       if (patEl) patEl.textContent = patente;
 
+      // XP
+      var fill = document.getElementById('md-cmd-xp-fill');
+      if (fill) fill.style.width = pct + '%';
+      var xpText = document.getElementById('md-cmd-xp-text');
+      if (xpText) {
+        xpText.textContent = xp + ' XP · falta ' + falta + ' p/ nv.' + (level + 1);
+      }
+
+      // Foto — mesma URL do perfil
       var av = document.getElementById('md-cmd-avatar');
       if (av) {
-        if (avatar) {
+        var url = mdCmdAvatarUrl(u);
+        // também tenta a img do perfil se já estiver no DOM
+        var perfilImg = document.getElementById('md-perfil-avatar');
+        if (perfilImg && perfilImg.src && perfilImg.src.indexOf('data:,') < 0 && !perfilImg.src.endsWith('/')) {
+          // se perfil aberto ou já carregado
+          if (perfilImg.naturalWidth > 0 || (perfilImg.getAttribute('src') || '').length > 8) {
+            url = perfilImg.src;
+          }
+        }
+        var fabImg = document.getElementById('md-profile-fab-img');
+        if (fabImg && fabImg.getAttribute('src') && fabImg.style.display !== 'none') {
+          url = fabImg.src || url;
+        }
+
+        if (url) {
           av.classList.remove('placeholder');
-          av.innerHTML = '<img src="' + avatar.replace(/"/g, '&quot;') + '" alt="' + String(nome).replace(/"/g, '') + '" onerror="this.parentNode.classList.add('placeholder');this.remove();">';
-          av.style.backgroundImage = '';
-        } else if (!av.querySelector('img')) {
-          av.classList.add('placeholder');
-          if (!av.querySelector('i')) av.innerHTML = '<i class="fas fa-user"></i>';
+          var img = av.querySelector('img');
+          if (!img) {
+            img = document.createElement('img');
+            img.alt = nome;
+            av.innerHTML = '';
+            av.appendChild(img);
+          }
+          if (img.src !== url) {
+            img.onerror = function () {
+              try {
+                if (window.MarujoConta && MarujoConta.avatarFallback) {
+                  img.src = MarujoConta.avatarFallback(nome);
+                }
+              } catch (e) {
+                av.classList.add('placeholder');
+                av.innerHTML = '<i class="fas fa-user"></i>';
+              }
+            };
+            img.src = url;
+          }
         }
       }
 
+      // Online
       var src = document.getElementById('md-online-count-header');
       var dst = document.getElementById('md-cmd-online-n');
-      if (src && dst) dst.textContent = src.textContent || '0';
-    } catch (e) { console.warn('[cmd-bar]', e); }
+      if (src && dst) dst.textContent = (src.textContent || '0').trim();
+    } catch (e) {
+      console.warn('[mdSyncCmdBar]', e);
+    }
   }
+
   window.mdSyncCmdBar = mdSyncCmdBar;
+
   window.mdToggleHeaderMusic = function () {
     var btn = document.getElementById('ambient-music-btn');
     if (btn) btn.click();
     else if (typeof toggleAmbientMusic === 'function') toggleAmbientMusic();
-    // estado visual
     setTimeout(function () {
       var hb = document.getElementById('md-header-music-btn');
-      var amb = document.getElementById('ambient-music-btn');
       var playing = false;
       try {
-        playing = !!(window.ambientMusic && !ambientMusic.paused);
+        var a = document.getElementById('ambient-music-audio') || document.querySelector('audio#ambientMusic, audio.ambient-music');
+        if (a) playing = !a.paused;
+        if (window.ambientAudio) playing = !ambientAudio.paused;
+        if (window.ambientMusic && typeof ambientMusic.paused === 'boolean') playing = !ambientMusic.paused;
       } catch (e) {}
-      if (!playing && amb) playing = amb.classList.contains('playing') || amb.classList.contains('active') || amb.getAttribute('aria-pressed') === 'true';
+      if (!playing && btn) {
+        playing = btn.classList.contains('playing') || btn.classList.contains('active') || btn.classList.contains('is-playing');
+      }
       if (hb) hb.classList.toggle('is-playing', !!playing);
-    }, 200);
+    }, 250);
   };
-  document.addEventListener('DOMContentLoaded', function () {
+
+  function boot() {
     mdSyncCmdBar();
-    setInterval(mdSyncCmdBar, 2500);
-  });
+    setInterval(mdSyncCmdBar, 2000);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+
+  // Quando o botão flutuante de XP atualiza, sincroniza o header
+  var _ufb = window.updateFloatingButton;
+  if (typeof _ufb === 'function') {
+    window.updateFloatingButton = function () {
+      var r = _ufb.apply(this, arguments);
+      try { mdSyncCmdBar(); } catch (e) {}
+      return r;
+    };
+  } else {
+    // tenta de novo quando a função existir
+    var tries = 0;
+    var t = setInterval(function () {
+      tries++;
+      if (typeof window.updateFloatingButton === 'function' && !window.updateFloatingButton._mdWrapped) {
+        var orig = window.updateFloatingButton;
+        window.updateFloatingButton = function () {
+          var r = orig.apply(this, arguments);
+          try { mdSyncCmdBar(); } catch (e) {}
+          return r;
+        };
+        window.updateFloatingButton._mdWrapped = true;
+        clearInterval(t);
+      }
+      if (tries > 40) clearInterval(t);
+    }, 500);
+  }
+
+  // Observa mudanças no FAB de perfil e contador online
   setTimeout(function () {
-    var src = document.getElementById('md-online-count-header');
-    if (src && window.MutationObserver) {
-      new MutationObserver(mdSyncCmdBar).observe(src, { childList: true, characterData: true, subtree: true });
-    }
-    var fabImg = document.getElementById('md-profile-fab-img');
-    if (fabImg && window.MutationObserver) {
-      new MutationObserver(mdSyncCmdBar).observe(fabImg, { attributes: true, attributeFilter: ['src', 'style'] });
-    }
-  }, 800);
+    if (!window.MutationObserver) return;
+    ['md-profile-fab-img', 'md-perfil-avatar', 'md-online-count-header', 'floatingXP'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) new MutationObserver(mdSyncCmdBar).observe(el, { attributes: true, childList: true, characterData: true, subtree: true });
+    });
+  }, 1200);
 })();
 </script>
 </body>
