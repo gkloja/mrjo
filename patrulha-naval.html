@@ -384,15 +384,35 @@
   function sfxOverSynth() { beep(300, 0.2, 'triangle', 0.1, 150); setTimeout(() => beep(150, 0.35, 'sine', 0.08), 180); }
   function sfxOver() { playGameOverOgg(); }
   function sfxStart() { beep(440, 0.1, 'sine', 0.08); setTimeout(() => beep(660, 0.12, 'sine', 0.08), 100); }
+  let bgAudio = null;
   function startMusic() {
+    if (muted) return;
+    try {
+      if (!bgAudio) {
+        bgAudio = new Audio('/Apitos/home2.mp3');
+        bgAudio.loop = true;
+        bgAudio.volume = 0.18;
+        bgAudio.preload = 'auto';
+      }
+      bgAudio.currentTime = bgAudio.currentTime || 0;
+      const playP = bgAudio.play();
+      if (playP && playP.catch) playP.catch(function () {
+        // fallback sintético se o arquivo não carregar
+        startMusicSynth();
+      });
+    } catch (e) {
+      startMusicSynth();
+    }
+  }
+  function startMusicSynth() {
     if (muted || musicNodes) return;
     try {
       const c = ensureAudio();
       musicGain = c.createGain(); musicGain.gain.value = MUSIC_VOL; musicGain.connect(c.destination);
       const o1 = c.createOscillator(), o2 = c.createOscillator(), lfo = c.createOscillator(), lfoG = c.createGain();
-      o1.type = 'sine'; o1.frequency.value = 55;
-      o2.type = 'sine'; o2.frequency.value = 82.5;
-      lfo.frequency.value = 0.12; lfoG.gain.value = 0.012;
+      o1.type = 'sine'; o1.frequency.value = 48;
+      o2.type = 'triangle'; o2.frequency.value = 72;
+      lfo.frequency.value = 0.08; lfoG.gain.value = 0.006;
       lfo.connect(lfoG); lfoG.connect(musicGain.gain);
       o1.connect(musicGain); o2.connect(musicGain);
       o1.start(); o2.start(); lfo.start();
@@ -400,7 +420,13 @@
     } catch (e) {}
   }
   function stopMusic() {
-    if (musicNodes) { musicNodes.forEach(n => { try { n.stop(); } catch (e) {} }); musicNodes = null; }
+    try {
+      if (bgAudio) { bgAudio.pause(); }
+    } catch (e) {}
+    if (musicNodes) {
+      musicNodes.forEach(function (n) { try { n.stop(); } catch (e) {} });
+      musicNodes = null;
+    }
   }
   function toggleMute() {
     muted = !muted;

@@ -166,6 +166,15 @@
     min-width: 200px; margin: 5px;
   }
   .btn:active { transform: scale(.97); }
+  .quiz-opt {
+    pointer-events: auto; border: 1px solid rgba(255,204,0,.28);
+    background: rgba(255,255,255,.06); color: #fff;
+    border-radius: 12px; padding: 12px 14px; text-align: left;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .quiz-opt:active { background: rgba(255,204,0,.12); }
+  .quiz-opt.ok { border-color: #2ecc71; background: rgba(46,204,113,.15); }
+  .quiz-opt.bad { border-color: #e74c3c; background: rgba(231,76,60,.15); }
   .btn.ghost {
     background: transparent; color: var(--foam);
     border: 1px solid rgba(142,197,255,.35);
@@ -244,21 +253,38 @@
   <div class="screen" id="screen-start">
     <div class="mark">⚔</div>
     <h1>Couraçado</h1>
-    <p class="sub">Comande o navio da tripulação. Enfrente criaturas e corsários, acumule ouro e melhore o arsenal entre as ondas.</p>
+    <p class="sub">Comande o navio da tripulação. Ondas hostis, lasers, chefes distintos e inspeção de convés: acerte a pergunta para liberar o arsenal.</p>
     <div class="tags">
       <span class="tag">Ondas</span>
       <span class="tag">Chefes</span>
       <span class="tag">Upgrades</span>
       <span class="tag">XP</span>
     </div>
+    <div id="start-rank" style="width:min(320px,100%);text-align:left;margin:0 auto 14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,204,0,.2);border-radius:14px;padding:12px 14px">
+      <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--foam);margin-bottom:8px">🏆 Top 3 · Couraçado</div>
+      <div id="start-rank-list" style="font-size:13px;opacity:.85">Carregando…</div>
+    </div>
     <button type="button" class="btn" id="btn-start" onclick="window.__couracadoStart && window.__couracadoStart()">Zarpar</button>
     <button type="button" class="btn ghost" id="btn-close-start" style="display:none">Voltar ao site</button>
     <p class="record">Recorde: onda <strong id="best-wave">1</strong> · <strong id="best-kills">0</strong> abates</p>
   </div>
 
+  <div class="screen hidden" id="screen-quiz">
+    <h1 style="font-size:20px">📋 Inspeção de Convés</h1>
+    <p class="sub">Acerte para liberar o Arsenal do Porto. Errou? Segue viagem sem upgrade.</p>
+    <div id="quiz-diff" style="font-size:11px;font-weight:800;color:#ffcc00;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">FÁCIL</div>
+    <div id="quiz-q" style="font-size:15px;font-weight:700;line-height:1.4;max-width:340px;margin:0 auto 14px;color:#fff"></div>
+    <div id="quiz-opts" style="display:flex;flex-direction:column;gap:8px;width:min(340px,100%);pointer-events:auto"></div>
+    <div id="quiz-timer" style="margin-top:14px;width:min(280px,90%);height:6px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden">
+      <div id="quiz-timer-fill" style="height:100%;width:100%;background:linear-gradient(90deg,#ffcc00,#e6b800);transition:width .1s linear"></div>
+    </div>
+    <p id="quiz-feedback" style="margin-top:10px;font-size:13px;font-weight:700;min-height:18px;color:#9ec9ff"></p>
+  </div>
+
   <div class="screen hidden" id="screen-shop">
     <h1 style="font-size:22px">Arsenal do Porto</h1>
-    <p class="sub">Onda <span id="shop-wave">1</span> concluída. Invista o ouro antes da próxima investida.</p>
+    <p class="sub" id="shop-sub">Onda <span id="shop-wave">1</span> concluída. Invista o ouro antes da próxima investida.</p>
+    <div id="shop-lock" style="display:none;font-size:13px;font-weight:700;color:#ff6b6b;margin-bottom:8px">🔒 Arsenal bloqueado — resposta incorreta</div>
     <div id="shop-gold">🪙 0</div>
     <div id="shop-grid"></div>
     <button type="button" class="btn" id="btn-next-wave">Próxima onda</button>
@@ -281,6 +307,10 @@
       <div class="stat"><div class="l">Ouro</div><div class="n" id="over-gold">0</div></div>
       <div class="stat"><div class="l">XP</div><div class="n" id="over-xp">0</div></div>
     </div>
+    <div style="width:min(320px,100%);text-align:left;margin:0 auto 14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,204,0,.2);border-radius:14px;padding:12px 14px">
+      <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9ec9ff;margin-bottom:8px">🏆 Top 3 · Couraçado</div>
+      <div id="over-rank-list"></div>
+    </div>
     <button type="button" class="btn" id="btn-again">Nova missão</button>
     <button type="button" class="btn ghost" id="btn-close-over" style="display:none">Voltar ao site</button>
   </div>
@@ -294,6 +324,7 @@
   const ctx = canvas.getContext('2d');
   const wrap = document.getElementById('wrap');
   const IN_IFRAME = window.parent !== window;
+  const API_RANK = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
 
   let W = 360, H = 640, dpr = 1;
   // declarado cedo para resize() não quebrar por TDZ
@@ -395,12 +426,28 @@
     setTimeout(function () { beep(120, 0.3, 'sine', 0.08); }, 160);
     setTimeout(function () { beep(70, 0.4, 'sine', 0.06); }, 320);
   }
+  let bgAudio = null;
   function startMusic(isBoss) {
+    if (muted) return;
+    try {
+      if (!bgAudio) {
+        bgAudio = new Audio('/Apitos/home2.mp3');
+        bgAudio.loop = true;
+        bgAudio.preload = 'auto';
+      }
+      bgAudio.volume = isBoss ? 0.28 : 0.18;
+      const playP = bgAudio.play();
+      if (playP && playP.catch) playP.catch(function () { startMusicSynth(isBoss); });
+      bossMode = !!isBoss;
+    } catch (e) {
+      startMusicSynth(isBoss);
+    }
+  }
+  function startMusicSynth(isBoss) {
     if (muted) return;
     try {
       const c = ensureAudio();
       if (!c) return;
-      // se já toca e só muda modo boss, ajusta frequência
       if (musicNodes && musicGainNode) {
         bossMode = !!isBoss;
         try {
@@ -431,6 +478,7 @@
     } catch (e) {}
   }
   function stopMusic() {
+    try { if (bgAudio) bgAudio.pause(); } catch (e) {}
     if (musicNodes) {
       musicNodes.forEach(function (n) { try { if (n.stop) n.stop(); } catch (e) {} });
       musicNodes = null;
@@ -443,7 +491,7 @@
   const clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
   const rr = function (n) { return Math.random() < n; };
 
-  const STATE = { MENU: 0, PLAY: 1, SHOP: 2, PAUSE: 3, OVER: 4 };
+  const STATE = { MENU: 0, PLAY: 1, SHOP: 2, PAUSE: 3, OVER: 4, QUIZ: 5 };
   let state = STATE.MENU;
 
   const UPGRADES = [
@@ -460,6 +508,64 @@
   let wave = 1, kills = 0, gold = 0, elapsed = 0;
   let spawnTimer = 0, waveClearTimer = 0, waveAnnouncing = 0, bossWave = false, toSpawn = 0;
   let aimX = 180, pointerDown = false, fireCooldown = 0, levels = {};
+  let canUpgrade = true;
+  let quizTimerId = null;
+  let quizDeadline = 0;
+  let quizAnswered = false;
+  let usedQuiz = {};
+  const QUIZ_BANK = {
+    fácil: [
+      {q:"Quantos tiros de salva honram o Presidente da República?",opts:["19","21","17","15"],c:1},
+      {q:"Qual a Bandeira Distintiva da Marinha do Brasil?",opts:["Bandeira Nacional","Bandeira do Cruzeiro","Estandarte Presidencial","Pavilhão Naval"],c:1},
+      {q:"Quantas estrelas tem a Bandeira Nacional?",opts:["26","27","28","29"],c:1},
+      {q:"O que significa a sigla MB?",opts:["Marinha do Brasil","Ministério da Bordo","Missão de Bordo","Marinha Brasileira"],c:0},
+      {q:"Qual o dia do Marinheiro?",opts:["13 de dezembro","11 de junho","7 de setembro","15 de novembro"],c:0},
+      {q:"Continência se presta com qual mão?",opts:["Esquerda","Direita","Ambas","Alterna"],c:1},
+      {q:"Onde fica a sede da Marinha?",opts:["São Paulo","Rio de Janeiro","Brasília","Salvador"],c:1},
+      {q:"O que é um Grumete?",opts:["Oficial superior","Praça em formação","Navio-escola","Tipo de apito"],c:1}
+    ],
+    médio: [
+      {q:"Salva de tiros para um Vice-Almirante?",opts:["13","15","17","19"],c:1},
+      {q:"Sinal PAPA no Código Internacional indica:",opts:["Todos a bordo, prosseguir","Homem ao mar","Solicito prático","Navio em quarentena"],c:0},
+      {q:"Quantas cornetas substitutas existem?",opts:["2","3","4","5"],c:2},
+      {q:"O que indica a 1ª Corneta Substituta içada?",opts:["Comandante ausente","Presidente a bordo","Exercício","Pedido de prático"],c:0},
+      {q:"Salva de 19 tiros é para:",opts:["Presidente","Vice-Presidente e Ministros","Almirante de Esquadra","Só o Papa"],c:1},
+      {q:"Flâmula Nacional é:",opts:["Bandeira longa na mastreação","Outro nome da Bandeira Nacional","Bandeira de guerra","Sinal de perigo"],c:0},
+      {q:"Toque Atenção serve para:",opts:["Só início de cerimônia","Só formatura","Preparar para continuar","Desativar alarme"],c:2},
+      {q:"Diferença entre Continência e Saudação?",opts:["Continência formal, Saudação informal","São iguais","Continência só em terra","Saudação só no mar"],c:0}
+    ],
+    difícil: [
+      {q:"Proporção oficial da Bandeira Nacional?",opts:["20:14 (módulo)","3:2","16:9","4:3"],c:0},
+      {q:"Sinal QUEBEC no CIS significa:",opts:["Solicito livre prática","Tenho médico a bordo","Estou fundeado","Solicito rebocador"],c:0},
+      {q:"Tipos de toques de apito para continências?",opts:["5","10","15","20"],c:2},
+      {q:"Bandeira que pode ficar com o Estandarte Presidencial?",opts:["Pavilhão do Comandante da Marinha","Bandeira do Cruzeiro","Pavilhão do Patrono da Marinha","Flâmula de Comando"],c:2},
+      {q:"Quantos boys prestam continência a um Almirante?",opts:["4","6","8","10"],c:2},
+      {q:"EMN-006 trata principalmente de:",opts:["Cerimonial da Marinha","Operações de guerra","Logística","Aviação naval"],c:0},
+      {q:"O Patrono da Marinha é:",opts:["Barroso","Tamandaré","Mauá","Cabral"],c:1},
+      {q:"Sinal OSCAR no CIS indica:",opts:["Homem ao mar","Solicito prático","Navio com avaria","Pedido de médico"],c:0}
+    ]
+  };
+  function quizDifficulty() {
+    if (wave <= 3) return 'fácil';
+    if (wave <= 7) return 'médio';
+    return 'difícil';
+  }
+  function pickQuiz() {
+    var diff = quizDifficulty();
+    var bank = QUIZ_BANK[diff] || QUIZ_BANK['fácil'];
+    if (!usedQuiz[diff]) usedQuiz[diff] = {};
+    var pool = [];
+    for (var i = 0; i < bank.length; i++) if (!usedQuiz[diff][i]) pool.push(i);
+    if (!pool.length) { usedQuiz[diff] = {}; pool = bank.map(function(_,i){return i;}); }
+    var idx = pool[Math.floor(Math.random() * pool.length)];
+    usedQuiz[diff][idx] = 1;
+    var item = bank[idx];
+    var order = [0,1,2,3].sort(function(){ return Math.random()-0.5; });
+    var opts = order.map(function(i){ return item.opts[i]; });
+    var correct = order.indexOf(item.c);
+    return { q: item.q, opts: opts, c: correct, diff: diff };
+  }
+
   let bestWave = Number(localStorage.getItem('md_couracado_best_wave') || 1);
   let bestKills = Number(localStorage.getItem('md_couracado_best_kills') || 0);
   document.getElementById('best-wave').textContent = bestWave;
@@ -468,6 +574,120 @@
   const stars = [];
   for (let i = 0; i < 55; i++) {
     stars.push({ x: Math.random(), y: Math.random(), s: 0.7 + Math.random() * 1.8, v: 0.04 + Math.random() * 0.1 });
+  }
+
+
+  function playerInfo() {
+    var nome = 'Marujo', id = null;
+    try {
+      if (IN_IFRAME && parent.MarujoConta && parent.MarujoConta.usuario) {
+        var u = parent.MarujoConta.usuario;
+        nome = u.nome || u.name || nome;
+        id = u.id != null ? String(u.id) : null;
+      }
+    } catch (e) {}
+    return { nome: nome, id: id };
+  }
+  function rankKey(e) {
+    if (e && e.userId != null && e.userId !== '') return 'id:' + String(e.userId);
+    return 'n:' + String((e && e.nome) || 'Marujo').toLowerCase();
+  }
+  function readLocalRank() {
+    try {
+      var arr = JSON.parse(localStorage.getItem('md_couracado_rank') || '[]');
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function writeLocalRank(list) {
+    try { localStorage.setItem('md_couracado_rank', JSON.stringify((list || []).slice(0, 30))); } catch (e) {}
+  }
+  function upsertBest(list, entry) {
+    var key = rankKey(entry);
+    var idx = list.findIndex(function (e) { return rankKey(e) === key; });
+    // score principal = onda * 1000 + kills
+    var score = (entry.wave || 0) * 1000 + (entry.kills || 0);
+    entry.score = score;
+    if (idx >= 0) {
+      var old = list[idx];
+      var oldScore = (old.wave || 0) * 1000 + (old.kills || 0);
+      if (score > oldScore) { list[idx] = entry; return { list: list, updated: true }; }
+      return { list: list, updated: false };
+    }
+    list.push(entry);
+    return { list: list, updated: true };
+  }
+  function renderRankList(el, list) {
+    if (!el) return;
+    if (!list || !list.length) { el.innerHTML = '<div style="opacity:.6">Nenhum registro — seja o primeiro!</div>'; return; }
+    el.innerHTML = list.slice(0, 3).map(function (e, i) {
+      var medal = i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉';
+      var nm = String(e.nome || 'Marujo').replace(/[<>]/g, '');
+      return '<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06)"><span>' + medal + '</span><span style="flex:1;font-weight:700">' + nm + '</span><span style="color:#ffcc00;font-weight:800">O' + (e.wave || 0) + ' · ' + (e.kills || 0) + '💀</span></div>';
+    }).join('');
+  }
+  async function loadTop() {
+    var server = [];
+    try {
+      var r = await fetch(API_RANK + '/api/marujo/couracado/rank', { cache: 'no-store' });
+      if (r.ok) {
+        var j = await r.json();
+        if (j && Array.isArray(j.top)) server = j.top;
+      }
+    } catch (e) {}
+    var local = readLocalRank();
+    for (var i = 0; i < server.length; i++) {
+      var res = upsertBest(local, server[i]);
+      local = res.list;
+    }
+    local.sort(function (a, b) {
+      var sa = (a.wave || 0) * 1000 + (a.kills || 0);
+      var sb = (b.wave || 0) * 1000 + (b.kills || 0);
+      return sb - sa;
+    });
+    writeLocalRank(local);
+    return local.slice(0, 10);
+  }
+  async function submitRank() {
+    var p = playerInfo();
+    var entry = {
+      nome: p.nome || 'Marujo',
+      userId: p.id,
+      wave: wave,
+      kills: kills,
+      gold: Math.floor(gold),
+      score: wave * 1000 + kills,
+      at: Date.now()
+    };
+    var local = readLocalRank();
+    var localRes = upsertBest(local, entry);
+    local = localRes.list;
+    local.sort(function (a, b) {
+      return ((b.wave||0)*1000+(b.kills||0)) - ((a.wave||0)*1000+(a.kills||0));
+    });
+    writeLocalRank(local);
+    try {
+      var r = await fetch(API_RANK + '/api/marujo/couracado/score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(entry)
+      });
+      if (r.ok) {
+        var j = await r.json();
+        if (j && Array.isArray(j.top)) {
+          var merged = readLocalRank();
+          for (var i = 0; i < j.top.length; i++) {
+            var r2 = upsertBest(merged, j.top[i]);
+            merged = r2.list;
+          }
+          merged.sort(function (a, b) {
+            return ((b.wave||0)*1000+(b.kills||0)) - ((a.wave||0)*1000+(a.kills||0));
+          });
+          writeLocalRank(merged);
+          return merged.slice(0, 10);
+        }
+      }
+    } catch (e) {}
+    return local.slice(0, 10);
   }
 
   function shipStats() {
@@ -497,11 +717,12 @@
     wave = 1; kills = 0; gold = 0; elapsed = 0;
     spawnTimer = 0; waveClearTimer = 0; waveAnnouncing = 1.5; bossWave = false; toSpawn = 0;
     aimX = W * 0.5; pointerDown = false; fireCooldown = 0;
+    canUpgrade = true; usedQuiz = {}; clearQuizTimer();
     updateHud();
   }
 
   function setScreen(id) {
-    ['screen-start', 'screen-shop', 'screen-pause', 'screen-over'].forEach(function (s) {
+    ['screen-start', 'screen-shop', 'screen-pause', 'screen-over', 'screen-quiz'].forEach(function (s) {
       var el = document.getElementById(s);
       if (!el) return;
       var show = (s === id);
@@ -535,47 +756,56 @@
   }
 
   function enemiesForWave(w) {
-    return Math.min(44, 8 + Math.floor(w * 2));
+    return Math.min(55, 9 + Math.floor(w * 2.4));
   }
+  function waveScale() { return 1 + (wave - 1) * 0.12; }
+
 
   function spawnEnemy(kind, isBoss) {
     var x = rand(30, W - 30);
+    var sc = waveScale();
     if (isBoss) {
+      var types = ['kraken', 'dreadnought', 'hydra'];
+      var bt = types[(Math.floor(wave / 5) - 1) % types.length];
       enemies.push({
-        kind: 'boss', x: W * 0.5, y: -50, t: 0, flash: 0, r: 38,
-        hp: 170 + wave * 55, maxHp: 170 + wave * 55,
-        speed: 0.5 + wave * 0.015, gold: 50 + wave * 8, dmg: 20
+        kind: 'boss', bossType: bt, x: W * 0.5, y: -55, t: 0, flash: 0,
+        r: bt === 'dreadnought' ? 44 : 38,
+        hp: (200 + wave * 70) * (bt === 'hydra' ? 1.15 : 1),
+        maxHp: (200 + wave * 70) * (bt === 'hydra' ? 1.15 : 1),
+        speed: 0.45 + wave * 0.018, gold: 55 + wave * 10,
+        dmg: 22 + Math.floor(wave * 0.8), phase: 0, shootCd: 0.8
       });
       return;
     }
     if (kind === 'mine') {
-      enemies.push({
-        kind: 'mine', x: x, y: -24, t: 0, flash: 0, r: 15,
-        hp: 16 + wave * 2, maxHp: 16 + wave * 2,
-        speed: 1.0 + wave * 0.035, gold: 4 + Math.floor(wave * 0.4), dmg: 12,
-        bob: rand(0, Math.PI * 2)
-      });
+      enemies.push({ kind:'mine', x:x, y:-24, t:0, flash:0, r:14+Math.min(4,wave*0.15),
+        hp:(18+wave*3)*sc*0.85, maxHp:(18+wave*3)*sc*0.85,
+        speed:1.05+wave*0.045, gold:4+Math.floor(wave*0.45), dmg:12+Math.floor(wave*0.3), bob:rand(0,Math.PI*2) });
     } else if (kind === 'raider') {
-      enemies.push({
-        kind: 'raider', x: x, y: -28, t: 0, flash: 0, r: 18,
-        hp: 30 + wave * 3.5, maxHp: 30 + wave * 3.5,
-        speed: 1.25 + wave * 0.05, gold: 8 + Math.floor(wave * 0.55), dmg: 13,
-        shootCd: rand(1.0, 2.0)
-      });
+      enemies.push({ kind:'raider', x:x, y:-28, t:0, flash:0, r:17,
+        hp:(32+wave*4.5)*sc*0.9, maxHp:(32+wave*4.5)*sc*0.9,
+        speed:1.2+wave*0.055, gold:8+Math.floor(wave*0.6), dmg:13+Math.floor(wave*0.35),
+        shootCd:Math.max(0.55,1.6-wave*0.05) });
     } else if (kind === 'serpent') {
-      enemies.push({
-        kind: 'serpent', x: x, y: -30, t: 0, flash: 0, r: 21,
-        hp: 50 + wave * 5.5, maxHp: 50 + wave * 5.5,
-        speed: 0.8 + wave * 0.03, gold: 13 + Math.floor(wave * 0.75), dmg: 15,
-        amp: rand(26, 50), ph: rand(0, Math.PI * 2)
-      });
+      enemies.push({ kind:'serpent', x:x, y:-30, t:0, flash:0, r:20,
+        hp:(52+wave*7)*sc*0.9, maxHp:(52+wave*7)*sc*0.9,
+        speed:0.75+wave*0.035, gold:13+Math.floor(wave*0.8), dmg:15+Math.floor(wave*0.4),
+        amp:rand(28,55), ph:rand(0,Math.PI*2) });
+    } else if (kind === 'laser') {
+      enemies.push({ kind:'laser', x:x, y:-30, t:0, flash:0, r:16,
+        hp:(40+wave*5)*sc, maxHp:(40+wave*5)*sc,
+        speed:0.7+wave*0.03, gold:14+Math.floor(wave*0.7), dmg:16+Math.floor(wave*0.4),
+        charge:0, beam:0, lockX:x });
+    } else if (kind === 'gunship') {
+      enemies.push({ kind:'gunship', x:x, y:-32, t:0, flash:0, r:20,
+        hp:(55+wave*6)*sc, maxHp:(55+wave*6)*sc,
+        speed:0.65+wave*0.025, gold:16+Math.floor(wave*0.85), dmg:14+Math.floor(wave*0.4),
+        shootCd:Math.max(0.5,1.4-wave*0.04), volley:0 });
     } else {
-      enemies.push({
-        kind: 'drone', x: x, y: -22, t: 0, flash: 0, r: 13,
-        hp: 12 + wave * 1.5, maxHp: 12 + wave * 1.5,
-        speed: 1.65 + wave * 0.07, gold: 3 + Math.floor(wave * 0.3), dmg: 8,
-        zig: rand(1.0, 1.9)
-      });
+      enemies.push({ kind:'drone', x:x, y:-22, t:0, flash:0, r:12+Math.min(3,wave*0.1),
+        hp:(14+wave*2)*sc*0.9, maxHp:(14+wave*2)*sc*0.9,
+        speed:1.55+wave*0.08, gold:3+Math.floor(wave*0.35), dmg:8+Math.floor(wave*0.25),
+        zig:rand(1.0,2.0) });
     }
   }
 
@@ -603,11 +833,80 @@
     updateHud();
   }
 
+  function clearQuizTimer() {
+    if (quizTimerId) { clearInterval(quizTimerId); quizTimerId = null; }
+  }
+  function startQuiz() {
+    state = STATE.QUIZ;
+    stopMusic();
+    clearQuizTimer();
+    quizAnswered = false;
+    var item = pickQuiz();
+    window.__quizItem = item;
+    document.getElementById('quiz-diff').textContent = item.diff.toUpperCase();
+    document.getElementById('quiz-q').textContent = item.q;
+    document.getElementById('quiz-feedback').textContent = '';
+    document.getElementById('quiz-feedback').style.color = '#9ec9ff';
+    var box = document.getElementById('quiz-opts');
+    box.innerHTML = '';
+    var letters = ['A','B','C','D'];
+    item.opts.forEach(function(opt,i){
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'quiz-opt';
+      b.textContent = letters[i] + ') ' + opt;
+      b.onclick = function(){ answerQuiz(i); };
+      box.appendChild(b);
+    });
+    var fill = document.getElementById('quiz-timer-fill');
+    fill.style.width = '100%';
+    quizDeadline = Date.now() + 12000;
+    quizTimerId = setInterval(function(){
+      var left = Math.max(0, quizDeadline - Date.now());
+      fill.style.width = (left/12000*100)+'%';
+      if (left <= 0) { clearQuizTimer(); if (!quizAnswered) answerQuiz(-1); }
+    }, 50);
+    setScreen('screen-quiz');
+  }
+  function answerQuiz(idx) {
+    if (quizAnswered) return;
+    quizAnswered = true;
+    clearQuizTimer();
+    var item = window.__quizItem;
+    var opts = document.querySelectorAll('#quiz-opts .quiz-opt');
+    var ok = item && idx === item.c;
+    opts.forEach(function(el,i){
+      if (item && i === item.c) el.classList.add('ok');
+      else if (i === idx) el.classList.add('bad');
+      el.style.pointerEvents = 'none';
+    });
+    var fb = document.getElementById('quiz-feedback');
+    if (ok) {
+      canUpgrade = true;
+      fb.textContent = '✔ Correto! Arsenal liberado.';
+      fb.style.color = '#2ecc71';
+      try { sfxBuy(); } catch(e){}
+    } else {
+      canUpgrade = false;
+      fb.textContent = idx < 0 ? '⏱ Tempo esgotado — arsenal bloqueado.' : '✘ Incorreto — arsenal bloqueado.';
+      fb.style.color = '#ff6b6b';
+      try { sfxHit(); } catch(e){}
+    }
+    setTimeout(function(){ openShop(); }, 900);
+  }
   function openShop() {
     state = STATE.SHOP;
     stopMusic();
     document.getElementById('shop-wave').textContent = wave;
     document.getElementById('shop-gold').textContent = '🪙 ' + Math.floor(gold);
+    var lock = document.getElementById('shop-lock');
+    var sub = document.getElementById('shop-sub');
+    if (canUpgrade) {
+      if (lock) lock.style.display = 'none';
+      if (sub) sub.innerHTML = 'Onda <span id="shop-wave">'+wave+'</span> concluída. Invista o ouro antes da próxima investida.';
+    } else {
+      if (lock) lock.style.display = '';
+      if (sub) sub.textContent = 'Sem upgrade nesta parada. Prepare-se para a próxima onda.';
+    }
     renderShop();
     setScreen('screen-shop');
   }
@@ -624,15 +923,16 @@
       var maxed = lv >= u.max;
       var price = upgradePrice(u);
       var card = document.createElement('div');
-      card.className = 'shop-card' + (maxed ? ' maxed' : '');
+      card.className = 'shop-card' + (maxed || !canUpgrade ? ' maxed' : '');
       card.innerHTML =
         '<div class="ico">' + u.ico + '</div>' +
         '<div class="name">' + u.name + '</div>' +
         '<div class="desc">' + u.desc + '</div>' +
         '<div class="meta"><span class="lvl">Nv. ' + lv + '/' + u.max + '</span>' +
         '<span class="price">' + (maxed ? 'MÁX' : '🪙 ' + price) + '</span></div>';
-      if (!maxed) {
+      if (!maxed && canUpgrade) {
         card.onclick = function () {
+          if (!canUpgrade) return;
           if (gold < price) return;
           gold -= price;
           levels[u.id] = lv + 1;
@@ -724,6 +1024,9 @@
     document.getElementById('over-sub').textContent =
       wave >= bestWave ? 'Novo marco de onda! A armada saúda seu comando.' : 'Repare o casco e volte ao combate.';
 
+    submitRank().then(function (top) {
+      renderRankList(document.getElementById('over-rank-list'), top);
+    });
     try {
       if (IN_IFRAME && parent.userProgress && typeof parent.userProgress.addXP === 'function' && xpGained > 0) {
         parent.userProgress.addXP(xpGained);
@@ -803,9 +1106,11 @@
         else {
           var roll = Math.random();
           var kind = 'drone';
-          if (roll > 0.78) kind = 'raider';
-          else if (roll > 0.52) kind = 'serpent';
-          else if (roll > 0.32) kind = 'mine';
+          if (wave >= 4 && roll > 0.82) kind = 'laser';
+          else if (wave >= 6 && roll > 0.72) kind = 'gunship';
+          else if (roll > 0.70) kind = 'raider';
+          else if (roll > 0.48) kind = 'serpent';
+          else if (roll > 0.30) kind = 'mine';
           spawnEnemy(kind, false);
         }
         toSpawn--;
@@ -817,7 +1122,7 @@
         var bonus = 15 + wave * 5;
         gold += bonus;
         floatText(W * 0.5, H * 0.42, 'Bônus +' + bonus + '🪙', '#2ecc71');
-        openShop();
+        startQuiz();
         return;
       }
     }
@@ -876,17 +1181,42 @@
       } else if (e.kind === 'shot') {
         e.y += e.speed * 60 * dt;
         e.x += (e.vx || 0) * 60 * dt;
+      } else if (e.kind === 'laser') {
+        e.y += e.speed * 60 * dt * (e.beam > 0 ? 0.25 : 1);
+        e.charge += dt;
+        if (e.beam > 0) {
+          e.beam -= dt;
+          if (Math.abs(ship.x - e.lockX) < 16 && ship.y > e.y) damageShip((10+wave*0.5)*dt*3.5);
+        } else if (e.charge > Math.max(1.1, 2.2-wave*0.06)) {
+          e.charge = 0; e.beam = 0.55; e.lockX = ship.x;
+          try { beep(880,0.08,'square',0.06); } catch(err){}
+        } else e.lockX += (ship.x - e.lockX)*0.03;
+      } else if (e.kind === 'gunship') {
+        e.y += e.speed*60*dt; e.x += Math.sin(e.t*1.5)*0.8; e.shootCd -= dt;
+        if (e.shootCd <= 0 && e.y > 40 && e.y < H*0.7) {
+          e.shootCd = Math.max(0.45, 1.3-wave*0.04);
+          var n = 3+Math.min(3, Math.floor(wave/3));
+          for (var g=0;g<n;g++){
+            var ang=-0.5+(g/Math.max(1,n-1))*1.0;
+            enemies.push({kind:'shot',x:e.x,y:e.y+14,r:5,hp:1,maxHp:1,speed:2.8+wave*0.05,gold:0,dmg:9+Math.floor(wave*0.2),t:0,flash:0,vx:Math.sin(ang)*1.2});
+          }
+        }
       } else if (e.kind === 'boss') {
-        e.y += e.speed * 60 * dt;
-        e.x += Math.sin(e.t * 1.25) * 1.2;
-        e.x = clamp(e.x, 42, W - 42);
-        if (e.y > 80 && Math.floor(e.t * 2) !== Math.floor((e.t - dt) * 2)) {
-          for (var k = -1; k <= 1; k++) {
-            enemies.push({
-              kind: 'shot', x: e.x + k * 18, y: e.y + 22, r: 6,
-              hp: 1, maxHp: 1, speed: 2.5, gold: 0, dmg: 12,
-              t: 0, flash: 0, vx: k * 0.4
-            });
+        var bt = e.bossType || 'kraken';
+        if (e.y < 100) e.y += e.speed*60*dt; else e.y += Math.sin(e.t*1.1)*0.4;
+        e.x += Math.sin(e.t*1.1)*(bt==='hydra'?1.6:1.1);
+        e.x = clamp(e.x,42,W-42);
+        e.shootCd -= dt;
+        if (e.shootCd <= 0) {
+          e.shootCd = bt==='dreadnought'?0.55:(bt==='hydra'?0.7:0.85);
+          if (bt==='dreadnought') {
+            for (var k=-2;k<=2;k++) enemies.push({kind:'shot',x:e.x+k*14,y:e.y+24,r:6,hp:1,maxHp:1,speed:3.2,gold:0,dmg:14+Math.floor(wave*0.3),t:0,flash:0,vx:k*0.25});
+            if (rr(0.4)) enemies.push({kind:'laser',x:e.x,y:e.y+10,t:0,flash:0,r:14,hp:30+wave*3,maxHp:30+wave*3,speed:0.5,gold:0,dmg:12,charge:0.5,beam:0,lockX:ship.x});
+          } else if (bt==='hydra') {
+            for (var h=-1;h<=1;h++) enemies.push({kind:'shot',x:e.x+h*20,y:e.y+18,r:7,hp:1,maxHp:1,speed:2.4,gold:0,dmg:13,t:0,flash:0,vx:h*0.7+(ship.x-e.x)*0.008});
+            if (rr(0.25) && enemies.length<40) { spawnEnemy('drone',false); enemies[enemies.length-1].y=e.y; enemies[enemies.length-1].x=e.x; }
+          } else {
+            for (var k2=-1;k2<=1;k2++) enemies.push({kind:'shot',x:e.x+k2*18,y:e.y+22,r:6,hp:1,maxHp:1,speed:2.6+wave*0.04,gold:0,dmg:12+Math.floor(wave*0.25),t:0,flash:0,vx:k2*0.45});
           }
         }
       }
@@ -1209,6 +1539,24 @@
       ctx.fill();
       ctx.fillStyle = '#ff5a5a';
       ctx.beginPath(); ctx.arc(0, 2, 3, 0, Math.PI * 2); ctx.fill();
+    } else if (e.kind === 'laser') {
+      ctx.fillStyle = '#1a5276';
+      ctx.beginPath(); ctx.moveTo(0,-e.r); ctx.lineTo(e.r*0.7,e.r*0.3); ctx.lineTo(0,e.r*0.5); ctx.lineTo(-e.r*0.7,e.r*0.3); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = e.beam>0?'#fff':'#5dade2';
+      ctx.beginPath(); ctx.arc(0,0,4,0,Math.PI*2); ctx.fill();
+      if (e.beam>0) {
+        ctx.strokeStyle='rgba(100,220,255,0.85)'; ctx.lineWidth=10; ctx.shadowColor='#5dade2'; ctx.shadowBlur=16;
+        ctx.beginPath(); ctx.moveTo(e.lockX-e.x,8); ctx.lineTo(e.lockX-e.x,H); ctx.stroke(); ctx.shadowBlur=0;
+        ctx.strokeStyle='rgba(255,255,255,0.9)'; ctx.lineWidth=3;
+        ctx.beginPath(); ctx.moveTo(e.lockX-e.x,8); ctx.lineTo(e.lockX-e.x,H); ctx.stroke();
+      } else if (e.charge>0.6) {
+        ctx.strokeStyle='rgba(100,200,255,'+Math.min(0.8,e.charge/3)+')'; ctx.lineWidth=2; ctx.setLineDash([4,6]);
+        ctx.beginPath(); ctx.moveTo(e.lockX-e.x,8); ctx.lineTo(e.lockX-e.x,H*0.5); ctx.stroke(); ctx.setLineDash([]);
+      }
+    } else if (e.kind === 'gunship') {
+      ctx.fillStyle='#4a235a';
+      ctx.beginPath(); ctx.moveTo(0,e.r); ctx.lineTo(e.r,-e.r*0.2); ctx.lineTo(e.r*0.5,-e.r*0.7); ctx.lineTo(-e.r*0.5,-e.r*0.7); ctx.lineTo(-e.r,-e.r*0.2); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#ffcc00'; ctx.fillRect(-6,-4,12,5);
     } else if (e.kind === 'shot') {
       ctx.fillStyle = '#ff6b6b';
       ctx.shadowColor = '#ff5a5a';
@@ -1216,9 +1564,10 @@
       ctx.beginPath(); ctx.arc(0, 0, e.r, 0, Math.PI * 2); ctx.fill();
       ctx.shadowBlur = 0;
     } else if (e.kind === 'boss') {
-      ctx.fillStyle = '#4a1f5c';
+      var bt = e.bossType||'kraken';
+      ctx.fillStyle = bt==='dreadnought'?'#2c3e50':(bt==='hydra'?'#1a5276':'#4a1f5c');
       ctx.beginPath(); ctx.arc(0, 0, e.r * 0.68, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = '#9b59b6';
+      ctx.strokeStyle = bt==='dreadnought'?'#e74c3c':(bt==='hydra'?'#5dade2':'#9b59b6');
       ctx.lineWidth = 5.5;
       for (i = 0; i < 5; i++) {
         var ang = 0.55 + i * 0.35 + Math.sin(e.t * 2 + i) * 0.12;
@@ -1398,6 +1747,7 @@
   bindClose('btn-close-start');
   bindClose('btn-close-over');
 
+  loadTop().then(function (list) { renderRankList(document.getElementById('start-rank-list'), list); });
   setScreen('screen-start');
 })();
 </script>
