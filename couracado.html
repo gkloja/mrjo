@@ -296,6 +296,8 @@
   const IN_IFRAME = window.parent !== window;
 
   let W = 360, H = 640, dpr = 1;
+  // declarado cedo para resize() não quebrar por TDZ
+  var ship = null;
 
   function measure() {
     // Preferência: tamanho real do container (funciona no iframe)
@@ -316,17 +318,17 @@
     canvas.style.width = W + 'px';
     canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    if (ship) {
+    // ship pode ainda não existir (TDZ) — só ajusta se já foi criado
+    if (typeof ship !== 'undefined' && ship) {
       ship.x = clamp(ship.x || W * 0.5, 30, W - 30);
       ship.y = H - 90;
     }
   }
   window.addEventListener('resize', resize);
   window.addEventListener('orientationchange', function () { setTimeout(resize, 120); });
-  // re-medida após layout do iframe
+  // re-medida após layout do iframe (atrasada para não bater no TDZ)
   setTimeout(resize, 50);
   setTimeout(resize, 250);
-  resize();
 
   // ---- Audio ----
   let audioCtx = null;
@@ -397,7 +399,7 @@
     { id: 'regen', name: 'Enfermaria', ico: '✚', desc: 'Regenera casco', max: 5, base: 70, mult: 1.55 }
   ];
 
-  let ship = null;
+  // ship declarado no topo
   let bullets = [], enemies = [], particles = [], floats = [], powerups = [];
   let wave = 1, kills = 0, gold = 0, elapsed = 0;
   let spawnTimer = 0, waveClearTimer = 0, waveAnnouncing = 0, bossWave = false, toSpawn = 0;
