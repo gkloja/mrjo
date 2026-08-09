@@ -774,7 +774,8 @@
       b.type = 'button';
       b.textContent = letters[i] + ') ' + txt;
       b.dataset.letter = letters[i];
-      b.onclick = () => answerQuiz(letters[i], b);
+      b.dataset.idx = String(i);
+      b.onclick = () => answerQuiz(i, b);
       opts.appendChild(b);
     });
 
@@ -800,15 +801,17 @@
       }
     }, 50);
   }
-  function answerQuiz(letter, btn) {
+  function answerQuiz(idx, btn) {
     if (quizAnswered) return;
     quizAnswered = true;
     if (quizTimerId) { clearInterval(quizTimerId); quizTimerId = null; }
-    const ok = letter === quizCurrent.c;
+    const correctIdx = (quizCurrent && typeof quizCurrent.c === 'number') ? quizCurrent.c : -1;
+    const ok = idx === correctIdx;
     const opts = document.querySelectorAll('#quiz-opts button');
-    opts.forEach(b => {
-      if (b.dataset.letter === quizCurrent.c) b.classList.add('ok');
-      else if (b === btn && !ok) b.classList.add('bad');
+    opts.forEach((b, i) => {
+      const bi = parseInt(b.dataset.idx, 10);
+      if (bi === correctIdx) b.classList.add('ok');
+      else if (btn && b === btn && !ok) b.classList.add('bad');
       b.disabled = true;
     });
     if (ok) {
@@ -830,14 +833,22 @@
       }, 700);
     } else {
       sfxHit();
-      setTimeout(() => gameOver(), 800);
+      // tempo extra para o jogador ver a resposta certa destacada em verde
+      setTimeout(() => gameOver(), 1400);
     }
   }
   function failQuiz() {
     if (quizAnswered) return;
     quizAnswered = true;
-    sfxOver();
-    setTimeout(() => gameOver(), 400);
+    if (quizTimerId) { clearInterval(quizTimerId); quizTimerId = null; }
+    const correctIdx = (quizCurrent && typeof quizCurrent.c === 'number') ? quizCurrent.c : -1;
+    document.querySelectorAll('#quiz-opts button').forEach((b) => {
+      const bi = parseInt(b.dataset.idx, 10);
+      if (bi === correctIdx) b.classList.add('ok');
+      b.disabled = true;
+    });
+    sfxHit();
+    setTimeout(() => gameOver(), 1400);
   }
 
   // ---- Spawn ----

@@ -425,6 +425,15 @@
   }
   function sfxPower() { beep(660, 0.08, 'sine', 0.08); setTimeout(function () { beep(990, 0.12, 'sine', 0.07); }, 60); }
   function sfxOver() {
+    if (muted) return;
+    try {
+      ensureAudio();
+      var a = new Audio('./custom_sound_3.ogg');
+      a.volume = 0.35;
+      a.play().catch(function () { sfxOverSynth(); });
+    } catch (e) { sfxOverSynth(); }
+  }
+  function sfxOverSynth() {
     beep(180, 0.22, 'sawtooth', 0.1, 50);
     setTimeout(function () { beep(120, 0.3, 'sine', 0.08); }, 160);
     setTimeout(function () { beep(70, 0.4, 'sine', 0.06); }, 320);
@@ -909,7 +918,9 @@
         try { sfxBuy(); } catch(e){}
       } else {
         canUpgrade = false;
-        fb.textContent = idx < 0 ? '⏱ Tempo esgotado — arsenal bloqueado.' : '✘ Incorreto — arsenal bloqueado.';
+        var certa = (item && item.opts && item.opts[item.c] != null) ? item.opts[item.c] : '';
+        fb.textContent = (idx < 0 ? '⏱ Tempo esgotado. ' : '✘ Incorreto. ') +
+          (certa ? ('Certa: ' + certa) : '') + ' — arsenal bloqueado.';
         fb.style.color = '#ff6b6b';
         try { sfxHit(); } catch(e){}
       }
@@ -917,15 +928,15 @@
       canUpgrade = ok;
     }
     if (_shopOpenTimer) clearTimeout(_shopOpenTimer);
+    var delay = ok ? 700 : 1400; // mais tempo para ver a resposta certa
     _shopOpenTimer = setTimeout(function () {
       _shopOpenTimer = null;
       try { openShop(); } catch (err) {
         console.error('[couracado openShop]', err);
-        // fallback: ainda assim mostra o arsenal
         state = STATE.SHOP;
         setScreen('screen-shop');
       }
-    }, 700);
+    }, delay);
   }
   function openShop() {
     state = STATE.SHOP;
