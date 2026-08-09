@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Corrida TFM · Marujo Digital</title>
+<style>
+  :root {
+    --navy: #0a1e33;
+    --sea: #0c3a5e;
+    --foam: #9ec9ff;
+    --gold: #f0c14a;
+    --alert: #ff5a5a;
+    --ok: #2ecc71;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: #030d1c;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    color: #e8f1ff;
+    user-select: none;
+    touch-action: none;
+  }
+  #wrap {
+    position: relative;
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  canvas {
+    display: block;
+    max-width: 100%; max-height: 100%;
+    background: #030d1c;
+    border-radius: 4px;
+  }
+  #ui {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    display: flex; flex-direction: column;
+  }
+  #hud {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 10px 14px; gap: 8px;
+  }
+  .hud-box {
+    background: rgba(6, 20, 40, 0.72);
+    border: 1px solid rgba(158, 201, 255, 0.22);
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    backdrop-filter: blur(6px);
+    letter-spacing: 0.02em;
+  }
+  .hud-box strong { color: #ffd76a; font-weight: 700; }
+  #motto {
+    position: absolute; top: 52px; left: 0; right: 0;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255, 215, 106, 0.85);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  #motto.show { opacity: 1; }
+  #banner {
+    position: absolute; left: 50%; top: 42%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: rgba(8, 24, 48, 0.92);
+    border: 1px solid rgba(255, 215, 106, 0.45);
+    border-radius: 14px;
+    padding: 18px 28px;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    max-width: 92vw;
+  }
+  #banner.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  #banner h2 {
+    font-size: 22px;
+    color: #ffd76a;
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+  }
+  #banner p { font-size: 13px; color: #b8d4f0; line-height: 1.45; }
+  #banner .big { font-size: 28px; font-weight: 800; color: #fff; margin: 8px 0; }
+  #controls {
+    position: absolute; bottom: 12px; left: 0; right: 0;
+    display: flex; justify-content: space-between; padding: 0 12px;
+    pointer-events: none;
+  }
+  .pad {
+    display: flex; gap: 8px;
+    pointer-events: auto;
+  }
+  .btn {
+    width: 64px; height: 64px;
+    border-radius: 16px;
+    border: 1px solid rgba(158, 201, 255, 0.35);
+    background: rgba(10, 30, 55, 0.75);
+    color: #e8f1ff;
+    font-size: 22px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(6px);
+    touch-action: none;
+  }
+  .btn:active, .btn.held { background: rgba(40, 100, 180, 0.75); border-color: #ffd76a; }
+  #btn-mute {
+    position: absolute; top: 10px; right: 14px;
+    width: 40px; height: 40px; border-radius: 10px;
+    border: 1px solid rgba(158, 201, 255, 0.3);
+    background: rgba(6, 20, 40, 0.75);
+    color: #cfe4ff;
+    font-size: 16px;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  #start-screen, #end-screen {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(3,13,28,0.96), rgba(10,40,70,0.94));
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px;
+    pointer-events: auto;
+  }
+  #start-screen h1, #end-screen h1 {
+    font-size: 28px;
+    color: #ffd76a;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  #start-screen .sub {
+    font-size: 13px;
+    color: #9ec9ff;
+    max-width: 340px;
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+  #start-screen .verse {
+    font-style: italic;
+    color: rgba(255, 215, 106, 0.9);
+    margin-bottom: 22px;
+    font-size: 14px;
+  }
+  .cta {
+    pointer-events: auto;
+    border: none;
+    background: linear-gradient(180deg, #f0c14a, #c9921a);
+    color: #1a1200;
+    font-weight: 800;
+    font-size: 16px;
+    padding: 14px 32px;
+    border-radius: 12px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    box-shadow: 0 6px 20px rgba(240, 193, 74, 0.35);
+  }
+  .cta:active { transform: scale(0.98); }
+  .cta.ghost {
+    background: transparent;
+    color: #9ec9ff;
+    border: 1px solid rgba(158, 201, 255, 0.4);
+    box-shadow: none;
+    margin-top: 10px;
+  }
+  #end-screen { display: none; }
+  #end-screen .stats {
+    margin: 12px 0 20px;
+    font-size: 14px;
+    color: #b8d4f0;
+    line-height: 1.7;
+  }
+  #end-screen .stats strong { color: #ffd76a; }
+  .hint {
+    margin-top: 16px;
+    font-size: 12px;
+    color: rgba(158, 201, 255, 0.7);
+  }
+  @media (min-width: 700px) {
+    .btn { width: 72px; height: 72px; }
+    #controls { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="c" width="900" height="480"></canvas>
+  <div id="ui">
+    <div id="hud">
+      <div class="hud-box">⏱ <strong id="t-time">0.00</strong>s</div>
+      <div class="hud-box">🏁 <strong id="t-prog">0</strong>%</div>
+      <div class="hud-box" style="margin-right:48px">⭐ <strong id="t-best">—</strong></div>
+    </div>
+    <div id="motto">Guiados por Deus, ninguém me segura</div>
+    <div id="banner"></div>
+    <button type="button" id="btn-mute" title="Som">🔊</button>
+    <div id="controls">
+      <div class="pad">
+        <button type="button" class="btn" id="btn-left">◀</button>
+        <button type="button" class="btn" id="btn-right">▶</button>
+      </div>
+      <div class="pad">
+        <button type="button" class="btn" id="btn-jump">▲</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="start-screen">
+    <h1>CORRIDA TFM</h1>
+    <p class="verse">“Guiados por Deus, ninguém me segura.”</p>
+    <p class="sub">
+      Pista de treinamento naval. Corra, pule obstáculos e não caia na água.
+      Teclado: ← → e Espaço/↑ &nbsp;·&nbsp; Celular: botões na tela.
+    </p>
+    <button type="button" class="cta" id="btn-start">EMBARCAR</button>
+    <p class="hint">Canção de TFM · Marujo Digital</p>
+  </div>
+
+  <div id="end-screen">
+    <h1 id="end-title">MISSÃO CUMPRIDA</h1>
+    <div class="stats" id="end-stats"></div>
+    <button type="button" class="cta" id="btn-again">CORRER DE NOVO</button>
+    <button type="button" class="cta ghost" id="btn-close">FECHAR</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const IN_IFRAME = window.parent !== window;
+  const MUSIC_SRC = '/Apitos/guiados-por-deus.mp3';
+  const LS_BEST = 'md_corrida_tfm_best';
+  const W = 900, H = 480;
+  const GRAV = 2200;
+  const RUN_ACC = 3200;
+  const RUN_MAX = 320;
+  const FRICTION = 2400;
+  const JUMP_V = -620;
+  const COYOTE = 0.09;
+  const JUMP_BUF = 0.1;
+
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const elTime = document.getElementById('t-time');
+  const elProg = document.getElementById('t-prog');
+  const elBest = document.getElementById('t-best');
+  const elMotto = document.getElementById('motto');
+  const elBanner = document.getElementById('banner');
+  const startScreen = document.getElementById('start-screen');
+  const endScreen = document.getElementById('end-screen');
+  const btnMute = document.getElementById('btn-mute');
+
+  let muted = localStorage.getItem('md_corrida_tfm_mute') === '1';
+  let music = null;
+  let best = parseFloat(localStorage.getItem(LS_BEST) || '0') || 0;
+  if (best > 0) elBest.textContent = best.toFixed(2) + 's';
+
+  const keys = { left: false, right: false, jump: false };
+  let jumpPressed = false;
+  let state = 'menu'; // menu | play | dead | win
+  let t = 0, elapsed = 0, camX = 0;
+  let player, solids, hazards, checkpoints, finishX, spawn;
+  let particles = [], floats = [];
+  let lastCp = 0;
+  let coyote = 0, jumpBuf = 0;
+  let flash = 0;
+  let mottoTimer = 0;
+
+  function resize() {
+    const r = Math.min(window.innerWidth / W, window.innerHeight / H);
+    canvas.style.width = Math.floor(W * r) + 'px';
+    canvas.style.height = Math.floor(H * r) + 'px';
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // ---- Input ----
+  function setKey(k, v) {
+    if (k === 'jump' && v && !keys.jump) jumpPressed = true;
+    keys[k] = v;
+  }
+  window.addEventListener('keydown', function (e) {
+    if (e.repeat) return;
+    if (e.code === 'ArrowLeft' || e.code === 'KeyA') setKey('left', true);
+    if (e.code === 'ArrowRight' || e.code === 'KeyD') setKey('right', true);
+    if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') {
+      e.preventDefault();
+      setKey('jump', true);
+    }
+    if (e.code === 'KeyM') toggleMute();
+    if (state === 'menu' && (e.code === 'Enter' || e.code === 'Space')) startRun();
+    if (state === 'win' && e.code === 'Enter') startRun();
+  });
+  window.addEventListener('keyup', function (e) {
+    if (e.code === 'ArrowLeft' || e.code === 'KeyA') setKey('left', false);
+    if (e.code === 'ArrowRight' || e.code === 'KeyD') setKey('right', false);
+    if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') setKey('jump', false);
+  });
+
+  function bindPad(id, key) {
+    const el = document.getElementById(id);
+    const down = function (e) { e.preventDefault(); setKey(key, true); el.classList.add('held'); };
+    const up = function (e) { e.preventDefault(); setKey(key, false); el.classList.remove('held'); };
+    el.addEventListener('pointerdown', down);
+    el.addEventListener('pointerup', up);
+    el.addEventListener('pointerleave', up);
+    el.addEventListener('pointercancel', up);
+  }
+  bindPad('btn-left', 'left');
+  bindPad('btn-right', 'right');
+  bindPad('btn-jump', 'jump');
+
+  document.getElementById('btn-start').onclick = startRun;
+  document.getElementById('btn-again').onclick = startRun;
+  document.getElementById('btn-close').onclick = function () {
+    if (IN_IFRAME) {
+      try { parent.postMessage({ type: 'md-corrida-tfm', action: 'close' }, '*'); } catch (e) {}
+    } else {
+      endScreen.style.display = 'none';
+      startScreen.style.display = 'flex';
+      state = 'menu';
+      stopMusic();
+    }
+  };
+  btnMute.onclick = toggleMute;
+  btnMute.textContent = muted ? '🔇' : '🔊';
+
+  // ---- Audio ----
+  function ensureMusic() {
+    if (music) return music;
+    try {
+      music = new Audio(MUSIC_SRC);
+      music.loop = true;
+      music.preload = 'auto';
+      music.volume = 0.55;
+    } catch (e) { music = null; }
+    return music;
+  }
+  function playMusic() {
+    if (muted) return;
+    const m = ensureMusic();
+    if (!m) return;
+    m.currentTime = 0;
+    const p = m.play();
+    if (p && p.catch) p.catch(function () {});
+  }
+  function stopMusic() {
+    if (music) {
+      try { music.pause(); music.currentTime = 0; } catch (e) {}
+    }
+  }
+  function toggleMute() {
+    muted = !muted;
+    localStorage.setItem('md_corrida_tfm_mute', muted ? '1' : '0');
+    btnMute.textContent = muted ? '🔇' : '🔊';
+    if (muted) stopMusic();
+    else if (state === 'play') playMusic();
+  }
+
+  // ---- Level ----
+  function rect(x, y, w, h, type) {
+    return { x: x, y: y, w: w, h: h, type: type || 'solid' };
+  }
+
+  function buildLevel() {
+    solids = [];
+    hazards = [];
+    checkpoints = [];
+    // Ground segments with gaps (water)
+    // Section 1 — easy start
+    solids.push(rect(0, 400, 420, 80));
+    solids.push(rect(480, 400, 200, 80));
+    // boxes
+    solids.push(rect(300, 340, 50, 60));
+    solids.push(rect(360, 300, 50, 100));
+    // Section 2
+    solids.push(rect(760, 400, 280, 80));
+    solids.push(rect(900, 320, 70, 20));
+    solids.push(rect(1020, 280, 70, 20));
+    solids.push(rect(1140, 400, 220, 80));
+    // tire piles
+    solids.push(rect(1180, 360, 40, 40));
+    solids.push(rect(1220, 360, 40, 40));
+    solids.push(rect(1200, 320, 40, 40));
+    // Section 3 — wet deck (ice-like)
+    solids.push(rect(1450, 400, 360, 80, 'ice'));
+    solids.push(rect(1550, 320, 60, 16));
+    solids.push(rect(1680, 280, 60, 16));
+    solids.push(rect(1810, 400, 200, 80));
+    // Section 4 — rope net platforms
+    solids.push(rect(2100, 400, 160, 80));
+    solids.push(rect(2320, 360, 80, 16));
+    solids.push(rect(2460, 300, 80, 16));
+    solids.push(rect(2600, 240, 80, 16));
+    solids.push(rect(2740, 300, 80, 16));
+    solids.push(rect(2880, 400, 260, 80));
+    // Section 5 — piston / moving feel with staggered boxes
+    solids.push(rect(3200, 400, 120, 80));
+    solids.push(rect(3380, 360, 50, 120));
+    solids.push(rect(3480, 300, 50, 180));
+    solids.push(rect(3580, 360, 50, 120));
+    solids.push(rect(3700, 400, 300, 80));
+    // Section 6 — final stretch
+    solids.push(rect(4100, 400, 180, 80));
+    solids.push(rect(4340, 360, 70, 20));
+    solids.push(rect(4480, 300, 70, 20));
+    solids.push(rect(4620, 400, 500, 80));
+    // finish platform decoration
+    solids.push(rect(4900, 340, 20, 60));
+    solids.push(rect(5080, 340, 20, 60));
+
+    // Water hazards in gaps
+    hazards.push(rect(420, 430, 60, 50));
+    hazards.push(rect(680, 430, 80, 50));
+    hazards.push(rect(1360, 430, 90, 50));
+    hazards.push(rect(2010, 430, 90, 50));
+    hazards.push(rect(2260, 430, 60, 50));
+    hazards.push(rect(2540, 430, 60, 50));
+    hazards.push(rect(2820, 430, 60, 50));
+    hazards.push(rect(3140, 430, 60, 50));
+    hazards.push(rect(4000, 430, 100, 50));
+    hazards.push(rect(4280, 430, 60, 50));
+    hazards.push(rect(4410, 430, 70, 50));
+    hazards.push(rect(4550, 430, 70, 50));
+
+    checkpoints = [
+      { x: 50, y: 400, id: 0 },
+      { x: 900, y: 400, id: 1 },
+      { x: 1850, y: 400, id: 2 },
+      { x: 2950, y: 400, id: 3 },
+      { x: 3750, y: 400, id: 4 }
+    ];
+    finishX = 5000;
+    spawn = { x: 80, y: 360 };
+  }
+
+  function makePlayer(x, y) {
+    return {
+      x: x, y: y, w: 28, h: 40,
+      vx: 0, vy: 0,
+      onGround: false,
+      facing: 1,
+      anim: 0,
+      invuln: 0
+    };
+  }
+
+  function startRun() {
+    buildLevel();
+    player = makePlayer(spawn.x, spawn.y);
+    lastCp = 0;
+    elapsed = 0;
+    camX = 0;
+    particles = [];
+    floats = [];
+    coyote = 0;
+    jumpBuf = 0;
+    state = 'play';
+    startScreen.style.display = 'none';
+    endScreen.style.display = 'none';
+    elMotto.classList.add('show');
+    mottoTimer = 3.5;
+    flash = 0.4;
+    showBanner('3', 'Vibra, tropa!');
+    setTimeout(function () { if (state === 'play') showBanner('2', ''); }, 700);
+    setTimeout(function () { if (state === 'play') showBanner('1', ''); }, 1400);
+    setTimeout(function () {
+      if (state === 'play') {
+        showBanner('EMBARQUE!', 'Guiados por Deus…');
+        playMusic();
+      }
+    }, 2100);
+    setTimeout(hideBanner, 3000);
+  }
+
+  function showBanner(title, sub) {
+    elBanner.innerHTML = '<h2>' + title + '</h2>' + (sub ? '<p>' + sub + '</p>' : '');
+    elBanner.classList.add('show');
+  }
+  function hideBanner() { elBanner.classList.remove('show'); }
+
+  function floatText(x, y, text, color) {
+    floats.push({ x: x, y: y, text: text, color: color || '#ffd76a', life: 1.2 });
+  }
+
+  function burst(x, y, color, n) {
+    for (var i = 0; i < n; i++) {
+      particles.push({
+        x: x, y: y,
+        vx: (Math.random() - 0.5) * 6,
+        vy: (Math.random() - 0.5) * 6 - 2,
+        life: 0.4 + Math.random() * 0.4,
+        color: color,
+        s: 2 + Math.random() * 3
+      });
+    }
+  }
+
+  // ---- Physics ----
+  function aabb(a, b) {
+    return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+  }
+
+  function movePlayer(dt) {
+    var p = player;
+    var want = 0;
+    if (keys.left) want -= 1;
+    if (keys.right) want += 1;
+    if (want !== 0) p.facing = want;
+
+    var onIce = false;
+    // friction / accel
+    if (want !== 0) {
+      p.vx += want * RUN_ACC * dt;
+      var max = RUN_MAX;
+      if (p.vx > max) p.vx = max;
+      if (p.vx < -max) p.vx = -max;
+    } else {
+      var fr = FRICTION;
+      if (onIce) fr *= 0.25;
+      if (p.vx > 0) { p.vx -= fr * dt; if (p.vx < 0) p.vx = 0; }
+      if (p.vx < 0) { p.vx += fr * dt; if (p.vx > 0) p.vx = 0; }
+    }
+
+    if (p.onGround) coyote = COYOTE;
+    else coyote -= dt;
+    if (jumpPressed || keys.jump) jumpBuf = JUMP_BUF;
+    else jumpBuf -= dt;
+    jumpPressed = false;
+
+    if (jumpBuf > 0 && coyote > 0) {
+      p.vy = JUMP_V;
+      p.onGround = false;
+      coyote = 0;
+      jumpBuf = 0;
+      burst(p.x + p.w / 2, p.y + p.h, '#9ec9ff', 6);
+    }
+    // variable jump
+    if (!keys.jump && p.vy < -200) p.vy += 900 * dt;
+
+    p.vy += GRAV * dt;
+    if (p.vy > 1200) p.vy = 1200;
+
+    // horizontal
+    p.x += p.vx * dt;
+    resolve(p, true);
+    // vertical
+    p.y += p.vy * dt;
+    p.onGround = false;
+    resolve(p, false);
+
+    // ice surface check after resolve
+    for (var i = 0; i < solids.length; i++) {
+      var s = solids[i];
+      if (s.type === 'ice' &&
+          p.y + p.h <= s.y + 2 && p.y + p.h >= s.y - 4 &&
+          p.x + p.w > s.x && p.x < s.x + s.w && p.vy >= 0) {
+        p.vx *= 1.02;
+        if (p.vx > RUN_MAX * 1.25) p.vx = RUN_MAX * 1.25;
+        if (p.vx < -RUN_MAX * 1.25) p.vx = -RUN_MAX * 1.25;
+      }
+    }
+
+    // hazards
+    for (i = 0; i < hazards.length; i++) {
+      if (aabb(p, hazards[i])) {
+        drown();
+        return;
+      }
+    }
+    if (p.y > H + 40) {
+      drown();
+      return;
+    }
+
+    // checkpoints
+    for (i = 0; i < checkpoints.length; i++) {
+      var cp = checkpoints[i];
+      if (cp.id > lastCp && p.x + p.w > cp.x && p.x < cp.x + 20) {
+        lastCp = cp.id;
+        spawn = { x: cp.x, y: cp.y - p.h - 2 };
+        floatText(cp.x, cp.y - 40, 'CHECKPOINT', '#2ecc71');
+        burst(cp.x + 10, cp.y - 10, '#2ecc71', 10);
+      }
+    }
+
+    // finish
+    if (p.x + p.w >= finishX) {
+      win();
+    }
+
+    p.anim += dt * (Math.abs(p.vx) > 40 ? 12 : 4);
+    if (p.invuln > 0) p.invuln -= dt;
+  }
+
+  function resolve(p, horizontal) {
+    for (var i = 0; i < solids.length; i++) {
+      var s = solids[i];
+      if (!aabb(p, s)) continue;
+      if (horizontal) {
+        if (p.vx > 0) p.x = s.x - p.w;
+        else if (p.vx < 0) p.x = s.x + s.w;
+        p.vx = 0;
+      } else {
+        if (p.vy > 0) {
+          p.y = s.y - p.h;
+          p.vy = 0;
+          p.onGround = true;
+        } else if (p.vy < 0) {
+          p.y = s.y + s.h;
+          p.vy = 0;
+        }
+      }
+    }
+  }
+
+  function drown() {
+    if (state !== 'play') return;
+    burst(player.x + player.w / 2, player.y + player.h, '#4fc3f7', 16);
+    floatText(player.x, player.y, 'HOMEM AO MAR!', '#ff6b6b');
+    flash = 0.35;
+    // respawn at checkpoint with small time penalty feel (just delay)
+    state = 'dead';
+    setTimeout(function () {
+      if (state !== 'dead') return;
+      player = makePlayer(spawn.x, spawn.y);
+      player.invuln = 1.2;
+      state = 'play';
+    }, 700);
+  }
+
+  function win() {
+    if (state !== 'play') return;
+    state = 'win';
+    stopMusic();
+    var time = Math.max(0, elapsed - 2.1);
+    var isBest = !best || time < best;
+    if (isBest) {
+      best = time;
+      localStorage.setItem(LS_BEST, String(best));
+      elBest.textContent = best.toFixed(2) + 's';
+    }
+    // XP: base 40 + bonus for time
+    var xp = 40;
+    if (time < 45) xp += 30;
+    else if (time < 60) xp += 20;
+    else if (time < 90) xp += 10;
+    if (isBest) xp += 15;
+
+    document.getElementById('end-title').textContent = isBest ? 'RECORDE PESSOAL!' : 'MISSÃO CUMPRIDA';
+    document.getElementById('end-stats').innerHTML =
+      'Tempo: <strong>' + time.toFixed(2) + 's</strong><br>' +
+      (isBest ? 'Novo recorde na pista!<br>' : 'Melhor: <strong>' + best.toFixed(2) + 's</strong><br>') +
+      'XP ganho: <strong>+' + xp + '</strong>';
+    endScreen.style.display = 'flex';
+
+    // postMessage to parent (Marujo)
+    try {
+      if (IN_IFRAME) {
+        parent.postMessage({
+          type: 'md-corrida-tfm',
+          action: 'xp',
+          detail: { xpGained: xp, time: time, best: isBest }
+        }, '*');
+        parent.postMessage({
+          type: 'md-corrida-tfm',
+          action: 'over',
+          detail: { xpGained: xp, time: time }
+        }, '*');
+      }
+      if (typeof window.mdGrantGameXp === 'function') {
+        window.mdGrantGameXp({ xpGained: xp }, 'md-corrida-tfm');
+      }
+    } catch (e) {}
+  }
+
+  // ---- Draw ----
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    // sky
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#061525');
+    g.addColorStop(0.55, '#0a2a4a');
+    g.addColorStop(1, '#0c4a5e');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+
+    // stars / distant lights
+    ctx.fillStyle = 'rgba(200,230,255,0.35)';
+    for (var i = 0; i < 40; i++) {
+      var sx = ((i * 97 + 30) - camX * 0.15) % W;
+      if (sx < 0) sx += W;
+      ctx.fillRect(sx, (i * 37) % (H * 0.45), 2, 2);
+    }
+
+    // water band
+    ctx.fillStyle = '#0a3d5c';
+    ctx.fillRect(0, 430, W, H - 430);
+    ctx.fillStyle = 'rgba(79, 195, 247, 0.25)';
+    for (i = 0; i < 12; i++) {
+      var wx = ((i * 90) - camX * 0.5 + t * 30) % (W + 90) - 45;
+      ctx.beginPath();
+      ctx.ellipse(wx, 438 + Math.sin(t * 2 + i) * 2, 28, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // solids
+    for (i = 0; i < solids.length; i++) {
+      var s = solids[i];
+      var sx2 = s.x - camX;
+      if (sx2 + s.w < -20 || sx2 > W + 20) continue;
+      if (s.type === 'ice') {
+        ctx.fillStyle = '#5dade2';
+        ctx.fillRect(sx2, s.y, s.w, s.h);
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.fillRect(sx2, s.y, s.w, 6);
+      } else {
+        // deck metal
+        ctx.fillStyle = '#2c3e50';
+        ctx.fillRect(sx2, s.y, s.w, s.h);
+        ctx.fillStyle = '#1a252f';
+        ctx.fillRect(sx2, s.y, s.w, 6);
+        ctx.strokeStyle = 'rgba(158,201,255,0.15)';
+        ctx.strokeRect(sx2 + 0.5, s.y + 0.5, s.w - 1, s.h - 1);
+        // rivets
+        ctx.fillStyle = 'rgba(180,200,220,0.25)';
+        for (var r = 8; r < s.w; r += 24) {
+          ctx.beginPath();
+          ctx.arc(sx2 + r, s.y + 12, 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    // finish flag
+    var fx = finishX - camX;
+    if (fx > -40 && fx < W + 40) {
+      ctx.fillStyle = '#ffd76a';
+      ctx.fillRect(fx, 280, 6, 120);
+      ctx.fillStyle = '#e74c3c';
+      ctx.beginPath();
+      ctx.moveTo(fx + 6, 280);
+      ctx.lineTo(fx + 50, 300);
+      ctx.lineTo(fx + 6, 320);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.fillText('CHEGADA', fx - 10, 270);
+    }
+
+    // checkpoints
+    for (i = 0; i < checkpoints.length; i++) {
+      var cp = checkpoints[i];
+      var cx = cp.x - camX;
+      if (cx < -20 || cx > W + 20) continue;
+      ctx.strokeStyle = cp.id <= lastCp ? '#2ecc71' : 'rgba(158,201,255,0.5)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cp.y);
+      ctx.lineTo(cx, cp.y - 50);
+      ctx.stroke();
+      ctx.fillStyle = cp.id <= lastCp ? '#2ecc71' : '#9ec9ff';
+      ctx.beginPath();
+      ctx.moveTo(cx, cp.y - 50);
+      ctx.lineTo(cx + 22, cp.y - 40);
+      ctx.lineTo(cx, cp.y - 30);
+      ctx.fill();
+    }
+
+    // player — fuzileiro / recruta estilizado
+    if (player && (player.invuln <= 0 || Math.floor(t * 12) % 2 === 0)) {
+      drawRecruit(player.x - camX, player.y, player);
+    }
+
+    // particles
+    for (i = particles.length - 1; i >= 0; i--) {
+      var pt = particles[i];
+      pt.x += pt.vx; pt.y += pt.vy; pt.vy += 0.15; pt.life -= 0.016;
+      if (pt.life <= 0) { particles.splice(i, 1); continue; }
+      ctx.globalAlpha = Math.max(0, pt.life);
+      ctx.fillStyle = pt.color;
+      ctx.fillRect(pt.x - camX, pt.y, pt.s, pt.s);
+      ctx.globalAlpha = 1;
+    }
+    for (i = floats.length - 1; i >= 0; i--) {
+      var ft = floats[i];
+      ft.y -= 30 * 0.016;
+      ft.life -= 0.016;
+      if (ft.life <= 0) { floats.splice(i, 1); continue; }
+      ctx.globalAlpha = Math.max(0, ft.life);
+      ctx.fillStyle = ft.color;
+      ctx.font = 'bold 13px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(ft.text, ft.x - camX, ft.y);
+      ctx.textAlign = 'left';
+      ctx.globalAlpha = 1;
+    }
+
+    if (flash > 0) {
+      ctx.fillStyle = 'rgba(255,255,255,' + (flash * 0.35) + ')';
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    // vignette
+    var vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, H * 0.85);
+    vg.addColorStop(0, 'rgba(0,0,0,0)');
+    vg.addColorStop(1, 'rgba(0,0,0,0.35)');
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  function drawRecruit(x, y, p) {
+    ctx.save();
+    ctx.translate(x + p.w / 2, y + p.h);
+    if (p.facing < 0) ctx.scale(-1, 1);
+
+    var run = Math.abs(p.vx) > 40 && p.onGround;
+    var leg = run ? Math.sin(p.anim) * 7 : 0;
+    var arm = run ? Math.sin(p.anim) * 6 : 0;
+
+    // shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 14, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // boots
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(-11, -8 + leg, 9, 8);
+    ctx.fillRect(2, -8 - leg, 9, 8);
+
+    // legs (camo green)
+    ctx.fillStyle = '#3d5c3a';
+    ctx.fillRect(-10, -22, 8, 16 + leg * 0.3);
+    ctx.fillRect(2, -22, 8, 16 - leg * 0.3);
+
+    // torso
+    ctx.fillStyle = '#4a6b45';
+    ctx.fillRect(-12, -40, 24, 20);
+    // belt
+    ctx.fillStyle = '#2c2c2c';
+    ctx.fillRect(-12, -22, 24, 4);
+    // vest stripe
+    ctx.fillStyle = '#ff9800';
+    ctx.fillRect(-12, -36, 24, 3);
+
+    // arms
+    ctx.fillStyle = '#4a6b45';
+    ctx.fillRect(-16, -38 + arm * 0.3, 6, 16);
+    ctx.fillRect(10, -38 - arm * 0.3, 6, 16);
+    // hands
+    ctx.fillStyle = '#c68642';
+    ctx.fillRect(-16, -24 + arm * 0.3, 6, 5);
+    ctx.fillRect(10, -24 - arm * 0.3, 6, 5);
+
+    // head
+    ctx.fillStyle = '#c68642';
+    ctx.beginPath();
+    ctx.arc(0, -48, 9, 0, Math.PI * 2);
+    ctx.fill();
+    // helmet / boina
+    ctx.fillStyle = '#2d4a28';
+    ctx.beginPath();
+    ctx.arc(0, -50, 10, Math.PI, 0);
+    ctx.fill();
+    ctx.fillRect(-10, -52, 20, 5);
+    // visor hint
+    ctx.fillStyle = '#1a2e18';
+    ctx.fillRect(-8, -52, 16, 3);
+
+    // eyes
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(1, -50, 2.5, 2.5);
+
+    ctx.restore();
+  }
+
+  // ---- Loop ----
+  var last = performance.now();
+  function frame(now) {
+    var dt = Math.min(0.033, (now - last) / 1000);
+    last = now;
+    t += dt;
+    if (flash > 0) flash -= dt;
+    if (mottoTimer > 0) {
+      mottoTimer -= dt;
+      if (mottoTimer <= 0) elMotto.classList.remove('show');
+    }
+
+    if (state === 'play') {
+      // ignore input during initial countdown ~2.1s
+      if (elapsed > 2.1) movePlayer(dt);
+      elapsed += dt;
+      // camera
+      var target = player.x - W * 0.35;
+      camX += (target - camX) * Math.min(1, 6 * dt);
+      if (camX < 0) camX = 0;
+      var maxCam = finishX - W * 0.5;
+      if (camX > maxCam) camX = maxCam;
+
+      elTime.textContent = Math.max(0, elapsed - 2.1).toFixed(2);
+      var prog = Math.max(0, Math.min(100, ((player.x - spawn.x) / (finishX - 80)) * 100));
+      elProg.textContent = Math.floor(prog);
+    } else if (state === 'dead') {
+      // still draw
+    }
+
+    draw();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // expose for parent if needed
+  window.mdCorridaTfm = { start: startRun, mute: toggleMute };
+})();
+</script>
+</body>
+</html>
