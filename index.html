@@ -27528,17 +27528,31 @@ img.md-avatar-vip {
 
         // ---------- Progresso (XP/Nível) integrado ao quiz existente ----------
         aplicarProgressoDoServidor() {
-            // Se o servidor tem um progresso salvo (login em outro aparelho), usa ele
-            // como fonte de verdade quando for maior que o local.
+            // Se o servidor tem um progresso salvo (login em outro aparelho / após relogin),
+            // usa ele como fonte de verdade quando for maior que o local.
+            // IMPORTANTE: também restaura stats.totalXP. Sem isso, após logout o local
+            // fica com totalXP=0; o addXP dos minigames sobe só a partir de 0 e o
+            // /sincronizar rejeita porque o total do servidor é maior — XP some no relogin.
             if (this.logado && this.usuario && typeof userProgress !== 'undefined') {
-                const totalServidor = this.usuario.pontosTotais || 0;
-                const totalLocal = userProgress.stats?.totalXP || 0;
-                if (totalServidor > totalLocal) {
-                    userProgress.xp = this.usuario.xp;
-                    userProgress.level = this.usuario.level;
-                    userProgress.streak = this.usuario.streak;
+                const totalServidor = Number(this.usuario.totalXP != null ? this.usuario.totalXP : this.usuario.pontosTotais) || 0;
+                const totalLocal = Number(userProgress.stats && userProgress.stats.totalXP) || 0;
+                if (totalServidor > totalLocal || (Number(this.usuario.level) || 1) > (Number(userProgress.level) || 1)) {
+                    userProgress.xp = Number(this.usuario.xp) || 0;
+                    userProgress.level = Number(this.usuario.level) || 1;
+                    userProgress.streak = Number(this.usuario.streak) || 0;
+                    if (!userProgress.stats || typeof userProgress.stats !== 'object') {
+                        userProgress.stats = {
+                            totalQuestions: 0,
+                            correctAnswers: 0,
+                            totalXP: 0,
+                            byCategory: {},
+                            byDifficulty: {}
+                        };
+                    }
+                    userProgress.stats.totalXP = Math.max(totalLocal, totalServidor);
                     userProgress.saveProgress();
                     if (typeof updateFloatingButton === 'function') updateFloatingButton();
+                    try { if (typeof mdSyncCmdBar === 'function') mdSyncCmdBar(); } catch (e) {}
                 }
             }
         },
