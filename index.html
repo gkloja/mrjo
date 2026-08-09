@@ -29359,7 +29359,9 @@ window.MDRadar = MDRadar;
   const MDMissao = {
     tasks: [
       { id: 'radar', label: 'Jogar 1 partida no Radar de Sinais', xp: 10 },
-      { id: 'quiz', label: 'Acertar 3 perguntas no questionário', xp: 15 },
+      { id: 'quiz', label: 'Acertar 3 perguntas no questionário', xp: 12 },
+      { id: 'patrulha', label: 'Concluir 1 patrulha no minigame Patrulha Naval', xp: 15 },
+      { id: 'couracado', label: 'Zarpar no Couraçado e chegar à onda 2', xp: 15 },
       { id: 'protocolo', label: 'Abrir a aba Protocolos (revisar cerimonial)', xp: 5 }
     ],
     state() {
@@ -29389,6 +29391,14 @@ window.MDRadar = MDRadar;
       if (n >= 3) this.mark('quiz');
     },
     onProtocolo() { this.mark('protocolo'); },
+    onPatrulha(detail) {
+      // qualquer fim de patrulha conta
+      this.mark('patrulha');
+    },
+    onCouracado(detail) {
+      var wave = Number(detail && detail.wave != null ? detail.wave : 0) || 0;
+      if (wave >= 2) this.mark('couracado');
+    },
     progress(s) {
       const total = this.tasks.length;
       const done = this.tasks.filter(t => s.done[t.id]).length;
@@ -30300,7 +30310,7 @@ window.MDGames = {
   },
   play: function (id) {
     this.closeMenu();
-    var src = id === 'couracado' ? '/couracado.html?v=6' : '/patrulha-naval.html?v=4';
+    var src = id === 'couracado' ? '/couracado.html?v=8' : '/patrulha-naval.html?v=6';
     this._openFrame(src);
   },
   _openFrame: function (src) {
@@ -30370,6 +30380,17 @@ window.addEventListener('message', function (ev) {
       if (window.mdSyncCmdBar) mdSyncCmdBar();
     } catch (e) {}
   }
+  // Missões do dia ligadas aos minigames
+  try {
+    if (window.MDMissao) {
+      if (d.type === 'md-patrulha' && (d.action === 'over' || d.action === 'xp')) {
+        MDMissao.onPatrulha(d.detail || {});
+      }
+      if (d.type === 'md-couracado' && (d.action === 'over' || d.action === 'xp' || d.action === 'wave')) {
+        MDMissao.onCouracado(d.detail || {});
+      }
+    }
+  } catch (e) {}
 });
 </script>
 
