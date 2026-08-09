@@ -26790,11 +26790,10 @@ img.md-avatar-vip {
 <div class="md-overlay" id="md-pordosol-overlay">
   <div class="md-modal" style="max-width:420px">
     <button class="md-modal-close" onclick="MDPorDoSol.fechar()">&times;</button>
-    <h3 style="margin-top:0">🌅 Pôr do sol &amp; bandeira</h3>
+    <h3 style="margin-top:0">🌅 Pôr do sol</h3>
     <p class="md-sub" id="md-pordosol-sub">
-      Receba todo dia um aviso <b>1 hora antes do pôr do sol</b> na cidade que escolher —
-      para você se organizar com o <b>cerimonial da bandeira</b> (arriamento ao ocaso) e o ritmo da tropa.
-      Só quem ativar recebe; dá para mudar ou desligar depois no perfil.
+      Receba um aviso <b>1 hora antes</b> do pôr do sol na cidade que escolher.
+      Só quem ativar recebe — e pode mudar depois no perfil.
     </p>
     <label class="info-label" style="display:block;margin:12px 0 6px">Cidade</label>
     <select id="md-pordosol-cidade" style="width:100%;padding:12px;border-radius:10px;border:1px solid rgba(158,201,255,0.25);background:rgba(6,20,40,0.6);color:inherit;font-size:14px">
@@ -30427,8 +30426,6 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
-
-<script>
 /** Aviso de pôr do sol — 1h antes, só quem optou, cidade no perfil. */
 window.MDPorDoSol = (function () {
   var API = (window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009');
@@ -30473,13 +30470,13 @@ window.MDPorDoSol = (function () {
 
   function preencherSelect(sel, atual) {
     if (!sel) return;
-    sel.innerHTML = '<option value=\"\">Selecione…</option>';
-    CIDADES.forEach(function (c, i) {
+    sel.innerHTML = '<option value="">Selecione…</option>';
+    CIDADES.forEach(function (cid, i) {
       var o = document.createElement('option');
       o.value = String(i);
-      o.textContent = c.nome;
-      if (atual && atual.cidade && atual.cidade === c.nome) o.selected = true;
-      if (atual && atual.lat != null && Math.abs(atual.lat - c.lat) < 0.05) o.selected = true;
+      o.textContent = cid.nome;
+      if (atual && atual.cidade && atual.cidade === cid.nome) o.selected = true;
+      else if (atual && atual.lat != null && Math.abs(Number(atual.lat) - cid.lat) < 0.05) o.selected = true;
       sel.appendChild(o);
     });
   }
@@ -30511,7 +30508,7 @@ window.MDPorDoSol = (function () {
         var sub = document.getElementById('md-pordosol-sub');
         if (sub) {
           sub.innerHTML = j.ativo
-            ? 'Aviso <b>ativo</b>' + (j.cidade ? ' para <b>' + j.cidade + '</b>' : '') + '. Você pode mudar a cidade ou desligar quando quiser.'
+            ? ('Aviso <b>ativo</b>' + (j.cidade ? ' para <b>' + j.cidade + '</b>' : '') + '. Você pode mudar a cidade ou desligar quando quiser.')
             : 'Todo dia, <b>1 hora antes do pôr do sol</b> na sua cidade — para se organizar com o <b>cerimonial da bandeira</b> (arriamento ao ocaso) e o ritmo da tropa.';
         }
         abrirOverlay();
@@ -30551,18 +30548,17 @@ window.MDPorDoSol = (function () {
         if (btnA) btnA.disabled = false;
         if (btnD) btnD.disabled = false;
         if (!j.ok) {
-          var prev = document.getElementById('md-pordosol-preview');
-          if (prev) prev.textContent = j.erro || 'Não foi possível salvar.';
+          var prev2 = document.getElementById('md-pordosol-preview');
+          if (prev2) prev2.textContent = j.erro || 'Não foi possível salvar.';
           return;
         }
         try { localStorage.setItem('md_pordosol_decidido', '1'); } catch (e) {}
-        var prev = document.getElementById('md-pordosol-preview');
+        var prev3 = document.getElementById('md-pordosol-preview');
         if (ativo && j.proximo && j.proximo.horaLocal) {
-          if (prev) prev.textContent = 'Ativo! Hoje o sol se põe por volta das ' + j.proximo.horaLocal + ' (aviso 1h antes).';
-        } else if (prev) {
-          prev.textContent = ativo ? 'Aviso ativado.' : 'Tudo bem — você não receberá o aviso.';
+          if (prev3) prev3.textContent = 'Ativo! Hoje o sol se põe por volta das ' + j.proximo.horaLocal + ' (aviso 1h antes).';
+        } else if (prev3) {
+          prev3.textContent = ativo ? 'Aviso ativado.' : 'Tudo bem — você não receberá o aviso.';
         }
-        // pede permissão de push se ativou
         if (ativo) {
           try {
             window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -30579,12 +30575,8 @@ window.MDPorDoSol = (function () {
       });
   }
 
-  /** Se logado e ainda não decidiu, mostra o modal automaticamente. */
   function talvezConvidar() {
     if (!token()) return;
-    var ja;
-    try { ja = localStorage.getItem('md_pordosol_decidido'); } catch (e) { ja = null; }
-    // ainda consulta o servidor — localStorage só evita spam se offline
     fetch(authUrl('/api/marujo/por-do-sol'), { headers: authHeaders(), credentials: 'include' })
       .then(function (r) { return r.json(); })
       .then(function (j) {
@@ -30593,7 +30585,6 @@ window.MDPorDoSol = (function () {
           try { localStorage.setItem('md_pordosol_decidido', '1'); } catch (e) {}
           return;
         }
-        // ainda não escolheu
         preencherSelect(document.getElementById('md-pordosol-cidade'), null);
         var sub = document.getElementById('md-pordosol-sub');
         if (sub) {
@@ -30604,14 +30595,12 @@ window.MDPorDoSol = (function () {
       .catch(function () {});
   }
 
-  // boot: depois do login / após carregar
   function boot() {
     setTimeout(talvezConvidar, 30000);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 
-  // quando MarujoConta logar, tenta de novo
   var _tries = 0;
   var _iv = setInterval(function () {
     _tries++;
@@ -30621,7 +30610,7 @@ window.MDPorDoSol = (function () {
         clearInterval(_iv);
       }
     } catch (e) {}
-    if (_tries > 30) clearInterval(_iv);
+    if (_tries > 40) clearInterval(_iv);
   }, 2000);
 
   return {
@@ -30631,7 +30620,6 @@ window.MDPorDoSol = (function () {
     talvezConvidar: talvezConvidar
   };
 })();
-</script>
 
 window.MDGames = {
   open: function () {
@@ -30677,12 +30665,12 @@ window.MDGames = {
     try { if (window.mdSyncCmdBar) mdSyncCmdBar(); } catch (e) {}
   }
 };
-// compat: links antigos que chamam MDPatrulha
+
 window.MDPatrulha = {
   open: function () { MDGames.play('patrulha'); },
   close: function () { MDGames.close(); }
 };
-// Aplica XP de minigame (postMessage ou localStorage)
+
 window.mdGrantGameXp = function (detail, typeHint) {
   try {
     var xp = Math.floor(Number(detail && (detail.xpGained != null ? detail.xpGained : detail.xp)) || 0);
@@ -30703,7 +30691,6 @@ window.mdGrantGameXp = function (detail, typeHint) {
     }
     var before = Number(up.xp) || 0;
     var beforeLvl = Number(up.level) || 1;
-    // 1) Atualiza local imediatamente (UI)
     up.addXP(xp);
     try {
       if (window.MarujoConta && MarujoConta.usuario) {
@@ -30717,7 +30704,6 @@ window.mdGrantGameXp = function (detail, typeHint) {
     console.log('[MDGames] +' + xp + ' XP (' + before + '→' + up.xp + ', nv ' + beforeLvl + '→' + up.level + ')', typeHint || '', detail);
     try { if (typeof updateFloatingButton === 'function') updateFloatingButton(); } catch (e1) {}
     try { if (typeof mdSyncCmdBar === 'function') mdSyncCmdBar(); } catch (e2) {}
-    // 2) Persiste na conta: delta no servidor (preferencial) + sync completo
     try {
       if (window.MarujoConta && typeof MarujoConta.grantXpConta === 'function') {
         MarujoConta.grantXpConta(xp, sid).then(function (ok) {
@@ -30755,7 +30741,6 @@ window.mdFlushPendingGameXp = function () {
   }
 };
 
-// varre pendências a cada 1,5s e ao focar a aba
 setInterval(function () { try { window.mdFlushPendingGameXp(); } catch (e) {} }, 1500);
 window.addEventListener('focus', function () { try { window.mdFlushPendingGameXp(); } catch (e) {} });
 document.addEventListener('visibilitychange', function () {
@@ -30764,19 +30749,16 @@ document.addEventListener('visibilitychange', function () {
 
 window.addEventListener('message', function (ev) {
   var d = ev.data;
-  if (!d || (d.type !== 'md-patrulha' && d.type !== 'md-couracado')) return;
+  if (!d || (d.type !== 'md-patrulha' && d.type !== 'md-couracado' && d.type !== 'md-corrida-tfm')) return;
   if (d.action === 'close' || d.action === 'quit') {
     try { window.mdFlushPendingGameXp(); } catch (e) {}
     MDGames.close();
     return;
   }
-
   if (d.action === 'xp' || d.action === 'over') {
     window.mdGrantGameXp(d.detail || {}, d.type);
     try { localStorage.removeItem('md_pending_game_xp'); } catch (e) {}
   }
-
-  // Missões do dia ligadas aos minigames
   try {
     if (window.MDMissao) {
       if (d.type === 'md-patrulha' && (d.action === 'over' || d.action === 'xp')) {
@@ -30789,6 +30771,7 @@ window.addEventListener('message', function (ev) {
   } catch (e) {}
 });
 </script>
+
 
 </body>
 </html>
