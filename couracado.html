@@ -355,31 +355,87 @@
       o.start(); o.stop(c.currentTime + dur + 0.02);
     } catch (e) {}
   }
-  function sfxShot() { beep(260, 0.06, 'square', 0.055, 100); }
-  function sfxHit() { beep(85, 0.14, 'sawtooth', 0.09, 40); }
-  function sfxKill() { beep(520, 0.08, 'triangle', 0.08); setTimeout(function () { beep(760, 0.1, 'triangle', 0.06); }, 45); }
-  function sfxBuy() { beep(540, 0.07, 'sine', 0.07); setTimeout(function () { beep(800, 0.1, 'sine', 0.07); }, 55); }
-  function sfxWave() { beep(340, 0.12, 'sine', 0.07); setTimeout(function () { beep(500, 0.16, 'sine', 0.07); }, 100); }
-  function sfxOver() { beep(190, 0.22, 'sawtooth', 0.09, 55); setTimeout(function () { beep(95, 0.35, 'sine', 0.07); }, 180); }
-  function startMusic() {
-    if (muted || musicNodes) return;
+  let musicGainNode = null;
+  let bossMode = false;
+  function sfxShot() {
+    beep(280, 0.05, 'square', 0.07, 90);
+    if ((levels.spread || 0) >= 2) beep(200, 0.04, 'square', 0.04, 70);
+  }
+  function sfxHit() { beep(80, 0.16, 'sawtooth', 0.11, 35); }
+  function sfxKill() {
+    beep(520, 0.08, 'triangle', 0.09);
+    setTimeout(function () { beep(780, 0.1, 'triangle', 0.07); }, 40);
+    setTimeout(function () { beep(980, 0.08, 'sine', 0.05); }, 90);
+  }
+  function sfxBuy() {
+    beep(480, 0.06, 'sine', 0.08);
+    setTimeout(function () { beep(640, 0.08, 'sine', 0.08); }, 50);
+    setTimeout(function () { beep(860, 0.12, 'triangle', 0.09); }, 110);
+  }
+  function sfxWave() {
+    beep(300, 0.1, 'sine', 0.08);
+    setTimeout(function () { beep(450, 0.12, 'sine', 0.08); }, 90);
+    setTimeout(function () { beep(600, 0.14, 'triangle', 0.07); }, 180);
+  }
+  function sfxBossWarn() {
+    beep(110, 0.25, 'sawtooth', 0.14, 70);
+    setTimeout(function () { beep(90, 0.3, 'sawtooth', 0.12, 50); }, 220);
+    setTimeout(function () { beep(140, 0.2, 'square', 0.1, 80); }, 480);
+    setTimeout(function () { beep(60, 0.45, 'sine', 0.1); }, 700);
+  }
+  function sfxBossKill() {
+    beep(200, 0.15, 'sawtooth', 0.12, 80);
+    setTimeout(function () { beep(400, 0.12, 'triangle', 0.1); }, 100);
+    setTimeout(function () { beep(600, 0.15, 'sine', 0.1); }, 200);
+    setTimeout(function () { beep(900, 0.2, 'triangle', 0.08); }, 320);
+  }
+  function sfxPower() { beep(660, 0.08, 'sine', 0.08); setTimeout(function () { beep(990, 0.12, 'sine', 0.07); }, 60); }
+  function sfxOver() {
+    beep(180, 0.22, 'sawtooth', 0.1, 50);
+    setTimeout(function () { beep(120, 0.3, 'sine', 0.08); }, 160);
+    setTimeout(function () { beep(70, 0.4, 'sine', 0.06); }, 320);
+  }
+  function startMusic(isBoss) {
+    if (muted) return;
     try {
       const c = ensureAudio();
-      const gain = c.createGain(); gain.gain.value = 0.012; gain.connect(c.destination);
-      const o1 = c.createOscillator(), o2 = c.createOscillator(), lfo = c.createOscillator(), lfoG = c.createGain();
-      o1.type = 'sine'; o1.frequency.value = 46;
-      o2.type = 'triangle'; o2.frequency.value = 69;
-      lfo.frequency.value = 0.07; lfoG.gain.value = 0.005;
+      if (!c) return;
+      // se já toca e só muda modo boss, ajusta frequência
+      if (musicNodes && musicGainNode) {
+        bossMode = !!isBoss;
+        try {
+          musicNodes[0].frequency.setTargetAtTime(isBoss ? 55 : 46, c.currentTime, 0.15);
+          musicNodes[1].frequency.setTargetAtTime(isBoss ? 82 : 69, c.currentTime, 0.15);
+          musicGainNode.gain.setTargetAtTime(isBoss ? 0.028 : 0.02, c.currentTime, 0.2);
+        } catch (e) {}
+        return;
+      }
+      const gain = c.createGain();
+      gain.gain.value = isBoss ? 0.028 : 0.02;
+      gain.connect(c.destination);
+      musicGainNode = gain;
+      const o1 = c.createOscillator(), o2 = c.createOscillator(), o3 = c.createOscillator();
+      const lfo = c.createOscillator(), lfoG = c.createGain();
+      o1.type = 'sine'; o1.frequency.value = isBoss ? 55 : 46;
+      o2.type = 'triangle'; o2.frequency.value = isBoss ? 82 : 69;
+      o3.type = 'sine'; o3.frequency.value = isBoss ? 110 : 92;
+      const g3 = c.createGain(); g3.gain.value = 0.35;
+      o3.connect(g3); g3.connect(gain);
+      lfo.frequency.value = isBoss ? 0.14 : 0.08;
+      lfoG.gain.value = isBoss ? 0.008 : 0.005;
       lfo.connect(lfoG); lfoG.connect(gain.gain);
       o1.connect(gain); o2.connect(gain);
-      o1.start(); o2.start(); lfo.start();
-      musicNodes = [o1, o2, lfo, gain];
+      o1.start(); o2.start(); o3.start(); lfo.start();
+      musicNodes = [o1, o2, o3, lfo, g3, gain];
+      bossMode = !!isBoss;
     } catch (e) {}
   }
   function stopMusic() {
     if (musicNodes) {
       musicNodes.forEach(function (n) { try { if (n.stop) n.stop(); } catch (e) {} });
       musicNodes = null;
+      musicGainNode = null;
+      bossMode = false;
     }
   }
 
@@ -533,7 +589,13 @@
     banner.textContent = bossWave ? ('ONDA ' + wave + ' · CHEFE') : ('ONDA ' + wave);
     banner.classList.add('show');
     document.getElementById('boss-tag').classList.toggle('show', bossWave);
-    sfxWave();
+    if (bossWave) {
+      sfxBossWarn();
+      startMusic(true);
+    } else {
+      sfxWave();
+      startMusic(false);
+    }
     setTimeout(function () {
       banner.classList.remove('show');
       document.getElementById('boss-tag').classList.remove('show');
@@ -579,6 +641,7 @@
           if (u.id === 'hp') ship.hp = Math.min(st.maxHp, ship.hp + 22);
           else ship.hp = Math.min(st.maxHp, ship.hp);
           sfxBuy();
+          if (ship) burst(ship.x, ship.y, '#ffcc00', 16, 3.5);
           document.getElementById('shop-gold').textContent = '🪙 ' + Math.floor(gold);
           renderShop();
           updateHud();
@@ -627,8 +690,9 @@
     enemies.splice(i, 1);
     kills++;
     gold += e.gold;
-    sfxKill();
-    burst(e.x, e.y, e.kind === 'boss' ? '#b06dff' : '#ffcc00', e.kind === 'boss' ? 28 : 14, 3.8);
+    if (e.kind === 'boss') sfxBossKill();
+    else sfxKill();
+    burst(e.x, e.y, e.kind === 'boss' ? '#b06dff' : '#ffcc00', e.kind === 'boss' ? 36 : 14, e.kind === 'boss' ? 5 : 3.8);
     floatText(e.x, e.y, '+' + e.gold + '🪙', '#ffcc00');
     if (rr(0.1)) {
       powerups.push({ x: e.x, y: e.y, kind: rr(0.5) ? 'heal' : 'gold', life: 7.5, bob: 0 });
@@ -695,7 +759,7 @@
         hint.classList.add('show');
         setTimeout(function () { hint.classList.remove('show'); }, 3000);
       }
-      try { startMusic(); } catch (e2) {}
+      try { startMusic(false); } catch (e2) {}
       startWave();
       // spawna já o primeiro inimigo na hora
       if (toSpawn > 0) {
@@ -856,10 +920,10 @@
       if (dx * dx + dy * dy < 28 * 28) {
         if (p.kind === 'heal') {
           ship.hp = Math.min(ship.maxHp, ship.hp + ship.maxHp * 0.2);
-          floatText(p.x, p.y, '+Vida', '#2ecc71');
+          sfxPower(); floatText(p.x, p.y, '+Vida', '#2ecc71');
         } else {
           gold += 12;
-          floatText(p.x, p.y, '+12🪙', '#ffcc00');
+          sfxPower(); floatText(p.x, p.y, '+12🪙', '#ffcc00');
         }
         powerups.splice(i, 1);
         updateHud();
@@ -918,64 +982,173 @@
 
   function drawShip() {
     if (!ship) return;
+    var st = shipStats();
+    var dmgL = levels.dmg || 0;
+    var sprL = levels.spread || 0;
+    var hpL = levels.hp || 0;
+    var spdL = levels.speed || 0;
+    var regL = levels.regen || 0;
+    var tier = Math.min(5, Math.floor((dmgL + sprL + hpL + spdL + regL) / 3));
+
     ctx.save();
     ctx.translate(ship.x, ship.y);
     if (ship.invuln > 0 && Math.floor(ship.invuln * 14) % 2 === 0) ctx.globalAlpha = 0.35;
     if (ship.flash > 0) ctx.globalAlpha = 0.6;
 
-    // glow
-    ctx.fillStyle = 'rgba(255,204,0,0.12)';
-    ctx.beginPath();
-    ctx.arc(0, 0, 34, 0, Math.PI * 2);
-    ctx.fill();
+    // aura por tier / regen
+    var aura = 28 + tier * 4 + hpL * 1.5;
+    var ag = ctx.createRadialGradient(0, 0, 8, 0, 0, aura);
+    if (regL >= 3) {
+      ag.addColorStop(0, 'rgba(46,204,113,0.22)');
+      ag.addColorStop(1, 'rgba(46,204,113,0)');
+    } else if (tier >= 3) {
+      ag.addColorStop(0, 'rgba(255,204,0,0.2)');
+      ag.addColorStop(1, 'rgba(255,204,0,0)');
+    } else {
+      ag.addColorStop(0, 'rgba(100,180,255,0.14)');
+      ag.addColorStop(1, 'rgba(100,180,255,0)');
+    }
+    ctx.fillStyle = ag;
+    ctx.beginPath(); ctx.arc(0, 0, aura, 0, Math.PI * 2); ctx.fill();
 
-    // wake
-    ctx.fillStyle = 'rgba(150,210,255,0.22)';
-    ctx.beginPath();
-    ctx.moveTo(-12, 10);
-    ctx.quadraticCurveTo(0, 34 + Math.sin(elapsed * 11) * 4, 12, 10);
-    ctx.fill();
+    // escudo visual (casco)
+    if (hpL >= 2) {
+      ctx.strokeStyle = 'rgba(100,200,255,' + (0.25 + hpL * 0.05) + ')';
+      ctx.lineWidth = 2 + hpL * 0.3;
+      ctx.beginPath();
+      ctx.ellipse(0, 2, 22 + hpL * 1.2, 26 + hpL * 1.1, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
 
-    // hull
+    // wake (mais intenso com velocidade)
+    ctx.fillStyle = 'rgba(150,210,255,' + (0.18 + spdL * 0.03) + ')';
+    ctx.beginPath();
+    ctx.moveTo(-12 - spdL, 10);
+    ctx.quadraticCurveTo(0, 34 + Math.sin(elapsed * (10 + spdL)) * (4 + spdL), 12 + spdL, 10);
+    ctx.fill();
+    if (spdL >= 3) {
+      ctx.fillStyle = 'rgba(255,255,255,0.12)';
+      ctx.beginPath();
+      ctx.moveTo(-8, 12);
+      ctx.quadraticCurveTo(0, 42 + Math.sin(elapsed * 14) * 3, 8, 12);
+      ctx.fill();
+    }
+
+    // hull scale por tier
+    var s = 1 + tier * 0.06 + hpL * 0.02;
+    ctx.save();
+    ctx.scale(s, s);
+
+    // cores do casco evoluem
+    var c0 = tier >= 4 ? '#1a2040' : '#0a3d6e';
+    var c1 = tier >= 4 ? '#c9a227' : (tier >= 2 ? '#2a8fe0' : '#1d7ad0');
+    var c2 = tier >= 4 ? '#5b4a12' : '#0e5aa8';
     var hg = ctx.createLinearGradient(0, 22, 0, -26);
-    hg.addColorStop(0, '#0a3d6e');
-    hg.addColorStop(0.45, '#1d7ad0');
-    hg.addColorStop(1, '#0e5aa8');
+    hg.addColorStop(0, c0);
+    hg.addColorStop(0.45, c1);
+    hg.addColorStop(1, c2);
     ctx.fillStyle = hg;
     ctx.beginPath();
-    ctx.moveTo(0, -26);
-    ctx.lineTo(18, 8);
-    ctx.lineTo(12, 20);
-    ctx.lineTo(-12, 20);
-    ctx.lineTo(-18, 8);
+    ctx.moveTo(0, -26 - dmgL * 0.6);
+    ctx.lineTo(18 + hpL * 0.4, 8);
+    ctx.lineTo(12 + hpL * 0.3, 20);
+    ctx.lineTo(-12 - hpL * 0.3, 20);
+    ctx.lineTo(-18 - hpL * 0.4, 8);
     ctx.closePath();
     ctx.fill();
 
-    // outline
-    ctx.strokeStyle = 'rgba(255,220,100,0.55)';
-    ctx.lineWidth = 1.5;
+    // placas de blindagem
+    if (hpL >= 1) {
+      ctx.strokeStyle = 'rgba(200,220,255,0.35)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(-10, 6); ctx.lineTo(10, 6); ctx.stroke();
+      if (hpL >= 4) {
+        ctx.beginPath(); ctx.moveTo(-12, 12); ctx.lineTo(12, 12); ctx.stroke();
+      }
+    }
+
+    // outline dourado
+    ctx.strokeStyle = tier >= 3 ? 'rgba(255,220,80,0.85)' : 'rgba(255,220,100,0.5)';
+    ctx.lineWidth = tier >= 3 ? 2 : 1.5;
     ctx.stroke();
 
-    // deck
-    ctx.fillStyle = '#ffcc00';
-    ctx.fillRect(-7, -2, 14, 9);
+    // torre / deck
+    ctx.fillStyle = tier >= 4 ? '#ffe066' : '#ffcc00';
+    ctx.fillRect(-7 - sprL * 0.5, -2, 14 + sprL, 9);
     ctx.fillStyle = '#061221';
     ctx.fillRect(-4, 0, 8, 5);
 
-    // cannon
-    ctx.strokeStyle = '#f0f0f0';
-    ctx.lineWidth = 3.5;
+    // bandeira / mastro em tiers altos
+    if (tier >= 2) {
+      ctx.strokeStyle = '#ddd';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(8, -4); ctx.lineTo(8, -18 - tier); ctx.stroke();
+      ctx.fillStyle = tier >= 4 ? '#e74c3c' : '#ffcc00';
+      ctx.beginPath();
+      ctx.moveTo(8, -18 - tier);
+      ctx.lineTo(16, -14 - tier * 0.5);
+      ctx.lineTo(8, -10);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // canhão principal (mais grosso/longo com dmg)
+    var barrel = 28 + dmgL * 2.2;
+    ctx.strokeStyle = dmgL >= 5 ? '#ffd700' : '#f0f0f0';
+    ctx.lineWidth = 3.2 + dmgL * 0.35;
     ctx.lineCap = 'round';
     ctx.beginPath();
     ctx.moveTo(0, -12);
-    ctx.lineTo(0, -30);
+    ctx.lineTo(0, -barrel);
     ctx.stroke();
+    // boca do canhão
+    if (dmgL >= 2) {
+      ctx.fillStyle = dmgL >= 6 ? '#ff6b00' : '#ccc';
+      ctx.beginPath(); ctx.arc(0, -barrel, 2.2 + dmgL * 0.15, 0, Math.PI * 2); ctx.fill();
+    }
+    // canhões extras por dmg
+    if (dmgL >= 3) {
+      ctx.strokeStyle = 'rgba(240,240,240,0.85)';
+      ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.moveTo(-5, -8); ctx.lineTo(-5, -22 - dmgL); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(5, -8); ctx.lineTo(5, -22 - dmgL); ctx.stroke();
+    }
 
-    // side guns hint
-    ctx.strokeStyle = 'rgba(240,240,240,0.5)';
-    ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(-10, 2); ctx.lineTo(-10, -10); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(10, 2); ctx.lineTo(10, -10); ctx.stroke();
+    // bateria lateral (spread)
+    if (sprL >= 1) {
+      ctx.strokeStyle = '#e8e8e8';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath(); ctx.moveTo(-12, 2); ctx.lineTo(-18 - sprL * 2, -8 - sprL * 2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(12, 2); ctx.lineTo(18 + sprL * 2, -8 - sprL * 2); ctx.stroke();
+    }
+    if (sprL >= 2) {
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(-14, 6); ctx.lineTo(-20 - sprL, -2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(14, 6); ctx.lineTo(20 + sprL, -2); ctx.stroke();
+    }
+    if (sprL >= 3) {
+      ctx.strokeStyle = '#ffcc00';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath(); ctx.moveTo(-10, 8); ctx.lineTo(-16, 0); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(10, 8); ctx.lineTo(16, 0); ctx.stroke();
+    }
+
+    // cruz da enfermaria
+    if (regL >= 1) {
+      ctx.fillStyle = 'rgba(46,204,113,0.9)';
+      ctx.fillRect(-1.5, 10, 3, 8);
+      ctx.fillRect(-3.5, 12.5, 7, 3);
+    }
+
+    ctx.restore(); // scale
+
+    // faíscas de tier alto
+    if (tier >= 4 && Math.sin(elapsed * 8) > 0.7) {
+      ctx.fillStyle = 'rgba(255,220,80,0.7)';
+      ctx.beginPath();
+      ctx.arc(rand(-12, 12), rand(-16, 8), 1.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
     ctx.restore();
   }
@@ -1189,14 +1362,14 @@
     state = STATE.PLAY;
     setScreen(null);
     document.getElementById('play-tools').classList.add('show');
-    startMusic();
+    startMusic(bossWave);
     startWave();
     last = performance.now();
   };
   document.getElementById('btn-resume').onclick = function () {
     state = STATE.PLAY; setScreen(null);
     document.getElementById('play-tools').classList.add('show');
-    startMusic(); last = performance.now();
+    startMusic(bossWave); last = performance.now();
   };
   document.getElementById('btn-quit').onclick = function () {
     state = STATE.MENU; setScreen('screen-start'); stopMusic();
@@ -1211,7 +1384,7 @@
     muted = !muted;
     localStorage.setItem('md_couracado_mute', muted ? '1' : '0');
     document.getElementById('btn-mute').textContent = muted ? '🔇' : '🔊';
-    if (muted) stopMusic(); else if (state === STATE.PLAY) startMusic();
+    if (muted) stopMusic(); else if (state === STATE.PLAY) startMusic(bossWave);
   };
 
   function bindClose(id) {
