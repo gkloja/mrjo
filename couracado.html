@@ -288,6 +288,8 @@
     <div id="shop-gold">🪙 0</div>
     <div id="shop-grid"></div>
     <button type="button" class="btn" id="btn-next-wave">Próxima onda</button>
+    <button type="button" class="btn ghost" id="btn-shop-home">Voltar ao início</button>
+    <button type="button" class="btn ghost" id="btn-shop-quit">Desistir</button>
   </div>
 
   <div class="screen hidden" id="screen-pause">
@@ -1712,8 +1714,29 @@
     setScreen(null);
     document.getElementById('play-tools').classList.add('show');
     startMusic(bossWave);
-    startWave();
     last = performance.now();
+    startWave();
+  };
+  document.getElementById('btn-shop-home').onclick = function () {
+    clearQuizTimer();
+    stopMusic();
+    state = STATE.MENU;
+    setScreen('screen-start');
+    document.getElementById('play-tools').classList.remove('show');
+    loadTop().then(function (list) {
+      renderRankList(document.getElementById('start-rank-list'), list);
+    });
+  };
+  document.getElementById('btn-shop-quit').onclick = function () {
+    clearQuizTimer();
+    stopMusic();
+    // desistir = fim de missão com resultado atual
+    if (typeof gameOver === 'function') gameOver();
+    else {
+      state = STATE.OVER;
+      setScreen('screen-over');
+      document.getElementById('play-tools').classList.remove('show');
+    }
   };
   document.getElementById('btn-resume').onclick = function () {
     state = STATE.PLAY; setScreen(null);
