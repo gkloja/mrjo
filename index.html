@@ -4606,14 +4606,77 @@ html[data-theme="light"] .md-cmd-name { color: var(--text-primary); }
   .md-patrulha-fab, .md-jogos-fab { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); right: 12px; width: 56px; height: 56px; font-size: 1.4rem; }
   .md-patrulha-fab .md-pf-label, .md-jogos-fab .md-pf-label { display: none; }
 }
-.md-patrulha-overlay {
+.md-patrulha-overlay, .md-game-overlay {
   position: fixed; inset: 0; z-index: 999995;
   display: none; background: #051223;
 }
-.md-patrulha-overlay.show { display: block; }
-.md-patrulha-overlay iframe {
+.md-patrulha-overlay.show, .md-game-overlay.show { display: block; }
+.md-patrulha-overlay iframe, .md-game-overlay iframe {
   width: 100%; height: 100%; border: 0; display: block; background: #051223;
 }
+
+/* Menu de jogos */
+.md-games-menu {
+  position: fixed; inset: 0; z-index: 999990;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(2,11,22,.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 20px;
+}
+.md-games-menu.show { display: flex; }
+.md-games-panel {
+  width: min(420px, 100%);
+  background: linear-gradient(160deg, #0a2744, #051223);
+  border: 1px solid rgba(255,204,0,.35);
+  border-radius: 20px;
+  padding: 22px 18px 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.04);
+  text-align: center;
+}
+.md-games-panel h2 {
+  font-size: 1.35rem; font-weight: 900; margin: 0 0 4px;
+  background: linear-gradient(135deg, #fff, #ffcc00);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.md-games-panel .md-games-sub {
+  color: #a8c7fa; font-size: 0.85rem; margin-bottom: 16px;
+}
+.md-games-list { display: flex; flex-direction: column; gap: 10px; }
+.md-game-card {
+  display: flex; align-items: center; gap: 14px;
+  text-align: left; width: 100%;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,204,0,.22);
+  border-radius: 14px; padding: 14px 14px;
+  cursor: pointer; color: #fff;
+  transition: transform .12s, border-color .15s, background .15s;
+}
+.md-game-card:hover, .md-game-card:active {
+  border-color: rgba(255,204,0,.55);
+  background: rgba(255,204,0,.08);
+  transform: scale(1.02);
+}
+.md-game-card .ico {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: grid; place-items: center; font-size: 1.5rem;
+  background: radial-gradient(circle at 35% 30%, #1a5a9a, #051223);
+  border: 1px solid rgba(255,204,0,.3); flex-shrink: 0;
+}
+.md-game-card .body { flex: 1; min-width: 0; }
+.md-game-card .title { font-weight: 800; font-size: 1rem; }
+.md-game-card .desc { font-size: 0.78rem; color: #a8c7fa; margin-top: 2px; line-height: 1.3; }
+.md-game-card .tag {
+  font-size: 0.65rem; font-weight: 800; letter-spacing: .06em;
+  text-transform: uppercase; color: #ffcc00;
+  background: rgba(255,204,0,.12); border: 1px solid rgba(255,204,0,.3);
+  padding: 3px 8px; border-radius: 999px; flex-shrink: 0;
+}
+.md-games-close {
+  margin-top: 12px; background: transparent; border: none;
+  color: #a8c7fa; font-size: 0.85rem; cursor: pointer; padding: 8px 16px;
+}
+.md-games-close:hover { color: #fff; }
 
 /* ===== APP SHELL: bottom nav + mini-jogo + install ===== */
 .md-bottom-nav {
@@ -28836,13 +28899,41 @@ document.addEventListener('click', function(e) {
 
 
 <!-- JOGOS (Patrulha Naval + futuros) -->
-<button type="button" class="md-jogos-fab md-patrulha-fab" id="md-patrulha-fab" title="Jogos da Tripulação" aria-label="Abrir jogos" onclick="MDPatrulha.open()">
+<button type="button" class="md-jogos-fab md-patrulha-fab" id="md-patrulha-fab" title="Jogos da Tripulação" aria-label="Abrir jogos" onclick="MDGames.open()">
   <span class="md-pf-label">🎮 Jogos</span>
-  <span class="md-pf-badge" id="md-jogos-badge">1</span>
+  <span class="md-pf-badge" id="md-jogos-badge">2</span>
   <span aria-hidden="true">🎮</span>
 </button>
-<div class="md-patrulha-overlay" id="md-patrulha-overlay" role="dialog" aria-label="Patrulha Naval">
-  <iframe id="md-patrulha-frame" title="Patrulha Naval" allow="autoplay"></iframe>
+
+<!-- Menu de jogos -->
+<div class="md-games-menu" id="md-games-menu" role="dialog" aria-label="Jogos da Tripulação">
+  <div class="md-games-panel">
+    <h2>🎮 Jogos da Tripulação</h2>
+    <p class="md-games-sub">Escolha sua missão, marujo.</p>
+    <div class="md-games-list">
+      <button type="button" class="md-game-card" onclick="MDGames.play('patrulha')">
+        <span class="ico">🚢</span>
+        <span class="body">
+          <span class="title">Patrulha Naval</span>
+          <span class="desc">Desvie de minas, pegue suprimentos e acumule XP de patrulha.</span>
+        </span>
+        <span class="tag">Arcade</span>
+      </button>
+      <button type="button" class="md-game-card" onclick="MDGames.play('couracado')">
+        <span class="ico">⚔</span>
+        <span class="body">
+          <span class="title">Couraçado</span>
+          <span class="desc">Defenda o navio de monstros e inimigos, melhore o arsenal entre as ondas.</span>
+        </span>
+        <span class="tag">Novo</span>
+      </button>
+    </div>
+    <button type="button" class="md-games-close" onclick="MDGames.closeMenu()">Fechar</button>
+  </div>
+</div>
+
+<div class="md-patrulha-overlay md-game-overlay" id="md-patrulha-overlay" role="dialog" aria-label="Jogo">
+  <iframe id="md-patrulha-frame" title="Jogo Marujo" allow="autoplay"></iframe>
 </div>
 
 <!-- ===== APP SHELL: bottom nav + install + mini-jogo ===== -->
@@ -30198,17 +30289,30 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
-window.MDPatrulha = {
+window.MDGames = {
   open: function () {
+    var m = document.getElementById('md-games-menu');
+    if (m) m.classList.add('show');
+  },
+  closeMenu: function () {
+    var m = document.getElementById('md-games-menu');
+    if (m) m.classList.remove('show');
+  },
+  play: function (id) {
+    this.closeMenu();
+    var src = id === 'couracado' ? '/couracado.html?v=1' : '/patrulha-naval.html?v=3';
+    this._openFrame(src);
+  },
+  _openFrame: function (src) {
     var ov = document.getElementById('md-patrulha-overlay');
     var fr = document.getElementById('md-patrulha-frame');
     if (!ov || !fr) return;
     try {
-      var a = document.getElementById('ambient-music-audio') || document.querySelector('audio#ambientMusic, audio.ambient-music');
+      var a = document.getElementById('ambientMusicPlayer') || document.getElementById('ambient-music-audio') || document.querySelector('audio#ambientMusic, audio.ambient-music');
       if (a && !a.paused) { a.pause(); window.__mdPatrulhaPausedSiteMusic = a; }
       else if (window.ambientAudio && !ambientAudio.paused) { ambientAudio.pause(); window.__mdPatrulhaPausedSiteMusic = ambientAudio; }
     } catch (e) {}
-    fr.src = '/patrulha-naval.html?v=3';
+    fr.src = src;
     ov.classList.add('show');
     document.body.style.overflow = 'hidden';
   },
@@ -30227,35 +30331,39 @@ window.MDPatrulha = {
     try { if (window.mdSyncCmdBar) mdSyncCmdBar(); } catch (e) {}
   }
 };
+// compat: links antigos que chamam MDPatrulha
+window.MDPatrulha = {
+  open: function () { MDGames.play('patrulha'); },
+  close: function () { MDGames.close(); }
+};
 window.addEventListener('message', function (ev) {
   var d = ev.data;
-  if (!d || d.type !== 'md-patrulha') return;
-  if (d.action === 'close' || d.action === 'quit') MDPatrulha.close();
+  if (!d || (d.type !== 'md-patrulha' && d.type !== 'md-couracado')) return;
+  if (d.action === 'close' || d.action === 'quit') MDGames.close();
   if (d.action === 'xp' && d.detail && d.detail.xpGained > 0) {
     try {
-      // Evita creditar 2x se o iframe já chamou addXP direto
-      if (!window.__mdPatrulhaXpAt || Date.now() - window.__mdPatrulhaXpAt > 1500) {
+      if (!window.__mdGameXpAt || Date.now() - window.__mdGameXpAt > 1500) {
         if (typeof userProgress !== 'undefined' && userProgress && typeof userProgress.addXP === 'function') {
-          // Só credita via postMessage se ainda não tiver sido aplicado no mesmo fim de jogo
-          if (!window.__mdPatrulhaLastScore || window.__mdPatrulhaLastScore !== d.detail.score) {
+          var key = (d.detail.score != null ? d.detail.score : '') + ':' + (d.detail.wave || '') + ':' + (d.detail.kills || '');
+          if (window.__mdGameLastKey !== key) {
             userProgress.addXP(Number(d.detail.xpGained) || 0);
-            window.__mdPatrulhaLastScore = d.detail.score;
-            window.__mdPatrulhaXpAt = Date.now();
+            window.__mdGameLastKey = key;
+            window.__mdGameXpAt = Date.now();
           }
         }
       }
       if (typeof updateFloatingButton === 'function') updateFloatingButton();
       if (typeof mdSyncCmdBar === 'function') mdSyncCmdBar();
-    } catch (e) { console.warn('[MDPatrulha xp]', e); }
+    } catch (e) { console.warn('[MDGames xp]', e); }
   }
   if (d.action === 'over') {
     try {
       if (d.detail && d.detail.xpGained > 0 && typeof userProgress !== 'undefined' && userProgress && typeof userProgress.addXP === 'function') {
-        // garante crédito se o action xp não chegou
-        if (window.__mdPatrulhaLastScore !== d.detail.score) {
+        var key2 = (d.detail.score != null ? d.detail.score : '') + ':' + (d.detail.wave || '') + ':' + (d.detail.kills || '');
+        if (window.__mdGameLastKey !== key2) {
           userProgress.addXP(Number(d.detail.xpGained) || 0);
-          window.__mdPatrulhaLastScore = d.detail.score;
-          window.__mdPatrulhaXpAt = Date.now();
+          window.__mdGameLastKey = key2;
+          window.__mdGameXpAt = Date.now();
         }
       }
       if (typeof updateFloatingButton === 'function') updateFloatingButton();

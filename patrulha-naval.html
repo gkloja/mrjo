@@ -429,28 +429,101 @@
       return `<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06)"><span>${medal}</span><span style="flex:1;font-weight:700">${nm}</span><span style="color:var(--gold);font-weight:800">${Math.floor(e.score||0)}</span></div>`;
     }).join('');
   }
-  async function loadTop() {
+  function rankKey(e) {
+    if (e && e.userId != null && e.userId !== '') return 'id:' + String(e.userId);
+    return 'n:' + String((e && e.nome) || 'Marujo').toLowerCase();
+  }
+  function readLocalRank() {
     try {
-      const r = await fetch(API_RANK + '/api/marujo/patrulha/rank');
-      if (r.ok) { const j = await r.json(); if (j && j.top) return j.top; }
+      const arr = JSON.parse(localStorage.getItem('md_patrulha_local_rank') || '[]');
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function writeLocalRank(list) {
+    try { localStorage.setItem('md_patrulha_local_rank', JSON.stringify((list || []).slice(0, 30))); } catch (e) {}
+  }
+  /** Mantém só o melhor score de cada jogador. */
+  function upsertPersonalBest(list, entry) {
+    const key = rankKey(entry);
+    const idx = list.findIndex(e => rankKey(e) === key);
+    if (idx >= 0) {
+      if (Number(entry.score) > Number(list[idx].score || 0)) {
+        list[idx] = entry;
+        return { list, updated: true, personalBest: entry.score };
+      }
+      return { list, updated: false, personalBest: Number(list[idx].score) || 0 };
+    }
+    list.push(entry);
+    return { list, updated: true, personalBest: entry.score };
+  }
+  async function loadTop() {
+    let server = [];
+    try {
+      const r = await fetch(API_RANK + '/api/marujo/patrulha/rank', { cache: 'no-store' });
+      if (r.ok) {
+        const j = await r.json();
+        if (j && Array.isArray(j.top)) server = j.top;
+      }
     } catch (e) {}
-    try { return JSON.parse(localStorage.getItem('md_patrulha_local_rank') || '[]').slice(0, 3); } catch (e) { return []; }
+    let local = readLocalRank();
+    // merge: fica o melhor de cada jogador entre local e servidor
+    for (const e of server) {
+      const r = upsertPersonalBest(local, e);
+      local = r.list;
+    }
+    local.sort((a, b) => b.score - a.score || (b.dist || 0) - (a.dist || 0));
+    writeLocalRank(local);
+    return local.slice(0, 10);
   }
   async function submitRank(pts) {
     const p = playerInfo();
-    const entry = { nome: p.nome, userId: p.id, score: Math.floor(pts), dist: Math.floor(dist), combo: maxCombo, at: Date.now() };
-    let local = [];
-    try { local = JSON.parse(localStorage.getItem('md_patrulha_local_rank') || '[]'); } catch (e) {}
-    local.push(entry);
-    local.sort((a, b) => b.score - a.score);
-    const seen = new Set();
-    local = local.filter(e => { const k = String(e.userId || e.nome); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 20);
-    localStorage.setItem('md_patrulha_local_rank', JSON.stringify(local));
+    const entry = {
+      nome: p.nome || 'Marujo',
+      userId: p.id != null ? String(p.id) : null,
+      score: Math.floor(pts),
+      dist: Math.floor(dist),
+      combo: maxCombo,
+      at: Date.now()
+    };
+
+    // Local: só atualiza se bater o próprio recorde
+    let local = readLocalRank();
+    const localRes = upsertPersonalBest(local, entry);
+    local = localRes.list;
+    local.sort((a, b) => b.score - a.score || (b.dist || 0) - (a.dist || 0));
+    writeLocalRank(local);
+
+    // Também atualiza recorde local simples do HUD
     try {
-      const r = await fetch(API_RANK + '/api/marujo/patrulha/score', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(entry) });
-      if (r.ok) { const j = await r.json(); if (j && j.top) return j.top; }
+      const prevBest = Number(localStorage.getItem('md_patrulha_best') || 0);
+      if (entry.score > prevBest) localStorage.setItem('md_patrulha_best', String(entry.score));
     } catch (e) {}
-    return local.slice(0, 3);
+
+    // Servidor: envia sempre; o backend só grava se for recorde
+    // (se não for recorde, ainda devolve o top atual)
+    try {
+      const r = await fetch(API_RANK + '/api/marujo/patrulha/score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(entry)
+      });
+      if (r.ok) {
+        const j = await r.json();
+        if (j && Array.isArray(j.top)) {
+          let merged = readLocalRank();
+          for (const e of j.top) {
+            const r2 = upsertPersonalBest(merged, e);
+            merged = r2.list;
+          }
+          merged.sort((a, b) => b.score - a.score || (b.dist || 0) - (a.dist || 0));
+          writeLocalRank(merged);
+          return merged.slice(0, 10);
+        }
+      }
+    } catch (e) {
+      console.warn('[patrulha] rank server', e);
+    }
+    return local.slice(0, 10);
   }
 
 
