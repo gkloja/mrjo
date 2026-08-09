@@ -128,6 +128,7 @@
     backdrop-filter: blur(10px);
     text-align: center; overflow-y: auto;
   }
+  .screen { pointer-events: auto; }
   .screen.hidden { display: none !important; }
 
   .mark {
@@ -839,9 +840,12 @@
     if (quizTimerId) { clearInterval(quizTimerId); quizTimerId = null; }
   }
   function startQuiz() {
+    if (state === STATE.QUIZ || state === STATE.SHOP) return;
     state = STATE.QUIZ;
     stopMusic();
+    pointerDown = false;
     clearQuizTimer();
+    if (_shopOpenTimer) { clearTimeout(_shopOpenTimer); _shopOpenTimer = null; }
     quizAnswered = false;
     var item = pickQuiz();
     window.__quizItem = item;
@@ -869,47 +873,84 @@
     }, 50);
     setScreen('screen-quiz');
   }
+  var _shopOpenTimer = null;
   function answerQuiz(idx) {
     if (quizAnswered) return;
     quizAnswered = true;
     clearQuizTimer();
     var item = window.__quizItem;
     var opts = document.querySelectorAll('#quiz-opts .quiz-opt');
-    var ok = item && idx === item.c;
+    var ok = !!(item && idx === item.c);
     opts.forEach(function(el,i){
       if (item && i === item.c) el.classList.add('ok');
       else if (i === idx) el.classList.add('bad');
       el.style.pointerEvents = 'none';
+      el.onclick = null;
     });
     var fb = document.getElementById('quiz-feedback');
-    if (ok) {
-      canUpgrade = true;
-      fb.textContent = '✔ Correto! Arsenal liberado.';
-      fb.style.color = '#2ecc71';
-      try { sfxBuy(); } catch(e){}
+    if (fb) {
+      if (ok) {
+        canUpgrade = true;
+        fb.textContent = '✔ Correto! Arsenal liberado.';
+        fb.style.color = '#2ecc71';
+        try { sfxBuy(); } catch(e){}
+      } else {
+        canUpgrade = false;
+        fb.textContent = idx < 0 ? '⏱ Tempo esgotado — arsenal bloqueado.' : '✘ Incorreto — arsenal bloqueado.';
+        fb.style.color = '#ff6b6b';
+        try { sfxHit(); } catch(e){}
+      }
     } else {
-      canUpgrade = false;
-      fb.textContent = idx < 0 ? '⏱ Tempo esgotado — arsenal bloqueado.' : '✘ Incorreto — arsenal bloqueado.';
-      fb.style.color = '#ff6b6b';
-      try { sfxHit(); } catch(e){}
+      canUpgrade = ok;
     }
-    setTimeout(function(){ openShop(); }, 900);
+    if (_shopOpenTimer) clearTimeout(_shopOpenTimer);
+    _shopOpenTimer = setTimeout(function () {
+      _shopOpenTimer = null;
+      try { openShop(); } catch (err) {
+        console.error('[couracado openShop]', err);
+        // fallback: ainda assim mostra o arsenal
+        state = STATE.SHOP;
+        setScreen('screen-shop');
+      }
+    }, 700);
   }
   function openShop() {
     state = STATE.SHOP;
     stopMusic();
-    document.getElementById('shop-wave').textContent = wave;
-    document.getElementById('shop-gold').textContent = '🪙 ' + Math.floor(gold);
+    pointerDown = false;
+    var tools = document.getElementById('play-tools');
+    if (tools) tools.classList.remove('show');
+
     var lock = document.getElementById('shop-lock');
     var sub = document.getElementById('shop-sub');
+    // Nunca destruir o #shop-wave — só atualiza o texto
+    var waveEl = document.getElementById('shop-wave');
+    if (waveEl) waveEl.textContent = String(wave);
     if (canUpgrade) {
       if (lock) lock.style.display = 'none';
-      if (sub) sub.innerHTML = 'Onda <span id="shop-wave">'+wave+'</span> concluída. Invista o ouro antes da próxima investida.';
+      if (sub) {
+        // restaura estrutura se foi apagada
+        if (!document.getElementById('shop-wave')) {
+          sub.innerHTML = 'Onda <span id="shop-wave">' + wave + '</span> concluída. Invista o ouro antes da próxima investida.';
+        } else {
+          // garante mensagem de sucesso sem recriar o nó se já existe
+          if (waveEl && waveEl.parentElement === sub) {
+            /* ok */
+          } else {
+            sub.innerHTML = 'Onda <span id="shop-wave">' + wave + '</span> concluída. Invista o ouro antes da próxima investida.';
+          }
+        }
+      }
     } else {
       if (lock) lock.style.display = '';
-      if (sub) sub.textContent = 'Sem upgrade nesta parada. Prepare-se para a próxima onda.';
+      if (sub) {
+        // textContent apagava o #shop-wave — usar mensagem em nó separado
+        sub.innerHTML = 'Sem upgrade nesta parada. Prepare-se para a próxima onda. <span id="shop-wave" style="display:none">' + wave + '</span>';
+      }
     }
-    renderShop();
+    var goldEl = document.getElementById('shop-gold');
+    if (goldEl) goldEl.textContent = '🪙 ' + Math.floor(gold);
+    try { renderShop(); } catch (e) { console.error(e); }
     setScreen('screen-shop');
   }
 
@@ -1121,6 +1162,7 @@
     } else if (enemies.length === 0 && waveAnnouncing <= 0) {
       waveClearTimer += dt;
       if (waveClearTimer > 0.85) {
+        waveClearTimer = -999;
         var bonus = 15 + wave * 5;
         gold += bonus;
         floatText(W * 0.5, H * 0.42, 'Bônus +' + bonus + '🪙', '#2ecc71');
