@@ -26790,10 +26790,11 @@ img.md-avatar-vip {
 <div class="md-overlay" id="md-pordosol-overlay">
   <div class="md-modal" style="max-width:420px">
     <button class="md-modal-close" onclick="MDPorDoSol.fechar()">&times;</button>
-    <h3 style="margin-top:0">🌅 Pôr do sol</h3>
+    <h3 style="margin-top:0">🌅 Pôr do sol &amp; bandeira</h3>
     <p class="md-sub" id="md-pordosol-sub">
-      Receba um aviso <b>1 hora antes</b> do pôr do sol na cidade que escolher.
-      Só quem ativar recebe — e pode mudar depois no perfil.
+      Receba todo dia um aviso <b>1 hora antes do pôr do sol</b> na cidade que escolher —
+      para você se organizar com o <b>cerimonial da bandeira</b> (arriamento ao ocaso) e o ritmo da tropa.
+      Só quem ativar recebe; dá para mudar ou desligar depois no perfil.
     </p>
     <label class="info-label" style="display:block;margin:12px 0 6px">Cidade</label>
     <select id="md-pordosol-cidade" style="width:100%;padding:12px;border-radius:10px;border:1px solid rgba(158,201,255,0.25);background:rgba(6,20,40,0.6);color:inherit;font-size:14px">
@@ -30426,6 +30427,8 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
+
+<script>
 /** Aviso de pôr do sol — 1h antes, só quem optou, cidade no perfil. */
 window.MDPorDoSol = (function () {
   var API = (window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009');
@@ -30470,7 +30473,7 @@ window.MDPorDoSol = (function () {
 
   function preencherSelect(sel, atual) {
     if (!sel) return;
-    sel.innerHTML = '<option value="">Selecione…</option>';
+    sel.innerHTML = '<option value=\"\">Selecione…</option>';
     CIDADES.forEach(function (c, i) {
       var o = document.createElement('option');
       o.value = String(i);
@@ -30508,8 +30511,8 @@ window.MDPorDoSol = (function () {
         var sub = document.getElementById('md-pordosol-sub');
         if (sub) {
           sub.innerHTML = j.ativo
-            ? 'Aviso <b>ativo</b>' + (j.cidade ? ' para <b>' + j.cidade + '</b>' : '') + '. Você pode mudar a cidade ou desativar.'
-            : 'Receba um aviso <b>1 hora antes</b> do pôr do sol na cidade que escolher.';
+            ? 'Aviso <b>ativo</b>' + (j.cidade ? ' para <b>' + j.cidade + '</b>' : '') + '. Você pode mudar a cidade ou desligar quando quiser.'
+            : 'Todo dia, <b>1 hora antes do pôr do sol</b> na sua cidade — para se organizar com o <b>cerimonial da bandeira</b> (arriamento ao ocaso) e o ritmo da tropa.';
         }
         abrirOverlay();
       })
@@ -30594,7 +30597,7 @@ window.MDPorDoSol = (function () {
         preencherSelect(document.getElementById('md-pordosol-cidade'), null);
         var sub = document.getElementById('md-pordosol-sub');
         if (sub) {
-          sub.innerHTML = 'Quer receber um aviso <b>1 hora antes do pôr do sol</b> na sua cidade? Você escolhe o local e pode mudar depois no perfil.';
+          sub.innerHTML = 'Quer receber <b>todo dia</b>, <b>1 hora antes do pôr do sol</b>, o horário na sua cidade?<br><br>Serve para se organizar com o <b>cerimonial da bandeira</b> (arriamento ao ocaso) e o dia a dia da tropa. Você escolhe o local e pode mudar ou desligar depois no perfil.';
         }
         abrirOverlay();
       })
@@ -30603,7 +30606,7 @@ window.MDPorDoSol = (function () {
 
   // boot: depois do login / após carregar
   function boot() {
-    setTimeout(talvezConvidar, 3500);
+    setTimeout(talvezConvidar, 30000);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
@@ -30628,6 +30631,7 @@ window.MDPorDoSol = (function () {
     talvezConvidar: talvezConvidar
   };
 })();
+</script>
 
 window.MDGames = {
   open: function () {
