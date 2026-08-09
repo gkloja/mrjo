@@ -634,18 +634,54 @@
     });
   }
 
-  function rankFor(xp) {
-    xp = Math.floor(xp || 0);
-    if (xp >= 5000) return 'Almirante';
-    if (xp >= 2500) return 'Vice-Almirante';
-    if (xp >= 1200) return 'Capitão de Mar e Guerra';
-    if (xp >= 600) return 'Capitão de Fragata';
-    if (xp >= 300) return 'Capitão de Corveta';
-    if (xp >= 150) return 'Capitão-Tenente';
-    if (xp >= 80) return 'Primeiro-Tenente';
-    if (xp >= 40) return 'Segundo-Tenente';
-    if (xp >= 15) return 'Guarda-Marinha';
-    return 'Grumete';
+  // Mesma escala de patente do Index (por nível da conta)
+  function getRankTitleLocal(level) {
+    level = Math.floor(Number(level) || 1);
+    if (level >= 100) return 'Almirante da Armada';
+    if (level >= 90) return 'Grande Almirante';
+    if (level >= 80) return 'Almirante-Mor';
+    if (level >= 70) return 'Almirante do Atlântico Sul';
+    if (level >= 60) return 'Almirante de Esquadra Sênior';
+    if (level >= 55) return 'Almirante de Esquadra';
+    if (level >= 50) return 'Almirante de Frota';
+    if (level >= 45) return 'Almirante de Divisão';
+    if (level >= 40) return 'Vice-Almirante Sênior';
+    if (level >= 35) return 'Vice-Almirante';
+    if (level >= 32) return 'Contra-Almirante Sênior';
+    if (level >= 30) return 'Contra-Almirante';
+    if (level >= 28) return 'Comodoro';
+    if (level >= 26) return 'Capitão de Mar e Guerra';
+    if (level >= 24) return 'Capitão de Fragata';
+    if (level >= 22) return 'Capitão de Corveta';
+    if (level >= 20) return 'Capitão Tenente';
+    if (level >= 18) return 'Primeiro Tenente';
+    if (level >= 16) return 'Segundo Tenente';
+    if (level >= 14) return 'Guarda-Marinha';
+    if (level >= 12) return 'Aspirante';
+    if (level >= 10) return 'Suboficial';
+    if (level >= 8) return 'Sargento-Mor';
+    if (level >= 6) return 'Sargento';
+    if (level >= 4) return 'Cabo';
+    if (level >= 2) return 'Marinheiro';
+    if (level >= 1) return 'Grumete';
+    return 'Recruta';
+  }
+  function accountLevel() {
+    try {
+      if (IN_IFRAME && parent.userProgress && parent.userProgress.level != null)
+        return Number(parent.userProgress.level) || 1;
+      if (IN_IFRAME && parent.MarujoConta && parent.MarujoConta.usuario)
+        return Number(parent.MarujoConta.usuario.level || parent.MarujoConta.usuario.nivel) || 1;
+    } catch (e) {}
+    return 1;
+  }
+  function rankFor(_xpIgnored) {
+    try {
+      if (IN_IFRAME && typeof parent.getRankTitle === 'function') {
+        return parent.getRankTitle(accountLevel());
+      }
+    } catch (e) {}
+    return getRankTitleLocal(accountLevel());
   }
 
   function updateHud() {
@@ -734,20 +770,31 @@
       var top = await submitRank(pts);
       renderRankList(document.getElementById('over-rank-list'), top);
     } catch (e) {}
+    var sessionId = 'pat-' + Date.now() + '-' + pts;
     if (IN_IFRAME) {
       try {
+        // um único evento com XP — o Index aplica e sincroniza a conta
         parent.postMessage({
           type: 'md-patrulha',
           action: 'over',
-          detail: { score: pts, dist: Math.floor(dist), combo: maxCombo, xpGained: xpGain }
-        }, '*');
-        parent.postMessage({
-          type: 'md-patrulha',
-          action: 'xp',
-          detail: { score: pts, xpGained: xpGain }
+          detail: {
+            score: pts,
+            dist: Math.floor(dist),
+            combo: maxCombo,
+            xpGained: xpGain,
+            sessionId: sessionId
+          }
         }, '*');
       } catch (e) {}
+      // atualiza patente exibida com nível da conta (após possível level-up)
+      setTimeout(function () {
+        try {
+          document.getElementById('over-rank').textContent = rankFor(pts);
+        } catch (e2) {}
+      }, 200);
     }
+    var line = document.getElementById('xp-account-line');
+    if (line) line.textContent = 'Patente: ' + rankFor(pts);
   }
 
   function offerQuizSave() {

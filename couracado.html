@@ -1087,6 +1087,23 @@
     document.getElementById('over-kills').textContent = kills;
     document.getElementById('over-gold').textContent = Math.floor(gold);
     document.getElementById('over-xp').textContent = xpGained;
+    try {
+      var lvl = 1;
+      if (IN_IFRAME && parent.userProgress) lvl = Number(parent.userProgress.level) || 1;
+      else if (IN_IFRAME && parent.MarujoConta && parent.MarujoConta.usuario)
+        lvl = Number(parent.MarujoConta.usuario.level || parent.MarujoConta.usuario.nivel) || 1;
+      var title = (IN_IFRAME && typeof parent.getRankTitle === 'function')
+        ? parent.getRankTitle(lvl) : ('Nv. ' + lvl);
+      var or = document.getElementById('over-rank');
+      if (or) or.textContent = title;
+      setTimeout(function () {
+        try {
+          if (IN_IFRAME && parent.userProgress) lvl = Number(parent.userProgress.level) || lvl;
+          if (or && IN_IFRAME && typeof parent.getRankTitle === 'function')
+            or.textContent = parent.getRankTitle(lvl);
+        } catch (e2) {}
+      }, 250);
+    } catch (e) {}
     document.getElementById('over-title').textContent = wave >= 10 ? 'Retirada estratégica' : 'Navio abatido';
     document.getElementById('over-sub').textContent =
       wave >= bestWave ? 'Novo marco de onda! A armada saúda seu comando.' : 'Repare o casco e volte ao combate.';
@@ -1094,18 +1111,25 @@
     submitRank().then(function (top) {
       renderRankList(document.getElementById('over-rank-list'), top);
     });
+    var sessionId = 'cou-' + Date.now() + '-' + wave + '-' + kills;
     try {
-      if (IN_IFRAME && parent.userProgress && typeof parent.userProgress.addXP === 'function' && xpGained > 0) {
-        parent.userProgress.addXP(xpGained);
-        try {
-          if (typeof parent.updateFloatingButton === 'function') parent.updateFloatingButton();
-          if (typeof parent.mdSyncCmdBar === 'function') parent.mdSyncCmdBar();
-        } catch (e2) {}
-      } else if (xpGained > 0) {
-        parent.postMessage({ type: 'md-couracado', action: 'xp', detail: { xpGained: xpGained, wave: wave, kills: kills } }, '*');
+      // Sempre via postMessage — o Index aplica XP + sincroniza conta (evita duplicar)
+      if (IN_IFRAME) {
+        parent.postMessage({
+          type: 'md-couracado',
+          action: 'over',
+          detail: {
+            wave: wave,
+            kills: kills,
+            gold: Math.floor(gold),
+            xpGained: xpGained,
+            sessionId: sessionId
+          }
+        }, '*');
       }
-      parent.postMessage({ type: 'md-couracado', action: 'over', detail: { wave: wave, kills: kills, gold: Math.floor(gold), xpGained: xpGained } }, '*');
-    } catch (e) {}
+    } catch (e) {
+      console.warn('[couracado xp]', e);
+    }
 
     setScreen('screen-over');
   }

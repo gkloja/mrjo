@@ -19690,7 +19690,7 @@ function mdLimiteQuestoesPorDia() {
     return (window.MarujoConta && MarujoConta.usuario && MarujoConta.usuario.vip) ? 100 : 20;
 }
 
-const userProgress = {
+const userProgress = window.userProgress = {
     xp: localStorage.getItem('marujo_xp') ? parseInt(localStorage.getItem('marujo_xp')) : 0,
     level: localStorage.getItem('marujo_level') ? parseInt(localStorage.getItem('marujo_level')) : 1,
     streak: localStorage.getItem('marujo_streak') ? parseInt(localStorage.getItem('marujo_streak')) : 0,
@@ -30310,7 +30310,7 @@ window.MDGames = {
   },
   play: function (id) {
     this.closeMenu();
-    var src = id === 'couracado' ? '/couracado.html?v=8' : '/patrulha-naval.html?v=6';
+    var src = id === 'couracado' ? '/couracado.html?v=9' : '/patrulha-naval.html?v=7';
     this._openFrame(src);
   },
   _openFrame: function (src) {
@@ -30349,37 +30349,43 @@ window.MDPatrulha = {
 window.addEventListener('message', function (ev) {
   var d = ev.data;
   if (!d || (d.type !== 'md-patrulha' && d.type !== 'md-couracado')) return;
-  if (d.action === 'close' || d.action === 'quit') MDGames.close();
-  if (d.action === 'xp' && d.detail && d.detail.xpGained > 0) {
+  if (d.action === 'close' || d.action === 'quit') { MDGames.close(); return; }
+
+  function mdGrantGameXp(detail) {
     try {
-      if (!window.__mdGameXpAt || Date.now() - window.__mdGameXpAt > 1500) {
-        if (typeof userProgress !== 'undefined' && userProgress && typeof userProgress.addXP === 'function') {
-          var key = (d.detail.score != null ? d.detail.score : '') + ':' + (d.detail.wave || '') + ':' + (d.detail.kills || '');
-          if (window.__mdGameLastKey !== key) {
-            userProgress.addXP(Number(d.detail.xpGained) || 0);
-            window.__mdGameLastKey = key;
-            window.__mdGameXpAt = Date.now();
-          }
-        }
+      var xp = Math.floor(Number(detail && detail.xpGained) || 0);
+      if (xp <= 0) return false;
+      var sid = (detail && detail.sessionId) ? String(detail.sessionId) :
+        (d.type + ':' + (detail.score != null ? detail.score : '') + ':' +
+         (detail.wave || '') + ':' + (detail.kills || '') + ':' + xp);
+      if (window.__mdGameLastKey === sid) return false;
+      window.__mdGameLastKey = sid;
+      window.__mdGameXpAt = Date.now();
+      var up = window.userProgress || (typeof userProgress !== 'undefined' ? userProgress : null);
+      if (up && typeof up.addXP === 'function') {
+        up.addXP(xp);
+        console.log('[MDGames] +' + xp + ' XP de', d.type, detail);
+      } else {
+        console.warn('[MDGames] userProgress.addXP indisponível');
       }
-      if (typeof updateFloatingButton === 'function') updateFloatingButton();
-      if (typeof mdSyncCmdBar === 'function') mdSyncCmdBar();
-    } catch (e) { console.warn('[MDGames xp]', e); }
-  }
-  if (d.action === 'over') {
-    try {
-      if (d.detail && d.detail.xpGained > 0 && typeof userProgress !== 'undefined' && userProgress && typeof userProgress.addXP === 'function') {
-        var key2 = (d.detail.score != null ? d.detail.score : '') + ':' + (d.detail.wave || '') + ':' + (d.detail.kills || '');
-        if (window.__mdGameLastKey !== key2) {
-          userProgress.addXP(Number(d.detail.xpGained) || 0);
-          window.__mdGameLastKey = key2;
-          window.__mdGameXpAt = Date.now();
+      try { if (typeof updateFloatingButton === 'function') updateFloatingButton(); } catch (e1) {}
+      try { if (typeof mdSyncCmdBar === 'function') mdSyncCmdBar(); } catch (e2) {}
+      try {
+        if (window.MarujoConta && typeof MarujoConta.sincronizarProgresso === 'function') {
+          MarujoConta.sincronizarProgresso();
         }
-      }
-      if (typeof updateFloatingButton === 'function') updateFloatingButton();
-      if (window.mdSyncCmdBar) mdSyncCmdBar();
-    } catch (e) {}
+      } catch (e3) {}
+      return true;
+    } catch (e) {
+      console.warn('[MDGames xp]', e);
+      return false;
+    }
   }
+
+  if (d.action === 'xp' || d.action === 'over') {
+    mdGrantGameXp(d.detail || {});
+  }
+
   // Missões do dia ligadas aos minigames
   try {
     if (window.MDMissao) {
