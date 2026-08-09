@@ -795,7 +795,15 @@
     // 2) postMessage (fallback / missões)
     if (IN_IFRAME) {
       try {
-        parent.postMessage({
+try {
+        localStorage.setItem('md_pending_game_xp', JSON.stringify({
+          type: 'md-patrulha',
+          xpGained: xpGain,
+          sessionId: sessionId,
+          t: Date.now()
+        }));
+      } catch (eLS) {}
+              parent.postMessage({
           type: 'md-patrulha',
           action: 'over',
           detail: {

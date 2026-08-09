@@ -19690,6 +19690,7 @@ function mdLimiteQuestoesPorDia() {
     return (window.MarujoConta && MarujoConta.usuario && MarujoConta.usuario.vip) ? 100 : 20;
 }
 
+try { window.getRankTitle = getRankTitle; } catch (e) {}
 const userProgress = window.userProgress = {
     xp: localStorage.getItem('marujo_xp') ? parseInt(localStorage.getItem('marujo_xp')) : 0,
     level: localStorage.getItem('marujo_level') ? parseInt(localStorage.getItem('marujo_level')) : 1,
@@ -29994,18 +29995,20 @@ document.addEventListener('DOMContentLoaded', function () {
         if (userProgress.xp != null) xp = Number(userProgress.xp) || xp;
       }
 
+      // userProgress.xp é SEMPRE relativo ao nível atual (0 → nextLevelXP)
+      // Não misturar com pontosTotais (XP acumulado da conta)
       var next = mdCmdNextXp(level);
-      var prev = mdCmdPrevXp(level);
-      // Se getNextLevelXP retorna XP total acumulado necessário:
-      var pct;
-      if (next > xp) {
-        var span = Math.max(1, next - prev);
-        pct = Math.max(0, Math.min(100, Math.round(((xp - prev) / span) * 100)));
-      } else {
-        pct = 100;
+      if (typeof userProgress !== 'undefined' && userProgress && userProgress.xp != null) {
+        xp = Number(userProgress.xp) || 0;
+        level = Number(userProgress.level) || level;
+        next = (typeof userProgress.getNextLevelXP === 'function')
+          ? userProgress.getNextLevelXP()
+          : next;
       }
+      next = Math.max(1, Number(next) || 100);
+      var pct = Math.max(0, Math.min(100, Math.round((xp / next) * 100)));
       var falta = Math.max(0, next - xp);
-      var patente = (u && (u.patente || u.posto)) || mdCmdPatente(level);
+      var patente = mdCmdPatente(level);
 
       // Nome + VIP + patente
       var nomeEl = document.getElementById('md-cmd-nome');
@@ -30310,7 +30313,7 @@ window.MDGames = {
   },
   play: function (id) {
     this.closeMenu();
-    var src = id === 'couracado' ? '/couracado.html?v=10' : '/patrulha-naval.html?v=8';
+    var src = id === 'couracado' ? '/couracado.html?v=11' : '/patrulha-naval.html?v=9';
     this._openFrame(src);
   },
   _openFrame: function (src) {
@@ -30327,6 +30330,7 @@ window.MDGames = {
     document.body.style.overflow = 'hidden';
   },
   close: function () {
+    try { if (window.mdFlushPendingGameXp) window.mdFlushPendingGameXp(); } catch (e0) {}
     var ov = document.getElementById('md-patrulha-overlay');
     var fr = document.getElementById('md-patrulha-frame');
     if (fr) fr.src = 'about:blank';
@@ -30338,6 +30342,7 @@ window.MDGames = {
         window.__mdPatrulhaPausedSiteMusic = null;
       }
     } catch (e) {}
+    try { if (typeof updateFloatingButton === 'function') updateFloatingButton(); } catch (e1) {}
     try { if (window.mdSyncCmdBar) mdSyncCmdBar(); } catch (e) {}
   }
 };
@@ -30346,60 +30351,92 @@ window.MDPatrulha = {
   open: function () { MDGames.play('patrulha'); },
   close: function () { MDGames.close(); }
 };
+// Aplica XP de minigame (postMessage ou localStorage)
+window.mdGrantGameXp = function (detail, typeHint) {
+  try {
+    var xp = Math.floor(Number(detail && (detail.xpGained != null ? detail.xpGained : detail.xp)) || 0);
+    if (xp <= 0) {
+      console.warn('[MDGames] xpGained inválido', detail);
+      return false;
+    }
+    var sid = (detail && detail.sessionId) ? String(detail.sessionId) :
+      ((typeHint || 'game') + ':' + (detail.score != null ? detail.score : '') + ':' +
+       (detail.wave || '') + ':' + (detail.kills || '') + ':' + xp);
+    if (window.__mdGameLastKey === sid) return false;
+    window.__mdGameLastKey = sid;
+    window.__mdGameXpAt = Date.now();
+    var up = window.userProgress || (typeof userProgress !== 'undefined' ? userProgress : null);
+    if (!up || typeof up.addXP !== 'function') {
+      console.warn('[MDGames] userProgress.addXP indisponível');
+      return false;
+    }
+    var before = Number(up.xp) || 0;
+    var beforeLvl = Number(up.level) || 1;
+    up.addXP(xp);
+    try {
+      if (window.MarujoConta && MarujoConta.usuario) {
+        var u = MarujoConta.usuario;
+        u.level = up.level;
+        u.xp = up.xp;
+        if (up.stats && up.stats.totalXP != null) u.pontosTotais = up.stats.totalXP;
+        else u.pontosTotais = (Number(u.pontosTotais) || 0) + xp;
+      }
+    } catch (e0) {}
+    console.log('[MDGames] +' + xp + ' XP (' + before + '→' + up.xp + ', nv ' + beforeLvl + '→' + up.level + ')', typeHint || '', detail);
+    try { if (typeof updateFloatingButton === 'function') updateFloatingButton(); } catch (e1) {}
+    try { if (typeof mdSyncCmdBar === 'function') mdSyncCmdBar(); } catch (e2) {}
+    try {
+      if (window.MarujoConta && typeof MarujoConta.sincronizarProgresso === 'function') {
+        MarujoConta.sincronizarProgresso();
+      }
+    } catch (e3) {}
+    return true;
+  } catch (e) {
+    console.warn('[MDGames xp]', e);
+    return false;
+  }
+};
+
+window.mdFlushPendingGameXp = function () {
+  try {
+    var raw = localStorage.getItem('md_pending_game_xp');
+    if (!raw) return;
+    var d = JSON.parse(raw);
+    if (!d || !(d.xpGained > 0 || d.xp > 0)) {
+      localStorage.removeItem('md_pending_game_xp');
+      return;
+    }
+    if (d.t && Date.now() - d.t > 120000) {
+      localStorage.removeItem('md_pending_game_xp');
+      return;
+    }
+    if (window.mdGrantGameXp(d, d.type || 'pending')) {
+      localStorage.removeItem('md_pending_game_xp');
+    }
+  } catch (e) {
+    try { localStorage.removeItem('md_pending_game_xp'); } catch (e2) {}
+  }
+};
+
+// varre pendências a cada 1,5s e ao focar a aba
+setInterval(function () { try { window.mdFlushPendingGameXp(); } catch (e) {} }, 1500);
+window.addEventListener('focus', function () { try { window.mdFlushPendingGameXp(); } catch (e) {} });
+document.addEventListener('visibilitychange', function () {
+  if (!document.hidden) try { window.mdFlushPendingGameXp(); } catch (e) {}
+});
+
 window.addEventListener('message', function (ev) {
   var d = ev.data;
   if (!d || (d.type !== 'md-patrulha' && d.type !== 'md-couracado')) return;
-  if (d.action === 'close' || d.action === 'quit') { MDGames.close(); return; }
-
-  function mdGrantGameXp(detail) {
-    try {
-      var xp = Math.floor(Number(detail && detail.xpGained) || 0);
-      if (xp <= 0) {
-        console.warn('[MDGames] xpGained inválido', detail);
-        return false;
-      }
-      var sid = (detail && detail.sessionId) ? String(detail.sessionId) :
-        (d.type + ':' + (detail.score != null ? detail.score : '') + ':' +
-         (detail.wave || '') + ':' + (detail.kills || '') + ':' + xp);
-      if (window.__mdGameLastKey === sid) return false;
-      window.__mdGameLastKey = sid;
-      window.__mdGameXpAt = Date.now();
-      var up = window.userProgress || (typeof userProgress !== 'undefined' ? userProgress : null);
-      if (!up || typeof up.addXP !== 'function') {
-        console.warn('[MDGames] userProgress.addXP indisponível');
-        return false;
-      }
-      var before = Number(up.xp) || 0;
-      var beforeLvl = Number(up.level) || 1;
-      up.addXP(xp);
-      // espelha na conta logada (header usa MarujoConta.usuario)
-      try {
-        if (window.MarujoConta && MarujoConta.usuario) {
-          var u = MarujoConta.usuario;
-          u.level = up.level;
-          u.xp = up.xp;
-          // pontosTotais = XP acumulado total se existir stats
-          if (up.stats && up.stats.totalXP != null) u.pontosTotais = up.stats.totalXP;
-          else u.pontosTotais = (Number(u.pontosTotais) || 0) + xp;
-        }
-      } catch (e0) {}
-      console.log('[MDGames] +' + xp + ' XP (' + before + '→' + up.xp + ', nv ' + beforeLvl + '→' + up.level + ')', d.type, detail);
-      try { if (typeof updateFloatingButton === 'function') updateFloatingButton(); } catch (e1) {}
-      try { if (typeof mdSyncCmdBar === 'function') mdSyncCmdBar(); } catch (e2) {}
-      try {
-        if (window.MarujoConta && typeof MarujoConta.sincronizarProgresso === 'function') {
-          MarujoConta.sincronizarProgresso();
-        }
-      } catch (e3) {}
-      return true;
-    } catch (e) {
-      console.warn('[MDGames xp]', e);
-      return false;
-    }
+  if (d.action === 'close' || d.action === 'quit') {
+    try { window.mdFlushPendingGameXp(); } catch (e) {}
+    MDGames.close();
+    return;
   }
 
   if (d.action === 'xp' || d.action === 'over') {
-    mdGrantGameXp(d.detail || {});
+    window.mdGrantGameXp(d.detail || {}, d.type);
+    try { localStorage.removeItem('md_pending_game_xp'); } catch (e) {}
   }
 
   // Missões do dia ligadas aos minigames

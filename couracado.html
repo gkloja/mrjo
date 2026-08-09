@@ -1131,7 +1131,15 @@
     } catch (e) { console.warn('[couracado direct xp]', e); }
     try {
       if (IN_IFRAME) {
-        parent.postMessage({
+try {
+        localStorage.setItem('md_pending_game_xp', JSON.stringify({
+          type: 'md-couracado',
+          xpGained: xpGained,
+          sessionId: sessionId,
+          t: Date.now()
+        }));
+      } catch (eLS) {}
+              parent.postMessage({
           type: 'md-couracado',
           action: 'over',
           detail: {
