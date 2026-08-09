@@ -24,38 +24,28 @@
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     touch-action: none;
   }
-  #rotate {
-    position: fixed; inset: 0; z-index: 100;
-    display: none;
-    flex-direction: column; align-items: center; justify-content: center;
-    background: radial-gradient(ellipse at center, #0a2744, #020b16);
-    text-align: center; padding: 24px;
-  }
-  #rotate.show { display: flex; }
-  #rotate .phone {
-    width: 56px; height: 90px; border: 3px solid var(--gold); border-radius: 10px;
-    margin-bottom: 18px; position: relative;
-    animation: flipPhone 1.6s ease-in-out infinite;
-  }
-  #rotate .phone::after {
-    content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
-    width: 18px; height: 3px; background: var(--gold); border-radius: 2px;
-  }
-  @keyframes flipPhone {
-    0%, 30% { transform: rotate(0deg); }
-    55%, 100% { transform: rotate(-90deg); }
-  }
-  #rotate h2 {
-    font-size: 20px; font-weight: 900;
-    background: linear-gradient(135deg, #fff, var(--gold));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    margin-bottom: 8px;
-  }
-  #rotate p { color: var(--foam); font-size: 14px; max-width: 280px; line-height: 1.45; }
-
+  /* #wrap ocupa a tela; em portrait forçamos paisagem via transform */
   #wrap {
-    position: relative; width: 100%; height: 100%;
+    position: fixed;
     background: #020b16;
+    overflow: hidden;
+  }
+  /* Desktop / já landscape: tela cheia normal */
+  #wrap.orient-native {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
+  }
+  /* Portrait (app/site no vertical): gira 90° e troca eixos */
+  #wrap.orient-forced {
+    /* depois da rotação -90deg, width vira altura visual e vice-versa */
+    top: 0;
+    left: 100%;
+    width: 100vh;
+    height: 100vw;
+    transform: rotate(-90deg);
+    transform-origin: top left;
   }
   canvas { display: block; width: 100%; height: 100%; }
 
@@ -224,24 +214,10 @@
     background: rgba(255,204,0,.12); border: 1px solid rgba(255,204,0,.3); color: var(--gold);
   }
 
-  @media (orientation: portrait) and (max-width: 900px) {
-    #wrap { visibility: hidden; }
-    #rotate.show { display: flex; }
-  }
-  @media (orientation: landscape), (min-width: 901px) {
-    #rotate { display: none !important; }
-    #wrap { visibility: visible; }
-  }
 </style>
 </head>
 <body>
-<div id="rotate">
-  <div class="phone"></div>
-  <h2>Gire o aparelho</h2>
-  <p>Couraçado é jogado na horizontal — vire o celular para comandar o navio.</p>
-</div>
-
-<div id="wrap">
+<div id="wrap" class="orient-native">
   <canvas id="c"></canvas>
 
   <div id="hud">
@@ -323,26 +299,46 @@
   const IN_IFRAME = window.parent !== window;
 
   let W = 0, H = 0, dpr = 1;
+  let forcedLandscape = false;
+
+  function isPortraitMobile() {
+    // App Play Store / PWA costuma travar em portrait — forçamos paisagem por CSS
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    // portrait se altura maior que largura (com folga) e tela "de celular"
+    return h >= w && Math.min(w, h) < 900;
+  }
+
+  function applyOrientation() {
+    forcedLandscape = isPortraitMobile();
+    wrap.classList.toggle('orient-forced', forcedLandscape);
+    wrap.classList.toggle('orient-native', !forcedLandscape);
+  }
+
   function resize() {
+    applyOrientation();
     dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const r = wrap.getBoundingClientRect();
-    W = r.width; H = r.height;
+    // Em modo forçado o #wrap tem width=100vh e height=100vw
+    if (forcedLandscape) {
+      W = window.innerHeight;
+      H = window.innerWidth;
+    } else {
+      W = window.innerWidth;
+      H = window.innerHeight;
+    }
     canvas.width = Math.floor(W * dpr);
     canvas.height = Math.floor(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // reposiciona navio se já existir
+    try {
+      if (typeof ship === 'object' && ship) {
+        ship.y = clamp(ship.y, 36, H - 36);
+      }
+    } catch (e) {}
   }
   window.addEventListener('resize', resize);
-  window.addEventListener('orientationchange', () => setTimeout(resize, 120));
+  window.addEventListener('orientationchange', () => setTimeout(resize, 150));
   resize();
-
-  // ---- Orientação ----
-  function checkOrient() {
-    const portrait = window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches;
-    document.getElementById('rotate').classList.toggle('show', portrait);
-  }
-  window.addEventListener('resize', checkOrient);
-  window.addEventListener('orientationchange', () => setTimeout(checkOrient, 100));
-  checkOrient();
 
   // ---- Áudio ----
   let audioCtx = null, muted = localStorage.getItem('md_couracado_mute') === '1';
@@ -1114,20 +1110,35 @@
   requestAnimationFrame(frame);
 
   // ---- Input ----
-  function setAim(clientY) {
+  /** Converte coordenada de tela → espaço do jogo (compensa rotação forçada). */
+  function screenToGame(clientX, clientY) {
+    if (forcedLandscape) {
+      // rotate(-90deg): eixos trocados
+      // X do jogo corre ao longo da altura da tela; Y ao longo da largura (invertido)
+      const gx = (clientY / window.innerHeight) * W;
+      const gy = (1 - clientX / window.innerWidth) * H;
+      return { x: gx, y: gy };
+    }
     const rect = canvas.getBoundingClientRect();
-    aimY = ((clientY - rect.top) / rect.height) * H;
+    return {
+      x: ((clientX - rect.left) / Math.max(1, rect.width)) * W,
+      y: ((clientY - rect.top) / Math.max(1, rect.height)) * H
+    };
+  }
+  function setAimFromEvent(e) {
+    const p = screenToGame(e.clientX, e.clientY);
+    aimY = clamp(p.y, 36, H - 36);
   }
   canvas.addEventListener('pointerdown', (e) => {
     if (state !== STATE.PLAY) return;
     canvas.setPointerCapture(e.pointerId);
     pointerDown = true;
-    setAim(e.clientY);
+    setAimFromEvent(e);
     fire();
   });
   canvas.addEventListener('pointermove', (e) => {
     if (state !== STATE.PLAY) return;
-    setAim(e.clientY);
+    setAimFromEvent(e);
   });
   canvas.addEventListener('pointerup', () => { pointerDown = false; });
   canvas.addEventListener('pointercancel', () => { pointerDown = false; });
