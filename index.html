@@ -26781,9 +26781,32 @@ img.md-avatar-vip {
         <button class="md-btn-secondary" onclick="MarujoConta.abrirRanking()">🏆 Ver ranking</button>
         <button class="md-btn-secondary" onclick="MarujoConta.abrirConvite()">🎟️ Convidar amigos (ganhe XP)</button>
         <button class="md-btn-secondary" onclick="MarujoConta.fecharModal('md-perfil-overlay'); MDVip.abrir();">⭐ Assinar VIP</button>
+        <button class="md-btn-secondary" onclick="MarujoConta.fecharModal('md-perfil-overlay'); MDPorDoSol.abrirConfig();">🌅 Aviso de pôr do sol</button>
         <button class="md-btn-ghost" onclick="MarujoConta.logout()">Sair da conta</button>
     </div>
 </div>
+
+<!-- Modal: convite / config do pôr do sol -->
+<div class="md-overlay" id="md-pordosol-overlay">
+  <div class="md-modal" style="max-width:420px">
+    <button class="md-modal-close" onclick="MDPorDoSol.fechar()">&times;</button>
+    <h3 style="margin-top:0">🌅 Pôr do sol</h3>
+    <p class="md-sub" id="md-pordosol-sub">
+      Receba um aviso <b>1 hora antes</b> do pôr do sol na cidade que escolher.
+      Só quem ativar recebe — e pode mudar depois no perfil.
+    </p>
+    <label class="info-label" style="display:block;margin:12px 0 6px">Cidade</label>
+    <select id="md-pordosol-cidade" style="width:100%;padding:12px;border-radius:10px;border:1px solid rgba(158,201,255,0.25);background:rgba(6,20,40,0.6);color:inherit;font-size:14px">
+      <option value="">Selecione…</option>
+    </select>
+    <p id="md-pordosol-preview" style="font-size:12px;color:var(--text-secondary);margin:10px 0 0;min-height:1.2em"></p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:18px">
+      <button type="button" class="md-btn-primary" id="md-pordosol-ativar" onclick="MDPorDoSol.salvar(true)">Ativar aviso</button>
+      <button type="button" class="md-btn-ghost" id="md-pordosol-desativar" onclick="MDPorDoSol.salvar(false)">Não quero receber</button>
+    </div>
+  </div>
+</div>
+
 
 <!-- Modal de Convites: cada marujo tem um link próprio; quem se cadastra
      por ele credita XP pra quem convidou. -->
@@ -30403,6 +30426,212 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
+
+<script>
+/** Aviso de pôr do sol — 1h antes, só quem optou, cidade no perfil. */
+window.MDPorDoSol = (function () {
+  var API = (window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009');
+  var CIDADES = [
+    { nome: 'Rio de Janeiro, RJ', lat: -22.9068, lon: -43.1729 },
+    { nome: 'Niterói, RJ', lat: -22.8832, lon: -43.1034 },
+    { nome: 'Santos, SP', lat: -23.9608, lon: -46.3332 },
+    { nome: 'São Paulo, SP', lat: -23.5505, lon: -46.6333 },
+    { nome: 'Vitória, ES', lat: -20.3155, lon: -40.3128 },
+    { nome: 'Salvador, BA', lat: -12.9777, lon: -38.5016 },
+    { nome: 'Recife, PE', lat: -8.0476, lon: -34.8770 },
+    { nome: 'Natal, RN', lat: -5.7945, lon: -35.2110 },
+    { nome: 'Fortaleza, CE', lat: -3.7172, lon: -38.5433 },
+    { nome: 'Belém, PA', lat: -1.4558, lon: -48.4902 },
+    { nome: 'Manaus, AM', lat: -3.1190, lon: -60.0217 },
+    { nome: 'Brasília, DF', lat: -15.7939, lon: -47.8828 },
+    { nome: 'Florianópolis, SC', lat: -27.5954, lon: -48.5480 },
+    { nome: 'Porto Alegre, RS', lat: -30.0346, lon: -51.2177 },
+    { nome: 'Curitiba, PR', lat: -25.4284, lon: -49.2733 },
+    { nome: 'João Pessoa, PB', lat: -7.1195, lon: -34.8450 },
+    { nome: 'Maceió, AL', lat: -9.6498, lon: -35.7089 },
+    { nome: 'Aracaju, SE', lat: -10.9472, lon: -37.0731 },
+    { nome: 'São Luís, MA', lat: -2.5307, lon: -44.2825 },
+    { nome: 'Itajaí, SC', lat: -26.9101, lon: -48.6705 }
+  ];
+
+  function token() {
+    try { return localStorage.getItem('md_token') || ''; } catch (e) { return ''; }
+  }
+  function authHeaders() {
+    var t = token();
+    var h = { 'Content-Type': 'application/json' };
+    if (t) h['x-md-token'] = t;
+    return h;
+  }
+  function authUrl(path) {
+    var t = token();
+    var u = API + path;
+    if (t) u += (path.indexOf('?') >= 0 ? '&' : '?') + 'md_token=' + encodeURIComponent(t);
+    return u;
+  }
+
+  function preencherSelect(sel, atual) {
+    if (!sel) return;
+    sel.innerHTML = '<option value=\"\">Selecione…</option>';
+    CIDADES.forEach(function (c, i) {
+      var o = document.createElement('option');
+      o.value = String(i);
+      o.textContent = c.nome;
+      if (atual && atual.cidade && atual.cidade === c.nome) o.selected = true;
+      if (atual && atual.lat != null && Math.abs(atual.lat - c.lat) < 0.05) o.selected = true;
+      sel.appendChild(o);
+    });
+  }
+
+  function cidadeSelecionada() {
+    var sel = document.getElementById('md-pordosol-cidade');
+    if (!sel || sel.value === '') return null;
+    return CIDADES[parseInt(sel.value, 10)] || null;
+  }
+
+  function abrirOverlay() {
+    var ov = document.getElementById('md-pordosol-overlay');
+    if (ov) ov.classList.add('md-show');
+  }
+  function fechar() {
+    var ov = document.getElementById('md-pordosol-overlay');
+    if (ov) ov.classList.remove('md-show');
+  }
+
+  function abrirConfig() {
+    if (!token()) {
+      try { if (window.MarujoConta && MarujoConta.abrirLogin) MarujoConta.abrirLogin(); } catch (e) {}
+      return;
+    }
+    fetch(authUrl('/api/marujo/por-do-sol'), { headers: authHeaders(), credentials: 'include' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        preencherSelect(document.getElementById('md-pordosol-cidade'), j);
+        var sub = document.getElementById('md-pordosol-sub');
+        if (sub) {
+          sub.innerHTML = j.ativo
+            ? 'Aviso <b>ativo</b>' + (j.cidade ? ' para <b>' + j.cidade + '</b>' : '') + '. Você pode mudar a cidade ou desativar.'
+            : 'Receba um aviso <b>1 hora antes</b> do pôr do sol na cidade que escolher.';
+        }
+        abrirOverlay();
+      })
+      .catch(function () {
+        preencherSelect(document.getElementById('md-pordosol-cidade'), null);
+        abrirOverlay();
+      });
+  }
+
+  function salvar(ativo) {
+    var cid = cidadeSelecionada();
+    if (ativo && !cid) {
+      var prev = document.getElementById('md-pordosol-preview');
+      if (prev) prev.textContent = 'Escolha uma cidade para ativar.';
+      return;
+    }
+    var body = { ativo: !!ativo };
+    if (cid) {
+      body.lat = cid.lat;
+      body.lon = cid.lon;
+      body.cidade = cid.nome;
+    }
+    var btnA = document.getElementById('md-pordosol-ativar');
+    var btnD = document.getElementById('md-pordosol-desativar');
+    if (btnA) btnA.disabled = true;
+    if (btnD) btnD.disabled = true;
+
+    fetch(authUrl('/api/marujo/por-do-sol'), {
+      method: 'POST',
+      headers: authHeaders(),
+      credentials: 'include',
+      body: JSON.stringify(body)
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (btnA) btnA.disabled = false;
+        if (btnD) btnD.disabled = false;
+        if (!j.ok) {
+          var prev = document.getElementById('md-pordosol-preview');
+          if (prev) prev.textContent = j.erro || 'Não foi possível salvar.';
+          return;
+        }
+        try { localStorage.setItem('md_pordosol_decidido', '1'); } catch (e) {}
+        var prev = document.getElementById('md-pordosol-preview');
+        if (ativo && j.proximo && j.proximo.horaLocal) {
+          if (prev) prev.textContent = 'Ativo! Hoje o sol se põe por volta das ' + j.proximo.horaLocal + ' (aviso 1h antes).';
+        } else if (prev) {
+          prev.textContent = ativo ? 'Aviso ativado.' : 'Tudo bem — você não receberá o aviso.';
+        }
+        // pede permissão de push se ativou
+        if (ativo) {
+          try {
+            window.OneSignalDeferred = window.OneSignalDeferred || [];
+            OneSignalDeferred.push(async function (OneSignal) {
+              try { await OneSignal.Notifications.requestPermission(); } catch (e) {}
+            });
+          } catch (e) {}
+        }
+        setTimeout(fechar, ativo ? 1600 : 900);
+      })
+      .catch(function () {
+        if (btnA) btnA.disabled = false;
+        if (btnD) btnD.disabled = false;
+      });
+  }
+
+  /** Se logado e ainda não decidiu, mostra o modal automaticamente. */
+  function talvezConvidar() {
+    if (!token()) return;
+    var ja;
+    try { ja = localStorage.getItem('md_pordosol_decidido'); } catch (e) { ja = null; }
+    // ainda consulta o servidor — localStorage só evita spam se offline
+    fetch(authUrl('/api/marujo/por-do-sol'), { headers: authHeaders(), credentials: 'include' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!j || !j.ok) return;
+        if (j.decidido) {
+          try { localStorage.setItem('md_pordosol_decidido', '1'); } catch (e) {}
+          return;
+        }
+        // ainda não escolheu
+        preencherSelect(document.getElementById('md-pordosol-cidade'), null);
+        var sub = document.getElementById('md-pordosol-sub');
+        if (sub) {
+          sub.innerHTML = 'Quer receber um aviso <b>1 hora antes do pôr do sol</b> na sua cidade? Você escolhe o local e pode mudar depois no perfil.';
+        }
+        abrirOverlay();
+      })
+      .catch(function () {});
+  }
+
+  // boot: depois do login / após carregar
+  function boot() {
+    setTimeout(talvezConvidar, 3500);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+
+  // quando MarujoConta logar, tenta de novo
+  var _tries = 0;
+  var _iv = setInterval(function () {
+    _tries++;
+    try {
+      if (window.MarujoConta && MarujoConta.logado) {
+        talvezConvidar();
+        clearInterval(_iv);
+      }
+    } catch (e) {}
+    if (_tries > 30) clearInterval(_iv);
+  }, 2000);
+
+  return {
+    abrirConfig: abrirConfig,
+    fechar: fechar,
+    salvar: salvar,
+    talvezConvidar: talvezConvidar
+  };
+})();
+</script>
+
 window.MDGames = {
   open: function () {
     var m = document.getElementById('md-games-menu');
