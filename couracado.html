@@ -251,7 +251,7 @@
       <span class="tag">Upgrades</span>
       <span class="tag">XP</span>
     </div>
-    <button type="button" class="btn" id="btn-start">Zarpar</button>
+    <button type="button" class="btn" id="btn-start" onclick="window.__couracadoStart && window.__couracadoStart()">Zarpar</button>
     <button type="button" class="btn ghost" id="btn-close-start" style="display:none">Voltar ao site</button>
     <p class="record">Recorde: onda <strong id="best-wave">1</strong> · <strong id="best-kills">0</strong> abates</p>
   </div>
@@ -333,8 +333,10 @@
   let muted = localStorage.getItem('md_couracado_mute') === '1';
   let musicNodes = null;
   function ensureAudio() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    } catch (e) {}
     return audioCtx;
   }
   function beep(freq, dur, type, vol, slide) {
@@ -443,9 +445,13 @@
   function setScreen(id) {
     ['screen-start', 'screen-shop', 'screen-pause', 'screen-over'].forEach(function (s) {
       var el = document.getElementById(s);
-      if (el) el.classList.toggle('hidden', s !== id);
+      if (!el) return;
+      var show = (s === id);
+      el.classList.toggle('hidden', !show);
+      el.style.display = show ? 'flex' : 'none';
     });
-    document.getElementById('play-tools').classList.toggle('show', state === STATE.PLAY);
+    var tools = document.getElementById('play-tools');
+    if (tools) tools.classList.toggle('show', state === STATE.PLAY);
   }
 
   function updateHud() {
@@ -669,19 +675,38 @@
   }
 
   function startGame() {
-    ensureAudio();
-    resize();
-    resetRun();
-    state = STATE.PLAY;
-    setScreen(null);
-    document.getElementById('play-tools').classList.add('show');
-    document.getElementById('btn-mute').textContent = muted ? '🔇' : '🔊';
-    document.getElementById('hint').classList.add('show');
-    setTimeout(function () { document.getElementById('hint').classList.remove('show'); }, 3000);
-    startMusic();
-    startWave();
-    last = performance.now();
+    try {
+      try { ensureAudio(); } catch (e1) {}
+      resize();
+      resetRun();
+      state = STATE.PLAY;
+      setScreen(null);
+      // força esconder menu mesmo se class falhar
+      var ss = document.getElementById('screen-start');
+      if (ss) { ss.classList.add('hidden'); ss.style.display = 'none'; }
+      var tools = document.getElementById('play-tools');
+      if (tools) tools.classList.add('show');
+      var muteBtn = document.getElementById('btn-mute');
+      if (muteBtn) muteBtn.textContent = muted ? '🔇' : '🔊';
+      var hint = document.getElementById('hint');
+      if (hint) {
+        hint.classList.add('show');
+        setTimeout(function () { hint.classList.remove('show'); }, 3000);
+      }
+      try { startMusic(); } catch (e2) {}
+      startWave();
+      // spawna já o primeiro inimigo na hora
+      if (toSpawn > 0) {
+        spawnEnemy('drone', false);
+        toSpawn--;
+      }
+      last = performance.now();
+    } catch (err) {
+      console.error('[Couraçado] startGame', err);
+      alert('Erro ao iniciar: ' + (err && err.message ? err.message : err));
+    }
   }
+  window.__couracadoStart = startGame;
 
   // ---- Update ----
   var last = performance.now();
@@ -1140,7 +1165,20 @@
     if (e.key === ' ' || e.key === 'Enter') pointerDown = false;
   });
 
-  document.getElementById('btn-start').onclick = startGame;
+  (function bindStart() {
+    var btn = document.getElementById('btn-start');
+    if (!btn) return;
+    btn.onclick = function (ev) {
+      if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+      startGame();
+    };
+    btn.addEventListener('pointerup', function (ev) {
+      if (state === STATE.MENU) {
+        ev.preventDefault();
+        startGame();
+      }
+    }, { passive: false });
+  })();
   document.getElementById('btn-next-wave').onclick = function () {
     wave++;
     var st = shipStats();
