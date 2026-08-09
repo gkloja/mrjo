@@ -339,6 +339,8 @@
   const API_RANK = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
   let audioCtx = null, muted = localStorage.getItem('md_patrulha_mute') === '1';
   let musicNodes = null, musicGain = null;
+  const SFX_VOL = 2.4; // multiplica efeitos (mais altos)
+  const MUSIC_VOL = 0.012; // música de fundo mais baixa
   function ensureAudio() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -352,11 +354,26 @@
       o.type = type || 'sine';
       o.frequency.setValueAtTime(freq, c.currentTime);
       if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(40, slide), c.currentTime + dur);
-      g.gain.setValueAtTime(vol || 0.08, c.currentTime);
+      const v = Math.min(0.45, (vol || 0.08) * SFX_VOL);
+      g.gain.setValueAtTime(v, c.currentTime);
       g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + dur);
       o.connect(g); g.connect(c.destination);
       o.start(); o.stop(c.currentTime + dur + 0.02);
     } catch (e) {}
+  }
+  function playGameOverOgg() {
+    if (muted) return;
+    try {
+      ensureAudio();
+      const a = new Audio('./custom_sound_3.ogg');
+      a.volume = 0.9;
+      a.play().catch(() => {
+        // fallback sintético se o arquivo não carregar
+        sfxOverSynth();
+      });
+    } catch (e) {
+      sfxOverSynth();
+    }
   }
   function sfxCollect(kind) {
     if (kind === 'star') { beep(880, 0.12, 'triangle', 0.1); setTimeout(() => beep(1320, 0.15, 'triangle', 0.08), 60); }
@@ -364,13 +381,14 @@
     else { beep(660, 0.1, 'square', 0.06); setTimeout(() => beep(880, 0.1, 'square', 0.05), 50); }
   }
   function sfxHit() { beep(120, 0.25, 'sawtooth', 0.12, 60); }
-  function sfxOver() { beep(300, 0.2, 'triangle', 0.1, 150); setTimeout(() => beep(150, 0.35, 'sine', 0.08), 180); }
+  function sfxOverSynth() { beep(300, 0.2, 'triangle', 0.1, 150); setTimeout(() => beep(150, 0.35, 'sine', 0.08), 180); }
+  function sfxOver() { playGameOverOgg(); }
   function sfxStart() { beep(440, 0.1, 'sine', 0.08); setTimeout(() => beep(660, 0.12, 'sine', 0.08), 100); }
   function startMusic() {
     if (muted || musicNodes) return;
     try {
       const c = ensureAudio();
-      musicGain = c.createGain(); musicGain.gain.value = 0.035; musicGain.connect(c.destination);
+      musicGain = c.createGain(); musicGain.gain.value = MUSIC_VOL; musicGain.connect(c.destination);
       const o1 = c.createOscillator(), o2 = c.createOscillator(), lfo = c.createOscillator(), lfoG = c.createGain();
       o1.type = 'sine'; o1.frequency.value = 55;
       o2.type = 'sine'; o2.frequency.value = 82.5;
@@ -391,7 +409,7 @@
     if (btn) btn.textContent = muted ? '🔇' : '🔊';
     if (muted) stopMusic(); else if (state === STATE.PLAY) startMusic();
   }
-  function xpFromScore(pts) { return Math.max(0, Math.floor(Number(pts) || 0)); }
+  function xpFromScore(pts) { return Math.min(80, Math.floor(pts / 12)); }
   function playerInfo() {
     let nome = 'Marujo', id = null, level = 1, xp = 0;
     try {
@@ -411,73 +429,28 @@
       return `<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06)"><span>${medal}</span><span style="flex:1;font-weight:700">${nm}</span><span style="color:var(--gold);font-weight:800">${Math.floor(e.score||0)}</span></div>`;
     }).join('');
   }
-  function readLocalRank() {
-    try {
-      const arr = JSON.parse(localStorage.getItem('md_patrulha_local_rank') || '[]');
-      return Array.isArray(arr) ? arr : [];
-    } catch (e) { return []; }
-  }
-  function writeLocalRank(list) {
-    try { localStorage.setItem('md_patrulha_local_rank', JSON.stringify(list.slice(0, 30))); } catch (e) {}
-  }
-  function mergeRankLists(serverList, localList) {
-    const map = new Map();
-    const put = (e) => {
-      if (!e || !e.score) return;
-      const k = e.userId != null && e.userId !== '' ? ('id:' + e.userId) : ('n:' + String(e.nome || 'Marujo').toLowerCase());
-      const prev = map.get(k);
-      if (!prev || Number(e.score) > Number(prev.score)) map.set(k, e);
-    };
-    (serverList || []).forEach(put);
-    (localList || []).forEach(put);
-    return Array.from(map.values()).sort((a, b) => b.score - a.score || (b.dist||0) - (a.dist||0));
-  }
   async function loadTop() {
-    let server = [];
     try {
-      const r = await fetch(API_RANK + '/api/marujo/patrulha/rank', { cache: 'no-store' });
-      if (r.ok) {
-        const j = await r.json();
-        if (j && Array.isArray(j.top)) server = j.top;
-      }
+      const r = await fetch(API_RANK + '/api/marujo/patrulha/rank');
+      if (r.ok) { const j = await r.json(); if (j && j.top) return j.top; }
     } catch (e) {}
-    const local = readLocalRank();
-    const merged = mergeRankLists(server, local);
-    if (merged.length) writeLocalRank(merged);
-    return merged.slice(0, 10);
+    try { return JSON.parse(localStorage.getItem('md_patrulha_local_rank') || '[]').slice(0, 3); } catch (e) { return []; }
   }
   async function submitRank(pts) {
     const p = playerInfo();
-    const entry = {
-      nome: p.nome || 'Marujo',
-      userId: p.id != null ? String(p.id) : null,
-      score: Math.floor(pts),
-      dist: Math.floor(dist),
-      combo: maxCombo,
-      at: Date.now()
-    };
-    // Sempre grava local primeiro (persiste ao recarregar)
-    let local = readLocalRank();
-    local = mergeRankLists(local, [entry]);
-    writeLocalRank(local);
+    const entry = { nome: p.nome, userId: p.id, score: Math.floor(pts), dist: Math.floor(dist), combo: maxCombo, at: Date.now() };
+    let local = [];
+    try { local = JSON.parse(localStorage.getItem('md_patrulha_local_rank') || '[]'); } catch (e) {}
+    local.push(entry);
+    local.sort((a, b) => b.score - a.score);
+    const seen = new Set();
+    local = local.filter(e => { const k = String(e.userId || e.nome); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 20);
+    localStorage.setItem('md_patrulha_local_rank', JSON.stringify(local));
     try {
-      const r = await fetch(API_RANK + '/api/marujo/patrulha/score', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(entry)
-      });
-      if (r.ok) {
-        const j = await r.json();
-        if (j && Array.isArray(j.top) && j.top.length) {
-          const merged = mergeRankLists(j.top, local);
-          writeLocalRank(merged);
-          return merged.slice(0, 10);
-        }
-      }
-    } catch (e) {
-      console.warn('[patrulha] rank server fail', e);
-    }
-    return local.slice(0, 10);
+      const r = await fetch(API_RANK + '/api/marujo/patrulha/score', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(entry) });
+      if (r.ok) { const j = await r.json(); if (j && j.top) return j.top; }
+    } catch (e) {}
+    return local.slice(0, 3);
   }
 
 
@@ -653,7 +626,6 @@
     speed = 1; elapsed = 0; sector = 1;
     invuln = 0; shake = 0;
     quizSavesUsed = 0;
-    quizUsedIds.clear();
     if (quizTimerId) { clearInterval(quizTimerId); quizTimerId = null; }
     obstacles = []; pickups = []; particles = [];
     ship.x = W / 2;
@@ -706,29 +678,13 @@
       if (gained > 0) {
         award.hidden = false;
         const gEl = document.getElementById('xp-gained'); if (gEl) gEl.textContent = gained;
-        let applied = false;
         try {
           if (IN_IFRAME && parent.userProgress && typeof parent.userProgress.addXP === 'function') {
             parent.userProgress.addXP(gained);
-            applied = true;
-            try {
-              parent.__mdPatrulhaLastScore = pts;
-              parent.__mdPatrulhaXpAt = Date.now();
-              if (typeof parent.updateFloatingButton === 'function') parent.updateFloatingButton();
-              if (typeof parent.mdSyncCmdBar === 'function') parent.mdSyncCmdBar();
-            } catch (e2) {}
             const line = document.getElementById('xp-account-line');
             if (line) line.textContent = 'Conta · Nível ' + parent.userProgress.level + ' · ' + parent.userProgress.xp + ' XP no nível';
           }
-        } catch (e) { console.warn('[patrulha] addXP parent', e); }
-        // Fallback via postMessage só se o acesso direto falhou (evita XP em dobro)
-        if (!applied) {
-          try {
-            parent.postMessage({ type: 'md-patrulha', action: 'xp', detail: { xpGained: gained, score: pts } }, '*');
-          } catch (e) {}
-          const line = document.getElementById('xp-account-line');
-          if (line) line.textContent = 'XP será creditado na sua conta ao fechar o jogo';
-        }
+        } catch (e) {}
       } else award.hidden = true;
     }
     const top = await submitRank(pts);
@@ -748,55 +704,25 @@
     if (n === 1) return { key: 'médio', label: 'MÉDIO', cls: 'medio' };
     return { key: 'difícil', label: 'DIFÍCIL', cls: 'dificil' };
   }
-  const quizUsedIds = new Set();
-  function shuffle(arr) {
-    const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const t = a[i]; a[i] = a[j]; a[j] = t;
-    }
-    return a;
-  }
   function pickQuizQuestion(diffKey) {
-    // Preferir perguntas do site; evitar repetir na mesma partida
-    let candidates = [];
+    // Tenta pegar do site (parent.quizDatabase); senão usa banco local
     try {
       if (IN_IFRAME && parent.quizDatabase && Array.isArray(parent.quizDatabase)) {
-        candidates = parent.quizDatabase.filter(q =>
+        const pool = parent.quizDatabase.filter(q =>
           q && q.difficulty === diffKey && q.question && q.options && q.correct
-        ).map(q => ({
-          id: 'p:' + (q.id != null ? q.id : q.question),
-          q: q.question,
-          opts: q.options.map(o => (typeof o === 'string' ? o : o.text)),
-          c: q.correct
-        }));
+        );
+        if (pool.length) {
+          const q = pool[Math.floor(Math.random() * pool.length)];
+          return {
+            q: q.question,
+            opts: q.options.map(o => (typeof o === 'string' ? o : o.text)),
+            c: q.correct
+          };
+        }
       }
     } catch (e) {}
-    if (!candidates.length) {
-      const local = QUIZ_BANK[diffKey] || QUIZ_BANK['fácil'] || [];
-      candidates = local.map((q, i) => ({
-        id: 'l:' + diffKey + ':' + i + ':' + q.q,
-        q: q.q,
-        opts: q.opts.slice(),
-        c: q.c
-      }));
-    }
-    // remove já usadas nesta partida
-    let pool = candidates.filter(q => !quizUsedIds.has(q.id));
-    if (!pool.length) pool = candidates; // se esgotou, permite repetir
-    const picked = pool[Math.floor(Math.random() * pool.length)];
-    quizUsedIds.add(picked.id);
-
-    // Embaralha alternativas e recalcula a letra correta
-    const letters = ['A', 'B', 'C', 'D'];
-    const paired = picked.opts.map((text, i) => ({ text, letter: letters[i] }));
-    const shuffled = shuffle(paired).slice(0, 4);
-    const correctLetter = shuffled.find(p => p.letter === picked.c)?.letter;
-    // Mapear para novas letras A-D na ordem embaralhada
-    const newOpts = shuffled.map(p => p.text);
-    const newCorrectIdx = shuffled.findIndex(p => p.letter === picked.c);
-    const newC = letters[Math.max(0, newCorrectIdx)];
-    return { q: picked.q, opts: newOpts, c: newC };
+    const local = QUIZ_BANK[diffKey] || QUIZ_BANK['fácil'];
+    return local[Math.floor(Math.random() * local.length)];
   }
   function offerQuizSave() {
     state = STATE.PAUSE; // congela o update loop
@@ -1375,7 +1301,6 @@
     state = STATE.MENU;
     setScreen('screen-start');
     document.getElementById('best-start').textContent = best;
-    loadTop().then(list => renderRankList(document.getElementById('start-rank-list'), list));
   };
   document.getElementById('btn-again').onclick = startGame;
   document.getElementById('pause-btn').onclick = pause;
