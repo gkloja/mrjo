@@ -30426,8 +30426,6 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
-
-<script>
 /** Aviso de pôr do sol — 1h antes, só quem optou, cidade no perfil. */
 window.MDPorDoSol = (function () {
   var API = (window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009');
@@ -30472,7 +30470,7 @@ window.MDPorDoSol = (function () {
 
   function preencherSelect(sel, atual) {
     if (!sel) return;
-    sel.innerHTML = '<option value=\"\">Selecione…</option>';
+    sel.innerHTML = '<option value="">Selecione…</option>';
     CIDADES.forEach(function (c, i) {
       var o = document.createElement('option');
       o.value = String(i);
@@ -30630,7 +30628,6 @@ window.MDPorDoSol = (function () {
     talvezConvidar: talvezConvidar
   };
 })();
-</script>
 
 window.MDGames = {
   open: function () {
