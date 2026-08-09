@@ -1117,6 +1117,13 @@
           parent.__mdGameLastKey = sessionId;
           parent.userProgress.addXP(xpGained);
           try {
+            if (parent.MarujoConta && typeof parent.MarujoConta.grantXpConta === 'function') {
+              parent.MarujoConta.grantXpConta(xpGained, sessionId);
+            } else if (parent.MarujoConta && parent.MarujoConta.sincronizarProgresso) {
+              parent.MarujoConta.sincronizarProgresso();
+            }
+          } catch (eGrant) {}
+          try {
             if (parent.MarujoConta && parent.MarujoConta.usuario) {
               parent.MarujoConta.usuario.level = parent.userProgress.level;
               parent.MarujoConta.usuario.xp = parent.userProgress.xp;

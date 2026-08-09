@@ -7766,6 +7766,7 @@ const NewsSystem = {
         let shareUrl = '';
         
         userProgress.addXP(5)
+        try { if (window.MarujoConta && MarujoConta.grantXpConta) MarujoConta.grantXpConta(5, 'share-' + Date.now()); } catch (eXp) {}
         switch(platform) {
             case 'whatsapp':
                 shareUrl = `https://wa.me/?text=${text}%20${url}`;
@@ -7892,6 +7893,7 @@ const NewsSystem = {
         const noticia = this.noticias.find(n => n.id === noticiaId);
         if (!noticia) return;
         userProgress.addXP(100)
+        try { if (window.MarujoConta && MarujoConta.grantXpConta) MarujoConta.grantXpConta(100, 'news-' + Date.now()); } catch (eXp) {}
         const shareUrl = encodeURIComponent(`${this.config.siteUrl}#noticia=${noticia.id}`);
         const shareTitle = encodeURIComponent(noticia.title);
         const shareText = encodeURIComponent(`📰 ${noticia.title} - Radar Militar`);
@@ -19744,6 +19746,19 @@ const userProgress = window.userProgress = {
     },
     
     addXP(amount) {
+        amount = Math.floor(Number(amount) || 0);
+        if (amount <= 0) return;
+        this.xp = Number(this.xp) || 0;
+        this.level = Number(this.level) || 1;
+        if (!this.stats || typeof this.stats !== 'object') {
+            this.stats = {
+                totalQuestions: 0, correctAnswers: 0, totalXP: 0,
+                byCategory: {}, byDifficulty: {}
+            };
+        }
+        if (typeof this.stats.totalXP !== 'number' || !isFinite(this.stats.totalXP)) {
+            this.stats.totalXP = 0;
+        }
         this.xp += amount;
         this.stats.totalXP += amount;
         
@@ -21261,6 +21276,7 @@ function checkAnswer() {
         score++;
         totalXP += question.xp;
         userProgress.addXP(question.xp);
+        try { if (window.MarujoConta && MarujoConta.grantXpConta) MarujoConta.grantXpConta(question.xp, "quiz-" + (question.id || Date.now())); } catch (eXp) {}
     }
     
     setTimeout(() => {
@@ -21561,6 +21577,7 @@ function checkAchievements() {
 
 function showAchievementUnlocked(id, title, description, xp) {
     userProgress.addXP(xp);
+    try { if (window.MarujoConta && MarujoConta.grantXpConta) MarujoConta.grantXpConta(xp, 'ach-' + (id || Date.now())); } catch (eXp) {}
     
     const notification = document.getElementById('rewardNotification');
     const titleEl = document.getElementById('rewardTitle');
@@ -27566,25 +27583,95 @@ img.md-avatar-vip {
             };
         },
         async sincronizarProgresso() {
-            if (!this.logado || typeof userProgress === 'undefined') return;
+            if (typeof userProgress === 'undefined') return;
+            // Se não está marcado logado mas tem token, tenta mesmo assim
+            const token = (typeof mdToken === 'function' ? mdToken() : (localStorage.getItem('md_token') || ''));
+            if (!this.logado && !token) return;
             try {
+                // Garante totalXP numérico antes de enviar
+                if (userProgress.stats && (typeof userProgress.stats.totalXP !== 'number' || !isFinite(userProgress.stats.totalXP))) {
+                    userProgress.stats.totalXP = 0;
+                }
+                const payload = {
+                    md_token: token,
+                    xp: Number(userProgress.xp) || 0,
+                    level: Number(userProgress.level) || 1,
+                    streak: Number(userProgress.streak) || 0,
+                    stats: userProgress.stats,
+                    achievements: userProgress.achievements
+                };
                 const r = await authFetch(`${API}/sincronizar`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        xp: userProgress.xp,
-                        level: userProgress.level,
-                        streak: userProgress.streak,
-                        stats: userProgress.stats,
-                        achievements: userProgress.achievements
-                    })
+                    body: JSON.stringify(payload)
                 });
-                const data = await r.json();
-                if (data.ok) {
+                const data = await r.json().catch(() => ({}));
+                if (data && data.ok && data.usuario) {
+                    this.logado = true;
                     this.usuario = data.usuario;
+                    // Alinha local com o que o servidor confirmou (totalXP nunca menor)
+                    const srvTotal = Number(data.usuario.totalXP != null ? data.usuario.totalXP : data.usuario.pontosTotais) || 0;
+                    if (userProgress.stats && srvTotal > (Number(userProgress.stats.totalXP) || 0)) {
+                        userProgress.stats.totalXP = srvTotal;
+                    }
+                    if (Number(data.usuario.level) > (Number(userProgress.level) || 1)) {
+                        userProgress.level = Number(data.usuario.level) || userProgress.level;
+                        userProgress.xp = Number(data.usuario.xp) || userProgress.xp;
+                    }
+                    try { userProgress.saveProgress(); } catch (e0) {}
                     this.renderUserbar();
+                    try { if (typeof updateFloatingButton === 'function') updateFloatingButton(); } catch (e1) {}
+                    try { if (typeof mdSyncCmdBar === 'function') mdSyncCmdBar(); } catch (e2) {}
+                } else {
+                    console.warn('[MarujoConta] sincronizar sem ok:', r.status, data);
                 }
             } catch (e) {
                 console.warn('[MarujoConta] Falha ao sincronizar progresso:', e);
+            }
+        },
+
+        /** Concede XP na conta via endpoint de delta (mais confiável). */
+        async grantXpConta(amount, sessionId) {
+            amount = Math.floor(Number(amount) || 0);
+            if (amount <= 0) return false;
+            const token = (typeof mdToken === 'function' ? mdToken() : (localStorage.getItem('md_token') || ''));
+            if (!this.logado && !token) {
+                console.warn('[MarujoConta] grantXpConta: sem login/token');
+                return false;
+            }
+            try {
+                const r = await authFetch(`${API}/xp/grant`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ md_token: token, amount, sessionId: sessionId || ('g-' + Date.now()) })
+                });
+                const data = await r.json().catch(() => ({}));
+                if (data && data.ok && data.usuario) {
+                    this.logado = true;
+                    this.usuario = data.usuario;
+                    // Espelha no userProgress local
+                    if (typeof userProgress !== 'undefined') {
+                        const srvTotal = Number(data.usuario.totalXP != null ? data.usuario.totalXP : data.usuario.pontosTotais) || 0;
+                        userProgress.level = Number(data.usuario.level) || userProgress.level;
+                        userProgress.xp = Number(data.usuario.xp) || userProgress.xp;
+                        if (!userProgress.stats) userProgress.stats = { totalXP: 0 };
+                        userProgress.stats.totalXP = Math.max(Number(userProgress.stats.totalXP) || 0, srvTotal);
+                        // saveProgress local SEM re-disparar loop infinito de sync
+                        try {
+                            localStorage.setItem('marujo_xp', String(userProgress.xp));
+                            localStorage.setItem('marujo_level', String(userProgress.level));
+                            localStorage.setItem('marujo_stats', JSON.stringify(userProgress.stats));
+                        } catch (e0) {}
+                    }
+                    this.renderUserbar();
+                    try { if (typeof updateFloatingButton === 'function') updateFloatingButton(); } catch (e1) {}
+                    try { if (typeof mdSyncCmdBar === 'function') mdSyncCmdBar(); } catch (e2) {}
+                    console.log('[MarujoConta] grantXpConta OK +' + amount, data.usuario.pontosTotais);
+                    return true;
+                }
+                console.warn('[MarujoConta] grantXpConta falhou:', r.status, data);
+                return false;
+            } catch (e) {
+                console.warn('[MarujoConta] grantXpConta erro:', e);
+                return false;
             }
         },
 
@@ -30386,21 +30473,27 @@ window.mdGrantGameXp = function (detail, typeHint) {
     }
     var before = Number(up.xp) || 0;
     var beforeLvl = Number(up.level) || 1;
+    // 1) Atualiza local imediatamente (UI)
     up.addXP(xp);
     try {
       if (window.MarujoConta && MarujoConta.usuario) {
         var u = MarujoConta.usuario;
         u.level = up.level;
         u.xp = up.xp;
-        if (up.stats && up.stats.totalXP != null) u.pontosTotais = up.stats.totalXP;
-        else u.pontosTotais = (Number(u.pontosTotais) || 0) + xp;
+        u.pontosTotais = (Number(u.pontosTotais) || 0) + xp;
+        if (u.totalXP != null) u.totalXP = (Number(u.totalXP) || 0) + xp;
       }
     } catch (e0) {}
     console.log('[MDGames] +' + xp + ' XP (' + before + '→' + up.xp + ', nv ' + beforeLvl + '→' + up.level + ')', typeHint || '', detail);
     try { if (typeof updateFloatingButton === 'function') updateFloatingButton(); } catch (e1) {}
     try { if (typeof mdSyncCmdBar === 'function') mdSyncCmdBar(); } catch (e2) {}
+    // 2) Persiste na conta: delta no servidor (preferencial) + sync completo
     try {
-      if (window.MarujoConta && typeof MarujoConta.sincronizarProgresso === 'function') {
+      if (window.MarujoConta && typeof MarujoConta.grantXpConta === 'function') {
+        MarujoConta.grantXpConta(xp, sid).then(function (ok) {
+          if (!ok && MarujoConta.sincronizarProgresso) MarujoConta.sincronizarProgresso();
+        });
+      } else if (window.MarujoConta && typeof MarujoConta.sincronizarProgresso === 'function') {
         MarujoConta.sincronizarProgresso();
       }
     } catch (e3) {}
