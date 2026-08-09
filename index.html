@@ -30310,7 +30310,7 @@ window.MDGames = {
   },
   play: function (id) {
     this.closeMenu();
-    var src = id === 'couracado' ? '/couracado.html?v=9' : '/patrulha-naval.html?v=7';
+    var src = id === 'couracado' ? '/couracado.html?v=10' : '/patrulha-naval.html?v=8';
     this._openFrame(src);
   },
   _openFrame: function (src) {
@@ -30354,7 +30354,10 @@ window.addEventListener('message', function (ev) {
   function mdGrantGameXp(detail) {
     try {
       var xp = Math.floor(Number(detail && detail.xpGained) || 0);
-      if (xp <= 0) return false;
+      if (xp <= 0) {
+        console.warn('[MDGames] xpGained inválido', detail);
+        return false;
+      }
       var sid = (detail && detail.sessionId) ? String(detail.sessionId) :
         (d.type + ':' + (detail.score != null ? detail.score : '') + ':' +
          (detail.wave || '') + ':' + (detail.kills || '') + ':' + xp);
@@ -30362,12 +30365,25 @@ window.addEventListener('message', function (ev) {
       window.__mdGameLastKey = sid;
       window.__mdGameXpAt = Date.now();
       var up = window.userProgress || (typeof userProgress !== 'undefined' ? userProgress : null);
-      if (up && typeof up.addXP === 'function') {
-        up.addXP(xp);
-        console.log('[MDGames] +' + xp + ' XP de', d.type, detail);
-      } else {
+      if (!up || typeof up.addXP !== 'function') {
         console.warn('[MDGames] userProgress.addXP indisponível');
+        return false;
       }
+      var before = Number(up.xp) || 0;
+      var beforeLvl = Number(up.level) || 1;
+      up.addXP(xp);
+      // espelha na conta logada (header usa MarujoConta.usuario)
+      try {
+        if (window.MarujoConta && MarujoConta.usuario) {
+          var u = MarujoConta.usuario;
+          u.level = up.level;
+          u.xp = up.xp;
+          // pontosTotais = XP acumulado total se existir stats
+          if (up.stats && up.stats.totalXP != null) u.pontosTotais = up.stats.totalXP;
+          else u.pontosTotais = (Number(u.pontosTotais) || 0) + xp;
+        }
+      } catch (e0) {}
+      console.log('[MDGames] +' + xp + ' XP (' + before + '→' + up.xp + ', nv ' + beforeLvl + '→' + up.level + ')', d.type, detail);
       try { if (typeof updateFloatingButton === 'function') updateFloatingButton(); } catch (e1) {}
       try { if (typeof mdSyncCmdBar === 'function') mdSyncCmdBar(); } catch (e2) {}
       try {

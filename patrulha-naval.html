@@ -435,7 +435,7 @@
     if (btn) btn.textContent = muted ? '🔇' : '🔊';
     if (muted) stopMusic(); else if (state === STATE.PLAY) startMusic();
   }
-  function xpFromScore(pts) { return Math.min(80, Math.floor(pts / 12)); }
+  function xpFromScore(pts) { pts = Math.max(0, Math.floor(pts || 0)); return Math.max(5, Math.min(100, Math.floor(pts / 8) + 5)); }
   function playerInfo() {
     let nome = 'Marujo', id = null, level = 1, xp = 0;
     try {
@@ -754,12 +754,13 @@
       best = pts;
       try { localStorage.setItem('md_patrulha_best', String(best)); } catch (e) {}
     }
-    document.getElementById('over-xp').textContent = pts;
+    document.getElementById('over-xp').textContent = (typeof xpFromScore === 'function' ? xpFromScore(pts) : pts);
     document.getElementById('over-nm').textContent = Math.floor(dist);
     document.getElementById('over-combo').textContent = maxCombo;
     document.getElementById('over-rank').textContent = rankFor(pts);
     var award = document.getElementById('xp-award');
-    var xpGain = typeof xpFromScore === 'function' ? xpFromScore(pts) : Math.max(1, Math.floor(pts / 20));
+    var xpGain = typeof xpFromScore === 'function' ? xpFromScore(pts) : Math.max(5, Math.floor(pts / 20));
+    document.getElementById('over-xp').textContent = xpGain;
     if (award) {
       award.hidden = false;
       var g = document.getElementById('xp-gained');
@@ -770,10 +771,30 @@
       var top = await submitRank(pts);
       renderRankList(document.getElementById('over-rank-list'), top);
     } catch (e) {}
-    var sessionId = 'pat-' + Date.now() + '-' + pts;
+    var sessionId = 'pat-' + Date.now() + '-' + pts + '-' + xpGain;
+    // 1) tenta aplicar XP direto no parent (mesmo origin)
+    try {
+      if (IN_IFRAME && parent.userProgress && typeof parent.userProgress.addXP === 'function' && xpGain > 0) {
+        var sidKey = '__mdGameLastKey';
+        if (parent[sidKey] !== sessionId) {
+          parent[sidKey] = sessionId;
+          parent.userProgress.addXP(xpGain);
+          try {
+            if (parent.MarujoConta && parent.MarujoConta.usuario) {
+              parent.MarujoConta.usuario.level = parent.userProgress.level;
+              parent.MarujoConta.usuario.xp = parent.userProgress.xp;
+              if (parent.userProgress.stats) parent.MarujoConta.usuario.pontosTotais = parent.userProgress.stats.totalXP;
+            }
+          } catch (e0) {}
+          try { if (typeof parent.updateFloatingButton === 'function') parent.updateFloatingButton(); } catch (e1) {}
+          try { if (typeof parent.mdSyncCmdBar === 'function') parent.mdSyncCmdBar(); } catch (e2) {}
+          try { if (parent.MarujoConta && parent.MarujoConta.sincronizarProgresso) parent.MarujoConta.sincronizarProgresso(); } catch (e3) {}
+        }
+      }
+    } catch (e) { console.warn('[patrulha direct xp]', e); }
+    // 2) postMessage (fallback / missões)
     if (IN_IFRAME) {
       try {
-        // um único evento com XP — o Index aplica e sincroniza a conta
         parent.postMessage({
           type: 'md-patrulha',
           action: 'over',
@@ -786,15 +807,16 @@
           }
         }, '*');
       } catch (e) {}
-      // atualiza patente exibida com nível da conta (após possível level-up)
       setTimeout(function () {
         try {
           document.getElementById('over-rank').textContent = rankFor(pts);
+          var line2 = document.getElementById('xp-account-line');
+          if (line2) line2.textContent = 'Patente: ' + rankFor(pts) + ' · +' + xpGain + ' XP na conta';
         } catch (e2) {}
-      }, 200);
+      }, 250);
     }
     var line = document.getElementById('xp-account-line');
-    if (line) line.textContent = 'Patente: ' + rankFor(pts);
+    if (line) line.textContent = 'Patente: ' + rankFor(pts) + ' · +' + xpGain + ' XP na conta';
   }
 
   function offerQuizSave() {
