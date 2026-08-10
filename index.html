@@ -155,7 +155,7 @@
     // por qualquer motivo (usuário deslogado, erro de rede, etc.), o padrão é
     // carregar o anúncio normalmente — só quem é VIP confirmado é isento.
     (async function () {
-        const API_BASE_ADS = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
+        const API_BASE_ADS = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
         let ehVip = false;
         try {
             const token = localStorage.getItem('md_token');
@@ -8898,7 +8898,7 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
 // ===== CONFIGURAÇÕES PARA PRODUÇÃO =====
 const CONFIG = {
     // API principal - tenta primeiro
-    API_BASE: 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009',
+    API_BASE: 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009',
     
     // Fallbacks caso a principal falhe
     FALLBACK_APIS: [
@@ -27103,7 +27103,7 @@ html[data-theme="light"] #md-pordosol-overlay .md-pds-hero .md-sub { color: #4a3
 (function () {
     // Mesmo proxy (Cloudflare Worker) já usado pelo chat de IA existente,
     // necessário pra falar com o backend real (br2.bronxyshost.com:4009).
-    const API_BASE = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
+    const API_BASE = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
     const API = `${API_BASE}/api/marujo`;
     // Rotas do sistema VIP (montadas em app.get('/api/vip/...') no backend).
     const API_VIP = `${API_BASE}/api/vip`;
@@ -29391,9 +29391,9 @@ function mdDismissInstall() {
 
 // ===== Mini-jogo: Radar de Sinais =====
 // API Marujo (Cloudflare Worker → servidor :4009)
-window.MD_API_BASE = window.MD_API_BASE || 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
+window.MD_API_BASE = window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
 window.MD_API_BAZAR = window.MD_API_BASE + '/api/marujo/bazar';
-window.MD_MEDIA_BASE = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009'; // fotos via proxy HTTPS
+window.MD_MEDIA_BASE = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009'; // fotos via proxy HTTPS
 
 const MDRadar = {
     TOTAL: 10,
@@ -29573,12 +29573,12 @@ window.MDRadar = MDRadar;
    MISSÃO DO DIA · RANKING SEMANAL · BAZAR MARUJO
    ========================================================= */
 (function () {
-  const API_BASE = window.MD_API_BASE || 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
+  const API_BASE = window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
   const API_BAZAR = window.MD_API_BAZAR || (API_BASE + '/api/marujo/bazar');
   const API_RADAR_SCORE = API_BASE + '/api/marujo/radar/score';
   const API_RADAR_RANK = API_BASE + '/api/marujo/radar/ranking';
   const API_MISSAO_CLAIM = API_BASE + '/api/marujo/missao/claim';
-  const MEDIA_BASE = window.MD_MEDIA_BASE || 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
+  const MEDIA_BASE = window.MD_MEDIA_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
   const DN_NOME = {
     '1': '1º DN', '2': '2º DN', '3': '3º DN', '4': '4º DN',
     '5': '5º DN', '6': '6º DN', '7': '7º DN', '8': '8º DN', '9': '9º DN'
@@ -29799,14 +29799,14 @@ window.MDRadar = MDRadar;
       if (/^https?:\/\//i.test(foto)) {
         // Se for http do backend e a página for https, passa pelo proxy
         if (foto.indexOf('http://br2.bronxyshost.com:4009') === 0) {
-          return 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=' + encodeURIComponent(foto);
+          return 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=' + encodeURIComponent(foto);
         }
         return foto;
       }
       // Caminho relativo: /uploads/bazar/...
       const path = foto.startsWith('/') ? foto : '/' + foto;
       const target = 'http://br2.bronxyshost.com:4009' + path;
-      return 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=' + encodeURIComponent(target);
+      return 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=' + encodeURIComponent(target);
     },
     shareUrl(item) {
       const id = (item && item.id) || item;
@@ -30178,7 +30178,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script>
 (function () {
-  var MD_AVATAR_API = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
+  var MD_AVATAR_API = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
 
   function mdCmdApiBase() {
     try {
@@ -30564,7 +30564,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <script>
 /** Aviso de pôr do sol — 1h antes, só quem optou, cidade no perfil. */
 window.MDPorDoSol = (function () {
-  var API = (window.MD_API_BASE || 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009');
+  var API = (window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009');
   var CIDADES = [
     { nome: 'Rio de Janeiro, RJ', lat: -22.9068, lon: -43.1729 },
     { nome: 'Niterói, RJ', lat: -22.8832, lon: -43.1034 },
@@ -30684,10 +30684,7 @@ window.MDPorDoSol = (function () {
 
   function abrirOverlay() {
     var ov = document.getElementById('md-pordosol-overlay');
-    if (!ov) {
-      console.warn('[MDPorDoSol] #md-pordosol-overlay ausente');
-      return;
-    }
+    if (!ov) return;
     ov.classList.add('md-show');
     ov.style.zIndex = '99999';
     _jaMostrou = true;
@@ -30732,7 +30729,7 @@ window.MDPorDoSol = (function () {
       })
       .catch(function () {
         preencherChips(lerLocal());
-        setStatus('Sem conexão com o servidor — pode configurar offline.', 'err');
+        setStatus('Sem conexão — pode configurar offline.', 'err');
         abrirOverlay();
       });
   }
@@ -30778,7 +30775,7 @@ window.MDPorDoSol = (function () {
         return r.text().then(function (txt) {
           var j = null;
           try { j = JSON.parse(txt); } catch (e) {}
-          return { status: r.status, j: j, txt: txt };
+          return { status: r.status, j: j };
         });
       })
       .then(function (pack) {
@@ -30788,7 +30785,6 @@ window.MDPorDoSol = (function () {
         if (!j || !j.ok) {
           var msg = (j && j.erro) ? j.erro : ('Erro ' + pack.status + '. Preferência salva neste aparelho.');
           setStatus('⚠️ ' + msg, 'err');
-          console.warn('[MDPorDoSol] save fail', pack.status, pack.txt);
           setTimeout(fechar, 2400);
           return;
         }
@@ -30809,25 +30805,18 @@ window.MDPorDoSol = (function () {
         }
         setTimeout(fechar, ativo ? 2800 : 1400);
       })
-      .catch(function (err) {
+      .catch(function () {
         if (btnA) btnA.disabled = false;
         if (btnD) btnD.disabled = false;
         setStatus('⚠️ Sem conexão. Preferência salva neste aparelho.', 'err');
-        console.warn('[MDPorDoSol] network', err);
         setTimeout(fechar, 2000);
       });
   }
 
   function talvezConvidar() {
     if (_jaMostrou) return;
-    if (!token()) {
-      console.log('[MDPorDoSol] aguardando login');
-      return;
-    }
-    if (localDecidido()) {
-      console.log('[MDPorDoSol] já decidiu');
-      return;
-    }
+    if (!token()) return;
+    if (localDecidido()) return;
     fetch(authUrl('/api/marujo/por-do-sol'), { headers: authHeaders(), credentials: 'include' })
       .then(function (r) {
         if (!r.ok) throw new Error('http ' + r.status);
@@ -30840,18 +30829,13 @@ window.MDPorDoSol = (function () {
         }
         abrirConvite();
       })
-      .catch(function (err) {
-        console.warn('[MDPorDoSol] API falhou, mostrando convite:', err && err.message);
-        abrirConvite();
-      });
+      .catch(function () { abrirConvite(); });
   }
 
   function boot() {
     if (_agendado) return;
     _agendado = true;
-    // 30s após carregar
     setTimeout(talvezConvidar, 30000);
-    // e 30s após detectar login (se ainda não mostrou)
     var tries = 0;
     var iv = setInterval(function () {
       tries++;
