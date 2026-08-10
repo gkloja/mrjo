@@ -28888,6 +28888,59 @@ function toggleAmbientMusic() {
     }
 }
 
+// Pausa a música ambiente quando o site vai para segundo plano (aba/app).
+// Volta a tocar ao retornar, se o usuário não tiver silenciado.
+window.__mdAmbientPausedByBackground = false;
+
+function mdAmbientGetPlayer() {
+    return document.getElementById('ambientMusicPlayer')
+        || window.ambientAudio
+        || (window.ambientMusic && typeof window.ambientMusic.pause === 'function' ? window.ambientMusic : null);
+}
+
+function mdPausarMusicaAmbientePorBackground() {
+    try {
+        const audio = mdAmbientGetPlayer();
+        if (!audio) return;
+        if (!audio.paused) {
+            audio.pause();
+            window.__mdAmbientPausedByBackground = true;
+        }
+    } catch (e) {}
+}
+
+function mdRetomarMusicaAmbienteDoBackground() {
+    try {
+        if (!window.__mdAmbientPausedByBackground) return;
+        window.__mdAmbientPausedByBackground = false;
+        if (typeof ambientMusicEstaMudo === 'function' && ambientMusicEstaMudo()) return;
+        const audio = mdAmbientGetPlayer();
+        if (!audio) return;
+        if (audio.muted) return;
+        // Não retoma se um minigame pausou de propósito
+        if (window.__mdPatrulhaPausedSiteMusic) return;
+        audio.play().catch(function () {});
+    } catch (e) {}
+}
+
+document.addEventListener('visibilitychange', function () {
+    if (document.hidden) mdPausarMusicaAmbientePorBackground();
+    else mdRetomarMusicaAmbienteDoBackground();
+});
+// iOS / PWA / trocar de app
+window.addEventListener('pagehide', mdPausarMusicaAmbientePorBackground);
+window.addEventListener('blur', function () {
+    // Só pausa se a página realmente não estiver visível (evita pause ao abrir alert)
+    if (document.hidden) mdPausarMusicaAmbientePorBackground();
+});
+window.addEventListener('pageshow', function () {
+    if (!document.hidden) mdRetomarMusicaAmbienteDoBackground();
+});
+document.addEventListener('freeze', mdPausarMusicaAmbientePorBackground);
+document.addEventListener('resume', function () {
+    if (!document.hidden) mdRetomarMusicaAmbienteDoBackground();
+});
+
 document.addEventListener('DOMContentLoaded', iniciarMusicaAmbiente);
 </script>
 
