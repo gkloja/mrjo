@@ -4214,6 +4214,57 @@ html[data-theme="light"] .md-header-music-btn {
     text-overflow: ellipsis;
     margin-top: 1px;
 }
+/* Legenda do pôr do sol sob o perfil — clicável para escolher/trocar cidade */
+.md-cmd-sunset {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 3px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.68rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    max-width: 100%;
+    text-align: left;
+    line-height: 1.25;
+    touch-action: manipulation;
+    opacity: 0.92;
+    transition: color 0.15s ease, opacity 0.15s ease;
+}
+.md-cmd-sunset:hover,
+.md-cmd-sunset:focus {
+    color: var(--accent);
+    opacity: 1;
+    outline: none;
+}
+.md-cmd-sunset .md-cmd-sunset-ico {
+    flex-shrink: 0;
+    font-size: 0.78rem;
+    line-height: 1;
+}
+.md-cmd-sunset .md-cmd-sunset-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.md-cmd-sunset.is-empty {
+    color: rgba(255, 204, 0, 0.85);
+    font-weight: 700;
+}
+html[data-theme="light"] .md-cmd-sunset {
+    color: var(--text-secondary);
+}
+html[data-theme="light"] .md-cmd-sunset:hover,
+html[data-theme="light"] .md-cmd-sunset:focus {
+    color: #0a4d8c;
+}
+html[data-theme="light"] .md-cmd-sunset.is-empty {
+    color: #a9812f;
+}
 .md-cmd-avatar {
     background-size: cover !important;
     background-position: center !important;
@@ -6380,6 +6431,12 @@ html[data-theme="light"] .signal-hero {
             <span class="md-cmd-vip off" id="md-cmd-vip">FREE</span>
         </div>
         <div class="md-cmd-patente" id="md-cmd-patente">Recruta</div>
+        <button type="button" class="md-cmd-sunset is-empty" id="md-cmd-sunset"
+                onclick="try{MDPorDoSol.abrirConfig()}catch(e){}"
+                title="Horário do pôr do sol na sua cidade — toque para escolher ou alterar">
+            <span class="md-cmd-sunset-ico" aria-hidden="true">🌅</span>
+            <span class="md-cmd-sunset-label" id="md-cmd-sunset-text">Definir cidade do ocaso</span>
+        </button>
         <div class="md-cmd-xp-row">
             <div class="md-cmd-xp-bar"><span id="md-cmd-xp-fill" style="width:0%"></span></div>
             <span class="md-cmd-xp-text" id="md-cmd-xp-text">0 XP</span>
@@ -30837,6 +30894,7 @@ window.MDPorDoSol = (function () {
         } else {
           setStatus('Ok — você não receberá o aviso.', 'ok');
         }
+        try { sincronizarLegendaCmd(j); } catch (eSync) {}
         setTimeout(fechar, ativo ? 2800 : 1400);
       })
       .catch(function (err) {
@@ -30844,7 +30902,120 @@ window.MDPorDoSol = (function () {
         if (btnD) btnD.disabled = false;
         setStatus('⚠️ Falha de rede. Preferência salva neste aparelho.', 'err');
         console.warn('[MDPorDoSol] network', err);
+        try { sincronizarLegendaCmd(lerLocal()); } catch (eSync2) {}
         setTimeout(fechar, 2200);
+      });
+  }
+
+  /** Atualiza a legenda sob o perfil (cmd-bar): horário local do ocaso + cidade. */
+  function setLegendaCmd(texto, isEmpty) {
+    var btn = document.getElementById('md-cmd-sunset');
+    var lab = document.getElementById('md-cmd-sunset-text');
+    if (!lab) return;
+    lab.textContent = texto || 'Definir cidade do ocaso';
+    if (btn) {
+      if (isEmpty) btn.classList.add('is-empty');
+      else btn.classList.remove('is-empty');
+      btn.title = isEmpty
+        ? 'Toque para escolher a cidade do pôr do sol'
+        : 'Pôr do sol na sua cidade — toque para alterar';
+    }
+  }
+
+  function cidadeCurta(nome) {
+    if (!nome) return '';
+    // "Manaus, AM" → "Manaus"
+    return String(nome).replace(/,\s*[A-Z]{2}\s*$/, '').trim() || String(nome);
+  }
+
+  function hojeISOLocal() {
+    try {
+      return new Date().toLocaleDateString('en-CA');
+    } catch (e) {
+      return new Date().toISOString().slice(0, 10);
+    }
+  }
+
+  /** Busca ocaso no fuso da coordenada (Open-Meteo timezone=auto) e devolve HH:MM local. */
+  function buscarHoraOcaso(lat, lon) {
+    var data = hojeISOLocal();
+    var url = 'https://api.open-meteo.com/v1/forecast'
+      + '?latitude=' + encodeURIComponent(lat)
+      + '&longitude=' + encodeURIComponent(lon)
+      + '&daily=sunset&timezone=auto'
+      + '&start_date=' + data + '&end_date=' + data;
+    return fetch(url)
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        var iso = j && j.daily && j.daily.sunset && j.daily.sunset[0];
+        if (!iso) return null;
+        var m = String(iso).match(/T(\d{2}):(\d{2})/);
+        return m ? (m[1] + ':' + m[2]) : null;
+      })
+      .catch(function () { return null; });
+  }
+
+  /**
+   * Sincroniza a legenda do cmd-bar com a preferência (local e/ou servidor).
+   * pref opcional: { ativo, lat, lon, cidade, proximo?: { horaLocal } }
+   */
+  function sincronizarLegendaCmd(pref) {
+    var p = pref || lerLocal() || {};
+    var ativo = p.ativo === true;
+    var lat = p.lat != null ? Number(p.lat) : null;
+    var lon = p.lon != null ? Number(p.lon) : null;
+    var cidade = p.cidade || '';
+    var horaPronta = p.proximo && p.proximo.horaLocal;
+
+    if (!ativo || lat == null || lon == null || !Number.isFinite(lat) || !Number.isFinite(lon)) {
+      setLegendaCmd('Definir cidade do ocaso', true);
+      return;
+    }
+
+    var curta = cidadeCurta(cidade) || 'sua cidade';
+    if (horaPronta) {
+      setLegendaCmd('Ocaso ' + horaPronta + ' · ' + curta, false);
+      return;
+    }
+
+    setLegendaCmd('Ocaso … · ' + curta, false);
+    buscarHoraOcaso(lat, lon).then(function (hora) {
+      if (hora) setLegendaCmd('Ocaso ' + hora + ' · ' + curta, false);
+      else setLegendaCmd('Ocaso · ' + curta, false);
+    });
+  }
+
+  /** Tenta servidor + local e atualiza a legenda do perfil. */
+  function atualizarLegendaDoServidor() {
+    var local = lerLocal();
+    // Mostra já o local enquanto busca o servidor
+    if (local && local.ativo && local.lat != null) sincronizarLegendaCmd(local);
+    else setLegendaCmd('Definir cidade do ocaso', true);
+
+    if (!token()) return;
+    apiFetch('/por-do-sol', { method: 'GET' })
+      .then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (j) {
+        if (!j || !j.ok) return;
+        if (j.decidido) {
+          gravarLocal({
+            ativo: !!j.ativo,
+            lat: j.lat,
+            lon: j.lon,
+            cidade: j.cidade,
+            t: Date.now()
+          });
+        }
+        sincronizarLegendaCmd({
+          ativo: !!j.ativo,
+          lat: j.lat,
+          lon: j.lon,
+          cidade: j.cidade,
+          proximo: j.proximo || null
+        });
+      })
+      .catch(function () {
+        sincronizarLegendaCmd(lerLocal());
       });
   }
 
@@ -30860,6 +31031,7 @@ window.MDPorDoSol = (function () {
       .then(function (j) {
         if (j && j.ok && j.decidido) {
           gravarLocal({ ativo: !!j.ativo, lat: j.lat, lon: j.lon, cidade: j.cidade, t: Date.now() });
+          try { sincronizarLegendaCmd(j); } catch (e) {}
           return;
         }
         abrirConvite();
@@ -30870,6 +31042,8 @@ window.MDPorDoSol = (function () {
   function boot() {
     if (_agendado) return;
     _agendado = true;
+    // Legenda sob o perfil o quanto antes
+    setTimeout(atualizarLegendaDoServidor, 800);
     setTimeout(talvezConvidar, 30000);
     var tries = 0;
     var iv = setInterval(function () {
@@ -30878,6 +31052,7 @@ window.MDPorDoSol = (function () {
       try { logado = !!(token() && window.MarujoConta && MarujoConta.logado); } catch (e) {}
       if (logado) {
         clearInterval(iv);
+        atualizarLegendaDoServidor();
         if (!_jaMostrou && !localDecidido()) setTimeout(talvezConvidar, 30000);
       }
       if (tries > 90) clearInterval(iv);
@@ -30891,7 +31066,9 @@ window.MDPorDoSol = (function () {
     abrirConfig: abrirConfig,
     fechar: fechar,
     salvar: salvar,
-    talvezConvidar: talvezConvidar
+    talvezConvidar: talvezConvidar,
+    sincronizarLegendaCmd: sincronizarLegendaCmd,
+    atualizarLegendaDoServidor: atualizarLegendaDoServidor
   };
 })();
 
