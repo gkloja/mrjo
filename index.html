@@ -26787,27 +26787,89 @@ img.md-avatar-vip {
 </div>
 
 <!-- Modal: convite / config do pôr do sol -->
+<style>
+#md-pordosol-overlay .md-pds-card {
+  max-width: 440px; overflow: hidden; padding: 0 !important;
+  border: 1px solid rgba(255,180,80,0.25);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 40px rgba(255,140,40,0.12);
+}
+#md-pordosol-overlay .md-pds-hero {
+  position: relative; padding: 28px 24px 20px; text-align: center;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 110%, rgba(255,140,40,0.45), transparent 70%),
+    linear-gradient(165deg, #0a1a32 0%, #132848 40%, #1a3050 70%, #2a1a28 100%);
+}
+#md-pordosol-overlay .md-pds-sun {
+  width: 56px; height: 56px; margin: 0 auto 12px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffe9a8, #ff9a2e 55%, #e85d04 100%);
+  box-shadow: 0 0 30px rgba(255,160,40,0.7), 0 0 60px rgba(255,120,20,0.35);
+  animation: mdPdsPulse 2.8s ease-in-out infinite;
+}
+@keyframes mdPdsPulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+#md-pordosol-overlay .md-pds-hero h3 {
+  margin: 0 0 6px; font-size: 1.25rem;
+  background: linear-gradient(90deg, #ffe9a8, #ffcc66, #ff9a2e);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: #ffcc66;
+}
+#md-pordosol-overlay .md-pds-tag {
+  display: inline-block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(255,220,160,0.85); border: 1px solid rgba(255,180,80,0.35);
+  padding: 3px 10px; border-radius: 999px; margin-bottom: 10px;
+}
+#md-pordosol-overlay .md-pds-body { padding: 18px 22px 22px; }
+#md-pordosol-overlay .md-pds-chips {
+  display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; max-height: 130px; overflow-y: auto;
+}
+#md-pordosol-overlay .md-pds-chip {
+  border: 1px solid rgba(158,201,255,0.22); background: rgba(10,30,55,0.55);
+  color: inherit; border-radius: 999px; padding: 6px 12px; font-size: 12px; cursor: pointer;
+}
+#md-pordosol-overlay .md-pds-chip.on {
+  background: linear-gradient(135deg, rgba(255,160,40,0.25), rgba(255,100,20,0.15));
+  border-color: rgba(255,170,50,0.65); color: #ffe9a8;
+}
+#md-pordosol-overlay #md-pordosol-cidade { display: none; }
+#md-pordosol-overlay .md-pds-status { min-height: 1.4em; font-size: 13px; margin: 8px 0 0; text-align: center; color: var(--text-secondary); }
+#md-pordosol-overlay .md-pds-status.ok { color: #7dffa0; }
+#md-pordosol-overlay .md-pds-status.err { color: #ff8a8a; }
+#md-pordosol-overlay .md-pds-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+#md-pordosol-overlay .md-pds-actions .md-btn-primary {
+  background: linear-gradient(135deg, #e8952e, #c45a10) !important; border: none !important; font-weight: 600;
+}
+html[data-theme="light"] #md-pordosol-overlay .md-pds-hero {
+  background: radial-gradient(ellipse 80% 60% at 50% 110%, rgba(255,160,60,0.35), transparent 70%),
+    linear-gradient(165deg, #eef3f9 0%, #f5e6d0 50%, #f0d8b8 100%);
+}
+html[data-theme="light"] #md-pordosol-overlay .md-pds-chip { background: rgba(255,255,255,0.85); border-color: rgba(0,51,102,0.15); }
+</style>
 <div class="md-overlay" id="md-pordosol-overlay" style="z-index:99999">
-  <div class="md-modal" style="max-width:420px">
-    <button class="md-modal-close" onclick="MDPorDoSol.fechar()">&times;</button>
-    <h3 style="margin-top:0">🌅 Pôr do sol &amp; bandeira</h3>
-    <p class="md-sub" id="md-pordosol-sub">
-      Todo dia, <b>1 hora antes do pôr do sol</b> na cidade que você escolher —
-      para se organizar com o <b>cerimonial da bandeira</b> (arriamento ao ocaso) e o ritmo da tropa.
-      Só quem ativar recebe; dá para mudar ou desligar no perfil.
-    </p>
-    <label class="info-label" style="display:block;margin:12px 0 6px">Cidade</label>
-    <select id="md-pordosol-cidade" style="width:100%;padding:12px;border-radius:10px;border:1px solid rgba(158,201,255,0.25);background:rgba(6,20,40,0.6);color:inherit;font-size:14px">
-      <option value="">Selecione…</option>
-    </select>
-    <p id="md-pordosol-preview" style="font-size:12px;color:var(--text-secondary);margin:10px 0 0;min-height:1.2em"></p>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-top:18px">
-      <button type="button" class="md-btn-primary" id="md-pordosol-ativar" onclick="MDPorDoSol.salvar(true)">Ativar aviso</button>
-      <button type="button" class="md-btn-ghost" id="md-pordosol-desativar" onclick="MDPorDoSol.salvar(false)">Não quero receber</button>
+  <div class="md-modal md-pds-card">
+    <button class="md-modal-close" onclick="MDPorDoSol.fechar()" style="z-index:2">&times;</button>
+    <div class="md-pds-hero">
+      <div class="md-pds-sun" aria-hidden="true"></div>
+      <div class="md-pds-tag">Cerimonial · Arriamento</div>
+      <h3>Pôr do sol na tropa</h3>
+      <p class="md-sub" id="md-pordosol-sub" style="margin:0;color:rgba(255,230,200,0.9);font-size:13px;line-height:1.45">
+        Todo dia, <b>1 hora antes do ocaso</b>, você recebe o horário na sua cidade —
+        para se organizar com o <b>arriamento da bandeira</b> e o ritmo da tropa.
+      </p>
+    </div>
+    <div class="md-pds-body">
+      <label class="info-label" style="display:block;margin:0 0 4px;font-size:12px;opacity:.85">Onde você serve / mora?</label>
+      <div class="md-pds-chips" id="md-pordosol-chips" role="listbox" aria-label="Cidades"></div>
+      <select id="md-pordosol-cidade" aria-hidden="true"><option value="">Selecione…</option></select>
+      <p class="md-pds-status" id="md-pordosol-preview"></p>
+      <div class="md-pds-actions">
+        <button type="button" class="md-btn-primary" id="md-pordosol-ativar" onclick="MDPorDoSol.salvar(true)">⚓ Ativar aviso diário</button>
+        <button type="button" class="md-btn-ghost" id="md-pordosol-desativar" onclick="MDPorDoSol.salvar(false)">Agora não</button>
+      </div>
     </div>
   </div>
 </div>
-
 
 <!-- Modal de Convites: cada marujo tem um link próprio; quem se cadastra
      por ele credita XP pra quem convidou. -->
@@ -30508,43 +30570,93 @@ window.MDPorDoSol = (function () {
 
   var _jaMostrou = false;
   var _agendado = false;
+  var _cidadeIdx = -1;
 
   function token() {
     try { return localStorage.getItem('md_token') || ''; } catch (e) { return ''; }
   }
-  function localDecidido() {
-    try { return localStorage.getItem('md_pordosol_decidido') === '1'; } catch (e) { return false; }
+  function userKey() {
+    try {
+      var id = (window.MarujoConta && MarujoConta.usuario && MarujoConta.usuario.id) || '';
+      return id ? ('md_pordosol_' + id) : 'md_pordosol_anon';
+    } catch (e) { return 'md_pordosol_anon'; }
   }
-  function marcarDecidido() {
-    try { localStorage.setItem('md_pordosol_decidido', '1'); } catch (e) {}
+  function lerLocal() {
+    try {
+      var raw = localStorage.getItem(userKey());
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+  function gravarLocal(obj) {
+    try { localStorage.setItem(userKey(), JSON.stringify(obj)); } catch (e) {}
+    try { localStorage.setItem('md_pordosol_decidido', '1'); } catch (e2) {}
+  }
+  function localDecidido() {
+    var L = lerLocal();
+    if (L && (L.ativo === true || L.ativo === false)) return true;
+    try { return localStorage.getItem('md_pordosol_decidido') === '1'; } catch (e) { return false; }
   }
   function authHeaders() {
     var t = token();
-    var h = { 'Content-Type': 'application/json' };
-    if (t) h['x-md-token'] = t;
+    var h = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
+    if (t) {
+      h['x-md-token'] = t;
+      h['Authorization'] = 'Bearer ' + t;
+    }
     return h;
   }
   function authUrl(path) {
     var t = token();
     var u = API + path;
-    if (t) u += (path.indexOf('?') >= 0 ? '&' : '?') + 'md_token=' + encodeURIComponent(t);
+    if (t) u += (u.indexOf('?') >= 0 ? '&' : '?') + 'md_token=' + encodeURIComponent(t);
     return u;
   }
+  function setStatus(msg, tipo) {
+    var el = document.getElementById('md-pordosol-preview');
+    if (!el) return;
+    el.className = 'md-pds-status' + (tipo ? ' ' + tipo : '');
+    el.innerHTML = msg || '';
+  }
 
-  function preencherSelect(sel, atual) {
-    if (!sel) return;
-    sel.innerHTML = '<option value="">Selecione…</option>';
+  function preencherChips(atual) {
+    var box = document.getElementById('md-pordosol-chips');
+    var sel = document.getElementById('md-pordosol-cidade');
+    if (!box) return;
+    box.innerHTML = '';
+    if (sel) sel.innerHTML = '<option value="">Selecione…</option>';
+    _cidadeIdx = -1;
     CIDADES.forEach(function (cid, i) {
-      var o = document.createElement('option');
-      o.value = String(i);
-      o.textContent = cid.nome;
-      if (atual && atual.cidade && atual.cidade === cid.nome) o.selected = true;
-      else if (atual && atual.lat != null && Math.abs(Number(atual.lat) - cid.lat) < 0.05) o.selected = true;
-      sel.appendChild(o);
+      if (sel) {
+        var o = document.createElement('option');
+        o.value = String(i);
+        o.textContent = cid.nome;
+        sel.appendChild(o);
+      }
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'md-pds-chip';
+      b.textContent = cid.nome.replace(/, .*$/, '');
+      b.title = cid.nome;
+      var match = !!(atual && ((atual.cidade && atual.cidade === cid.nome) ||
+        (atual.lat != null && Math.abs(Number(atual.lat) - cid.lat) < 0.05)));
+      if (match) {
+        b.classList.add('on');
+        _cidadeIdx = i;
+        if (sel) sel.value = String(i);
+      }
+      b.onclick = function () {
+        box.querySelectorAll('.md-pds-chip').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        _cidadeIdx = i;
+        if (sel) sel.value = String(i);
+        setStatus('Cidade: <b>' + cid.nome + '</b>', '');
+      };
+      box.appendChild(b);
     });
   }
 
   function cidadeSelecionada() {
+    if (_cidadeIdx >= 0 && CIDADES[_cidadeIdx]) return CIDADES[_cidadeIdx];
     var sel = document.getElementById('md-pordosol-cidade');
     if (!sel || sel.value === '') return null;
     return CIDADES[parseInt(sel.value, 10)] || null;
@@ -30552,10 +30664,7 @@ window.MDPorDoSol = (function () {
 
   function abrirOverlay() {
     var ov = document.getElementById('md-pordosol-overlay');
-    if (!ov) {
-      console.warn('[MDPorDoSol] overlay #md-pordosol-overlay não encontrado no DOM');
-      return;
-    }
+    if (!ov) return;
     ov.classList.add('md-show');
     ov.style.zIndex = '99999';
     _jaMostrou = true;
@@ -30566,14 +30675,15 @@ window.MDPorDoSol = (function () {
   }
 
   function textoConvite() {
-    return 'Quer receber <b>todo dia</b>, <b>1 hora antes do pôr do sol</b>, o horário na sua cidade?<br><br>Serve para se organizar com o <b>cerimonial da bandeira</b> (arriamento ao ocaso) e o dia a dia da tropa. Você escolhe o local e pode mudar ou desligar depois no perfil.';
+    return 'Todo dia, <b>1 hora antes do ocaso</b>, você recebe o horário na sua cidade — para se organizar com o <b>arriamento da bandeira</b> e o ritmo da tropa.';
   }
 
   function abrirConvite() {
     if (_jaMostrou) return;
-    preencherSelect(document.getElementById('md-pordosol-cidade'), null);
+    preencherChips(null);
     var sub = document.getElementById('md-pordosol-sub');
     if (sub) sub.innerHTML = textoConvite();
+    setStatus('Toque numa cidade e ative o aviso.', '');
     abrirOverlay();
   }
 
@@ -30582,29 +30692,36 @@ window.MDPorDoSol = (function () {
       try { if (window.MarujoConta && MarujoConta.abrirLogin) MarujoConta.abrirLogin(); } catch (e) {}
       return;
     }
+    setStatus('Carregando…', '');
     fetch(authUrl('/api/marujo/por-do-sol'), { headers: authHeaders(), credentials: 'include' })
-      .then(function (r) { return r.json(); })
+      .then(function (r) { return r.json().catch(function () { return {}; }); })
       .then(function (j) {
-        preencherSelect(document.getElementById('md-pordosol-cidade'), j);
+        var base = (j && j.ok) ? j : (lerLocal() || {});
+        preencherChips(base);
         var sub = document.getElementById('md-pordosol-sub');
         if (sub) {
-          sub.innerHTML = (j && j.ativo)
-            ? ('Aviso <b>ativo</b>' + (j.cidade ? ' para <b>' + j.cidade + '</b>' : '') + '. Você pode mudar a cidade ou desligar quando quiser.')
-            : 'Todo dia, <b>1 hora antes do pôr do sol</b> na sua cidade — para se organizar com o <b>cerimonial da bandeira</b> (arriamento ao ocaso) e o ritmo da tropa.';
+          sub.innerHTML = base.ativo
+            ? ('Aviso <b>ativo</b>' + (base.cidade ? ' em <b>' + base.cidade + '</b>' : '') + '. Pode trocar a cidade ou desligar.')
+            : textoConvite();
         }
+        setStatus(base.ativo ? '✓ Ativo nesta conta.' : '', base.ativo ? 'ok' : '');
         abrirOverlay();
       })
       .catch(function () {
-        preencherSelect(document.getElementById('md-pordosol-cidade'), null);
+        preencherChips(lerLocal());
         abrirOverlay();
       });
   }
 
   function salvar(ativo) {
+    if (!token()) {
+      setStatus('Faça login para salvar.', 'err');
+      try { if (window.MarujoConta && MarujoConta.abrirLogin) MarujoConta.abrirLogin(); } catch (e) {}
+      return;
+    }
     var cid = cidadeSelecionada();
     if (ativo && !cid) {
-      var prev = document.getElementById('md-pordosol-preview');
-      if (prev) prev.textContent = 'Escolha uma cidade para ativar.';
+      setStatus('Escolha uma cidade nos chips acima.', 'err');
       return;
     }
     var body = { ativo: !!ativo };
@@ -30617,9 +30734,15 @@ window.MDPorDoSol = (function () {
     var btnD = document.getElementById('md-pordosol-desativar');
     if (btnA) btnA.disabled = true;
     if (btnD) btnD.disabled = true;
+    setStatus(ativo ? 'Salvando na conta…' : 'Salvando…', '');
 
-    // Marca local já no clique (mesmo se a API falhar, não fica insistindo)
-    marcarDecidido();
+    gravarLocal({
+      ativo: !!ativo,
+      lat: cid ? cid.lat : null,
+      lon: cid ? cid.lon : null,
+      cidade: cid ? cid.nome : null,
+      t: Date.now()
+    });
 
     fetch(authUrl('/api/marujo/por-do-sol'), {
       method: 'POST',
@@ -30627,51 +30750,57 @@ window.MDPorDoSol = (function () {
       credentials: 'include',
       body: JSON.stringify(body)
     })
-      .then(function (r) { return r.json(); })
-      .then(function (j) {
+      .then(function (r) {
+        return r.text().then(function (txt) {
+          var j = null;
+          try { j = JSON.parse(txt); } catch (e) {}
+          return { status: r.status, j: j };
+        });
+      })
+      .then(function (pack) {
         if (btnA) btnA.disabled = false;
         if (btnD) btnD.disabled = false;
-        var prev3 = document.getElementById('md-pordosol-preview');
+        var j = pack.j;
         if (!j || !j.ok) {
-          if (prev3) prev3.textContent = (j && j.erro) ? j.erro : 'Salvo neste aparelho. (Servidor indisponível agora.)';
-          setTimeout(fechar, 1200);
+          var msg = (j && j.erro) ? j.erro : ('Servidor ' + pack.status + '. Preferência guardada neste aparelho.');
+          setStatus('⚠️ ' + msg, 'err');
+          setTimeout(fechar, 2200);
           return;
         }
-        if (ativo && j.proximo && j.proximo.horaLocal) {
-          if (prev3) prev3.textContent = 'Ativo! Hoje o sol se põe por volta das ' + j.proximo.horaLocal + ' (aviso 1h antes).';
-        } else if (prev3) {
-          prev3.textContent = ativo ? 'Aviso ativado.' : 'Tudo bem — você não receberá o aviso.';
-        }
+        // reforça local com resposta do servidor
+        gravarLocal({
+          ativo: !!j.ativo,
+          lat: j.lat, lon: j.lon, cidade: j.cidade, t: Date.now()
+        });
         if (ativo) {
+          var extra = (j.proximo && j.proximo.horaLocal)
+            ? (' Hoje o sol se põe ~ <b>' + j.proximo.horaLocal + '</b> (aviso 1h antes).')
+            : '';
+          setStatus('✓ Aviso ativo em <b>' + (j.cidade || (cid && cid.nome) || 'sua cidade') + '</b>.' + extra, 'ok');
           try {
             window.OneSignalDeferred = window.OneSignalDeferred || [];
             OneSignalDeferred.push(async function (OneSignal) {
               try { await OneSignal.Notifications.requestPermission(); } catch (e) {}
             });
           } catch (e) {}
+        } else {
+          setStatus('Ok — você não receberá o aviso.', 'ok');
         }
-        setTimeout(fechar, ativo ? 1600 : 900);
+        setTimeout(fechar, ativo ? 2800 : 1400);
       })
       .catch(function () {
         if (btnA) btnA.disabled = false;
         if (btnD) btnD.disabled = false;
-        setTimeout(fechar, 900);
+        setStatus('⚠️ Sem conexão. Preferência salva neste aparelho.', 'err');
+        setTimeout(fechar, 2000);
       });
   }
 
-  /** Mostra o convite se ainda não escolheu (local nem servidor). */
   function talvezConvidar() {
     if (_jaMostrou) return;
-    if (!token()) {
-      console.log('[MDPorDoSol] sem login — convite adiado');
-      return;
-    }
-    if (localDecidido()) {
-      console.log('[MDPorDoSol] já decidiu neste aparelho');
-      return;
-    }
+    if (!token()) return;
+    if (localDecidido()) return;
 
-    // Tenta o servidor; se falhar ou disser que não decidiu, mostra o modal
     fetch(authUrl('/api/marujo/por-do-sol'), { headers: authHeaders(), credentials: 'include' })
       .then(function (r) {
         if (!r.ok) throw new Error('http ' + r.status);
@@ -30679,44 +30808,26 @@ window.MDPorDoSol = (function () {
       })
       .then(function (j) {
         if (j && j.ok && j.decidido) {
-          marcarDecidido();
-          console.log('[MDPorDoSol] servidor: já decidido');
+          gravarLocal({ ativo: !!j.ativo, lat: j.lat, lon: j.lon, cidade: j.cidade, t: Date.now() });
           return;
         }
         abrirConvite();
       })
-      .catch(function (err) {
-        // API fora / rota não deployada → ainda assim mostra o convite
-        console.warn('[MDPorDoSol] API indisponível, mostrando convite local:', err && err.message);
-        abrirConvite();
-      });
-  }
-
-  function agendarConvite() {
-    if (_agendado) return;
-    _agendado = true;
-    // ~30 segundos após a página (ou após detectarmos login)
-    setTimeout(function () {
-      talvezConvidar();
-    }, 30000);
+      .catch(function () { abrirConvite(); });
   }
 
   function boot() {
-    agendarConvite();
-    // Se o login acontecer depois, agenda de novo a partir do login
+    if (_agendado) return;
+    _agendado = true;
+    setTimeout(talvezConvidar, 30000);
     var tries = 0;
     var iv = setInterval(function () {
       tries++;
       var logado = false;
-      try {
-        logado = !!(token() && window.MarujoConta && MarujoConta.logado);
-      } catch (e) {}
+      try { logado = !!(token() && window.MarujoConta && MarujoConta.logado); } catch (e) {}
       if (logado) {
         clearInterval(iv);
-        // se ainda não mostrou e não decidiu, garante o timer de 30s a partir de agora
-        if (!_jaMostrou && !localDecidido()) {
-          setTimeout(talvezConvidar, 30000);
-        }
+        if (!_jaMostrou && !localDecidido()) setTimeout(talvezConvidar, 30000);
       }
       if (tries > 60) clearInterval(iv);
     }, 2000);
