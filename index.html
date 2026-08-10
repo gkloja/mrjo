@@ -30564,7 +30564,10 @@ document.addEventListener('DOMContentLoaded', function () {
 <script>
 /** Aviso de pôr do sol — 1h antes, só quem optou, cidade no perfil. */
 window.MDPorDoSol = (function () {
-  var API = (window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009');
+  // Mesmo base das outras APIs do site (summer-brook)
+  var API_BASE = (window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009');
+  var API = API_BASE + '/api/marujo';
+
   var CIDADES = [
     { nome: 'Rio de Janeiro, RJ', lat: -22.9068, lon: -43.1729 },
     { nome: 'Niterói, RJ', lat: -22.8832, lon: -43.1034 },
@@ -30593,8 +30596,45 @@ window.MDPorDoSol = (function () {
   var _cidadeIdx = -1;
 
   function token() {
-    try { return localStorage.getItem('md_token') || ''; } catch (e) { return ''; }
+    try {
+      if (typeof mdToken === 'function') return mdToken() || '';
+      return localStorage.getItem('md_token') || '';
+    } catch (e) { return ''; }
   }
+
+  /**
+   * Igual ao authFetch do site: o md_token vai DENTRO do parâmetro url=
+   * do worker. Nunca usa header x-md-token (quebra CORS no proxy).
+   */
+  function apiFetch(path, opts) {
+    opts = opts || {};
+    var t = token();
+    var url = API + path; // API_BASE/api/marujo + /por-do-sol
+    if (t) {
+      var marker = '?url=';
+      var idx = url.indexOf(marker);
+      if (idx !== -1) {
+        var before = url.slice(0, idx + marker.length);
+        var inner = url.slice(idx + marker.length);
+        if (inner.indexOf('?') !== -1) {
+          inner += '%26md_token%3D' + encodeURIComponent(t);
+        } else {
+          inner += '?md_token=' + encodeURIComponent(t);
+        }
+        url = before + inner;
+      } else {
+        url += (url.indexOf('?') !== -1 ? '&' : '?') + 'md_token=' + encodeURIComponent(t);
+      }
+    }
+    var headers = Object.assign({ 'Accept': 'application/json' }, opts.headers || {});
+    // body JSON
+    if (opts.body && typeof opts.body === 'object' && !(opts.body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+      opts = Object.assign({}, opts, { body: JSON.stringify(opts.body) });
+    }
+    return fetch(url, Object.assign({ credentials: 'include' }, opts, { headers: headers }));
+  }
+
   function userKey() {
     try {
       var id = (window.MarujoConta && MarujoConta.usuario && MarujoConta.usuario.id) || '';
@@ -30616,21 +30656,7 @@ window.MDPorDoSol = (function () {
     if (L && (L.ativo === true || L.ativo === false)) return true;
     try { return localStorage.getItem('md_pordosol_decidido') === '1'; } catch (e) { return false; }
   }
-  function authHeaders() {
-    var t = token();
-    var h = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
-    if (t) {
-      h['x-md-token'] = t;
-      h['Authorization'] = 'Bearer ' + t;
-    }
-    return h;
-  }
-  function authUrl(path) {
-    var t = token();
-    var u = API + path;
-    if (t) u += (u.indexOf('?') >= 0 ? '&' : '?') + 'md_token=' + encodeURIComponent(t);
-    return u;
-  }
+
   function setStatus(msg, tipo) {
     var el = document.getElementById('md-pordosol-preview');
     if (!el) return;
@@ -30713,7 +30739,7 @@ window.MDPorDoSol = (function () {
       return;
     }
     setStatus('Carregando…', '');
-    fetch(authUrl('/api/marujo/por-do-sol'), { headers: authHeaders(), credentials: 'include' })
+    apiFetch('/por-do-sol', { method: 'GET' })
       .then(function (r) { return r.json().catch(function () { return {}; }); })
       .then(function (j) {
         var base = (j && j.ok) ? j : (lerLocal() || {});
@@ -30727,9 +30753,10 @@ window.MDPorDoSol = (function () {
         setStatus(base.ativo ? '✓ Ativo nesta conta.' : '', base.ativo ? 'ok' : '');
         abrirOverlay();
       })
-      .catch(function () {
+      .catch(function (err) {
+        console.warn('[MDPorDoSol] GET', err);
         preencherChips(lerLocal());
-        setStatus('Sem conexão — pode configurar offline.', 'err');
+        setStatus('Não deu para falar com o servidor agora. Ainda assim você pode escolher e tentar salvar.', 'err');
         abrirOverlay();
       });
   }
@@ -30751,6 +30778,9 @@ window.MDPorDoSol = (function () {
       body.lon = cid.lon;
       body.cidade = cid.nome;
     }
+    // token também no body (backend aceita req.body.md_token)
+    body.md_token = token();
+
     var btnA = document.getElementById('md-pordosol-ativar');
     var btnD = document.getElementById('md-pordosol-desativar');
     if (btnA) btnA.disabled = true;
@@ -30765,17 +30795,12 @@ window.MDPorDoSol = (function () {
       t: Date.now()
     });
 
-    fetch(authUrl('/api/marujo/por-do-sol'), {
-      method: 'POST',
-      headers: authHeaders(),
-      credentials: 'include',
-      body: JSON.stringify(body)
-    })
+    apiFetch('/por-do-sol', { method: 'POST', body: body })
       .then(function (r) {
         return r.text().then(function (txt) {
           var j = null;
           try { j = JSON.parse(txt); } catch (e) {}
-          return { status: r.status, j: j };
+          return { status: r.status, j: j, txt: txt };
         });
       })
       .then(function (pack) {
@@ -30785,7 +30810,8 @@ window.MDPorDoSol = (function () {
         if (!j || !j.ok) {
           var msg = (j && j.erro) ? j.erro : ('Erro ' + pack.status + '. Preferência salva neste aparelho.');
           setStatus('⚠️ ' + msg, 'err');
-          setTimeout(fechar, 2400);
+          console.warn('[MDPorDoSol] POST fail', pack.status, pack.txt);
+          setTimeout(fechar, 2500);
           return;
         }
         gravarLocal({ ativo: !!j.ativo, lat: j.lat, lon: j.lon, cidade: j.cidade, t: Date.now() });
@@ -30805,11 +30831,12 @@ window.MDPorDoSol = (function () {
         }
         setTimeout(fechar, ativo ? 2800 : 1400);
       })
-      .catch(function () {
+      .catch(function (err) {
         if (btnA) btnA.disabled = false;
         if (btnD) btnD.disabled = false;
-        setStatus('⚠️ Sem conexão. Preferência salva neste aparelho.', 'err');
-        setTimeout(fechar, 2000);
+        setStatus('⚠️ Falha de rede. Preferência salva neste aparelho.', 'err');
+        console.warn('[MDPorDoSol] network', err);
+        setTimeout(fechar, 2200);
       });
   }
 
@@ -30817,7 +30844,7 @@ window.MDPorDoSol = (function () {
     if (_jaMostrou) return;
     if (!token()) return;
     if (localDecidido()) return;
-    fetch(authUrl('/api/marujo/por-do-sol'), { headers: authHeaders(), credentials: 'include' })
+    apiFetch('/por-do-sol', { method: 'GET' })
       .then(function (r) {
         if (!r.ok) throw new Error('http ' + r.status);
         return r.json();
