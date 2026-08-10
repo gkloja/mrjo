@@ -155,7 +155,7 @@
     // por qualquer motivo (usuário deslogado, erro de rede, etc.), o padrão é
     // carregar o anúncio normalmente — só quem é VIP confirmado é isento.
     (async function () {
-        const API_BASE_ADS = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
+        const API_BASE_ADS = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
         let ehVip = false;
         try {
             const token = localStorage.getItem('md_token');
@@ -8898,7 +8898,7 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
 // ===== CONFIGURAÇÕES PARA PRODUÇÃO =====
 const CONFIG = {
     // API principal - tenta primeiro
-    API_BASE: 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009',
+    API_BASE: 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009',
     
     // Fallbacks caso a principal falhe
     FALLBACK_APIS: [
@@ -26790,61 +26790,81 @@ img.md-avatar-vip {
 <style>
 #md-pordosol-overlay .md-pds-card {
   max-width: 440px; overflow: hidden; padding: 0 !important;
-  border: 1px solid rgba(255,180,80,0.25);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 40px rgba(255,140,40,0.12);
+  border: 1px solid rgba(255,180,80,0.28);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.5), 0 0 50px rgba(255,140,40,0.14);
 }
 #md-pordosol-overlay .md-pds-hero {
-  position: relative; padding: 28px 24px 20px; text-align: center;
+  position: relative; padding: 32px 24px 22px; text-align: center;
   background:
-    radial-gradient(ellipse 80% 60% at 50% 110%, rgba(255,140,40,0.45), transparent 70%),
-    linear-gradient(165deg, #0a1a32 0%, #132848 40%, #1a3050 70%, #2a1a28 100%);
+    radial-gradient(ellipse 90% 70% at 50% 120%, rgba(255,140,40,0.5), transparent 65%),
+    linear-gradient(165deg, #071525 0%, #0f2440 35%, #1a2d4a 65%, #2a1828 100%);
+  overflow: hidden;
+}
+#md-pordosol-overlay .md-pds-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.25));
+  pointer-events: none;
 }
 #md-pordosol-overlay .md-pds-sun {
-  width: 56px; height: 56px; margin: 0 auto 12px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #ffe9a8, #ff9a2e 55%, #e85d04 100%);
-  box-shadow: 0 0 30px rgba(255,160,40,0.7), 0 0 60px rgba(255,120,20,0.35);
-  animation: mdPdsPulse 2.8s ease-in-out infinite;
+  position: relative; z-index: 1;
+  width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 50%;
+  background: radial-gradient(circle at 32% 32%, #fff3c4, #ffb347 45%, #ff7a18 75%, #c44a00 100%);
+  box-shadow: 0 0 28px rgba(255,170,50,0.85), 0 0 70px rgba(255,120,20,0.4);
+  animation: mdPdsPulse 2.6s ease-in-out infinite;
 }
 @keyframes mdPdsPulse {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.06); }
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(3px) scale(1.05); }
 }
 #md-pordosol-overlay .md-pds-hero h3 {
-  margin: 0 0 6px; font-size: 1.25rem;
-  background: linear-gradient(90deg, #ffe9a8, #ffcc66, #ff9a2e);
+  position: relative; z-index: 1; margin: 0 0 8px; font-size: 1.35rem; font-weight: 700;
+  background: linear-gradient(90deg, #fff6d0, #ffcc66, #ff9a2e);
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent; color: #ffcc66;
 }
 #md-pordosol-overlay .md-pds-tag {
-  display: inline-block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
-  color: rgba(255,220,160,0.85); border: 1px solid rgba(255,180,80,0.35);
-  padding: 3px 10px; border-radius: 999px; margin-bottom: 10px;
+  position: relative; z-index: 1;
+  display: inline-block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,220,160,0.9); border: 1px solid rgba(255,180,80,0.4);
+  padding: 4px 12px; border-radius: 999px; margin-bottom: 12px;
+  background: rgba(0,0,0,0.2);
 }
 #md-pordosol-overlay .md-pds-body { padding: 18px 22px 22px; }
 #md-pordosol-overlay .md-pds-chips {
-  display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; max-height: 130px; overflow-y: auto;
+  display: flex; flex-wrap: wrap; gap: 7px; margin: 10px 0 14px; max-height: 140px; overflow-y: auto;
 }
 #md-pordosol-overlay .md-pds-chip {
   border: 1px solid rgba(158,201,255,0.22); background: rgba(10,30,55,0.55);
-  color: inherit; border-radius: 999px; padding: 6px 12px; font-size: 12px; cursor: pointer;
+  color: inherit; border-radius: 999px; padding: 7px 13px; font-size: 12.5px; cursor: pointer;
+  transition: transform .12s, border-color .15s, background .15s;
 }
+#md-pordosol-overlay .md-pds-chip:hover { border-color: rgba(255,180,80,0.55); transform: translateY(-1px); }
 #md-pordosol-overlay .md-pds-chip.on {
-  background: linear-gradient(135deg, rgba(255,160,40,0.25), rgba(255,100,20,0.15));
-  border-color: rgba(255,170,50,0.65); color: #ffe9a8;
+  background: linear-gradient(135deg, rgba(255,160,40,0.3), rgba(255,100,20,0.18));
+  border-color: rgba(255,170,50,0.7); color: #ffe9a8; font-weight: 600;
 }
 #md-pordosol-overlay #md-pordosol-cidade { display: none; }
-#md-pordosol-overlay .md-pds-status { min-height: 1.4em; font-size: 13px; margin: 8px 0 0; text-align: center; color: var(--text-secondary); }
+#md-pordosol-overlay .md-pds-status {
+  min-height: 1.5em; font-size: 13px; margin: 10px 0 0; text-align: center; color: var(--text-secondary); line-height: 1.4;
+}
 #md-pordosol-overlay .md-pds-status.ok { color: #7dffa0; }
 #md-pordosol-overlay .md-pds-status.err { color: #ff8a8a; }
 #md-pordosol-overlay .md-pds-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
 #md-pordosol-overlay .md-pds-actions .md-btn-primary {
-  background: linear-gradient(135deg, #e8952e, #c45a10) !important; border: none !important; font-weight: 600;
+  background: linear-gradient(135deg, #f0a03a, #c45a10) !important;
+  border: none !important; font-weight: 700; letter-spacing: 0.02em;
+  box-shadow: 0 6px 20px rgba(200,90,20,0.35);
 }
+#md-pordosol-overlay .md-pds-actions .md-btn-primary:disabled { opacity: 0.55; }
 html[data-theme="light"] #md-pordosol-overlay .md-pds-hero {
-  background: radial-gradient(ellipse 80% 60% at 50% 110%, rgba(255,160,60,0.35), transparent 70%),
-    linear-gradient(165deg, #eef3f9 0%, #f5e6d0 50%, #f0d8b8 100%);
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 120%, rgba(255,160,60,0.4), transparent 65%),
+    linear-gradient(165deg, #eef3f9 0%, #f7e8d0 50%, #f0d4b0 100%);
 }
-html[data-theme="light"] #md-pordosol-overlay .md-pds-chip { background: rgba(255,255,255,0.85); border-color: rgba(0,51,102,0.15); }
+html[data-theme="light"] #md-pordosol-overlay .md-pds-chip {
+  background: rgba(255,255,255,0.9); border-color: rgba(0,51,102,0.14);
+}
+html[data-theme="light"] #md-pordosol-overlay .md-pds-hero .md-sub { color: #4a3a28 !important; }
 </style>
 <div class="md-overlay" id="md-pordosol-overlay" style="z-index:99999">
   <div class="md-modal md-pds-card">
@@ -26853,9 +26873,9 @@ html[data-theme="light"] #md-pordosol-overlay .md-pds-chip { background: rgba(25
       <div class="md-pds-sun" aria-hidden="true"></div>
       <div class="md-pds-tag">Cerimonial · Arriamento</div>
       <h3>Pôr do sol na tropa</h3>
-      <p class="md-sub" id="md-pordosol-sub" style="margin:0;color:rgba(255,230,200,0.9);font-size:13px;line-height:1.45">
-        Todo dia, <b>1 hora antes do ocaso</b>, você recebe o horário na sua cidade —
-        para se organizar com o <b>arriamento da bandeira</b> e o ritmo da tropa.
+      <p class="md-sub" id="md-pordosol-sub" style="position:relative;z-index:1;margin:0;color:rgba(255,230,200,0.92);font-size:13px;line-height:1.5">
+        Todo dia, <b>1 hora antes do ocaso</b>, o horário na sua cidade —
+        para o <b>arriamento da bandeira</b> e o ritmo da tropa.
       </p>
     </div>
     <div class="md-pds-body">
@@ -27083,7 +27103,7 @@ html[data-theme="light"] #md-pordosol-overlay .md-pds-chip { background: rgba(25
 (function () {
     // Mesmo proxy (Cloudflare Worker) já usado pelo chat de IA existente,
     // necessário pra falar com o backend real (br2.bronxyshost.com:4009).
-    const API_BASE = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
+    const API_BASE = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
     const API = `${API_BASE}/api/marujo`;
     // Rotas do sistema VIP (montadas em app.get('/api/vip/...') no backend).
     const API_VIP = `${API_BASE}/api/vip`;
@@ -29371,9 +29391,9 @@ function mdDismissInstall() {
 
 // ===== Mini-jogo: Radar de Sinais =====
 // API Marujo (Cloudflare Worker → servidor :4009)
-window.MD_API_BASE = window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
+window.MD_API_BASE = window.MD_API_BASE || 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
 window.MD_API_BAZAR = window.MD_API_BASE + '/api/marujo/bazar';
-window.MD_MEDIA_BASE = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009'; // fotos via proxy HTTPS
+window.MD_MEDIA_BASE = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009'; // fotos via proxy HTTPS
 
 const MDRadar = {
     TOTAL: 10,
@@ -29553,12 +29573,12 @@ window.MDRadar = MDRadar;
    MISSÃO DO DIA · RANKING SEMANAL · BAZAR MARUJO
    ========================================================= */
 (function () {
-  const API_BASE = window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
+  const API_BASE = window.MD_API_BASE || 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
   const API_BAZAR = window.MD_API_BAZAR || (API_BASE + '/api/marujo/bazar');
   const API_RADAR_SCORE = API_BASE + '/api/marujo/radar/score';
   const API_RADAR_RANK = API_BASE + '/api/marujo/radar/ranking';
   const API_MISSAO_CLAIM = API_BASE + '/api/marujo/missao/claim';
-  const MEDIA_BASE = window.MD_MEDIA_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
+  const MEDIA_BASE = window.MD_MEDIA_BASE || 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
   const DN_NOME = {
     '1': '1º DN', '2': '2º DN', '3': '3º DN', '4': '4º DN',
     '5': '5º DN', '6': '6º DN', '7': '7º DN', '8': '8º DN', '9': '9º DN'
@@ -29779,14 +29799,14 @@ window.MDRadar = MDRadar;
       if (/^https?:\/\//i.test(foto)) {
         // Se for http do backend e a página for https, passa pelo proxy
         if (foto.indexOf('http://br2.bronxyshost.com:4009') === 0) {
-          return 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=' + encodeURIComponent(foto);
+          return 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=' + encodeURIComponent(foto);
         }
         return foto;
       }
       // Caminho relativo: /uploads/bazar/...
       const path = foto.startsWith('/') ? foto : '/' + foto;
       const target = 'http://br2.bronxyshost.com:4009' + path;
-      return 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=' + encodeURIComponent(target);
+      return 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=' + encodeURIComponent(target);
     },
     shareUrl(item) {
       const id = (item && item.id) || item;
@@ -30158,7 +30178,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script>
 (function () {
-  var MD_AVATAR_API = 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009';
+  var MD_AVATAR_API = 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009';
 
   function mdCmdApiBase() {
     try {
@@ -30544,7 +30564,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <script>
 /** Aviso de pôr do sol — 1h antes, só quem optou, cidade no perfil. */
 window.MDPorDoSol = (function () {
-  var API = (window.MD_API_BASE || 'https://summer-brook-d7fa.gbscabral15.workers.dev/?url=http://br2.bronxyshost.com:4009');
+  var API = (window.MD_API_BASE || 'https://orange-hill-2e61.gbscabral15.workers.dev/br2.bronxyshost.com:4009/proxy?url=http://br2.bronxyshost.com:4009');
   var CIDADES = [
     { nome: 'Rio de Janeiro, RJ', lat: -22.9068, lon: -43.1729 },
     { nome: 'Niterói, RJ', lat: -22.8832, lon: -43.1034 },
@@ -30664,7 +30684,10 @@ window.MDPorDoSol = (function () {
 
   function abrirOverlay() {
     var ov = document.getElementById('md-pordosol-overlay');
-    if (!ov) return;
+    if (!ov) {
+      console.warn('[MDPorDoSol] #md-pordosol-overlay ausente');
+      return;
+    }
     ov.classList.add('md-show');
     ov.style.zIndex = '99999';
     _jaMostrou = true;
@@ -30675,7 +30698,7 @@ window.MDPorDoSol = (function () {
   }
 
   function textoConvite() {
-    return 'Todo dia, <b>1 hora antes do ocaso</b>, você recebe o horário na sua cidade — para se organizar com o <b>arriamento da bandeira</b> e o ritmo da tropa.';
+    return 'Todo dia, <b>1 hora antes do ocaso</b>, o horário na sua cidade — para o <b>arriamento da bandeira</b> e o ritmo da tropa.';
   }
 
   function abrirConvite() {
@@ -30709,6 +30732,7 @@ window.MDPorDoSol = (function () {
       })
       .catch(function () {
         preencherChips(lerLocal());
+        setStatus('Sem conexão com o servidor — pode configurar offline.', 'err');
         abrirOverlay();
       });
   }
@@ -30754,7 +30778,7 @@ window.MDPorDoSol = (function () {
         return r.text().then(function (txt) {
           var j = null;
           try { j = JSON.parse(txt); } catch (e) {}
-          return { status: r.status, j: j };
+          return { status: r.status, j: j, txt: txt };
         });
       })
       .then(function (pack) {
@@ -30762,16 +30786,13 @@ window.MDPorDoSol = (function () {
         if (btnD) btnD.disabled = false;
         var j = pack.j;
         if (!j || !j.ok) {
-          var msg = (j && j.erro) ? j.erro : ('Servidor ' + pack.status + '. Preferência guardada neste aparelho.');
+          var msg = (j && j.erro) ? j.erro : ('Erro ' + pack.status + '. Preferência salva neste aparelho.');
           setStatus('⚠️ ' + msg, 'err');
-          setTimeout(fechar, 2200);
+          console.warn('[MDPorDoSol] save fail', pack.status, pack.txt);
+          setTimeout(fechar, 2400);
           return;
         }
-        // reforça local com resposta do servidor
-        gravarLocal({
-          ativo: !!j.ativo,
-          lat: j.lat, lon: j.lon, cidade: j.cidade, t: Date.now()
-        });
+        gravarLocal({ ativo: !!j.ativo, lat: j.lat, lon: j.lon, cidade: j.cidade, t: Date.now() });
         if (ativo) {
           var extra = (j.proximo && j.proximo.horaLocal)
             ? (' Hoje o sol se põe ~ <b>' + j.proximo.horaLocal + '</b> (aviso 1h antes).')
@@ -30788,19 +30809,25 @@ window.MDPorDoSol = (function () {
         }
         setTimeout(fechar, ativo ? 2800 : 1400);
       })
-      .catch(function () {
+      .catch(function (err) {
         if (btnA) btnA.disabled = false;
         if (btnD) btnD.disabled = false;
         setStatus('⚠️ Sem conexão. Preferência salva neste aparelho.', 'err');
+        console.warn('[MDPorDoSol] network', err);
         setTimeout(fechar, 2000);
       });
   }
 
   function talvezConvidar() {
     if (_jaMostrou) return;
-    if (!token()) return;
-    if (localDecidido()) return;
-
+    if (!token()) {
+      console.log('[MDPorDoSol] aguardando login');
+      return;
+    }
+    if (localDecidido()) {
+      console.log('[MDPorDoSol] já decidiu');
+      return;
+    }
     fetch(authUrl('/api/marujo/por-do-sol'), { headers: authHeaders(), credentials: 'include' })
       .then(function (r) {
         if (!r.ok) throw new Error('http ' + r.status);
@@ -30813,13 +30840,18 @@ window.MDPorDoSol = (function () {
         }
         abrirConvite();
       })
-      .catch(function () { abrirConvite(); });
+      .catch(function (err) {
+        console.warn('[MDPorDoSol] API falhou, mostrando convite:', err && err.message);
+        abrirConvite();
+      });
   }
 
   function boot() {
     if (_agendado) return;
     _agendado = true;
+    // 30s após carregar
     setTimeout(talvezConvidar, 30000);
+    // e 30s após detectar login (se ainda não mostrou)
     var tries = 0;
     var iv = setInterval(function () {
       tries++;
@@ -30829,7 +30861,7 @@ window.MDPorDoSol = (function () {
         clearInterval(iv);
         if (!_jaMostrou && !localDecidido()) setTimeout(talvezConvidar, 30000);
       }
-      if (tries > 60) clearInterval(iv);
+      if (tries > 90) clearInterval(iv);
     }, 2000);
   }
 
