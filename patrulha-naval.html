@@ -259,7 +259,7 @@
       <span class="badge">Fuja das 💣</span>
     </div>
     <div id="start-rank" style="width:min(320px,100%);text-align:left;margin:0 auto 14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,204,0,.2);border-radius:14px;padding:12px 14px">
-      <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--foam);margin-bottom:8px">🏆 Top 3 da Patrulha</div>
+      <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--foam);margin-bottom:8px">🏆 Ranking da Patrulha</div>
       <div id="start-rank-list" style="font-size:13px;opacity:.85">Carregando…</div>
     </div>
     <button type="button" class="btn" id="btn-start">Içar âncora</button>
@@ -303,7 +303,7 @@
       <div style="font-size:12px;opacity:.8;margin-top:4px" id="xp-account-line"></div>
     </div>
     <div style="width:min(320px,100%);text-align:left;margin:0 auto 14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,204,0,.2);border-radius:14px;padding:12px 14px">
-      <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--foam);margin-bottom:8px">🏆 Top 3 · Ranking da Patrulha</div>
+      <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--foam);margin-bottom:8px">🏆 Ranking da Patrulha</div>
       <div id="over-rank-list"></div>
     </div>
     <button type="button" class="btn" id="btn-again">Nova patrulha</button>
@@ -440,20 +440,69 @@
     let nome = 'Marujo', id = null, level = 1, xp = 0;
     try {
       if (IN_IFRAME && parent.MarujoConta && parent.MarujoConta.usuario) {
-        const u = parent.MarujoConta.usuario; nome = u.nome || nome; id = u.id;
+        const u = parent.MarujoConta.usuario;
+        nome = u.nome || nome;
+        id = u.id != null ? u.id : null;
       }
-      if (IN_IFRAME && parent.userProgress) { level = parent.userProgress.level || 1; xp = parent.userProgress.xp || 0; }
     } catch (e) {}
+    try {
+      if (IN_IFRAME && parent.userProgress) {
+        level = parent.userProgress.level || 1;
+        xp = parent.userProgress.xp || 0;
+      }
+    } catch (e) {}
+    try {
+      if ((!id || nome === 'Marujo') && IN_IFRAME && parent.localStorage) {
+        const raw = parent.localStorage.getItem('md_usuario') || parent.localStorage.getItem('md_user');
+        if (raw) {
+          try {
+            const u = JSON.parse(raw);
+            if (u && u.nome) nome = u.nome;
+            if (u && u.id) id = u.id;
+          } catch (e2) {}
+        }
+      }
+    } catch (e) {}
+    if (id == null || id === '') {
+      try {
+        let gid = localStorage.getItem('md_patrulha_guest_id');
+        if (!gid) {
+          gid = 'g-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+          localStorage.setItem('md_patrulha_guest_id', gid);
+        }
+        id = gid;
+        const nick = localStorage.getItem('md_patrulha_nick');
+        if (nick) nome = nick;
+      } catch (e) {}
+    }
     return { nome, id, level, xp };
   }
-  function renderRankList(el, list) {
+  function renderRankList(el, list, highlight) {
     if (!el) return;
-    if (!list || !list.length) { el.innerHTML = '<div style="opacity:.6">Nenhum registro — seja o primeiro!</div>'; return; }
-    el.innerHTML = list.slice(0, 3).map((e, i) => {
-      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉';
+    if (!list || !list.length) {
+      el.innerHTML = '<div style="opacity:.6">Nenhum registro — seja o primeiro!</div>';
+      return;
+    }
+    const me = highlight || playerInfo();
+    const meKey = rankKey({ nome: me.nome, userId: me.id });
+    let myPos = -1, myScore = 0;
+    list.forEach((e, i) => {
+      if (rankKey(e) === meKey) { myPos = i + 1; myScore = Math.floor(e.score || 0); }
+    });
+    const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+    let html = list.slice(0, 5).map((e, i) => {
+      const medal = medals[i] || (i + 1) + 'º';
       const nm = String(e.nome || 'Marujo').replace(/[<>]/g, '');
-      return `<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06)"><span>${medal}</span><span style="flex:1;font-weight:700">${nm}</span><span style="color:var(--gold);font-weight:800">${Math.floor(e.score||0)}</span></div>`;
+      const isMe = rankKey(e) === meKey;
+      const bg = isMe ? 'background:rgba(255,204,0,.12);border-radius:8px;padding:5px 6px;' : 'padding:5px 0;';
+      return `<div style="display:flex;gap:8px;${bg}border-bottom:1px solid rgba(255,255,255,.06)"><span>${medal}</span><span style="flex:1;font-weight:700">${nm}${isMe ? ' <span style="color:var(--gold);font-size:11px">(você)</span>' : ''}</span><span style="color:var(--gold);font-weight:800">${Math.floor(e.score||0)}</span></div>`;
     }).join('');
+    if (myPos > 5) {
+      html += `<div style="margin-top:8px;font-size:12px;color:var(--foam)">Sua posição: <b style="color:var(--gold)">#${myPos}</b> · ${myScore} pts</div>`;
+    } else if (myPos < 0 && me) {
+      html += `<div style="margin-top:8px;font-size:12px;opacity:.7">Jogue uma partida para entrar no ranking</div>`;
+    }
+    el.innerHTML = html;
   }
   function rankKey(e) {
     if (e && e.userId != null && e.userId !== '') return 'id:' + String(e.userId);
@@ -530,26 +579,36 @@
     try {
       const r = await fetch(API_RANK + '/api/marujo/patrulha/score', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(entry)
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(entry),
+        mode: 'cors',
+        cache: 'no-store'
       });
-      if (r.ok) {
-        const j = await r.json();
-        if (j && Array.isArray(j.top)) {
-          let merged = readLocalRank();
-          for (const e of j.top) {
-            const r2 = upsertPersonalBest(merged, e);
-            merged = r2.list;
-          }
-          merged.sort((a, b) => b.score - a.score || (b.dist || 0) - (a.dist || 0));
-          writeLocalRank(merged);
-          return merged.slice(0, 10);
+      const txt = await r.text();
+      let j = null;
+      try { j = JSON.parse(txt); } catch (e) {}
+      if (!r.ok) {
+        console.warn('[patrulha] rank HTTP', r.status, txt.slice(0, 200));
+      } else if (j && Array.isArray(j.top)) {
+        let merged = readLocalRank();
+        for (const e of j.top) {
+          const r2 = upsertPersonalBest(merged, e);
+          merged = r2.list;
         }
+        // garante a entrada atual no merge
+        const r3 = upsertPersonalBest(merged, entry);
+        merged = r3.list;
+        merged.sort((a, b) => b.score - a.score || (b.dist || 0) - (a.dist || 0));
+        writeLocalRank(merged);
+        console.log('[patrulha] rank ok', entry.nome, entry.score, 'top', j.top.length);
+        return merged.slice(0, 15);
+      } else {
+        console.warn('[patrulha] rank resposta inesperada', txt.slice(0, 200));
       }
     } catch (e) {
       console.warn('[patrulha] rank server', e);
     }
-    return local.slice(0, 10);
+    return local.slice(0, 15);
   }
 
 
