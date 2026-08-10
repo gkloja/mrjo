@@ -29186,6 +29186,14 @@ document.addEventListener('click', function(e) {
           <span class="title">Couraçado</span>
           <span class="desc">Defenda o navio de monstros e inimigos, melhore o arsenal entre as ondas.</span>
         </span>
+        <span class="tag">Ação</span>
+      </button>
+      <button type="button" class="md-game-card" onclick="MDGames.play('base')">
+        <span class="ico">🏛️</span>
+        <span class="body">
+          <span class="title">Base Naval</span>
+          <span class="desc">Comande o posto: construa, treine a tropa e eleve o prestígio da OM.</span>
+        </span>
         <span class="tag">Novo</span>
       </button>
     </div>
@@ -30898,7 +30906,9 @@ window.MDGames = {
   },
   play: function (id) {
     this.closeMenu();
-    var src = id === 'couracado' ? '/couracado.html?v=11' : '/patrulha-naval.html?v=12';
+    var src = '/patrulha-naval.html?v=12';
+    if (id === 'couracado') src = '/couracado.html?v=11';
+    else if (id === 'base') src = '/base-naval.html?v=1';
     this._openFrame(src);
   },
   _openFrame: function (src) {
@@ -31015,7 +31025,7 @@ document.addEventListener('visibilitychange', function () {
 
 window.addEventListener('message', function (ev) {
   var d = ev.data;
-  if (!d || (d.type !== 'md-patrulha' && d.type !== 'md-couracado' && d.type !== 'md-corrida-tfm')) return;
+  if (!d || (d.type !== 'md-patrulha' && d.type !== 'md-couracado' && d.type !== 'md-corrida-tfm' && d.type !== 'md-base-naval')) return;
   if (d.action === 'close' || d.action === 'quit') {
     try { window.mdFlushPendingGameXp(); } catch (e) {}
     MDGames.close();

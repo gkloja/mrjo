@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Base Naval · Marujo Digital</title>
+<meta name="theme-color" content="#051223">
+<style>
+:root {
+  --navy: #003366;
+  --deep: #051223;
+  --mid: #0a1929;
+  --hull: #0d2a4a;
+  --gold: #ffcc00;
+  --gold2: #e6b800;
+  --foam: #a8c7fa;
+  --ok: #2ecc71;
+  --warn: #f39c12;
+  --danger: #e74c3c;
+  --panel: rgba(5,18,35,.88);
+  --border: rgba(255,204,0,.22);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body {
+  height: 100%; background: var(--deep); color: #fff;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden; user-select: none; touch-action: manipulation;
+}
+#app {
+  max-width: 480px; margin: 0 auto; height: 100%;
+  display: flex; flex-direction: column;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(0,102,204,.35), transparent 55%),
+    linear-gradient(180deg, #071a2e 0%, #0a2744 45%, #0c3558 100%);
+  position: relative;
+}
+
+/* ===== TOP BAR ===== */
+#top {
+  padding: calc(10px + var(--safe-top)) 12px 8px;
+  display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: start;
+  z-index: 5;
+}
+.res-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.res {
+  background: rgba(5,18,35,.75); border: 1px solid var(--border);
+  border-radius: 999px; padding: 5px 10px; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; gap: 5px; backdrop-filter: blur(8px);
+}
+.res b { color: var(--gold); font-variant-numeric: tabular-nums; }
+.base-lvl {
+  text-align: right; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--foam); line-height: 1.3;
+}
+.base-lvl strong { display: block; color: var(--gold); font-size: 15px; letter-spacing: 0; text-transform: none; }
+
+/* ===== MAP ===== */
+#map-wrap {
+  flex: 1; min-height: 0; padding: 4px 12px 8px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+#map-title {
+  font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--foam); opacity: .85; display: flex; justify-content: space-between; align-items: center;
+}
+#map {
+  flex: 1; min-height: 180px;
+  display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
+  gap: 8px;
+}
+.slot {
+  position: relative;
+  border-radius: 16px;
+  border: 1px solid rgba(168,199,250,.18);
+  background:
+    linear-gradient(160deg, rgba(13,42,74,.9), rgba(5,18,35,.95));
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; padding: 8px 4px; cursor: pointer;
+  transition: transform .12s, border-color .15s, box-shadow .15s;
+  overflow: hidden;
+}
+.slot:active { transform: scale(.96); }
+.slot.empty {
+  border-style: dashed; border-color: rgba(168,199,250,.28);
+  background: rgba(10,30,55,.4);
+}
+.slot.empty .slot-ico { opacity: .35; font-size: 22px; }
+.slot.built { border-color: rgba(255,204,0,.28); box-shadow: 0 0 20px rgba(255,204,0,.06); }
+.slot.busy::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,204,0,.12), transparent);
+  animation: scan 1.6s linear infinite;
+}
+@keyframes scan { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+.slot-ico { font-size: 28px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,.4)); }
+.slot-name { font-size: 10px; font-weight: 700; text-align: center; line-height: 1.15; color: #e8f0ff; }
+.slot-meta { font-size: 9px; color: var(--gold); font-weight: 700; opacity: .9; }
+.slot-lv {
+  position: absolute; top: 5px; right: 6px;
+  font-size: 9px; font-weight: 800; color: var(--deep);
+  background: var(--gold); border-radius: 999px; padding: 1px 6px;
+}
+
+/* ===== EVENT TOAST ===== */
+#toast {
+  position: absolute; left: 12px; right: 12px; top: calc(70px + var(--safe-top));
+  z-index: 20; pointer-events: none;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.toast {
+  pointer-events: auto;
+  background: rgba(5,18,35,.94); border: 1px solid var(--border);
+  border-radius: 14px; padding: 12px 14px; font-size: 13px; line-height: 1.35;
+  box-shadow: 0 12px 40px rgba(0,0,0,.45);
+  animation: toastIn .35s ease;
+}
+.toast.ok { border-color: rgba(46,204,113,.45); }
+.toast.warn { border-color: rgba(243,156,18,.5); }
+.toast.bad { border-color: rgba(231,76,60,.5); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+
+/* ===== BOTTOM DOCK ===== */
+#dock {
+  padding: 8px 12px calc(12px + var(--safe-bot));
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+  background: linear-gradient(180deg, transparent, rgba(5,18,35,.55));
+  z-index: 5;
+}
+.dock-btn {
+  appearance: none; border: 1px solid rgba(168,199,250,.22);
+  background: rgba(5,18,35,.8); color: #fff;
+  border-radius: 14px; padding: 10px 4px 8px;
+  font-size: 10px; font-weight: 700; letter-spacing: .02em;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  cursor: pointer;
+}
+.dock-btn span { font-size: 18px; }
+.dock-btn:active { transform: scale(.96); }
+.dock-btn.primary {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--deep); border-color: transparent;
+  box-shadow: 0 6px 18px rgba(255,204,0,.28);
+}
+
+/* ===== PANELS (bottom sheets) ===== */
+.sheet {
+  position: absolute; inset: 0; z-index: 30;
+  background: rgba(0,0,0,.55); backdrop-filter: blur(4px);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.sheet.show { opacity: 1; pointer-events: auto; }
+.sheet-card {
+  width: 100%; max-width: 480px; max-height: 82%;
+  background: linear-gradient(165deg, #0c2138, #071525);
+  border-radius: 22px 22px 0 0;
+  border: 1px solid rgba(255,204,0,.2);
+  border-bottom: none;
+  padding: 16px 16px calc(16px + var(--safe-bot));
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  transform: translateY(24px); transition: transform .22s ease;
+}
+.sheet.show .sheet-card { transform: none; }
+.sheet-handle {
+  width: 40px; height: 4px; border-radius: 999px;
+  background: rgba(255,255,255,.2); margin: 0 auto 12px;
+}
+.sheet h2 {
+  font-size: 18px; font-weight: 800; margin-bottom: 4px;
+  background: linear-gradient(90deg, #fff, var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.sheet .sub { font-size: 12px; color: var(--foam); margin-bottom: 14px; line-height: 1.4; }
+.row-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.btn {
+  appearance: none; border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--deep); font-weight: 800; font-size: 13px;
+  padding: 12px 18px; border-radius: 999px; flex: 1; min-width: 120px;
+}
+.btn:disabled { opacity: .45; }
+.btn.ghost {
+  background: transparent; color: var(--foam);
+  border: 1px solid rgba(168,199,250,.35);
+}
+.btn.danger {
+  background: rgba(231,76,60,.2); color: #ffb4b4;
+  border: 1px solid rgba(231,76,60,.4);
+}
+.build-list { display: flex; flex-direction: column; gap: 8px; }
+.build-item {
+  display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center;
+  background: rgba(255,255,255,.04); border: 1px solid rgba(168,199,250,.15);
+  border-radius: 14px; padding: 10px 12px; cursor: pointer; text-align: left;
+}
+.build-item:active { background: rgba(255,204,0,.08); }
+.build-item .ico { font-size: 26px; text-align: center; }
+.build-item .nm { font-size: 13px; font-weight: 700; }
+.build-item .ds { font-size: 11px; color: var(--foam); margin-top: 2px; line-height: 1.3; }
+.build-item .cost { font-size: 11px; font-weight: 800; color: var(--gold); text-align: right; }
+
+.log-list { display: flex; flex-direction: column; gap: 6px; max-height: 280px; overflow-y: auto; }
+.log-item {
+  font-size: 12px; line-height: 1.35; padding: 8px 10px;
+  background: rgba(255,255,255,.04); border-radius: 10px;
+  border-left: 3px solid var(--gold);
+}
+.log-item time { display: block; font-size: 10px; color: var(--foam); opacity: .7; margin-bottom: 2px; }
+
+.bar-wrap { margin: 8px 0 4px; }
+.bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--foam); margin-bottom: 4px; }
+.bar {
+  height: 8px; border-radius: 999px; background: rgba(255,255,255,.1); overflow: hidden;
+}
+.bar > i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #1a6bb5, var(--gold)); width: 0%; transition: width .4s ease; }
+
+/* START / OVERLAY screens */
+.screen {
+  position: absolute; inset: 0; z-index: 40;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px 20px calc(24px + var(--safe-bot));
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(0,102,204,.3), transparent 50%),
+    rgba(5,18,35,.92);
+  text-align: center;
+}
+.screen.hidden { display: none; }
+.logo-mark {
+  width: 76px; height: 76px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #1a4a7a, #051223);
+  border: 2px solid var(--gold); display: grid; place-items: center;
+  font-size: 36px; margin-bottom: 14px;
+  box-shadow: 0 0 32px rgba(255,204,0,.25);
+}
+.screen h1 {
+  font-size: clamp(24px, 6.5vw, 32px); font-weight: 900; margin-bottom: 6px;
+  background: linear-gradient(135deg, #fff, var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.screen .sub { color: var(--foam); font-size: 13px; max-width: 320px; line-height: 1.45; margin-bottom: 18px; }
+.badge-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 16px; }
+.badge {
+  font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+  background: rgba(255,204,0,.12); border: 1px solid rgba(255,204,0,.3); color: var(--gold);
+}
+.stat-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  width: min(300px, 100%); margin-bottom: 16px;
+}
+.stat-grid .s {
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,204,0,.18);
+  border-radius: 12px; padding: 10px;
+}
+.stat-grid .l { font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--foam); }
+.stat-grid .n { font-size: 18px; font-weight: 900; color: var(--gold); margin-top: 2px; }
+
+#close-parent {
+  position: absolute; top: calc(10px + var(--safe-top)); right: 12px; z-index: 50;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(5,18,35,.75); border: 1px solid rgba(255,255,255,.2);
+  color: #fff; font-size: 16px; cursor: pointer; display: none;
+  align-items: center; justify-content: center;
+}
+#close-parent.show { display: flex; }
+
+.pulse-gold { animation: pulseG 2s ease-in-out infinite; }
+@keyframes pulseG {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,204,0,.35); }
+  50% { box-shadow: 0 0 0 8px rgba(255,204,0,0); }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <button type="button" id="close-parent" aria-label="Fechar">✕</button>
+
+  <!-- START -->
+  <div class="screen" id="screen-start">
+    <div class="logo-mark">🏛️</div>
+    <h1>Base Naval</h1>
+    <p class="sub">Assuma o comando do posto. Construa, treine a tropa, aguente as inspeções e eleve o <b>prestígio</b> da OM.</p>
+    <div class="badge-row">
+      <span class="badge">🏗️ Construa</span>
+      <span class="badge">⏱️ Progresso offline</span>
+      <span class="badge">📢 Eventos</span>
+    </div>
+    <div class="stat-grid" id="start-stats">
+      <div class="s"><div class="l">Nível da base</div><div class="n" id="st-lvl">1</div></div>
+      <div class="s"><div class="l">Prestígio</div><div class="n" id="st-pre">0</div></div>
+    </div>
+    <button type="button" class="btn" id="btn-enter" style="min-width:200px;padding:14px 28px;font-size:15px">Assumir o comando</button>
+    <button type="button" class="btn ghost" id="btn-reset" style="margin-top:10px;min-width:200px">Reiniciar base</button>
+  </div>
+
+  <!-- HUD -->
+  <div id="top">
+    <div class="res-row">
+      <div class="res" title="Suprimento">📦 <b id="r-sup">0</b></div>
+      <div class="res" title="Moral">🎖️ <b id="r-mor">0</b></div>
+      <div class="res" title="Prestígio">⭐ <b id="r-pre">0</b></div>
+    </div>
+    <div class="base-lvl">
+      Posto · Nv.<strong id="r-lvl">1</strong>
+      <span id="r-title" style="font-size:10px;opacity:.85">Destacamento</span>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <div id="map-wrap">
+    <div id="map-title">
+      <span>🗺️ Planta do posto</span>
+      <span id="clock-hint" style="font-weight:600;opacity:.75">—</span>
+    </div>
+    <div id="map"></div>
+    <div class="bar-wrap">
+      <div class="bar-label"><span>Prontidão operacional</span><span id="pront-txt">0%</span></div>
+      <div class="bar"><i id="pront-bar"></i></div>
+    </div>
+  </div>
+
+  <div id="dock">
+    <button type="button" class="dock-btn" id="btn-build"><span>🏗️</span>Construir</button>
+    <button type="button" class="dock-btn" id="btn-orders"><span>📋</span>Ordens</button>
+    <button type="button" class="dock-btn" id="btn-log"><span>📜</span>Diário</button>
+    <button type="button" class="dock-btn primary" id="btn-collect"><span>⚡</span>Coletar</button>
+  </div>
+
+  <!-- SHEET: build -->
+  <div class="sheet" id="sheet-build">
+    <div class="sheet-card">
+      <div class="sheet-handle"></div>
+      <h2>Construir / expandir</h2>
+      <p class="sub">Escolha um módulo para o slot selecionado. Cada estrutura eleva a prontidão e gera recursos com o tempo.</p>
+      <div class="build-list" id="build-list"></div>
+      <div class="row-btns">
+        <button type="button" class="btn ghost" data-close="sheet-build">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHEET: slot detail -->
+  <div class="sheet" id="sheet-slot">
+    <div class="sheet-card">
+      <div class="sheet-handle"></div>
+      <h2 id="slot-title">Módulo</h2>
+      <p class="sub" id="slot-desc">—</p>
+      <div class="bar-wrap">
+        <div class="bar-label"><span>Nível</span><span id="slot-lv-txt">1</span></div>
+        <div class="bar"><i id="slot-lv-bar"></i></div>
+      </div>
+      <div class="row-btns" id="slot-actions"></div>
+      <div class="row-btns">
+        <button type="button" class="btn ghost" data-close="sheet-slot">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHEET: orders -->
+  <div class="sheet" id="sheet-orders">
+    <div class="sheet-card">
+      <div class="sheet-handle"></div>
+      <h2>Ordens do dia</h2>
+      <p class="sub">Gaste moral e suprimento para acelerar a base. Uma ordem a cada poucos minutos.</p>
+      <div class="build-list" id="orders-list"></div>
+      <div class="row-btns">
+        <button type="button" class="btn ghost" data-close="sheet-orders">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHEET: log -->
+  <div class="sheet" id="sheet-log">
+    <div class="sheet-card">
+      <div class="sheet-handle"></div>
+      <h2>Diário de bordo</h2>
+      <p class="sub">Registros da OM — inspeções, tempestades e feitos da tropa.</p>
+      <div class="log-list" id="log-list"></div>
+      <div class="row-btns">
+        <button type="button" class="btn ghost" data-close="sheet-log">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const IN_IFRAME = window.parent !== window;
+  const SAVE_KEY = 'md_base_naval_v1';
+  const TICK_MS = 1000;
+  const MAX_OFFLINE_H = 8; // teto anti-abuso offline
+
+  // ----- Catálogo de prédios -----
+  const BUILDINGS = {
+    cais: {
+      id: 'cais', nome: 'Cais', ico: '⚓',
+      desc: 'Atraça embarcações e gera suprimento constante.',
+      cost: [40, 0], // sup, prestígio extra
+      prod: { sup: 2.2, mor: 0, pre: 0.15 },
+      maxLv: 5
+    },
+    rancho: {
+      id: 'rancho', nome: 'Rancho', ico: '🍽️',
+      desc: 'Alimenta a tropa e sustenta a moral.',
+      cost: [35, 0],
+      prod: { sup: 0.4, mor: 2.0, pre: 0.1 },
+      maxLv: 5
+    },
+    alojamento: {
+      id: 'alojamento', nome: 'Alojamento', ico: '🛏️',
+      desc: 'Descanso da praça — moral e prontidão.',
+      cost: [50, 0],
+      prod: { sup: 0, mor: 2.4, pre: 0.2 },
+      maxLv: 5
+    },
+    torre: {
+      id: 'torre', nome: 'Torre de sinais', ico: '📡',
+      desc: 'Comunicações e vigilância — prestígio e alerta.',
+      cost: [55, 5],
+      prod: { sup: 0.3, mor: 0.5, pre: 1.2 },
+      maxLv: 5
+    },
+    enfermaria: {
+      id: 'enfermaria', nome: 'Enfermaria', ico: '🏥',
+      desc: 'Cuida feridos e reduz perdas em eventos ruins.',
+      cost: [60, 0],
+      prod: { sup: 0.2, mor: 1.2, pre: 0.4 },
+      maxLv: 4
+    },
+    polvorim: {
+      id: 'polvorim', nome: 'Paiol', ico: '💣',
+      desc: 'Estoque crítico. Alto prestígio, risco em tempestade.',
+      cost: [70, 8],
+      prod: { sup: 1.5, mor: 0, pre: 1.0 },
+      maxLv: 4
+    },
+    mastro: {
+      id: 'mastro', nome: 'Mastro de bandeira', ico: '🚩',
+      desc: 'Cerimonial e hasteamento — orgulho da OM.',
+      cost: [45, 10],
+      prod: { sup: 0, mor: 1.5, pre: 1.8 },
+      maxLv: 5
+    },
+    escola: {
+      id: 'escola', nome: 'Sala de instrução', ico: '📘',
+      desc: 'Bizu e adestramento. Moral + prestígio.',
+      cost: [65, 5],
+      prod: { sup: 0.2, mor: 1.8, pre: 0.9 },
+      maxLv: 4
+    }
+  };
+
+  const TITLES = [
+    [1, 'Destacamento'],
+    [3, 'Posto de apoio'],
+    [5, 'Base avançada'],
+    [8, 'Estação naval'],
+    [12, 'OM de referência'],
+    [18, 'Comando de área']
+  ];
+
+  const ORDERS = [
+    {
+      id: 'patrulha', nome: 'Enviar patrulha', ico: '🚢',
+      desc: 'Gasta suprimento, rende prestígio e moral.',
+      cost: { sup: 25, mor: 5 }, cd: 120,
+      fx: (s) => { s.pre += 12 + s.level * 2; s.mor += 8; return 'Patrulha retornou com relatório favorável.'; }
+    },
+    {
+      id: 'treino', nome: 'Treino de cerimonial', ico: '🎖️',
+      desc: 'Adestramento da tropa no pátio.',
+      cost: { sup: 10, mor: 15 }, cd: 90,
+      fx: (s) => { s.mor += 18; s.pre += 6; return 'Treino encerrado. Moral em alta.'; }
+    },
+    {
+      id: 'rancho_extra', nome: 'Rancho reforçado', ico: '🍲',
+      desc: 'Melhor refeição do dia.',
+      cost: { sup: 30, mor: 0 }, cd: 150,
+      fx: (s) => { s.mor += 22; return 'Rancho reforçado servido. Tropa satisfeita.'; }
+    },
+    {
+      id: 'inspecao', nome: 'Autoinspeção', ico: '🔍',
+      desc: 'Organize tudo antes da visita real.',
+      cost: { sup: 15, mor: 10 }, cd: 180,
+      fx: (s) => { s.pre += 20 + s.level; return 'Autoinspeção concluída. Prestígio elevado.'; }
+    }
+  ];
+
+  const EVENTS = [
+    { id: 'tempestade', w: 1, title: '🌩️ Tempestade no setor', bad: true,
+      run(s) {
+        const loss = 8 + Math.floor(Math.random() * 12);
+        s.sup = Math.max(0, s.sup - loss);
+        if (!hasBuilding(s, 'enfermaria')) s.mor = Math.max(0, s.mor - 6);
+        return `Temporal danificou estoques (−${loss} suprimento).`;
+      }},
+    { id: 'visita', w: 1, title: '🎖️ Visita surpresa', bad: false,
+      run(s) {
+        const gain = 10 + s.level * 2;
+        s.pre += gain;
+        s.mor += 5;
+        return `Autoridade visitou o posto (+${gain} prestígio).`;
+      }},
+    { id: 'falha_bandeira', w: 0.7, title: '🚩 Falha no arriamento', bad: true,
+      run(s) {
+        if (hasBuilding(s, 'mastro') && levelOf(s, 'mastro') >= 2) {
+          s.pre += 4;
+          return 'Quase houve falha, mas o mastro bem cuidado salvou o cerimonial.';
+        }
+        s.mor = Math.max(0, s.mor - 10);
+        s.pre = Math.max(0, s.pre - 5);
+        return 'Falhas no cerimonial. Moral e prestígio abalados.';
+      }},
+    { id: 'abastecimento', w: 1, title: '📦 Comboio de suprimento', bad: false,
+      run(s) {
+        const g = 20 + Math.floor(Math.random() * 25);
+        s.sup += g;
+        return `Comboio chegou ao cais (+${g} suprimento).`;
+      }},
+    { id: 'noticia', w: 0.8, title: '📰 Destaque na tripulação', bad: false,
+      run(s) {
+        s.pre += 8; s.mor += 8;
+        return 'Feitos do posto ecoaram na tripulação.';
+      }},
+    { id: 'doente', w: 0.6, title: '🤒 Baixa médica', bad: true,
+      run(s) {
+        if (hasBuilding(s, 'enfermaria')) {
+          s.mor = Math.max(0, s.mor - 2);
+          return 'Baixa médica contida pela enfermaria.';
+        }
+        s.mor = Math.max(0, s.mor - 12);
+        return 'Baixas por doença sem estrutura adequada.';
+      }}
+  ];
+
+  // ----- State -----
+  function defaultState() {
+    return {
+      level: 1,
+      xp: 0,
+      sup: 80,
+      mor: 60,
+      pre: 10,
+      slots: Array(9).fill(null), // { id, lv, busyUntil }
+      lastTick: Date.now(),
+      lastEvent: Date.now(),
+      orderCd: {},
+      log: [],
+      selectedSlot: -1,
+      totalCollected: 0,
+      startedAt: Date.now()
+    };
+  }
+
+  let state = load() || defaultState();
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return null;
+      const s = JSON.parse(raw);
+      if (!s || !Array.isArray(s.slots) || s.slots.length !== 9) return null;
+      return s;
+    } catch (e) { return null; }
+  }
+  function save() {
+    try {
+      state.lastTick = Date.now();
+      localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+    } catch (e) {}
+  }
+
+  function titleFor(lv) {
+    let t = TITLES[0][1];
+    for (const [n, name] of TITLES) if (lv >= n) t = name;
+    return t;
+  }
+  function hasBuilding(s, id) {
+    return s.slots.some(x => x && x.id === id);
+  }
+  function levelOf(s, id) {
+    const b = s.slots.find(x => x && x.id === id);
+    return b ? b.lv : 0;
+  }
+  function slotCount(s) {
+    return s.slots.filter(Boolean).length;
+  }
+  function production(s) {
+    let sup = 0, mor = 0, pre = 0;
+    for (const sl of s.slots) {
+      if (!sl) continue;
+      const def = BUILDINGS[sl.id];
+      if (!def) continue;
+      const mult = 1 + (sl.lv - 1) * 0.35;
+      sup += def.prod.sup * mult;
+      mor += def.prod.mor * mult;
+      pre += def.prod.pre * mult;
+    }
+    // idle base trickle
+    sup += 0.3;
+    mor += 0.15;
+    return { sup, mor, pre };
+  }
+  function prontidao(s) {
+    const built = slotCount(s);
+    const avgLv = s.slots.reduce((a, sl) => a + (sl ? sl.lv : 0), 0) / Math.max(1, built);
+    const fill = built / 9;
+    const morale = Math.min(1, s.mor / 100);
+    return Math.round(Math.min(100, fill * 55 + avgLv * 8 + morale * 25));
+  }
+  function xpToNext(level) {
+    return 40 + level * 35;
+  }
+
+  function addLog(msg, kind) {
+    state.log.unshift({ t: Date.now(), msg, kind: kind || 'info' });
+    state.log = state.log.slice(0, 40);
+  }
+
+  function toast(msg, kind) {
+    const box = document.getElementById('toast');
+    const el = document.createElement('div');
+    el.className = 'toast ' + (kind || '');
+    el.textContent = msg;
+    box.appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; }, 3200);
+    setTimeout(() => el.remove(), 3600);
+  }
+
+  // ----- Offline catch-up -----
+  function applyOffline() {
+    const now = Date.now();
+    let dt = Math.max(0, (now - (state.lastTick || now)) / 1000);
+    const maxSec = MAX_OFFLINE_H * 3600;
+    if (dt > maxSec) dt = maxSec;
+    if (dt < 2) { state.lastTick = now; return 0; }
+    const prod = production(state);
+    const gained = {
+      sup: prod.sup * dt,
+      mor: prod.mor * dt,
+      pre: prod.pre * dt
+    };
+    // soft cap resources
+    state.sup = Math.min(9999, state.sup + gained.sup);
+    state.mor = Math.min(9999, state.mor + gained.mor);
+    state.pre = Math.min(99999, state.pre + gained.pre);
+    state.lastTick = now;
+
+    // chance of one event if offline long
+    if (dt > 600 && now - (state.lastEvent || 0) > 900000) {
+      rollEvent(true);
+    }
+    return dt;
+  }
+
+  function tick() {
+    const prod = production(state);
+    // per second rates are calibrated for ~per-minute feel: divide by 60
+    state.sup = Math.min(9999, state.sup + prod.sup / 60);
+    state.mor = Math.min(9999, state.mor + prod.mor / 60);
+    state.pre = Math.min(99999, state.pre + prod.pre / 60);
+    state.lastTick = Date.now();
+
+    // clear busy
+    for (const sl of state.slots) {
+      if (sl && sl.busyUntil && Date.now() >= sl.busyUntil) sl.busyUntil = 0;
+    }
+
+    // random event ~ every 4–7 min while open
+    if (Date.now() - (state.lastEvent || 0) > 240000 + Math.random() * 180000) {
+      rollEvent(false);
+    }
+    renderResources();
+    renderMap();
+    save();
+  }
+
+  function rollEvent(silent) {
+    state.lastEvent = Date.now();
+    const pool = [];
+    EVENTS.forEach(e => {
+      const n = Math.ceil((e.w || 1) * 10);
+      for (let i = 0; i < n; i++) pool.push(e);
+    });
+    const ev = pool[Math.floor(Math.random() * pool.length)];
+    const msg = ev.run(state);
+    addLog(ev.title + ' — ' + msg, ev.bad ? 'bad' : 'ok');
+    if (!silent) toast(ev.title + ' — ' + msg, ev.bad ? 'bad' : 'ok');
+    maybeLevelUp();
+    save();
+    renderAll();
+  }
+
+  function maybeLevelUp() {
+    // level from prestígio milestones
+    const target = 1 + Math.floor(state.pre / 80);
+    if (target > state.level) {
+      state.level = Math.min(30, target);
+      addLog('Base elevada ao nível ' + state.level + ' (' + titleFor(state.level) + ').', 'ok');
+      toast('🏅 Posto promoveu para nível ' + state.level + '!', 'ok');
+      grantParentXp(5 + state.level);
+    }
+  }
+
+  function grantParentXp(amount) {
+    amount = Math.floor(amount);
+    if (amount <= 0) return;
+    const detail = {
+      xpGained: amount,
+      score: Math.floor(state.pre),
+      sessionId: 'base-' + Date.now() + '-' + amount
+    };
+    try {
+      if (IN_IFRAME) {
+        parent.postMessage({ type: 'md-base-naval', action: 'xp', detail }, '*');
+        // also generic game channel used by index
+        parent.postMessage({ type: 'md-patrulha', action: 'xp', detail }, '*');
+      }
+    } catch (e) {}
+  }
+
+  // ----- Actions -----
+  function costFor(def, lv) {
+    const mult = Math.pow(1.55, (lv || 1) - 1);
+    return {
+      sup: Math.ceil(def.cost[0] * mult),
+      pre: Math.ceil((def.cost[1] || 0) * mult)
+    };
+  }
+
+  function canAfford(c) {
+    return state.sup >= c.sup && state.pre >= c.pre;
+  }
+
+  function buildAt(slotIndex, buildingId) {
+    const def = BUILDINGS[buildingId];
+    if (!def) return;
+    if (state.slots[slotIndex]) return;
+    // unique? allow multiples except mastro max 1
+    if (buildingId === 'mastro' && hasBuilding(state, 'mastro')) {
+      toast('Só um mastro de bandeira por posto.', 'warn');
+      return;
+    }
+    const c = costFor(def, 1);
+    if (!canAfford(c)) {
+      toast('Recursos insuficientes.', 'warn');
+      return;
+    }
+    state.sup -= c.sup;
+    state.pre -= c.pre;
+    state.slots[slotIndex] = { id: buildingId, lv: 1, busyUntil: Date.now() + 8000 };
+    addLog('Construído: ' + def.nome + '.', 'ok');
+    toast(def.ico + ' ' + def.nome + ' em obras (pronto em instantes).', 'ok');
+    state.xp += 8;
+    grantParentXp(3);
+    maybeLevelUp();
+    closeSheets();
+    save();
+    renderAll();
+  }
+
+  function upgradeSlot(slotIndex) {
+    const sl = state.slots[slotIndex];
+    if (!sl) return;
+    const def = BUILDINGS[sl.id];
+    if (!def || sl.lv >= def.maxLv) {
+      toast('Nível máximo deste módulo.', 'warn');
+      return;
+    }
+    if (sl.busyUntil && Date.now() < sl.busyUntil) {
+      toast('Módulo ocupado.', 'warn');
+      return;
+    }
+    const c = costFor(def, sl.lv + 1);
+    if (!canAfford(c)) {
+      toast('Recursos insuficientes para upgrade.', 'warn');
+      return;
+    }
+    state.sup -= c.sup;
+    state.pre -= c.pre;
+    sl.lv += 1;
+    sl.busyUntil = Date.now() + 10000;
+    addLog(def.nome + ' evoluído para nv.' + sl.lv + '.', 'ok');
+    toast(def.ico + ' Upgrade! ' + def.nome + ' nv.' + sl.lv, 'ok');
+    grantParentXp(2 + sl.lv);
+    maybeLevelUp();
+    closeSheets();
+    save();
+    renderAll();
+  }
+
+  function collectBurst() {
+    // Instant collect = 45s of production, cooldown via orderCd
+    const cd = state.orderCd.collect || 0;
+    if (Date.now() < cd) {
+      const sec = Math.ceil((cd - Date.now()) / 1000);
+      toast('Reorganizando estoque… ' + sec + 's', 'warn');
+      return;
+    }
+    const prod = production(state);
+    const mult = 45; // seconds worth
+    const gSup = prod.sup * mult / 60 * 60; // prod is per-minute-ish units; use 0.75 min
+    // production() returns units per minute roughly (2.2 etc). Collect ~40s:
+    const factor = 0.7;
+    const ds = prod.sup * factor * 10;
+    const dm = prod.mor * factor * 10;
+    const dp = prod.pre * factor * 10;
+    state.sup = Math.min(9999, state.sup + ds);
+    state.mor = Math.min(9999, state.mor + dm);
+    state.pre = Math.min(99999, state.pre + dp);
+    state.totalCollected += ds + dm + dp;
+    state.orderCd.collect = Date.now() + 45000;
+    toast('⚡ Coleta rápida: +' + fmt(ds) + ' 📦  +' + fmt(dm) + ' 🎖️  +' + fmt(dp) + ' ⭐', 'ok');
+    addLog('Coleta operacional realizada.', 'ok');
+    grantParentXp(2);
+    maybeLevelUp();
+    save();
+    renderAll();
+  }
+
+  function runOrder(orderId) {
+    const o = ORDERS.find(x => x.id === orderId);
+    if (!o) return;
+    const cdUntil = state.orderCd[o.id] || 0;
+    if (Date.now() < cdUntil) {
+      toast('Ordem em intervalo. Aguarde.', 'warn');
+      return;
+    }
+    if (state.sup < o.cost.sup || state.mor < o.cost.mor) {
+      toast('Sem recursos para esta ordem.', 'warn');
+      return;
+    }
+    state.sup -= o.cost.sup;
+    state.mor -= o.cost.mor;
+    const msg = o.fx(state);
+    state.orderCd[o.id] = Date.now() + o.cd * 1000;
+    addLog(o.nome + ' — ' + msg, 'ok');
+    toast(o.ico + ' ' + msg, 'ok');
+    grantParentXp(4);
+    maybeLevelUp();
+    closeSheets();
+    save();
+    renderAll();
+  }
+
+  function fmt(n) {
+    n = Math.floor(n);
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+    return String(n);
+  }
+
+  // ----- UI -----
+  function renderResources() {
+    document.getElementById('r-sup').textContent = fmt(state.sup);
+    document.getElementById('r-mor').textContent = fmt(state.mor);
+    document.getElementById('r-pre').textContent = fmt(state.pre);
+    document.getElementById('r-lvl').textContent = state.level;
+    document.getElementById('r-title').textContent = titleFor(state.level);
+    const p = prontidao(state);
+    document.getElementById('pront-txt').textContent = p + '%';
+    document.getElementById('pront-bar').style.width = p + '%';
+    const prod = production(state);
+    document.getElementById('clock-hint').textContent =
+      '+' + prod.sup.toFixed(1) + '📦/min · +' + prod.pre.toFixed(1) + '⭐/min';
+  }
+
+  function renderMap() {
+    const map = document.getElementById('map');
+    map.innerHTML = '';
+    state.slots.forEach((sl, i) => {
+      const div = document.createElement('button');
+      div.type = 'button';
+      div.className = 'slot ' + (sl ? 'built' : 'empty');
+      if (sl && sl.busyUntil && Date.now() < sl.busyUntil) div.classList.add('busy');
+      if (sl) {
+        const def = BUILDINGS[sl.id];
+        div.innerHTML = '<div class="slot-lv">nv.' + sl.lv + '</div>' +
+          '<div class="slot-ico">' + (def ? def.ico : '❓') + '</div>' +
+          '<div class="slot-name">' + (def ? def.nome : '?') + '</div>' +
+          '<div class="slot-meta">' + (def ? '+' + (def.prod.pre * (1 + (sl.lv - 1) * 0.35)).toFixed(1) + '⭐' : '') + '</div>';
+      } else {
+        div.innerHTML = '<div class="slot-ico">＋</div><div class="slot-name">Vago</div><div class="slot-meta">Construir</div>';
+      }
+      div.onclick = () => onSlotClick(i);
+      map.appendChild(div);
+    });
+  }
+
+  function onSlotClick(i) {
+    state.selectedSlot = i;
+    const sl = state.slots[i];
+    if (!sl) {
+      openSheet('sheet-build');
+      renderBuildList();
+      return;
+    }
+    openSlotSheet(i);
+  }
+
+  function renderBuildList() {
+    const box = document.getElementById('build-list');
+    box.innerHTML = '';
+    Object.values(BUILDINGS).forEach(def => {
+      if (def.id === 'mastro' && hasBuilding(state, 'mastro')) return;
+      const c = costFor(def, 1);
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'build-item';
+      item.innerHTML =
+        '<div class="ico">' + def.ico + '</div>' +
+        '<div><div class="nm">' + def.nome + '</div><div class="ds">' + def.desc + '</div></div>' +
+        '<div class="cost">' + c.sup + ' 📦' + (c.pre ? '<br>' + c.pre + ' ⭐' : '') + '</div>';
+      item.onclick = () => buildAt(state.selectedSlot, def.id);
+      box.appendChild(item);
+    });
+  }
+
+  function openSlotSheet(i) {
+    const sl = state.slots[i];
+    const def = BUILDINGS[sl.id];
+    document.getElementById('slot-title').textContent = def.ico + ' ' + def.nome;
+    document.getElementById('slot-desc').textContent = def.desc + ' Produção cresce a cada nível.';
+    document.getElementById('slot-lv-txt').textContent = sl.lv + ' / ' + def.maxLv;
+    document.getElementById('slot-lv-bar').style.width = (sl.lv / def.maxLv * 100) + '%';
+    const actions = document.getElementById('slot-actions');
+    actions.innerHTML = '';
+    const up = document.createElement('button');
+    up.type = 'button';
+    up.className = 'btn';
+    if (sl.lv >= def.maxLv) {
+      up.textContent = 'Nível máximo';
+      up.disabled = true;
+    } else {
+      const c = costFor(def, sl.lv + 1);
+      up.textContent = 'Upgrade (' + c.sup + '📦' + (c.pre ? ' · ' + c.pre + '⭐' : '') + ')';
+      up.onclick = () => upgradeSlot(i);
+    }
+    actions.appendChild(up);
+    openSheet('sheet-slot');
+  }
+
+  function renderOrders() {
+    const box = document.getElementById('orders-list');
+    box.innerHTML = '';
+    ORDERS.forEach(o => {
+      const cdUntil = state.orderCd[o.id] || 0;
+      const busy = Date.now() < cdUntil;
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'build-item';
+      item.disabled = busy;
+      item.style.opacity = busy ? .55 : 1;
+      const left = busy ? Math.ceil((cdUntil - Date.now()) / 1000) + 's' : o.cost.sup + '📦 · ' + o.cost.mor + '🎖️';
+      item.innerHTML =
+        '<div class="ico">' + o.ico + '</div>' +
+        '<div><div class="nm">' + o.nome + '</div><div class="ds">' + o.desc + '</div></div>' +
+        '<div class="cost">' + left + '</div>';
+      item.onclick = () => runOrder(o.id);
+      box.appendChild(item);
+    });
+  }
+
+  function renderLog() {
+    const box = document.getElementById('log-list');
+    if (!state.log.length) {
+      box.innerHTML = '<div class="log-item">Nenhum registro ainda. Construa e dê ordens.</div>';
+      return;
+    }
+    box.innerHTML = state.log.map(e => {
+      const d = new Date(e.t);
+      const ts = d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+      return '<div class="log-item"><time>' + ts + '</time>' + e.msg + '</div>';
+    }).join('');
+  }
+
+  function renderAll() {
+    renderResources();
+    renderMap();
+  }
+
+  function openSheet(id) {
+    document.getElementById(id).classList.add('show');
+  }
+  function closeSheets() {
+    document.querySelectorAll('.sheet').forEach(s => s.classList.remove('show'));
+  }
+
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-close');
+      document.getElementById(id).classList.remove('show');
+    });
+  });
+  document.querySelectorAll('.sheet').forEach(sh => {
+    sh.addEventListener('click', (e) => { if (e.target === sh) sh.classList.remove('show'); });
+  });
+
+  document.getElementById('btn-build').onclick = () => {
+    // pick first empty slot or ask
+    const empty = state.slots.findIndex(s => !s);
+    if (empty < 0) {
+      toast('Todos os slots ocupados. Faça upgrade nos módulos.', 'warn');
+      return;
+    }
+    state.selectedSlot = empty;
+    renderBuildList();
+    openSheet('sheet-build');
+  };
+  document.getElementById('btn-orders').onclick = () => { renderOrders(); openSheet('sheet-orders'); };
+  document.getElementById('btn-log').onclick = () => { renderLog(); openSheet('sheet-log'); };
+  document.getElementById('btn-collect').onclick = collectBurst;
+
+  document.getElementById('btn-enter').onclick = () => {
+    document.getElementById('screen-start').classList.add('hidden');
+    const offline = applyOffline();
+    if (offline > 60) {
+      const min = Math.floor(offline / 60);
+      toast('⏱️ Enquanto você esteve fora (' + min + ' min), a base manteve a rotina.', 'ok');
+      addLog('Retorno ao posto após ' + min + ' min offline.', 'info');
+    }
+    renderAll();
+    save();
+  };
+  document.getElementById('btn-reset').onclick = () => {
+    if (!confirm('Reiniciar a base? O progresso local será apagado.')) return;
+    state = defaultState();
+    // starter building
+    state.slots[4] = { id: 'cais', lv: 1, busyUntil: 0 };
+    addLog('Novo comando assumido. Cais inicial operacional.', 'ok');
+    save();
+    document.getElementById('st-lvl').textContent = '1';
+    document.getElementById('st-pre').textContent = '10';
+    toast('Base reiniciada.', 'ok');
+  };
+
+  // Close for iframe
+  const closeBtn = document.getElementById('close-parent');
+  if (IN_IFRAME) {
+    closeBtn.classList.add('show');
+    closeBtn.onclick = () => {
+      save();
+      try { parent.postMessage({ type: 'md-base-naval', action: 'close' }, '*'); } catch (e) {}
+      try { parent.postMessage({ type: 'md-patrulha', action: 'close' }, '*'); } catch (e2) {}
+    };
+  }
+
+  // Seed first-time
+  if (!load()) {
+    state = defaultState();
+    state.slots[4] = { id: 'cais', lv: 1, busyUntil: 0 };
+    addLog('Você assumiu o destacamento. O cais já opera.', 'ok');
+    save();
+  } else {
+    state = load();
+  }
+
+  document.getElementById('st-lvl').textContent = state.level;
+  document.getElementById('st-pre').textContent = fmt(state.pre);
+
+  renderAll();
+  setInterval(tick, TICK_MS);
+
+  // visibility: save when backgrounding
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) save();
+    else {
+      const dt = applyOffline();
+      if (dt > 60) toast('⏱️ Base trabalhou na sua ausência.', 'ok');
+      renderAll();
+    }
+  });
+  window.addEventListener('beforeunload', save);
+
+})();
+</script>
+</body>
+</html>
