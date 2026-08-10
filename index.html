@@ -6435,7 +6435,7 @@ html[data-theme="light"] .signal-hero {
                 onclick="try{MDPorDoSol.abrirConfig()}catch(e){}"
                 title="Horário do pôr do sol na sua cidade — toque para escolher ou alterar">
             <span class="md-cmd-sunset-ico" aria-hidden="true">🌅</span>
-            <span class="md-cmd-sunset-label" id="md-cmd-sunset-text">Definir cidade do ocaso</span>
+            <span class="md-cmd-sunset-label" id="md-cmd-sunset-text">Definir cidade do pôr do sol</span>
         </button>
         <div class="md-cmd-xp-row">
             <div class="md-cmd-xp-bar"><span id="md-cmd-xp-fill" style="width:0%"></span></div>
@@ -30907,12 +30907,12 @@ window.MDPorDoSol = (function () {
       });
   }
 
-  /** Atualiza a legenda sob o perfil (cmd-bar): horário local do ocaso + cidade. */
+  /** Atualiza a legenda sob o perfil (cmd-bar): horário local do pôr do sol + cidade. */
   function setLegendaCmd(texto, isEmpty) {
     var btn = document.getElementById('md-cmd-sunset');
     var lab = document.getElementById('md-cmd-sunset-text');
     if (!lab) return;
-    lab.textContent = texto || 'Definir cidade do ocaso';
+    lab.textContent = texto || 'Definir cidade do pôr do sol';
     if (btn) {
       if (isEmpty) btn.classList.add('is-empty');
       else btn.classList.remove('is-empty');
@@ -30924,7 +30924,6 @@ window.MDPorDoSol = (function () {
 
   function cidadeCurta(nome) {
     if (!nome) return '';
-    // "Manaus, AM" → "Manaus"
     return String(nome).replace(/,\s*[A-Z]{2}\s*$/, '').trim() || String(nome);
   }
 
@@ -30936,8 +30935,8 @@ window.MDPorDoSol = (function () {
     }
   }
 
-  /** Busca ocaso no fuso da coordenada (Open-Meteo timezone=auto) e devolve HH:MM local. */
-  function buscarHoraOcaso(lat, lon) {
+  /** Busca pôr do sol no fuso da coordenada (Open-Meteo timezone=auto) e devolve HH:MM local. */
+  function buscarHoraPorDoSol(lat, lon) {
     var data = hojeISOLocal();
     var url = 'https://api.open-meteo.com/v1/forecast'
       + '?latitude=' + encodeURIComponent(lat)
@@ -30968,29 +30967,28 @@ window.MDPorDoSol = (function () {
     var horaPronta = p.proximo && p.proximo.horaLocal;
 
     if (!ativo || lat == null || lon == null || !Number.isFinite(lat) || !Number.isFinite(lon)) {
-      setLegendaCmd('Definir cidade do ocaso', true);
+      setLegendaCmd('Definir cidade do pôr do sol', true);
       return;
     }
 
     var curta = cidadeCurta(cidade) || 'sua cidade';
     if (horaPronta) {
-      setLegendaCmd('Ocaso ' + horaPronta + ' · ' + curta, false);
+      setLegendaCmd('Pôr do Sol ' + horaPronta + ' · ' + curta, false);
       return;
     }
 
-    setLegendaCmd('Ocaso … · ' + curta, false);
-    buscarHoraOcaso(lat, lon).then(function (hora) {
-      if (hora) setLegendaCmd('Ocaso ' + hora + ' · ' + curta, false);
-      else setLegendaCmd('Ocaso · ' + curta, false);
+    setLegendaCmd('Pôr do Sol … · ' + curta, false);
+    buscarHoraPorDoSol(lat, lon).then(function (hora) {
+      if (hora) setLegendaCmd('Pôr do Sol ' + hora + ' · ' + curta, false);
+      else setLegendaCmd('Pôr do Sol · ' + curta, false);
     });
   }
 
   /** Tenta servidor + local e atualiza a legenda do perfil. */
   function atualizarLegendaDoServidor() {
     var local = lerLocal();
-    // Mostra já o local enquanto busca o servidor
     if (local && local.ativo && local.lat != null) sincronizarLegendaCmd(local);
-    else setLegendaCmd('Definir cidade do ocaso', true);
+    else setLegendaCmd('Definir cidade do pôr do sol', true);
 
     if (!token()) return;
     apiFetch('/por-do-sol', { method: 'GET' })
@@ -31042,7 +31040,6 @@ window.MDPorDoSol = (function () {
   function boot() {
     if (_agendado) return;
     _agendado = true;
-    // Legenda sob o perfil o quanto antes
     setTimeout(atualizarLegendaDoServidor, 800);
     setTimeout(talvezConvidar, 30000);
     var tries = 0;
