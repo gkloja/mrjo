@@ -29245,14 +29245,6 @@ document.addEventListener('click', function(e) {
         </span>
         <span class="tag">Ação</span>
       </button>
-      <button type="button" class="md-game-card" onclick="MDGames.play('base')">
-        <span class="ico">🏛️</span>
-        <span class="body">
-          <span class="title">Base Naval</span>
-          <span class="desc">Comande o posto ao vivo: tropa em movimento, construções e prestígio da OM.</span>
-        </span>
-        <span class="tag">Novo</span>
-      </button>
     </div>
     <button type="button" class="md-games-close" onclick="MDGames.closeMenu()">Fechar</button>
   </div>
@@ -31082,7 +31074,6 @@ window.MDGames = {
     this.closeMenu();
     var src = '/patrulha-naval.html?v=12';
     if (id === 'couracado') src = '/couracado.html?v=11';
-    else if (id === 'base') src = '/base-naval.html?v=2';
     this._openFrame(src);
   },
   _openFrame: function (src) {
