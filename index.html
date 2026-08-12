@@ -13126,6 +13126,127 @@ html[data-theme="light"] .daily-progress-dot {
         grid-template-columns: repeat(3, 1fr);
     }
 }
+
+/* ===== Cerimonial: resultado/modal cabem em celular pequeno ===== */
+@media (max-width: 480px) {
+    .cerimonial-content {
+        padding: 12px 12px 28px !important;
+    }
+    .quiz-content {
+        padding: 14px !important;
+    }
+    .result-screen {
+        padding: 8px 0 !important;
+    }
+    .result-icon {
+        width: 56px !important;
+        height: 56px !important;
+        font-size: 1.6rem !important;
+        margin-bottom: 10px !important;
+    }
+    .result-title {
+        font-size: 1.25rem !important;
+        margin-bottom: 6px !important;
+    }
+    .result-message {
+        font-size: 0.9rem !important;
+        margin-bottom: 10px !important;
+    }
+    .result-stats {
+        gap: 8px !important;
+        margin: 12px 0 !important;
+    }
+    .result-stats .stat-item {
+        padding: 10px 8px !important;
+    }
+    .result-stats .stat-value {
+        font-size: 1.15rem !important;
+    }
+    .result-stats .stat-label {
+        font-size: 0.75rem !important;
+    }
+    .xp-earned {
+        padding: 12px !important;
+        margin: 10px 0 !important;
+    }
+    .xp-earned-value {
+        font-size: 1.4rem !important;
+    }
+    .quiz-btn {
+        padding: 12px !important;
+        font-size: 0.85rem !important;
+        min-height: 44px;
+    }
+
+    .reward-modal {
+        align-items: flex-end !important;
+        padding: 0 !important;
+    }
+    .reward-modal-content {
+        max-width: 100% !important;
+        width: 100% !important;
+        max-height: min(88dvh, 88vh) !important;
+        border-radius: 16px 16px 0 0 !important;
+        padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+        margin: 0 !important;
+    }
+    .reward-modal-icon {
+        width: 56px !important;
+        height: 56px !important;
+        font-size: 1.6rem !important;
+        margin-bottom: 10px !important;
+        animation: none !important;
+    }
+    .reward-modal-title {
+        font-size: 1.25rem !important;
+        margin-bottom: 6px !important;
+    }
+    .reward-modal-subtitle {
+        font-size: 0.88rem !important;
+        margin-bottom: 12px !important;
+    }
+    .reward-xp-total {
+        padding: 12px !important;
+        margin: 10px 0 !important;
+    }
+    .reward-xp-total-value {
+        font-size: 1.6rem !important;
+    }
+    .reward-xp-total-label {
+        font-size: 0.85rem !important;
+        margin-bottom: 4px !important;
+    }
+    .reward-stats {
+        gap: 8px !important;
+        margin: 10px 0 12px !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+    .reward-stat {
+        padding: 10px 6px !important;
+    }
+    .reward-stat-value {
+        font-size: 1.1rem !important;
+    }
+    .reward-stat-label {
+        font-size: 0.72rem !important;
+    }
+    .reward-modal-content > .quiz-btn.primary {
+        padding: 14px !important;
+        font-size: 1rem !important;
+        min-height: 48px;
+        border-radius: 10px;
+    }
+}
+@media (max-height: 640px) {
+    .reward-modal-icon { width: 48px !important; height: 48px !important; font-size: 1.4rem !important; margin-bottom: 8px !important; }
+    .reward-modal-title { font-size: 1.15rem !important; }
+    .reward-modal-subtitle { margin-bottom: 8px !important; }
+    .reward-xp-total { padding: 10px !important; margin: 8px 0 !important; }
+    .reward-xp-total-value { font-size: 1.35rem !important; }
+    .reward-stats { margin: 8px 0 10px !important; }
+    .result-icon { width: 48px !important; height: 48px !important; font-size: 1.4rem !important; }
+    .result-stats { margin: 10px 0 !important; }
+}
 </style>
 <!-- Adicione este CSS após o CSS existente -->
 <style>
@@ -13565,11 +13686,25 @@ html[data-theme="light"] .daily-progress-dot {
     padding: 32px 30px;
     max-width: 500px;
     width: 100%;
+    max-height: min(92dvh, 92vh);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     border: 1px solid #c9a13b;
     box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 0 0 5px #060f1c, inset 0 0 0 6px rgba(201,161,59,0.4);
     text-align: center;
     position: relative;
     animation: scaleUp 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+.reward-modal-content > .quiz-btn.primary {
+    position: sticky;
+    bottom: 0;
+    margin-top: 12px;
+    flex-shrink: 0;
+    z-index: 2;
+    box-shadow: 0 -8px 20px rgba(6, 15, 28, 0.85);
 }
 
 @keyframes scaleUp {
@@ -13920,7 +14055,7 @@ html[data-theme="light"] .daily-progress-dot {
             </div>
         </div>
         
-        <button class="quiz-btn primary" onclick="closeRewardModal()" style="width: 100%; padding: 15px; font-size: 1.1rem;">
+        <button class="quiz-btn primary reward-modal-ok" onclick="closeRewardModal()" style="width: 100%;">
             <i class="fas fa-check"></i> Continuar
         </button>
     </div>
@@ -15947,13 +16082,13 @@ const quizDatabase = [
         id: 37,
         question: "Quantos 'boys' para o Presidente da República?",
         options: [
-            { id: 'A', text: "Especiais (máximos)" },
+            { id: 'A', text: "11 boys" },
             { id: 'B', text: "8 boys" },
             { id: 'C', text: "6 boys" },
             { id: 'D', text: "4 boys" }
         ],
-        correct: 'A',
-        hint: "Honras especiais",
+        correct: 'B',
+        hint: "Ao Presidente da República correspondem 8 boys (toques de apito).",
         category: "protocolos",
         difficulty: "fácil",
         xp: 10
@@ -29265,9 +29400,8 @@ document.addEventListener('click', function(e) {
     <button type="button" class="md-bn-item" data-go="fonoclama" onclick="mdAppGo('fonoclama', this)">
         <i class="fas fa-bullhorn"></i><span>Fonoclama</span>
     </button>
-    <button type="button" class="md-bn-item" data-go="bazar" onclick="mdAppGo('bazar', this)">
-        <i class="fas fa-tshirt"></i><span>Bazar</span>
-        <span class="md-bn-badge" id="md-bn-badge-bazar" data-count="0"></span>
+    <button type="button" class="md-bn-item" data-go="bandeiras" onclick="mdAppGo('bandeiras', this)">
+        <i class="fas fa-flag"></i><span>Bandeiras</span>
     </button>
     <button type="button" class="md-bn-item" data-go="mais" onclick="mdOpenMore()">
         <i class="fas fa-th-large"></i><span>Mais</span>
@@ -29307,8 +29441,9 @@ document.addEventListener('click', function(e) {
             <button type="button" class="md-more-item" onclick="mdMoreAction('quiz')">
                 <i class="fas fa-graduation-cap"></i><span>Quiz</span>
             </button>
-            <button type="button" class="md-more-item" onclick="mdMoreAction('bandeiras')">
-                <i class="fas fa-flag"></i><span>Bandeiras</span>
+            <button type="button" class="md-more-item" onclick="mdMoreAction('bazar')">
+                <i class="fas fa-tshirt"></i><span>Bazar</span>
+                <span class="md-more-badge" id="md-bn-badge-bazar" data-count="0"></span>
             </button>
             <button type="button" class="md-more-item" onclick="mdCloseMore()">
                 <i class="fas fa-times"></i><span>Fechar</span>
@@ -29422,6 +29557,7 @@ function mdMoreAction(action) {
     }
     if (action === 'missao') return mdAppGo('missao');
     if (action === 'bandeiras') return mdAppGo('bandeiras');
+    if (action === 'bazar') return mdAppGo('bazar');
     if (action === 'apitos') return mdAppGo('apitos');
 }
 
