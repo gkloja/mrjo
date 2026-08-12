@@ -927,7 +927,7 @@
       canUpgrade = ok;
     }
     if (_shopOpenTimer) clearTimeout(_shopOpenTimer);
-    var delay = ok ? 700 : 1400; // mais tempo para ver a resposta certa
+    var delay = ok ? 700 : 4000; // tempo para ver o erro e a resposta certa
     _shopOpenTimer = setTimeout(function () {
       _shopOpenTimer = null;
       try { openShop(); } catch (err) {
@@ -1276,6 +1276,8 @@ try {
       e = enemies[i];
       e.t += dt;
       if (e.flash > 0) e.flash -= dt;
+      // Failsafe: inimigo que ficou preso acima da tela (sem movimento) desce aos poucos
+      if (e.y < -80) e.y += 40 * dt;
 
       if (e.kind === 'mine') {
         e.y += e.speed * 60 * dt;
@@ -1299,31 +1301,7 @@ try {
             t: 0, flash: 0, vx: (ship.x - e.x) * 0.014
           });
         }
-      } else if (e.kind === 'bomber') {
-      ctx.fillStyle = '#5d4037';
-      ctx.beginPath();
-      ctx.moveTo(-e.r, 4); ctx.lineTo(-e.r*0.4, -e.r*0.7); ctx.lineTo(e.r*0.4, -e.r*0.7); ctx.lineTo(e.r, 4);
-      ctx.lineTo(e.r*0.5, e.r*0.5); ctx.lineTo(-e.r*0.5, e.r*0.5);
-      ctx.closePath(); ctx.fill();
-      ctx.fillStyle = '#ff5722';
-      ctx.fillRect(-4, -2, 8, 6);
-    } else if (e.kind === 'phantom') {
-      ctx.globalAlpha = e.visible != null ? e.visible : 0.8;
-      ctx.fillStyle = '#b39ddb';
-      ctx.beginPath();
-      ctx.moveTo(0, -e.r); ctx.quadraticCurveTo(e.r, 0, 0, e.r); ctx.quadraticCurveTo(-e.r, 0, 0, -e.r);
-      ctx.fill();
-      ctx.fillStyle = '#fff';
-      ctx.beginPath(); ctx.arc(-3, -2, 2, 0, Math.PI*2); ctx.arc(3, -2, 2, 0, Math.PI*2); ctx.fill();
-      ctx.globalAlpha = 1;
-    } else if (e.kind === 'ram') {
-      ctx.fillStyle = '#37474f';
-      ctx.beginPath();
-      ctx.moveTo(0, e.r); ctx.lineTo(e.r*0.9, -e.r*0.3); ctx.lineTo(0, -e.r); ctx.lineTo(-e.r*0.9, -e.r*0.3);
-      ctx.closePath(); ctx.fill();
-      ctx.fillStyle = e.charged ? '#ff1744' : '#90a4ae';
-      ctx.fillRect(-6, -4, 12, 5);
-    } else if (e.kind === 'shot') {
+      } else if (e.kind === 'shot') {
         e.y += e.speed * 60 * dt;
         e.x += (e.vx || 0) * 60 * dt;
       } else if (e.kind === 'bomber') {
@@ -1738,6 +1716,30 @@ try {
       ctx.fillStyle='#4a235a';
       ctx.beginPath(); ctx.moveTo(0,e.r); ctx.lineTo(e.r,-e.r*0.2); ctx.lineTo(e.r*0.5,-e.r*0.7); ctx.lineTo(-e.r*0.5,-e.r*0.7); ctx.lineTo(-e.r,-e.r*0.2); ctx.closePath(); ctx.fill();
       ctx.fillStyle='#ffcc00'; ctx.fillRect(-6,-4,12,5);
+    } else if (e.kind === 'bomber') {
+      ctx.fillStyle = '#5d4037';
+      ctx.beginPath();
+      ctx.moveTo(-e.r, 4); ctx.lineTo(-e.r*0.4, -e.r*0.7); ctx.lineTo(e.r*0.4, -e.r*0.7); ctx.lineTo(e.r, 4);
+      ctx.lineTo(e.r*0.5, e.r*0.5); ctx.lineTo(-e.r*0.5, e.r*0.5);
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#ff5722';
+      ctx.fillRect(-4, -2, 8, 6);
+    } else if (e.kind === 'phantom') {
+      ctx.globalAlpha = e.visible != null ? e.visible : 0.8;
+      ctx.fillStyle = '#b39ddb';
+      ctx.beginPath();
+      ctx.moveTo(0, -e.r); ctx.quadraticCurveTo(e.r, 0, 0, e.r); ctx.quadraticCurveTo(-e.r, 0, 0, -e.r);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(-3, -2, 2, 0, Math.PI*2); ctx.arc(3, -2, 2, 0, Math.PI*2); ctx.fill();
+      ctx.globalAlpha = 1;
+    } else if (e.kind === 'ram') {
+      ctx.fillStyle = '#37474f';
+      ctx.beginPath();
+      ctx.moveTo(0, e.r); ctx.lineTo(e.r*0.9, -e.r*0.3); ctx.lineTo(0, -e.r); ctx.lineTo(-e.r*0.9, -e.r*0.3);
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle = e.charged ? '#ff1744' : '#90a4ae';
+      ctx.fillRect(-6, -4, 12, 5);
     } else if (e.kind === 'shot') {
       ctx.fillStyle = '#ff6b6b';
       ctx.shadowColor = '#ff5a5a';

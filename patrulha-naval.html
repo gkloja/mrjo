@@ -976,8 +976,8 @@ try {
       }, 700);
     } else {
       sfxHit();
-      // tempo extra para o jogador ver a resposta certa destacada em verde
-      setTimeout(() => gameOver(), 1400);
+      // tempo para o jogador ver o erro e a resposta certa destacada
+      setTimeout(() => gameOver(), 4000);
     }
   }
   function failQuiz() {
@@ -991,7 +991,7 @@ try {
       b.disabled = true;
     });
     sfxHit();
-    setTimeout(() => gameOver(), 1400);
+    setTimeout(() => gameOver(), 4000);
   }
 
   // ---- Spawn ----
