@@ -232,6 +232,63 @@
     margin-top: 12px; font-size: 12px; color: rgba(168,199,250,.8);
   }
   .record strong { color: var(--gold); }
+
+  #combo-hud {
+    position: absolute; left: 50%; top: 14%;
+    transform: translateX(-50%) scale(.85);
+    font-size: clamp(16px, 4.5vw, 22px); font-weight: 900;
+    color: var(--gold); letter-spacing: .06em;
+    text-shadow: 0 0 18px rgba(255,204,0,.55), 0 2px 0 #020b16;
+    opacity: 0; transition: opacity .15s, transform .15s;
+    pointer-events: none; z-index: 6;
+  }
+  #combo-hud.show { opacity: 1; transform: translateX(-50%) scale(1); }
+
+  #mod-tag {
+    position: absolute; left: 50%; top: calc(10px + env(safe-area-inset-top,0px) + 42px);
+    transform: translateX(-50%);
+    font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+    color: #ff8a65; background: rgba(6,18,34,.75);
+    border: 1px solid rgba(255,138,101,.4); border-radius: 999px;
+    padding: 4px 12px; opacity: 0; pointer-events: none; z-index: 6;
+    white-space: nowrap;
+  }
+  #mod-tag.show { opacity: 1; }
+
+  #btn-ability {
+    width: 52px; height: 52px; border-radius: 50%;
+    border: 2px solid rgba(255,204,0,.55);
+    background: radial-gradient(circle at 35% 30%, #1a4a7a, #061221);
+    color: #ffcc00; font-size: 11px; font-weight: 900;
+    cursor: pointer; position: relative;
+    box-shadow: 0 4px 16px rgba(0,0,0,.35);
+    line-height: 1.15; padding: 4px;
+  }
+  #btn-ability:disabled { opacity: .45; border-color: rgba(255,255,255,.2); color: #9ec9ff; }
+  #btn-ability .cd {
+    position: absolute; inset: 0; border-radius: 50%;
+    background: rgba(2,11,22,.55);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: #fff; font-weight: 800;
+  }
+  #btn-ability.ready { box-shadow: 0 0 16px rgba(255,204,0,.45); }
+
+  .shop-card .preview {
+    font-size: 10px; color: #7dcea0; margin-top: 2px; line-height: 1.25;
+  }
+  #over-recap {
+    width: min(320px, 100%); text-align: left; margin: 0 auto 12px;
+    background: rgba(0,0,0,.28); border: 1px solid rgba(255,204,0,.2);
+    border-radius: 14px; padding: 10px 12px; font-size: 12px; line-height: 1.45;
+  }
+  #over-recap .row { display: flex; justify-content: space-between; gap: 8px; padding: 2px 0; }
+  #over-recap .k { color: var(--foam); }
+  #over-recap .v { color: var(--gold); font-weight: 800; }
+  #over-medals { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  #over-medals span {
+    font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 999px;
+    background: rgba(255,204,0,.12); border: 1px solid rgba(255,204,0,.3); color: var(--gold);
+  }
 </style>
 </head>
 <body>
@@ -250,10 +307,13 @@
     </div>
     <div id="banner">ONDA 1</div>
     <div id="boss-tag">⚠ AMEAÇA MAIOR</div>
-    <div id="hint">Arraste para mover · segure para atirar</div>
+    <div id="mod-tag"></div>
+    <div id="combo-hud">COMBO ×2</div>
+    <div id="hint">Arraste para mover · segure para atirar · ⚡ Salva (E)</div>
   </div>
 
   <div id="play-tools">
+    <button type="button" id="btn-ability" title="Salva de Proa (E)" class="ready">⚡<br>Salva</button>
     <button type="button" id="btn-mute" title="Som">🔊</button>
     <button type="button" id="btn-pause" title="Pausa">⏸</button>
   </div>
@@ -316,6 +376,13 @@
       <div class="stat"><div class="l">Abates</div><div class="n" id="over-kills">0</div></div>
       <div class="stat"><div class="l">Ouro</div><div class="n" id="over-gold">0</div></div>
       <div class="stat"><div class="l">XP</div><div class="n" id="over-xp">0</div></div>
+    </div>
+    <div id="over-recap">
+      <div class="row"><span class="k">Dano total</span><span class="v" id="over-dmg">0</span></div>
+      <div class="row"><span class="k">Críticos</span><span class="v" id="over-crits">0</span></div>
+      <div class="row"><span class="k">Combo máx.</span><span class="v" id="over-combo">0</span></div>
+      <div class="row"><span class="k">Salvas usadas</span><span class="v" id="over-salvas">0</span></div>
+      <div id="over-medals"></div>
     </div>
     <div style="width:min(320px,100%);text-align:left;margin:0 auto 14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,204,0,.2);border-radius:14px;padding:12px 14px">
       <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9ec9ff;margin-bottom:8px">🏆 Top 3 · Couraçado</div>
@@ -532,6 +599,12 @@
   let spawnTimer = 0, waveClearTimer = 0, waveAnnouncing = 0, bossWave = false, toSpawn = 0;
   let aimX = 180, pointerDown = false, fireCooldown = 0, levels = {};
   let canUpgrade = true;
+  let combo = 0, comboTimer = 0, maxCombo = 0;
+  let abilityCd = 0, ABILITY_CD = 9.5, salvasUsed = 0;
+  let waveMod = null; // { id, name, desc, ... }
+  let runStats = { dmgDealt: 0, crits: 0, perfectQuiz: 0, quizTotal: 0 };
+  let hitMarkers = [];
+  let screenShake = 0;
   let quizTimerId = null;
   let quizDeadline = 0;
   let quizAnswered = false;
@@ -742,6 +815,13 @@
     spawnTimer = 0; waveClearTimer = 0; waveAnnouncing = 1.5; bossWave = false; toSpawn = 0;
     aimX = W * 0.5; pointerDown = false; fireCooldown = 0;
     canUpgrade = true; usedQuiz = {}; if (typeof resetQuizUsed === "function") resetQuizUsed(); clearQuizTimer();
+    combo = 0; comboTimer = 0; maxCombo = 0;
+    abilityCd = 0; salvasUsed = 0; waveMod = null;
+    runStats = { dmgDealt: 0, crits: 0, perfectQuiz: 0, quizTotal: 0 };
+    hitMarkers = []; screenShake = 0;
+    var modEl = document.getElementById('mod-tag'); if (modEl) { modEl.classList.remove('show'); modEl.textContent = ''; }
+    var cEl = document.getElementById('combo-hud'); if (cEl) cEl.classList.remove('show');
+    updateAbilityBtn();
     updateHud();
   }
 
@@ -775,9 +855,78 @@
       particles.push({ x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: rand(0.25, 0.85), color: color, size: rand(1.5, 3.8) });
     }
   }
-  function floatText(x, y, text, color) {
-    floats.push({ x: x, y: y, text: text, color: color || '#ffcc00', life: 1 });
+  function floatText(x, y, text, color, opts) {
+    opts = opts || {};
+    floats.push({
+      x: x + (opts.jx || 0), y: y,
+      text: text,
+      color: color || '#ffcc00',
+      life: opts.life || 1,
+      vy: opts.vy != null ? opts.vy : -28,
+      size: opts.size || 14,
+      bold: !!opts.bold
+    });
   }
+  function spawnHitMarker(x, y, crit) {
+    hitMarkers.push({ x: x, y: y, life: 0.28, crit: !!crit });
+  }
+  function updateComboHud() {
+    var el = document.getElementById('combo-hud');
+    if (!el) return;
+    if (combo >= 2 && comboTimer > 0) {
+      el.textContent = 'COMBO ×' + combo;
+      el.classList.add('show');
+    } else el.classList.remove('show');
+  }
+  function updateAbilityBtn() {
+    var btn = document.getElementById('btn-ability');
+    if (!btn) return;
+    if (abilityCd > 0) {
+      btn.disabled = true;
+      btn.classList.remove('ready');
+      btn.innerHTML = '<span class="cd">' + Math.ceil(abilityCd) + '</span>';
+    } else {
+      btn.disabled = false;
+      btn.classList.add('ready');
+      btn.innerHTML = '⚡<br>Salva';
+    }
+  }
+  function previewStat(u, lv) {
+    var fake = Object.assign({}, levels);
+    var cur = shipStats();
+    fake[u.id] = lv;
+    var nextLevels = Object.assign({}, levels, fake);
+    // temporary swap
+    var old = levels; levels = nextLevels; var nxt = shipStats(); levels = old;
+    if (u.id === 'dmg') return cur.dmg.toFixed(0) + ' → ' + nxt.dmg.toFixed(0) + ' dmg';
+    if (u.id === 'rate') return (cur.rate * 1000).toFixed(0) + ' → ' + (nxt.rate * 1000).toFixed(0) + ' ms';
+    if (u.id === 'hp') return cur.maxHp + ' → ' + nxt.maxHp + ' HP';
+    if (u.id === 'speed') return cur.spd.toFixed(1) + ' → ' + nxt.spd.toFixed(1) + ' spd';
+    if (u.id === 'spread') return 'tiros: ' + (1 + 2 * cur.spread) + ' → ' + (1 + 2 * nxt.spread);
+    if (u.id === 'regen') return cur.regen.toFixed(1) + ' → ' + nxt.regen.toFixed(1) + '/s';
+    if (u.id === 'pierce') return 'atravessa ' + cur.pierce + ' → ' + nxt.pierce;
+    if (u.id === 'crit') return Math.round(cur.crit * 100) + '% → ' + Math.round(nxt.crit * 100) + '% crit';
+    if (u.id === 'armor') return Math.round(cur.armor * 100) + '% → ' + Math.round(nxt.armor * 100) + '% red.';
+    if (u.id === 'loot') return '+' + (cur.loot * 12) + '% → +' + (nxt.loot * 12) + '% ouro';
+    return u.desc;
+  }
+  function pickWaveMod(w) {
+    if (w < 4 || w % 4 !== 0) return null;
+    var pool = [
+      { id: 'swarm', name: 'ENXAME', desc: 'Mais inimigos, menos HP', enemyMult: 1.45, hpMult: 0.78, speedMult: 1.05 },
+      { id: 'hunters', name: 'CAÇADORES', desc: 'Raiders e rams agressivos', forceKinds: ['raider', 'ram', 'gunship'], speedMult: 1.2, enemyMult: 1.1 },
+      { id: 'storm', name: 'TEMPESTADE', desc: 'Tiros inimigos + velocidade', shotMult: 1.35, speedMult: 1.15, enemyMult: 1.1 },
+      { id: 'iron', name: 'CASCOS DE FERRO', desc: 'Inimigos bem mais resistentes', hpMult: 1.45, enemyMult: 0.9, goldMult: 1.25 },
+      { id: 'goldrush', name: 'CORRIDA AO OURO', desc: '+ouro, inimigos médios', goldMult: 1.55, enemyMult: 1.15, hpMult: 1.05 },
+      { id: 'shadow', name: 'SOMBRAS', desc: 'Phantoms e lasers', forceKinds: ['phantom', 'laser', 'drone'], enemyMult: 1.2 }
+    ];
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+  function applyModToSpawnCount(n) {
+    if (!waveMod || !waveMod.enemyMult) return n;
+    return Math.max(4, Math.floor(n * waveMod.enemyMult));
+  }
+
 
   function enemiesForWave(w) {
     // Mais inimigos e teto maior — pressão contínua nas ondas altas
@@ -795,6 +944,12 @@
   function spawnEnemy(kind, isBoss) {
     var x = rand(30, W - 30);
     var sc = waveScale();
+    if (waveMod && waveMod.hpMult) sc *= waveMod.hpMult;
+    var spdM = (waveMod && waveMod.speedMult) ? waveMod.speedMult : 1;
+    var goldM = (waveMod && waveMod.goldMult) ? waveMod.goldMult : 1;
+    if (!isBoss && waveMod && waveMod.forceKinds && waveMod.forceKinds.length && Math.random() < 0.72) {
+      kind = waveMod.forceKinds[Math.floor(Math.random() * waveMod.forceKinds.length)];
+    }
     if (isBoss) {
       var types = ['kraken', 'dreadnought', 'hydra'];
       var bt = types[(Math.floor(wave / 5) - 1) % types.length];
@@ -854,11 +1009,19 @@
         speed:1.5+wave*0.07, gold:2+Math.floor(wave*0.3), dmg:Math.floor((19+wave*0.8)*enemyDmgScale()),
         zig:rand(1.0,2.0) });
     }
+    // aplica modificador de onda no último inimigo spawnado
+    var last = enemies[enemies.length - 1];
+    if (last && last.kind !== 'boss') {
+      if (spdM && last.speed) last.speed *= spdM;
+      if (goldM && last.gold) last.gold = Math.max(1, Math.floor(last.gold * goldM));
+    }
   }
 
   function startWave() {
     bossWave = wave > 0 && wave % 5 === 0;
-    toSpawn = Math.floor(bossWave ? enemiesForWave(wave) * 0.55 + 1 : enemiesForWave(wave));
+    waveMod = pickWaveMod(wave);
+    var baseCount = Math.floor(bossWave ? enemiesForWave(wave) * 0.55 + 1 : enemiesForWave(wave));
+    toSpawn = applyModToSpawnCount(baseCount);
     spawnTimer = 0.25;
     waveAnnouncing = 1.4;
     waveClearTimer = 0;
@@ -866,6 +1029,16 @@
     banner.textContent = bossWave ? ('ONDA ' + wave + ' · CHEFE') : ('ONDA ' + wave);
     banner.classList.add('show');
     document.getElementById('boss-tag').classList.toggle('show', bossWave);
+    var modEl = document.getElementById('mod-tag');
+    if (modEl) {
+      if (waveMod) {
+        modEl.textContent = '⚔ ' + waveMod.name + (waveMod.desc ? ' · ' + waveMod.desc : '');
+        modEl.classList.add('show');
+      } else {
+        modEl.textContent = '';
+        modEl.classList.remove('show');
+      }
+    }
     if (bossWave) {
       sfxBossWarn();
       startMusic(true);
@@ -928,6 +1101,8 @@
     var item = window.__quizItem;
     var opts = document.querySelectorAll('#quiz-opts .quiz-opt');
     var ok = !!(item && idx === item.c);
+    runStats.quizTotal += 1;
+    if (ok) runStats.perfectQuiz += 1;
     opts.forEach(function(el,i){
       if (item && i === item.c) el.classList.add('ok');
       else if (i === idx) el.classList.add('bad');
@@ -1016,10 +1191,12 @@
       var price = upgradePrice(u);
       var card = document.createElement('div');
       card.className = 'shop-card' + (maxed || !canUpgrade ? ' maxed' : '');
+      var prev = maxed ? 'Nível máximo' : previewStat(u, lv + 1);
       card.innerHTML =
         '<div class="ico">' + u.ico + '</div>' +
         '<div class="name">' + u.name + '</div>' +
         '<div class="desc">' + u.desc + '</div>' +
+        '<div class="preview">' + prev + '</div>' +
         '<div class="meta"><span class="lvl">Nv. ' + lv + '/' + u.max + '</span>' +
         '<span class="price">' + (maxed ? 'MÁX' : '🪙 ' + price) + '</span></div>';
       if (!maxed && canUpgrade) {
@@ -1041,6 +1218,45 @@
       }
       grid.appendChild(card);
     });
+  }
+
+
+  function fireAbility() {
+    if (state !== STATE.PLAY || !ship || abilityCd > 0) return;
+    abilityCd = ABILITY_CD;
+    salvasUsed += 1;
+    updateAbilityBtn();
+    var st = shipStats();
+    var angs = [-0.7, -0.45, -0.22, 0, 0.22, 0.45, 0.7];
+    angs.forEach(function (ang) {
+      var dmg = st.dmg * 1.35;
+      bullets.push({
+        x: ship.x, y: ship.y - 24,
+        vx: Math.sin(ang) * 13,
+        vy: -Math.cos(ang) * 13,
+        r: 5.5, dmg: dmg, life: 1.5,
+        pierce: Math.max(1, st.pierce + 1),
+        crit: false,
+        special: true
+      });
+    });
+    // segundo volley atrasado
+    setTimeout(function () {
+      if (state !== STATE.PLAY || !ship) return;
+      [-0.55, -0.28, 0, 0.28, 0.55].forEach(function (ang) {
+        bullets.push({
+          x: ship.x, y: ship.y - 24,
+          vx: Math.sin(ang) * 12.5,
+          vy: -Math.cos(ang) * 12.5,
+          r: 5, dmg: st.dmg * 1.15, life: 1.4,
+          pierce: st.pierce, crit: false, special: true
+        });
+      });
+    }, 120);
+    screenShake = Math.max(screenShake, 6);
+    burst(ship.x, ship.y - 20, '#ffcc00', 22, 4.5);
+    floatText(ship.x, ship.y - 50, 'SALVA DE PROA!', '#ffd84a', { size: 15, bold: true, life: 1.1 });
+    try { sfxBossWarn(); } catch (e) {}
   }
 
   function fire() {
@@ -1080,6 +1296,8 @@
     ship.hp -= incoming;
     ship.flash = 0.22;
     ship.invuln = Math.max(0.22, 0.34 - Math.min(0.1, wave * 0.004));
+    combo = 0; comboTimer = 0; updateComboHud();
+    screenShake = Math.max(screenShake, 7);
     sfxHit();
     burst(ship.x, ship.y, '#ff5a5a', 14, 3);
     updateHud();
@@ -1093,17 +1311,25 @@
     enemies.splice(i, 1);
     kills++;
     var st = shipStats();
-    var g = Math.max(1, Math.floor(e.gold * (0.85 + (st.loot || 0) * 0.12)));
-    // Ouro um pouco menor na base; Porão recupera o que falta
+    combo += 1;
+    comboTimer = 2.4;
+    maxCombo = Math.max(maxCombo, combo);
+    var comboMult = 1 + Math.min(0.5, Math.floor(combo / 3) * 0.08);
+    var g = Math.max(1, Math.floor(e.gold * (0.85 + (st.loot || 0) * 0.12) * comboMult));
     gold += g;
-    if (e.kind === 'boss') sfxBossKill();
+    if (e.kind === 'boss') { sfxBossKill(); screenShake = Math.max(screenShake, 10); }
     else sfxKill();
     burst(e.x, e.y, e.kind === 'boss' ? '#b06dff' : '#ffcc00', e.kind === 'boss' ? 36 : 14, e.kind === 'boss' ? 5 : 3.8);
-    floatText(e.x, e.y, '+' + g + '🪙', '#ffcc00');
-    var dropChance = 0.07 + (st.loot || 0) * 0.035;
+    floatText(e.x, e.y - 8, '+' + g + '🪙', '#ffcc00', { size: 13 });
+    if (combo >= 3 && combo % 3 === 0) {
+      floatText(e.x, e.y - 28, 'COMBO ×' + combo, '#ffd84a', { size: 16, bold: true, life: 1.2 });
+      gold += Math.floor(2 + combo * 0.5);
+    }
+    var dropChance = 0.07 + (st.loot || 0) * 0.035 + (combo >= 5 ? 0.03 : 0);
     if (rr(dropChance)) {
       powerups.push({ x: e.x, y: e.y, kind: rr(0.45) ? 'heal' : 'gold', life: 7.5, bob: 0 });
     }
+    updateComboHud();
     updateHud();
   }
 
@@ -1126,6 +1352,23 @@
     document.getElementById('over-wave').textContent = wave;
     document.getElementById('over-kills').textContent = kills;
     document.getElementById('over-gold').textContent = Math.floor(gold);
+    document.getElementById('over-xp').textContent = xpGained;
+    var od = document.getElementById('over-dmg'); if (od) od.textContent = Math.floor(runStats.dmgDealt);
+    var oc = document.getElementById('over-crits'); if (oc) oc.textContent = runStats.crits;
+    var oco = document.getElementById('over-combo'); if (oco) oco.textContent = maxCombo;
+    var os = document.getElementById('over-salvas'); if (os) os.textContent = salvasUsed;
+    var medals = [];
+    if (wave >= 10) medals.push('🌊 Onda 10+');
+    if (wave >= 15) medals.push('⚓ Onda 15+');
+    if (maxCombo >= 8) medals.push('🔥 Combo ×' + maxCombo);
+    if (runStats.crits >= 15) medals.push('💥 Crítico em série');
+    if (runStats.quizTotal > 0 && runStats.perfectQuiz === runStats.quizTotal) medals.push('📋 Inspeção perfeita');
+    if (salvasUsed >= 5) medals.push('⚡ Salvas de proa');
+    if (kills >= 80) medals.push('💀 Caçador naval');
+    var medEl = document.getElementById('over-medals');
+    if (medEl) medEl.innerHTML = medals.map(function (m) { return '<span>' + m + '</span>'; }).join('') || '<span style="opacity:.6">Sem medalhas nesta missão</span>';
+    // XP bônus por medalhas
+    xpGained = Math.min(180, xpGained + medals.length * 6);
     document.getElementById('over-xp').textContent = xpGained;
     try {
       var lvl = 1;
@@ -1250,6 +1493,19 @@ try {
     if (fireCooldown > 0) fireCooldown -= dt;
     if (ship.flash > 0) ship.flash -= dt;
     if (ship.invuln > 0) ship.invuln -= dt;
+    if (abilityCd > 0) {
+      abilityCd = Math.max(0, abilityCd - dt);
+      updateAbilityBtn();
+    }
+    if (comboTimer > 0) {
+      comboTimer -= dt;
+      if (comboTimer <= 0) { combo = 0; updateComboHud(); }
+    }
+    if (screenShake > 0) screenShake *= 0.88;
+    for (var hm = hitMarkers.length - 1; hm >= 0; hm--) {
+      hitMarkers[hm].life -= dt;
+      if (hitMarkers[hm].life <= 0) hitMarkers.splice(hm, 1);
+    }
     if (st.regen > 0 && ship.hp < ship.maxHp) {
       ship.hp = Math.min(ship.maxHp, ship.hp + st.regen * dt);
       updateHud();
@@ -1303,9 +1559,18 @@ try {
         dx = b.x - e.x; dy = b.y - e.y;
         if (dx * dx + dy * dy < (b.r + e.r) * (b.r + e.r)) {
           if (e.ghost) continue;
+          var dealt = Math.min(e.hp, b.dmg);
           e.hp -= b.dmg;
           e.flash = 0.12;
-          if (b.crit) floatText(e.x, e.y - 12, 'CRIT!', '#ff6b00');
+          runStats.dmgDealt += Math.max(0, dealt);
+          if (b.crit) {
+            runStats.crits += 1;
+            floatText(e.x + rand(-10, 10), e.y - 18, String(Math.floor(dealt)), '#ff6b00', { size: 17, bold: true, life: 1.15 });
+            floatText(e.x, e.y - 34, 'CRIT', '#ff9f43', { size: 11, life: 0.9 });
+          } else {
+            floatText(e.x + rand(-8, 8), e.y - 14, String(Math.floor(dealt)), '#fff4c2', { size: 13, life: 0.85, vy: -36 });
+          }
+          spawnHitMarker(e.x, e.y, b.crit);
           if (!b._hit) b._hit = {};
           b._hit[j] = 1;
           if (e.hp <= 0) killEnemy(e, j);
@@ -1472,9 +1737,10 @@ try {
       if (p.life <= 0) particles.splice(i, 1);
     }
     for (i = floats.length - 1; i >= 0; i--) {
-      floats[i].y -= 30 * dt;
-      floats[i].life -= dt;
-      if (floats[i].life <= 0) floats.splice(i, 1);
+      var fl = floats[i];
+      fl.y += (fl.vy != null ? fl.vy : -28) * dt;
+      fl.life -= dt;
+      if (fl.life <= 0) floats.splice(i, 1);
     }
   }
 
@@ -1755,9 +2021,17 @@ try {
         ctx.beginPath(); ctx.moveTo(e.lockX-e.x,8); ctx.lineTo(e.lockX-e.x,H); ctx.stroke(); ctx.shadowBlur=0;
         ctx.strokeStyle='rgba(255,255,255,0.9)'; ctx.lineWidth=3;
         ctx.beginPath(); ctx.moveTo(e.lockX-e.x,8); ctx.lineTo(e.lockX-e.x,H); ctx.stroke();
-      } else if (e.charge>0.6) {
-        ctx.strokeStyle='rgba(100,200,255,'+Math.min(0.8,e.charge/3)+')'; ctx.lineWidth=2; ctx.setLineDash([4,6]);
-        ctx.beginPath(); ctx.moveTo(e.lockX-e.x,8); ctx.lineTo(e.lockX-e.x,H*0.5); ctx.stroke(); ctx.setLineDash([]);
+      } else if (e.charge>0.45) {
+        var near = e.charge > Math.max(0.9, 1.8-wave*0.05);
+        ctx.strokeStyle = near ? 'rgba(255,80,80,'+Math.min(0.95,e.charge/2)+')' : 'rgba(100,200,255,'+Math.min(0.8,e.charge/3)+')';
+        ctx.lineWidth = near ? 3 : 2;
+        ctx.setLineDash(near ? [6,4] : [4,6]);
+        ctx.beginPath(); ctx.moveTo(e.lockX-e.x,8); ctx.lineTo(e.lockX-e.x, near ? H*0.85 : H*0.55); ctx.stroke();
+        ctx.setLineDash([]);
+        if (near) {
+          ctx.fillStyle = 'rgba(255,60,60,0.15)';
+          ctx.fillRect(e.lockX-e.x-10, 8, 20, H*0.85);
+        }
       }
     } else if (e.kind === 'gunship') {
       ctx.fillStyle='#4a235a';
@@ -1815,10 +2089,24 @@ try {
       ctx.fillRect(-30, -e.r - 12, 60 * clamp(e.hp / e.maxHp, 0, 1), 6);
     }
 
+    // Barra de vida — inimigos médios/grandes (não shot/mine básica sem dano alto)
+    if (e.kind !== 'shot' && e.kind !== 'mine' && e.maxHp > 20 && e.kind !== 'boss') {
+      var bw = Math.max(22, e.r * 1.8);
+      var ratio = clamp(e.hp / e.maxHp, 0, 1);
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.fillRect(-bw / 2, -e.r - 10, bw, 4);
+      ctx.fillStyle = ratio > 0.5 ? '#2ecc71' : (ratio > 0.25 ? '#f39c12' : '#e74c3c');
+      ctx.fillRect(-bw / 2, -e.r - 10, bw * ratio, 4);
+    }
+
     ctx.restore();
   }
 
   function draw() {
+    ctx.save();
+    if (screenShake > 0.4) {
+      ctx.translate(rand(-screenShake, screenShake), rand(-screenShake, screenShake));
+    }
     drawBackground();
 
     var i, p;
@@ -1837,9 +2125,9 @@ try {
 
     for (i = 0; i < bullets.length; i++) {
       var b = bullets[i];
-      ctx.fillStyle = '#ffcc00';
-      ctx.shadowColor = '#ffcc00';
-      ctx.shadowBlur = 8;
+      ctx.fillStyle = b.special ? '#7eeefc' : (b.crit ? '#ff9f43' : '#ffcc00');
+      ctx.shadowColor = ctx.fillStyle;
+      ctx.shadowBlur = b.special ? 12 : 8;
       ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
       ctx.shadowBlur = 0;
     }
@@ -1860,11 +2148,44 @@ try {
       var f = floats[i];
       ctx.globalAlpha = clamp(f.life, 0, 1);
       ctx.fillStyle = f.color;
-      ctx.font = 'bold 14px system-ui';
+      ctx.font = (f.bold ? '900 ' : 'bold ') + (f.size || 14) + 'px system-ui';
       ctx.textAlign = 'center';
       ctx.fillText(f.text, f.x, f.y);
     }
     ctx.globalAlpha = 1;
+
+    // Hit markers
+    for (i = 0; i < hitMarkers.length; i++) {
+      var hm = hitMarkers[i];
+      var a = clamp(hm.life / 0.28, 0, 1);
+      ctx.globalAlpha = a;
+      ctx.strokeStyle = hm.crit ? '#ff6b00' : '#fff';
+      ctx.lineWidth = hm.crit ? 2.2 : 1.5;
+      var s = 6 + (1 - a) * 8;
+      ctx.beginPath();
+      ctx.moveTo(hm.x - s, hm.y); ctx.lineTo(hm.x - s * 0.3, hm.y);
+      ctx.moveTo(hm.x + s * 0.3, hm.y); ctx.lineTo(hm.x + s, hm.y);
+      ctx.moveTo(hm.x, hm.y - s); ctx.lineTo(hm.x, hm.y - s * 0.3);
+      ctx.moveTo(hm.x, hm.y + s * 0.3); ctx.lineTo(hm.x, hm.y + s);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
+    // Off-screen threat ticks
+    for (i = 0; i < enemies.length; i++) {
+      var en = enemies[i];
+      if (en.kind === 'shot') continue;
+      if (en.y < -8) {
+        ctx.globalAlpha = 0.75;
+        ctx.fillStyle = en.kind === 'boss' ? '#ff6b6b' : '#ffcc00';
+        var tx = clamp(en.x, 12, W - 12);
+        ctx.beginPath();
+        ctx.moveTo(tx, 6); ctx.lineTo(tx - 6, 16); ctx.lineTo(tx + 6, 16);
+        ctx.closePath(); ctx.fill();
+      }
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
   }
 
   function frame(now) {
@@ -1913,6 +2234,9 @@ try {
         document.getElementById('play-tools').classList.add('show');
         last = performance.now();
       }
+    }
+    if (e.key === 'e' || e.key === 'E' || e.key === 'q' || e.key === 'Q') {
+      if (state === STATE.PLAY) fireAbility();
     }
   });
   window.addEventListener('keyup', function (e) {
@@ -1986,6 +2310,13 @@ try {
     document.getElementById('btn-mute').textContent = muted ? '🔇' : '🔊';
     if (muted) stopMusic(); else if (state === STATE.PLAY) startMusic(bossWave);
   };
+  (function () {
+    var ab = document.getElementById('btn-ability');
+    if (ab) ab.onclick = function (ev) {
+      if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+      fireAbility();
+    };
+  })();
 
   function bindClose(id) {
     var el = document.getElementById(id);
