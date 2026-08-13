@@ -138,11 +138,14 @@
     -webkit-backdrop-filter: blur(6px);
     opacity: 0.72;
     transition: opacity .25s, border-color .25s, color .25s, transform .15s;
-    z-index: 9;
+    z-index: 20;
     display: none;
     align-items: center;
     justify-content: center;
     pointer-events: auto;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
   }
   #btn-ability.show { display: flex; }
   #btn-ability.ready {
@@ -2141,19 +2144,34 @@ try {
     aimX = (e.clientX - rect.left) * scaleX;
     aimX = clamp(aimX, 30, W - 30);
   }
+  // Multi-touch: track pointers that started on canvas (aim/fire)
+  // Não usamos setPointerCapture para o 2º dedo conseguir apertar o POW
+  var activePointers = {};
   canvas.addEventListener('pointerdown', function (e) {
     if (state !== STATE.PLAY) return;
-    try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+    activePointers[e.pointerId] = true;
     pointerDown = true;
     setAimFromEvent(e);
     fire();
   });
   canvas.addEventListener('pointermove', function (e) {
     if (state !== STATE.PLAY) return;
-    setAimFromEvent(e);
+    if (activePointers[e.pointerId] || e.buttons) {
+      setAimFromEvent(e);
+    }
   });
-  canvas.addEventListener('pointerup', function () { pointerDown = false; });
-  canvas.addEventListener('pointercancel', function () { pointerDown = false; });
+  function releasePointer(e) {
+    delete activePointers[e.pointerId];
+    var still = false;
+    for (var k in activePointers) { if (activePointers.hasOwnProperty(k)) { still = true; break; } }
+    if (!still) pointerDown = false;
+  }
+  canvas.addEventListener('pointerup', releasePointer);
+  canvas.addEventListener('pointercancel', releasePointer);
+  canvas.addEventListener('pointerleave', function (e) {
+    // só solta se for o pointer que estava mirando
+    if (activePointers[e.pointerId]) releasePointer(e);
+  });
 
   window.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') aimX = clamp(aimX - 34, 30, W - 30);
@@ -2248,8 +2266,20 @@ try {
     if (muted) stopMusic(); else if (state === STATE.PLAY) startMusic(bossWave);
   };
   (function(){
-    var ab=document.getElementById('btn-ability');
-    if(ab) ab.onclick=function(ev){ if(ev){ev.preventDefault();ev.stopPropagation();} fireAbility(); };
+    var ab = document.getElementById('btn-ability');
+    if (!ab) return;
+    function onPow(ev) {
+      if (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (ev.stopImmediatePropagation) ev.stopImmediatePropagation();
+      }
+      if (state === STATE.PLAY) fireAbility();
+    }
+    // pointerdown responde ao 2º dedo sem esperar o 1º soltar
+    ab.addEventListener('pointerdown', onPow, { passive: false });
+    ab.addEventListener('touchstart', onPow, { passive: false });
+    ab.addEventListener('click', onPow);
   })();
 
   function bindClose(id) {
