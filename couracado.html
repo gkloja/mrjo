@@ -866,7 +866,7 @@
       invuln: 0
     };
     bullets = []; enemies = []; particles = []; floats = []; powerups = [];
-    wave = 1; kills = 0; gold = 28; elapsed = 0;
+    wave = 1; kills = 0; gold = 18; elapsed = 0;
     spawnTimer = 0; waveClearTimer = 0; waveAnnouncing = 1.5; bossWave = false; toSpawn = 0;
     aimX = W * 0.5; pointerDown = false; fireCooldown = 0;
     canUpgrade = true; usedQuiz = {}; if (typeof resetQuizUsed === "function") resetQuizUsed(); clearQuizTimer();
@@ -1324,17 +1324,37 @@
   }
 
   function killEnemy(e, i) {
-    enemies.splice(i, 1); kills++;
+    enemies.splice(i, 1);
+    // Projéteis (tiros inimigos): dá pra interceptar, mas NÃO geram ouro, kill nem combo.
+    // Antes gold:0 virava 1 por causa do Math.max(1, ...) e o boss virava fazenda de 🪙.
+    if (e.kind === 'shot') {
+      burst(e.x, e.y, '#ff8a80', 5, 2.2);
+      return;
+    }
+    kills++;
     var st = shipStats();
     combo++; comboTimer=2.4; maxCombo=Math.max(maxCombo,combo);
     var cm=1+Math.min(0.5,Math.floor(combo/3)*0.1);
-    var g=Math.max(1,Math.floor(e.gold*(1.0+(st.loot||0)*0.12)*cm));
-    gold+=g;
-    if(e.kind==='boss'){sfxBossKill();screenShake=Math.max(screenShake,10);} else sfxKill();
-    burst(e.x,e.y,e.kind==='boss'?'#b06dff':'#ffcc00',e.kind==='boss'?36:14,e.kind==='boss'?5:3.8);
-    floatText(e.x,e.y-8,'+'+g+'🪙','#ffcc00',{size:13});
-    if(combo>=3&&combo%3===0){ floatText(e.x,e.y-26,'COMBO ×'+combo,'#ffd84a',{size:15,bold:true}); gold+=Math.floor(4+combo*0.7); }
-    if(rr(0.11+(st.loot||0)*0.04)) powerups.push({x:e.x,y:e.y,kind:rr(0.45)?'heal':'gold',life:7.5,bob:0});
+    var baseG = Number(e.gold) || 0;
+    var g = Math.floor(baseG * (1.0 + (st.loot || 0) * 0.12) * cm);
+    // Só garante mínimo 1 se o inimigo realmente tinha tabela de ouro
+    if (baseG > 0) g = Math.max(1, g);
+    else g = 0;
+    if (g > 0) {
+      gold += g;
+      floatText(e.x, e.y - 8, '+' + g + '🪙', '#ffcc00', { size: 13 });
+    }
+    if (e.kind === 'boss') { sfxBossKill(); screenShake = Math.max(screenShake, 10); }
+    else sfxKill();
+    burst(e.x, e.y, e.kind === 'boss' ? '#b06dff' : '#ffcc00', e.kind === 'boss' ? 36 : 14, e.kind === 'boss' ? 5 : 3.8);
+    // Bônus de combo um pouco mais contido
+    if (combo >= 3 && combo % 3 === 0) {
+      floatText(e.x, e.y - 26, 'COMBO ×' + combo, '#ffd84a', { size: 15, bold: true });
+      gold += Math.floor(2 + combo * 0.35);
+    }
+    if (rr(0.11 + (st.loot || 0) * 0.04)) {
+      powerups.push({ x: e.x, y: e.y, kind: rr(0.45) ? 'heal' : 'gold', life: 7.5, bob: 0 });
+    }
     updateComboHud(); updateHud();
   }
 
@@ -1529,7 +1549,7 @@ try {
       waveClearTimer += dt;
       if (waveClearTimer > 0.85) {
         waveClearTimer = -999;
-        var bonus = 18 + wave * 6;
+        var bonus = 12 + wave * 4;
         gold += bonus;
         floatText(W * 0.5, H * 0.42, 'Bônus +' + bonus + '🪙', '#2ecc71');
         startQuiz();
@@ -1706,8 +1726,8 @@ try {
           ship.hp = Math.min(ship.maxHp, ship.hp + ship.maxHp * 0.2);
           sfxPower(); floatText(p.x, p.y, '+Vida', '#2ecc71');
         } else {
-          gold += 14;
-          sfxPower(); floatText(p.x, p.y, '+12🪙', '#ffcc00');
+          gold += 10;
+          sfxPower(); floatText(p.x, p.y, '+10🪙', '#ffcc00');
         }
         powerups.splice(i, 1);
         updateHud();
